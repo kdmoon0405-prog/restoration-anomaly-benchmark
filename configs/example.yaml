@@ -1,0 +1,27 @@
+experiment:
+  id: cpu-example
+  seed: 2026
+
+dataset:
+  root: ../data/images
+  recursive: true
+  limit: 20
+
+degradations:
+  - name: gaussian_blur
+    severity: 2
+  - name: low_resolution
+    severity: 2
+
+restoration:
+  name: identity
+
+anomaly_detector:
+  name: noop
+
+metrics:
+  - psnr
+  - ssim
+
+output_root: ../outputs
+

@@ -1,0 +1,10 @@
+outputs/*
+!outputs/.gitkeep
+data/images/*
+!data/images/.gitkeep
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.venv/
+.firecrawl/

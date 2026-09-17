@@ -1,0 +1,14 @@
+base_config: example.yaml
+experiment_prefix: blur-baseline
+max_runs: 8
+
+axes:
+  degradations:
+    - - name: gaussian_blur
+        severity: 1
+    - - name: gaussian_blur
+        severity: 3
+  seeds:
+    - 11
+    - 29
+    - 47
