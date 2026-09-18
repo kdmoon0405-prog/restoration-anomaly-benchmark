@@ -15,10 +15,11 @@ Date: 2026-09-18
 - Added image AUROC/F1, pixel AUROC/F1, AU-PRO@0.3, strict mask/map shape checks, an NPZ evaluation CLI, and degradation contact-sheet generation.
 - Added a versioned experiment protocol, MIT license, and GitHub Actions workflow for Python 3.11 CPU tests.
 - Documented integration points for PatchCore, EfficientAD, SwinIR, Restormer, Real-ESRGAN, MVTec-family/VisA adapters, and previous student code.
+- Published `main` to `kdmoon0405-prog/restoration-anomaly-benchmark` and added a concrete GPU pilot handoff checklist.
 
 ## Verification
 
-- `python -B -m pytest -q -p no:cacheprovider`: 58 passed in 2.83 s.
+- `python -B -m pytest -q -p no:cacheprovider`: 58 passed.
 - `python -B scripts/smoke_test.py`: passed; 2 result rows (`no_restoration`, `restored`).
 - Placeholder/absolute-path scan over Python, Markdown, YAML, TOML, and text files: no matches.
 - `graphify update .`: rebuilt 398 nodes, 590 edges, and 34 communities.
@@ -30,17 +31,14 @@ The machine has Python 3.12 and 3.13, but no Python 3.11 interpreter. Tests ran 
 - No previous student/research code or trained checkpoints are available.
 - The Linux GPU server is not available.
 - No labeled industrial dataset split was configured in this session, so anomaly scores, AUROC, AU-PRO, F1, localization metrics, and GPU memory were not produced.
-- The local `main` repository is committed, but no GitHub remote exists. GitHub CLI, Composio, and browser control are unavailable in this environment, so the private remote could not be created here.
 
 ## Exact next steps
 
-1. Create a private GitHub repository named `restoration-anomaly-benchmark` under `kdmoon0405-prog`, without a generated README, license, or `.gitignore`.
-2. From `research_code/`, run `git remote add origin https://github.com/kdmoon0405-prog/restoration-anomaly-benchmark.git` and `git push -u origin main`.
-3. Download or mount one licensed MVTec AD category and validate the stored split/mask paths with the new adapter.
-4. Install and connect a maintained PatchCore implementation, then run a small CPU fit/inference smoke test. The current environment has PyTorch but not Anomalib.
-5. Wrap received restoration code behind `RestorationModel.restore()` and register its config name in `build_restoration()`.
-6. Run the pilot matrix in `docs/EXPERIMENT_PROTOCOL.md`, keeping `no_restoration` rows in the same result schema.
-7. Add CUDA peak-memory capture when the GPU path exists.
+1. Follow `docs/GPU_HANDOFF.md` on the GPU notebook and record its exact environment.
+2. Download or mount the licensed MVTec AD `bottle` category and validate split/mask paths.
+3. Connect a maintained PatchCore implementation and complete the no-restoration baseline.
+4. Connect one degradation-matched restoration checkpoint and run the paired pilot.
+5. Add CUDA peak-memory capture with the real GPU path.
 
 ## Reproduction
 

@@ -10,7 +10,7 @@ original -> deterministic degradation -> optional restoration -> anomaly detecto
 
 Every configured restoration run also keeps the `no_restoration` baseline. The built-in anomaly detector is a no-op, so anomaly scores and dataset-level detection metrics remain empty until a real detector is connected.
 
-The pre-experiment decisions are recorded in [docs/EXPERIMENT_PROTOCOL.md](docs/EXPERIMENT_PROTOCOL.md).
+The pre-experiment decisions are recorded in [docs/EXPERIMENT_PROTOCOL.md](docs/EXPERIMENT_PROTOCOL.md). The first GPU operator checklist is in [docs/GPU_HANDOFF.md](docs/GPU_HANDOFF.md).
 
 ## Setup and checks
 
