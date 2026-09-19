@@ -52,7 +52,7 @@ curl.exe -L --fail --output checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_Swi
 
 `fit_patchcore.py` lets Anomalib download and verify the official MVTec AD archive when it is missing. It fits PatchCore on a deterministic normal-only training split, keeps held-out normal images for threshold calibration, and exports a Torch artifact. `run_cpu_pilot.py` compares clean, bicubic x2, and SwinIR-S x2 images with the same fitted detector. It writes raw NPZ predictions, PSNR/SSIM, image and pixel AUROC, validation-threshold F1, AU-PRO, per-image CSV rows, and a comparison CSV.
 
-The expected SwinIR checkpoint SHA-256 is `193b229909ca89cd8b55de9c9e7fce146ae759d59dfcd78d8feb9dd1d6fa0fd7`. The current restoration result is intentionally limited to `low_resolution` severity 1, whose x2 bicubic degradation matches the public SwinIR-S x2 checkpoint. It does not claim results for Gaussian blur or unmatched x6 restoration.
+The expected SwinIR x2 checkpoint SHA-256 is `193b229909ca89cd8b55de9c9e7fce146ae759d59dfcd78d8feb9dd1d6fa0fd7`. This x2 pilot is limited to `low_resolution` severity 1, whose x2 bicubic degradation matches the public SwinIR-S x2 checkpoint. It does not claim results for Gaussian blur or unmatched x6 restoration.
 
 ## Jihyuk-style PatchCore CPU pilot
 
@@ -67,7 +67,7 @@ curl.exe -L --fail --output checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_Swi
 .venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --train-limit 16 --test-limit 4 --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth
 ```
 
-The script reuses a checksum-verified local FAISS memory bank on subsequent runs. It writes per-image and summary CSV files, raw prediction NPZ files, and `results.json` with image/pixel AUROC, AU-PRO, PSNR/SSIM, runtimes, and actual FAISS squared-L2 nearest-neighbor distance statistics. F1 uses the 99th percentile of separate held-out normal training images, never test labels. The x4 checkpoint SHA-256 is `09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e`. Set `--train-limit 0 --test-limit 0 --calibration-limit 0` only when ready for the much slower full-memory baseline; F1 is then absent unless an independent calibration split is supplied.
+The script reuses a checksum-verified local FAISS memory bank on subsequent runs. It writes per-image and summary CSV files, raw prediction NPZ files, and `results.json` with image/pixel AUROC, AU-PRO, PSNR/SSIM, runtimes, and actual FAISS squared-L2 nearest-neighbor distance statistics. F1 uses the 99th percentile of separate held-out normal training images, never test labels. The x4 checkpoint SHA-256 is `09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e`. Set `--train-limit 0 --test-limit 0 --calibration-limit 0` only when ready for the much slower full-memory baseline; F1 is then absent unless an independent calibration split is supplied. Add `--skip-nn-stats` to omit the second FAISS search per image when only detection metrics are needed; nearest-neighbor statistic fields will then be empty.
 
 ## Run an experiment
 

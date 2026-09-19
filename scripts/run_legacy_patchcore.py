@@ -98,6 +98,7 @@ def main() -> None:
     parser.add_argument("--test-limit", type=int, default=4, help="0 = all test images")
     parser.add_argument("--calibration-limit", type=int, default=4, help="held-out normal train images; 0 disables F1")
     parser.add_argument("--swinir-checkpoint", type=Path, help="optional official lightweight SwinIR-S x4 weights")
+    parser.add_argument("--skip-nn-stats", action="store_true", help="skip the second expensive FAISS search on large CPU runs")
     parser.add_argument("--seed", type=int, default=11)
     parser.add_argument("--model-dir", type=Path)
     parser.add_argument("--output-dir", type=Path)
@@ -233,12 +234,15 @@ def main() -> None:
             input_tensor = tensor(image).unsqueeze(0)
             image_scores, maps = model.predict(input_tensor)
             detector_seconds = perf_counter() - start
-            # Upstream FAISS IndexFlatL2 reports squared L2 distance per patch.
-            start = perf_counter()
-            with torch.no_grad():
-                features = np.asarray(model.embed(input_tensor))
-            _, nn_distances, _ = model.anomaly_scorer.predict([features])
-            nn_stats_seconds = perf_counter() - start
+            nn_distances = None
+            nn_stats_seconds = 0.0
+            if not args.skip_nn_stats:
+                # Upstream FAISS IndexFlatL2 reports squared L2 distance per patch.
+                start = perf_counter()
+                with torch.no_grad():
+                    features = np.asarray(model.embed(input_tensor))
+                _, nn_distances, _ = model.anomaly_scorer.predict([features])
+                nn_stats_seconds = perf_counter() - start
             score = float(image_scores[0])
             anomaly_map = np.asarray(maps[0], dtype=np.float32)
             predictions[variant]["labels"].append(int(sample.metadata["label"]))
@@ -248,8 +252,9 @@ def main() -> None:
             quality = compute_quality_metrics(clean, image, ("psnr", "ssim")) if variant != "clean" else {"psnr": None, "ssim": None}
             rows.append({
                 "sample": sample.relative_path.as_posix(), "label": sample.metadata["label"], "variant": variant,
-                "image_score": score, "nn_squared_l2_mean": float(np.mean(nn_distances)),
-                "nn_squared_l2_max": float(np.max(nn_distances)), "nn_squared_l2_min": float(np.min(nn_distances)),
+                "image_score": score, "nn_squared_l2_mean": float(np.mean(nn_distances)) if nn_distances is not None else None,
+                "nn_squared_l2_max": float(np.max(nn_distances)) if nn_distances is not None else None,
+                "nn_squared_l2_min": float(np.min(nn_distances)) if nn_distances is not None else None,
                 "psnr": quality["psnr"], "ssim": quality["ssim"], "restoration_seconds": restored_seconds if variant == "swinir_x4" else 0.0,
                 "detector_seconds": detector_seconds, "nn_stats_seconds": nn_stats_seconds,
             })
@@ -266,6 +271,7 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(rows)
     result = {"model_spec": model_spec, "model_dir": str(model_dir), "fit_seconds_this_run": fit_seconds,
+              "nn_stats_enabled": not args.skip_nn_stats,
               "restoration": {"name": restorer.name, "checkpoint_sha256": _checksum(args.swinir_checkpoint)} if restorer else None,
               "calibration": calibration,
               "test_paths": [sample.relative_path.as_posix() for sample in test_samples],
