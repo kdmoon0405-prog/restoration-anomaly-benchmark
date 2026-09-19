@@ -12,6 +12,7 @@ from PIL import Image, ImageEnhance, ImageFilter
 class DegradationResult:
     image: Image.Image
     parameters: dict[str, Any]
+    restoration_input: Image.Image | None = None
 
 
 _GAUSSIAN_RADII = (0.7, 1.2, 1.8, 2.6, 3.5)
@@ -75,7 +76,11 @@ def low_resolution(image: Image.Image, severity: int, seed: int = 0) -> Degradat
     source = _rgb(image)
     reduced = (max(1, source.width // factor), max(1, source.height // factor))
     output = source.resize(reduced, Image.Resampling.BICUBIC).resize(source.size, Image.Resampling.BICUBIC)
-    return DegradationResult(output, {"scale_factor": factor, "reduced_size": list(reduced)})
+    return DegradationResult(
+        output,
+        {"scale_factor": factor, "reduced_size": list(reduced)},
+        source.resize(reduced, Image.Resampling.BICUBIC),
+    )
 
 
 DEGRADATIONS: dict[str, Callable[[Image.Image, int, int], DegradationResult]] = {

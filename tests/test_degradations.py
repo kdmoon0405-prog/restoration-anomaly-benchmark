@@ -38,6 +38,15 @@ def test_gaussian_noise_seed_changes_output() -> None:
     assert first.image.tobytes() != second.image.tobytes()
 
 
+def test_low_resolution_keeps_native_restoration_input() -> None:
+    source = synthetic_image()
+    result = apply_degradation(source, "low_resolution", severity=1, seed=0)
+
+    assert result.image.size == source.size
+    assert result.restoration_input is not None
+    assert result.restoration_input.size == (source.width // 2, source.height // 2)
+
+
 def test_invalid_severity_and_name() -> None:
     with pytest.raises(ValueError, match="severity"):
         apply_degradation(synthetic_image(), "gaussian_blur", 0, 1)

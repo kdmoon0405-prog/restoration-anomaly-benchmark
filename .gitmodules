@@ -1,0 +1,6 @@
+[submodule "third_party/SwinIR"]
+	path = third_party/SwinIR
+	url = https://github.com/JingyunLiang/SwinIR.git
+[submodule "third_party/patchcore-inspection"]
+	path = third_party/patchcore-inspection
+	url = https://github.com/amazon-science/patchcore-inspection.git

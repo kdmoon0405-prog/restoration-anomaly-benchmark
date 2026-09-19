@@ -1,58 +1,38 @@
 # Progress
 
-Date: 2026-09-18
+Date: 2026-09-20
 
-## Completed
+## Implemented
 
-- Added the `research_code/` scaffold, package metadata, dependency files, local ignore rules, example configs, scripts, tests, and output directory.
-- Added deterministic severity 1-5 implementations for Gaussian blur, horizontal motion blur, Gaussian noise, JPEG compression, brightness, contrast, and low-resolution down/up-sampling.
-- Added the generic image-folder dataset adapter, stable sample IDs, root-confined output path helpers, and JSONL manifest records with exact degradation parameters and derived seeds.
-- Added MVTec AD, MVTec AD 2, and VisA split-CSV adapters with image labels, mask paths, split/category metadata, and hidden-label handling for MVTec AD 2 private splits.
-- Added PSNR and RGB SSIM with an optional, lazy LPIPS path.
-- Added common dataset, restoration, and anomaly-detector protocols. Identity restoration and a no-op anomaly detector keep the pipeline runnable without model code.
-- Added YAML-driven execution with an always-present no-restoration baseline, per-stage runtime, nested quality-vs-detection results, flat CSV results, and non-overwriting experiment directories.
-- Added CSV aggregation/comparison tables and bounded matrix generation. Matrix expansion stops above the configured limit or the hard ceiling of 256 runs.
-- Added image AUROC/F1, pixel AUROC/F1, AU-PRO@0.3, strict mask/map shape checks, an NPZ evaluation CLI, and degradation contact-sheet generation.
-- Added a versioned experiment protocol, MIT license, and GitHub Actions workflow for Python 3.11 CPU tests.
-- Documented integration points for PatchCore, EfficientAD, SwinIR, Restormer, Real-ESRGAN, MVTec-family/VisA adapters, and previous student code.
-- Published `main` to `kdmoon0405-prog/restoration-anomaly-benchmark` and added a concrete GPU pilot handoff checklist.
+- CPU-safe framework: deterministic degradations, MVTec AD/AD 2/VisA adapters, manifests, PSNR/SSIM, optional LPIPS, model protocols, YAML runner, CSV aggregation, bounded experiment matrices, image/pixel AUROC and F1, and AU-PRO@0.3.
+- Anomalib 2.6.2 PatchCore CPU training/export and official SwinIR-S x2 restoration pilot (scripts/fit_patchcore.py, scripts/run_cpu_pilot.py). Its thresholds come from held-out normal training images.
+- Jihyuk-style pilot using the official Amazon PatchCore source pinned to fcaa92f124fb1ad74a7acf56726decd4b27cbcad: WideResNet50, layer2+layer3, 1024/1024 embeddings, patch size 3, IdentitySampler, Resize(256) then CenterCrop(224). It saves a checksum-verified FAISS memory bank and handles FAISS's Windows non-ASCII-path limitation through an ASCII staging directory.
+- The legacy pilot compares clean, bicubic x4, and optional official SwinIR-S x4 on the same detector and test images. It records per-image true FAISS squared-L2 nearest-neighbor distances, runtimes, raw NPZ outputs, summary CSV, and a quality-vs-detection comparison. F1 uses only held-out normal images for threshold calibration. The x4 checkpoint SHA-256 is 09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e.
+- Downloaded and locally ignored the official full MVTec AD archive, official VisA archive/Anomalib conversion, SwinIR-S x2/x4 checkpoints, and model artifacts. MVTec AD 2 (roughly 32 GB) is not downloaded.
 
-## Verification
+## Verified CPU results
 
-- `python -B -m pytest -q -p no:cacheprovider`: 58 passed.
-- `python -B scripts/smoke_test.py`: passed; 2 result rows (`no_restoration`, `restored`).
-- Placeholder/absolute-path scan over Python, Markdown, YAML, TOML, and text files: no matches.
-- `graphify update .`: rebuilt 398 nodes, 590 edges, and 34 communities.
+- Python 3.11 pytest: 63 passed. Synthetic end-to-end smoke test also passes.
+- Bottle Anomalib pilot: 168 normal training, 41 normal calibration, 4 balanced test images. SwinIR-S x2 vs bicubic x2: mean PSNR +0.8185 dB and SSIM +0.00629; pixel AUROC -0.000071 and AU-PRO -0.000203. Four images are only a pipeline check.
+- Hazelnut original-PatchCore pilot: 16 normal training, 4 held-out normal calibration, 20 balanced test images (10 normal, 10 anomalous), seed 11. Bicubic x4: PSNR 37.2866 dB, SSIM 0.93454, image AUROC 0.99, pixel AUROC 0.985777, AU-PRO@0.3 0.687230. SwinIR-S x4: PSNR 39.5309 dB, SSIM 0.95545, image AUROC 1.00, pixel AUROC 0.986678, AU-PRO@0.3 0.691774. SwinIR minus bicubic: +2.2443 dB PSNR, +0.02091 SSIM, +0.000901 pixel AUROC, +0.004544 AU-PRO. The CSV/JSON include image/pixel F1 and all raw predictions. The small, balanced subset and 16-image memory bank cannot establish a full-dataset research conclusion.
+- The original Jihyuk notebook's reported numbers cannot be assigned reliably to specific clean/degraded/restored runs from its saved cells. The new pilot matches its detector settings, not a verified reproduction of those reported numbers. Our mask preprocessing uses nearest-neighbor interpolation; the upstream dataset loader defaults to bilinear.
+- The teammate models.py/runner.py were reviewed but not copied: the factory definition and image_score assignment are commented out, and the proposed memory-bank statistics are pixel-map statistics rather than nearest-neighbor distances. The existing runner already preserves per-stage runtimes and unique output paths.
 
-The machine has Python 3.12 and 3.13, but no Python 3.11 interpreter. Tests ran on Python 3.13. The package declares Python `>=3.11`, and the implementation uses Python 3.11-compatible syntax and standard-library APIs.
+## Remaining work and boundaries
 
-## Current blockers
+- Run full hazelnut training (391 normal images) and all 110 test images on a machine with enough RAM/time, then repeat across seeds and categories. Full IdentitySampler plus exact FAISS search is expensive even with a GPU backbone. Preserve the normal-only calibration split if reporting F1; if all train images enter the memory bank, use a separate independent calibration set or leave F1 empty.
+- Connect other restoration checkpoints only after the degradation scale/task matches each model. EDSR, Restormer, Real-ESRGAN, EfficientAD, previous student code, and previous student weights are not available here. No metrics have been fabricated for them.
+- Obtain MVTec AD 2 only if its size and data terms fit the experiment, and run VisA categories after selecting comparable splits.
+- The current AU-PRO@0.3 uses 200 sampled thresholds; report this implementation detail in comparisons with external papers.
 
-- No previous student/research code or trained checkpoints are available.
-- The Linux GPU server is not available.
-- No labeled industrial dataset split was configured in this session, so anomaly scores, AUROC, AU-PRO, F1, localization metrics, and GPU memory were not produced.
+## Reproduce on this machine
 
-## Exact next steps
+From research_code/ in PowerShell, with the already downloaded ignored dataset/checkpoints:
 
-1. Follow `docs/GPU_HANDOFF.md` on the GPU notebook and record its exact environment.
-2. Download or mount the licensed MVTec AD `bottle` category and validate split/mask paths.
-3. Connect a maintained PatchCore implementation and complete the no-restoration baseline.
-4. Connect one degradation-matched restoration checkpoint and run the paired pilot.
-5. Add CUDA peak-memory capture with the real GPU path.
+    git submodule update --init
+    uv pip install --python .venv\Scripts\python.exe -e ".[dev,pilot,legacy]"
+    .venv\Scripts\python -X utf8 -m pytest -q -p no:cacheprovider
+    .venv\Scripts\python -X utf8 scripts\smoke_test.py
+    .venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --train-limit 16 --test-limit 20 --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --output-dir outputs\legacy-patchcore\hazelnut-pilot-16x20-rerun
 
-## Reproduction
-
-From `research_code/`:
-
-```powershell
-py -3.11 -m venv .venv
-.venv\Scripts\python -m pip install -e ".[dev]"
-.venv\Scripts\python scripts\smoke_test.py
-.venv\Scripts\python -m pytest -q
-```
-
-Put input images in `data/images/`, then run:
-
-```powershell
-.venv\Scripts\python scripts\run_experiment.py configs\example.yaml
-```
+On a fresh machine, follow the data/checkpoint download commands in README.md first. Each completed legacy output directory is non-overwriting; choose a new --output-dir for a rerun.

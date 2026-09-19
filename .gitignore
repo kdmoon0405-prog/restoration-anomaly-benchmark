@@ -2,8 +2,11 @@ outputs/*
 !outputs/.gitkeep
 data/images/*
 !data/images/.gitkeep
+data/external/
+checkpoints/
 __pycache__/
 *.py[cod]
+*.egg-info/
 .pytest_cache/
 .coverage
 .venv/

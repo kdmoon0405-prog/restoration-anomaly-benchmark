@@ -36,6 +36,39 @@ python3.11 -m venv .venv
 
 The smoke test creates one synthetic image in a temporary directory, runs degradation, identity restoration, metrics, manifest writing, and removes the temporary files.
 
+## Real CPU pilot
+
+The first real-data path uses MVTec AD `bottle`, Anomalib PatchCore, and the official lightweight SwinIR-S x2 checkpoint. MVTec AD is licensed CC BY-NC-SA 4.0 for non-commercial use. Dataset archives, extracted images, checkpoints, and experiment outputs are ignored by Git.
+
+```powershell
+git submodule update --init
+uv venv --python 3.11 .venv
+uv pip install --python .venv\Scripts\python.exe -e ".[dev,pilot]"
+New-Item -ItemType Directory -Force checkpoints\swinir | Out-Null
+curl.exe -L --fail --output checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x2.pth https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/002_lightweightSR_DIV2K_s64w8_SwinIR-S_x2.pth
+.venv\Scripts\python scripts\fit_patchcore.py
+.venv\Scripts\python scripts\run_cpu_pilot.py
+```
+
+`fit_patchcore.py` lets Anomalib download and verify the official MVTec AD archive when it is missing. It fits PatchCore on a deterministic normal-only training split, keeps held-out normal images for threshold calibration, and exports a Torch artifact. `run_cpu_pilot.py` compares clean, bicubic x2, and SwinIR-S x2 images with the same fitted detector. It writes raw NPZ predictions, PSNR/SSIM, image and pixel AUROC, validation-threshold F1, AU-PRO, per-image CSV rows, and a comparison CSV.
+
+The expected SwinIR checkpoint SHA-256 is `193b229909ca89cd8b55de9c9e7fce146ae759d59dfcd78d8feb9dd1d6fa0fd7`. The current restoration result is intentionally limited to `low_resolution` severity 1, whose x2 bicubic degradation matches the public SwinIR-S x2 checkpoint. It does not claim results for Gaussian blur or unmatched x6 restoration.
+
+## Jihyuk-style PatchCore CPU pilot
+
+`run_legacy_patchcore.py` uses Amazon's original PatchCore source at commit `fcaa92f124fb1ad74a7acf56726decd4b27cbcad`, rather than the Anomalib adapter above. It matches the notebook's WideResNet50, layer2+layer3, 1024/1024 embedding, patch size 3, IdentitySampler, and Resize(256) -> CenterCrop(224) image settings. Its default 16-image training subset and 4-image balanced test subset are a CPU pilot, not a reproduction of the notebook's full training result. The x4 test path downsamples the canonical 224 image to 56, then applies bicubic x4 or optional SwinIR-S x4 restoration. Masks use nearest-neighbor resizing; the upstream notebook's exact mask interpolation and the provenance of its reported result cells remain unverified.
+
+```powershell
+git submodule update --init
+uv pip install --python .venv\Scripts\python.exe -e ".[dev,legacy]"
+.venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --train-limit 16 --test-limit 4
+New-Item -ItemType Directory -Force checkpoints\swinir | Out-Null
+curl.exe -L --fail --output checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth
+.venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --train-limit 16 --test-limit 4 --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth
+```
+
+The script reuses a checksum-verified local FAISS memory bank on subsequent runs. It writes per-image and summary CSV files, raw prediction NPZ files, and `results.json` with image/pixel AUROC, AU-PRO, PSNR/SSIM, runtimes, and actual FAISS squared-L2 nearest-neighbor distance statistics. F1 uses the 99th percentile of separate held-out normal training images, never test labels. The x4 checkpoint SHA-256 is `09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e`. Set `--train-limit 0 --test-limit 0 --calibration-limit 0` only when ready for the much slower full-memory baseline; F1 is then absent unless an independent calibration split is supplied.
+
 ## Run an experiment
 
 Put images under `data/images/`, then run:
