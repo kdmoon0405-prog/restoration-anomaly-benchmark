@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "cpu-example",
+  "created_utc": "2026-09-18T06:02:38.903640+00:00",
+  "base_seed": 2026,
+  "dataset": {
+    "adapter": "folder",
+    "root": "../data/images",
+    "recursive": true,
+    "sample_count": 1,
+    "split": null,
+    "category": null
+  },
+  "model_configs": {
+    "restoration": {
+      "name": "identity"
+    },
+    "anomaly_detector": {
+      "name": "noop"
+    }
+  },
+  "preprocessing": {},
+  "metrics": [
+    "psnr",
+    "ssim"
+  ],
+  "reproducibility": {
+    "framework_version": "0.1.0",
+    "config_sha256": "511b1bcddb4b6763bb9fb7abfc7e8e3878e9e6f1b887ef26e94e8a85a82e1083",
+    "python": "3.11.2",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "numpy": "1.26.4",
+    "pillow": "12.3.0"
+  }
+}
