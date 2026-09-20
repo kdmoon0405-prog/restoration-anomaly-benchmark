@@ -24,7 +24,7 @@
 
 **Code commit**
 
-`TODO: paste output of git rev-parse HEAD`
+`c265bad1d6f98038449e28fa2063b25b595da0d9`
 
 ---
 
@@ -38,7 +38,7 @@
 
 **Size**
 
-`TODO: paste file size from PowerShell`
+`19,542,590 bytes`
 
 **Local run path**
 
@@ -54,7 +54,7 @@
 
 **Size**
 
-`TODO: paste file size from PowerShell`
+`19,469,482 bytes`
 
 **Local run path**
 
@@ -70,7 +70,7 @@
 
 **Size**
 
-`TODO: paste file size from PowerShell`
+`19,538,124 bytes`
 
 **Local run path**
 
