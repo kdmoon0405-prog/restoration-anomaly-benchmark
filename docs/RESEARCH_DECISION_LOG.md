@@ -416,3 +416,19 @@ hypothesis update / next experiment
 - test 결과를 보며 weight/checkpoint/threshold를 튜닝하지 않는다.
 
 이 문서는 결과가 추가될 때마다 위의 '가설 → 실험 → 관찰 → 해석 → 결정' 형식으로 업데이트한다.
+
+---
+
+## 11. Hazelnut post-hoc 기준 정리 (2026-09-21)
+
+### 관찰
+Branch A는 pooled AU-PRO를 개선했지만 70장 중 30장에서 per-image AU-PRO가 감소했다. 이전 `gap↓ AND AU-PRO↓` 14장은 전체 localization regression이 아니라 그 하위 유형이다. ROI-mean 기반 oracle도 localization 상한이 아니었다.
+
+저장된 prediction으로 다시 계산한 AU-PRO screening oracle은 Bicubic 30장, SwinIR 40장을 선택했고, per-image AU-PRO 평균은 복원 단독 0.903398에서 oracle 0.907052로 +0.003655 올랐다. 하지만 해당 branch의 전체 맵을 선택해 pooled AU-PRO를 다시 계산하면 0.843461에서 0.840458로 -0.003003 떨어졌다. 따라서 이미지별 선택 가능성이 pooled 성능 개선으로 바로 이어진다고 볼 수 없다.
+
+### 결정
+[`EXPERIMENT_PROTOCOL_V0.2.md`](EXPERIMENT_PROTOCOL_V0.2.md)에 현재 규칙을 기록했다. `delta_per_image_aupro < 0`를 localization regression으로, 그중 ROI-background gap이 감소하면 suppression-type, 그렇지 않으면 geometry candidate로 분류한다. 크기 임계값은 사후에 추가하지 않는다. Hazelnut은 development/exploration이며 이 분류의 독립 검증 자료가 아니다.
+
+새 oracle은 per-image metric별 두-branch screening 평균과, AU-PRO 기준 whole-map 선택 뒤 pooled 지표를 재계산한 결과를 분리한다. 이 선택은 GT-assisted이고 배포 불가능하며, pooled 성능의 보장된 상한도 아니다. 기존 `preliminary_roi_mean_oracle.json`은 역사적 기록으로만 남긴다.
+
+가중치 탐색은 지금 실행하지 않는다. 위의 작은 per-image headroom과 음수인 pooled 선택 결과만으로는 GPU 시간을 쓸 우선순위가 높지 않다. 다른 근거로 상보성이 확인될 때에는 Hazelnut을 명시적인 development set으로 취급해 `alpha ∈ {0, 0.25, 0.5, 0.75, 1}`의 후속 coarse search를 검토할 수 있다. 그 경우 Hazelnut에서 선택된 점수를 독립 테스트 성능으로 발표하지 않고, 방법을 고정한 뒤 untouched Capsule에서 한 번 확인한다. Screw는 다음 stress 후보, Grid는 정보 가치가 분명할 때만 추가한다.

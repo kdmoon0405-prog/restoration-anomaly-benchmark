@@ -1,0 +1,61 @@
+{
+  "source_run": "outputs\\legacy-patchcore\\hazelnut-full391-test110-repro",
+  "definition": "GT-assisted, non-deployable post-hoc selection upper bound",
+  "selection_rule": "For each anomalous image, choose the branch with higher per-image AU-PRO@0.3; ties and normal images keep SwinIR.",
+  "caveat": "The screening mean of per-image maxima bounds choosing one of these two existing branches per image; it does not bound a new fused map. Pooled whole-map AU-PRO and AUROC are recalculated outcomes, not guaranteed upper bounds or deployable results.",
+  "screening_oracle": {
+    "per_image_aupro": {
+      "bicubic_wins": 30,
+      "swinir_wins": 40,
+      "ties": 0,
+      "mean_bicubic": 0.890483382698496,
+      "mean_swinir": 0.9033976848287824,
+      "mean_oracle": 0.9070524626769708,
+      "headroom_vs_restored": 0.003654777848188462
+    },
+    "per_image_pixel_auroc": {
+      "bicubic_wins": 30,
+      "swinir_wins": 40,
+      "ties": 0,
+      "mean_bicubic": 0.9825796654786559,
+      "mean_swinir": 0.9843242968752087,
+      "mean_oracle": 0.9855262685803002,
+      "headroom_vs_restored": 0.001201971705091509
+    }
+  },
+  "whole_map_selection": {
+    "bicubic_selected_anomaly_images": 30,
+    "normal_image_policy": "keep SwinIR scores and maps",
+    "restored_only": {
+      "classification": {
+        "image_auroc": 0.9982142857142857,
+        "image_f1": null,
+        "image_threshold": null
+      },
+      "localization": {
+        "pixel_auroc": 0.9850919108713959,
+        "au_pro": 0.843461191379646,
+        "pixel_f1": null,
+        "pixel_threshold": null
+      }
+    },
+    "selected": {
+      "classification": {
+        "image_auroc": 0.9975,
+        "image_f1": null,
+        "image_threshold": null
+      },
+      "localization": {
+        "pixel_auroc": 0.9846610550449374,
+        "au_pro": 0.8404580297413615,
+        "pixel_f1": null,
+        "pixel_threshold": null
+      }
+    },
+    "delta_vs_restored": {
+      "image_auroc": -0.0007142857142856673,
+      "pixel_auroc": -0.0004308558264585205,
+      "pooled_au_pro": -0.0030031616382845128
+    }
+  }
+}
