@@ -189,25 +189,37 @@ def main() -> None:
     tensor = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mvtec.IMAGENET_MEAN, mvtec.IMAGENET_STD)])
     remaining = sorted(set(range(len(train_set))) - set(selected))
     calibration_indices = [remaining[index] for index in _select_indices(len(remaining), args.calibration_limit, args.seed + 1)] if args.calibration_limit else []
-    calibration = {"source": "held-out normal train images", "quantile": 0.99,
-                   "paths": [str(Path(train_set.data_to_iterate[index][2]).relative_to(data_root).as_posix()) for index in calibration_indices],
-                   "image_threshold": None, "pixel_threshold": None}
-    if calibration_indices:
-        calibration_scores = []
-        calibration_maps = []
-        for index in calibration_indices:
-            with Image.open(train_set.data_to_iterate[index][2]) as source:
-                image = _canonical(source.convert("RGB"), resize_image, crop)
-            scores, maps = model.predict(tensor(image).unsqueeze(0))
-            calibration_scores.append(float(scores[0]))
-            calibration_maps.append(np.asarray(maps[0]))
-        calibration["image_threshold"] = float(np.quantile(calibration_scores, 0.99))
-        calibration["pixel_threshold"] = float(np.quantile(np.stack(calibration_maps), 0.99))
     restorer = (
         SwinIRLightweight(ROOT / "third_party" / "SwinIR", args.swinir_checkpoint, scale=4, tile=56, tile_overlap=0)
         if args.swinir_checkpoint else None
     )
     variant_names = ["clean", "bicubic_x4"] + (["swinir_x4"] if restorer else [])
+    calibration = {"source": "held-out normal train images", "quantile": 0.99,
+                   "paths": [str(Path(train_set.data_to_iterate[index][2]).relative_to(data_root).as_posix()) for index in calibration_indices],
+                   "image_threshold": None, "pixel_threshold": None}
+    calibration_predictions = {name: {"scores": [], "maps": []} for name in variant_names}
+    if calibration_indices:
+        for index in calibration_indices:
+            with Image.open(train_set.data_to_iterate[index][2]) as source:
+                image = _canonical(source.convert("RGB"), resize_image, crop)
+            low_resolution = image.resize((56, 56), Image.Resampling.BICUBIC)
+            bicubic = low_resolution.resize((224, 224), Image.Resampling.BICUBIC)
+            calibration_images = [("clean", image), ("bicubic_x4", bicubic)]
+            if restorer:
+                restored = restorer.restore(low_resolution)
+                if restored.size != image.size:
+                    raise ValueError(f"SwinIR output size {restored.size} differs from reference {image.size}")
+                calibration_images.append(("swinir_x4", restored))
+            for name, calibration_image in calibration_images:
+                scores, maps = model.predict(tensor(calibration_image).unsqueeze(0))
+                calibration_predictions[name]["scores"].append(float(scores[0]))
+                calibration_predictions[name]["maps"].append(np.asarray(maps[0], dtype=np.float32))
+        clean_calibration = calibration_predictions["clean"]
+        calibration["image_threshold"] = float(np.quantile(clean_calibration["scores"], 0.99))
+        calibration["pixel_threshold"] = float(np.quantile(np.stack(clean_calibration["maps"]), 0.99))
+        for name, values in calibration_predictions.items():
+            np.savez_compressed(output_dir / f"{name}_calibration.npz", scores=np.asarray(values["scores"]),
+                                maps=np.asarray(values["maps"]), paths=np.asarray(calibration["paths"]))
     rows = []
     predictions = {variant: {"labels": [], "scores": [], "masks": [], "maps": []} for variant in variant_names}
     for sample in test_samples:
