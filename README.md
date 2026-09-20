@@ -69,6 +69,22 @@ curl.exe -L --fail --output checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_Swi
 
 The script reuses a checksum-verified local FAISS memory bank on subsequent runs. It writes per-image and summary CSV files, raw prediction NPZ files, and `results.json` with image/pixel AUROC, AU-PRO, PSNR/SSIM, runtimes, and actual FAISS squared-L2 nearest-neighbor distance statistics. F1 uses the 99th percentile of separate held-out normal training images, never test labels. The x4 checkpoint SHA-256 is `09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e`. Set `--train-limit 0 --test-limit 0 --calibration-limit 0` only when ready for the much slower full-memory baseline; F1 is then absent unless an independent calibration split is supplied. Add `--skip-nn-stats` to omit the second FAISS search per image when only detection metrics are needed; nearest-neighbor statistic fields will then be empty.
 
+## Two-branch evaluation: reproduction vs detection improvement
+
+Branch A (Jihyuk-setting reproduction) fits on all 391 normal hazelnut training images and reports AUROC/AU-PRO with F1 left empty:
+
+```powershell
+.venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --train-limit 0 --test-limit 0 --calibration-limit 0 --skip-nn-stats --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --output-dir outputs\legacy-patchcore\hazelnut-full391-test110-repro
+```
+
+Branch B (detection improvement) splits normal training images 80/20 with a fixed seed (hazelnut: 313 fit / 78 calibration), fits per-variant robust (median/IQR) normalization on calibration normals only, and compares four fixed methods — degraded-only, restored-only, equal-average `mean_0.5_0.5`, and `max` — with F1 thresholds from fused calibration scores. Test labels are never used for fitting, normalization, or thresholds. Hazelnut is the development/exploration category; final validation belongs on an unseen category such as `capsule`:
+
+```powershell
+.venv\Scripts\python -X utf8 scripts\run_fusion_patchcore.py --category hazelnut --seed 11 --train-ratio 0.8 --test-limit 0 --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --output-dir outputs\fusion-patchcore\hazelnut-313x78-test110
+```
+
+`split.json` stores the exact reused image lists. `--train-limit/--calibration-limit/--test-limit` caps are cheap plumbing checks only, not research results. Weight search (0/0.25/0.5/0.75/1) is a separate later step: pick one weight on synthetic defects or a development category, freeze it, then evaluate once on the unseen category.
+
 ## Run an experiment
 
 Put images under `data/images/`, then run:
