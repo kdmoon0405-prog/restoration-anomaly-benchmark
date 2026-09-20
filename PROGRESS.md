@@ -70,6 +70,14 @@ The first ROI-mean-based oracle is not treated as a valid localization upper bou
 - The new GT-assisted screening oracle gives mean per-image AU-PRO 0.907052 versus restored-only 0.903398 (headroom +0.003655). Choosing whole maps by per-image AU-PRO gives pooled AU-PRO 0.840458 versus restored-only 0.843461 (delta -0.003003); pooled selection is not a guaranteed upper bound.
 - Reanalysis used the existing 110-test NPZ files only (`--render-cases 0`); no PatchCore or SwinIR inference and no weight search were run. The coarse `alpha ∈ {0, 0.25, 0.5, 0.75, 1}` option stays deferred to a distinct Hazelnut development step if later evidence warrants it.
 
+## Branch B saved-prediction feasibility ablation (decision recorded before execution, 2026-09-21)
+
+The Branch A oracle headroom is small, but a five-point global scalar fusion check needs no new fit or inference because Branch B predictions are already saved. Testing only alpha=0.5 would not rule out the other coarse weights. The grid `{0.00, 0.25, 0.50, 0.75, 1.00}` and pooled AU-PRO@0.3 as the **sole** alpha-selection metric were fixed before this analysis; Pixel/Image AUROC and Bicubic-relative defect regression are supplementary/risk descriptors. Hazelnut remains development data. Fine search and adaptive gating are not part of this step.
+
+### Observed result (saved predictions only)
+
+`scripts/analyze_fusion_weights.py` read `outputs/fusion-patchcore/hazelnut-313x78-test110/` and wrote `analysis/hazelnut/fusion_weight_search/`. Pooled AU-PRO@0.3 for alpha 0/0.25/0.5/0.75/1 was 0.841263/0.838005/0.833354/0.826236/0.817486. The primary metric selects alpha=0 (restored-only); the best interior alpha 0.25 is 0.003258 below restored-only. Pixel AUROC at alpha=0.5 is higher than at alpha=0 (0.985360 vs 0.985051), but it is not the selection objective. Localization regression counts against Bicubic were 30/27/24/18/0; alpha=1 has zero by definition, so these counts are risk descriptors, not selection criteria. The alpha=0/0.5/1 predictions and recorded evaluations all matched exactly (maximum score/map/metric difference 0). No fine search or adaptive gating was run. This single development-category result does not justify a finer scalar search now; a new, separately specified study would be needed if an interior weight later improves the primary metric over both endpoints.
+
 ## Remaining work and boundaries
 
 - Two-branch plan (agreed 2026-09-20): Branch A = Jihyuk-setting reproduction on all 391 hazelnut normals (AUROC/AU-PRO, F1 empty). Branch B = detection improvement on a fixed 80/20 split (313 fit / 78 calibration, seed 11), robust median/IQR per-variant normalization, fixed mean_0.5_0.5 vs restored-only as the first comparison, degraded-only and max as preset baselines. New `src/sr_anomaly/fusion.py` (pure NumPy, 8 unit tests) plus `scripts/run_fusion_patchcore.py` implement Branch B; `split.json` freezes the reused image lists and all F1 thresholds come from fused calibration normals. Hazelnut is development/exploration; final validation goes to unseen `capsule`. Weight search (0/0.25/0.5/0.75/1) only after mean_0.5_0.5 is checked, picked on synthetic/dev cases, frozen, then evaluated once on unseen data.
@@ -87,6 +95,7 @@ From research_code/ in PowerShell, with the already downloaded ignored dataset/c
     uv pip install --python .venv\Scripts\python.exe -e ".[dev,pilot,legacy]"
     .venv\Scripts\python -X utf8 -m pytest -q -p no:cacheprovider
     .venv\Scripts\python -X utf8 scripts\smoke_test.py
+    .venv\Scripts\python -X utf8 scripts\analyze_fusion_weights.py
     .venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --train-limit 16 --test-limit 20 --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --output-dir outputs\legacy-patchcore\hazelnut-pilot-16x20-rerun
     .venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --train-limit 0 --test-limit 10 --calibration-limit 0 --skip-nn-stats --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --output-dir outputs\legacy-patchcore\hazelnut-full-train-test10-rerun
 

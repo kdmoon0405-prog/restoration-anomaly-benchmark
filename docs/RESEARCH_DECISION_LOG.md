@@ -432,3 +432,21 @@ Branch A는 pooled AU-PRO를 개선했지만 70장 중 30장에서 per-image AU-
 새 oracle은 per-image metric별 두-branch screening 평균과, AU-PRO 기준 whole-map 선택 뒤 pooled 지표를 재계산한 결과를 분리한다. 이 선택은 GT-assisted이고 배포 불가능하며, pooled 성능의 보장된 상한도 아니다. 기존 `preliminary_roi_mean_oracle.json`은 역사적 기록으로만 남긴다.
 
 가중치 탐색은 지금 실행하지 않는다. 위의 작은 per-image headroom과 음수인 pooled 선택 결과만으로는 GPU 시간을 쓸 우선순위가 높지 않다. 다른 근거로 상보성이 확인될 때에는 Hazelnut을 명시적인 development set으로 취급해 `alpha ∈ {0, 0.25, 0.5, 0.75, 1}`의 후속 coarse search를 검토할 수 있다. 그 경우 Hazelnut에서 선택된 점수를 독립 테스트 성능으로 발표하지 않고, 방법을 고정한 뒤 untouched Capsule에서 한 번 확인한다. Screw는 다음 stress 후보, Grid는 정보 가치가 분명할 때만 추가한다.
+
+---
+
+## 12. Branch B 저장 예측의 5점 가중치 분석 결정 (2026-09-21, 실행 전)
+
+### 이전 결정과 변경 이유
+위 11절의 가중치 탐색 보류는 새 GPU inference를 들일 정보 가치가 낮다는 판단이었다. 그러나 Branch B의 정규화된 `degraded_only`/`restored_only` 예측은 이미 저장돼 있다. Oracle headroom이 작더라도 `alpha=0.5` 하나만으로 global scalar fusion을 기각하기에는 부족하고, 저장 예측만으로 5점을 평가하는 계산 비용은 낮다. 따라서 이 분석을 feasibility ablation으로 수행한다. 과거 결정을 지우거나 Hazelnut을 독립 테스트로 다시 부르지 않는다.
+
+### 실행 전 고정
+`alpha`는 Bicubic/degraded 가중치이며 grid는 `{0.00, 0.25, 0.50, 0.75, 1.00}`이다. 선택 지표는 pooled AU-PRO@0.3 하나다(동률이면 작은 alpha). Pixel/Image AUROC와 결함별 regression은 보조·위험 지표이며 alpha 선택에 쓰지 않는다. F1·새 임계값·fine search·adaptive gating은 이번 단계에서 제외한다. `alpha=0/0.5/1`은 저장된 기존 방법과 수치 검증한다. 이 결정을 [`EXPERIMENT_PROTOCOL_V0.2.md`](EXPERIMENT_PROTOCOL_V0.2.md)의 amendment에도 기록했다.
+
+---
+
+## 13. Branch B 5점 분석 결과 (2026-09-21, 실행 후)
+
+저장된 110장 예측만으로 계산했다. alpha 0/0.25/0.5/0.75/1의 pooled AU-PRO@0.3은 각각 0.841263/0.838005/0.833354/0.826236/0.817486이다. 고정된 단일 선택 지표에 따라 alpha=0(복원 단독)이 가장 높다. 최선의 내부 점 0.25도 복원 단독보다 0.003258 낮다. alpha=0.5의 Pixel AUROC 0.985360은 alpha=0의 0.985051보다 높지만 선택 지표를 바꾸지 않는다.
+
+Bicubic 대비 per-image localization regression은 alpha 0/0.25/0.5/0.75/1에서 각각 30/27/24/18/0장이다. alpha=1의 0장은 구조적 결과다. 0/0.5/1 anchor는 저장된 prediction 및 기존 evaluation과 정확히 일치했다. 현재 Hazelnut 결과만으로 finer scalar search를 진행하지 않는다. 다른 개발 자료에서 내부 coarse weight가 양 끝점 모두보다 pooled AU-PRO를 높이고 결함별 손실도 수용 가능한 경우에만 탐색 범위와 선택 규칙을 새로 고정한다. Capsule은 여전히 untouched final validation이다.

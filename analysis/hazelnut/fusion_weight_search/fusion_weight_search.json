@@ -1,0 +1,138 @@
+{
+  "source_run": "outputs/fusion-patchcore/hazelnut-313x78-test110",
+  "fixed_alpha_grid": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "alpha_definition": "alpha * degraded + (1 - alpha) * restored, for scores and maps",
+  "primary_metric": "dataset-level pooled AU-PRO@0.3 (200 thresholds)",
+  "selection_rule": "maximize primary metric; exact tie chooses smaller alpha",
+  "hazelnut_role": "development/feasibility, not untouched validation",
+  "best_alpha": 0.0,
+  "best_pooled_au_pro": 0.8412629864227489,
+  "best_delta_pooled_au_pro_vs_restored": 0.0,
+  "anchor_validation": {
+    "0.00": {
+      "alpha": 0.0,
+      "method": "restored_only",
+      "passed": true,
+      "max_abs_score_diff": 0.0,
+      "max_abs_map_diff": 0.0,
+      "max_abs_metric_diff": 0.0
+    },
+    "0.50": {
+      "alpha": 0.5,
+      "method": "mean_0.5_0.5",
+      "passed": true,
+      "max_abs_score_diff": 0.0,
+      "max_abs_map_diff": 0.0,
+      "max_abs_metric_diff": 0.0
+    },
+    "1.00": {
+      "alpha": 1.0,
+      "method": "degraded_only",
+      "passed": true,
+      "max_abs_score_diff": 0.0,
+      "max_abs_map_diff": 0.0,
+      "max_abs_metric_diff": 0.0
+    }
+  },
+  "summary": [
+    {
+      "alpha": 0.0,
+      "pooled_au_pro": 0.8412629864227489,
+      "pixel_auroc": 0.9850507944296232,
+      "image_auroc": 0.9985714285714286,
+      "mean_per_image_aupro": 0.9031277955202063,
+      "median_per_image_aupro": 0.9605892681869199,
+      "delta_pooled_au_pro_vs_restored": 0.0,
+      "delta_pixel_auroc_vs_restored": 0.0,
+      "localization_regression_count_vs_bicubic": 30,
+      "suppression_type_regression_count_vs_bicubic": 1,
+      "geometry_candidate_regression_count_vs_bicubic": 29,
+      "mean_delta_per_image_aupro_vs_bicubic": 0.012289987438365872,
+      "median_delta_per_image_aupro_vs_bicubic": 0.0010696541549075067,
+      "worst10_mean_delta_per_image_aupro_vs_bicubic": -0.024300509199810277,
+      "minimum_delta_per_image_aupro_vs_bicubic": -0.07908010850915881
+    },
+    {
+      "alpha": 0.25,
+      "pooled_au_pro": 0.8380053702222845,
+      "pixel_auroc": 0.9853493343207381,
+      "image_auroc": 0.9996428571428572,
+      "mean_per_image_aupro": 0.9023892638861353,
+      "median_per_image_aupro": 0.9652661675029491,
+      "delta_pooled_au_pro_vs_restored": -0.003257616200464386,
+      "delta_pixel_auroc_vs_restored": 0.00029853989111494617,
+      "localization_regression_count_vs_bicubic": 27,
+      "suppression_type_regression_count_vs_bicubic": 1,
+      "geometry_candidate_regression_count_vs_bicubic": 26,
+      "mean_delta_per_image_aupro_vs_bicubic": 0.011551455804294833,
+      "median_delta_per_image_aupro_vs_bicubic": 0.0011660820174326791,
+      "worst10_mean_delta_per_image_aupro_vs_bicubic": -0.01653008574579487,
+      "minimum_delta_per_image_aupro_vs_bicubic": -0.056327675262583865
+    },
+    {
+      "alpha": 0.5,
+      "pooled_au_pro": 0.8333541210878744,
+      "pixel_auroc": 0.9853600201035874,
+      "image_auroc": 1.0,
+      "mean_per_image_aupro": 0.9006437979658146,
+      "median_per_image_aupro": 0.9647056952711871,
+      "delta_pooled_au_pro_vs_restored": -0.007908865334874449,
+      "delta_pixel_auroc_vs_restored": 0.0003092256739641863,
+      "localization_regression_count_vs_bicubic": 24,
+      "suppression_type_regression_count_vs_bicubic": 1,
+      "geometry_candidate_regression_count_vs_bicubic": 23,
+      "mean_delta_per_image_aupro_vs_bicubic": 0.00980598988397412,
+      "median_delta_per_image_aupro_vs_bicubic": 0.001589276458076494,
+      "worst10_mean_delta_per_image_aupro_vs_bicubic": -0.00969337644326439,
+      "minimum_delta_per_image_aupro_vs_bicubic": -0.033588374165098855
+    },
+    {
+      "alpha": 0.75,
+      "pooled_au_pro": 0.826236379615437,
+      "pixel_auroc": 0.9849820062769427,
+      "image_auroc": 1.0,
+      "mean_per_image_aupro": 0.8971106259962925,
+      "median_per_image_aupro": 0.9562449440373115,
+      "delta_pooled_au_pro_vs_restored": -0.015026606807311826,
+      "delta_pixel_auroc_vs_restored": -6.878815268052119e-05,
+      "localization_regression_count_vs_bicubic": 18,
+      "suppression_type_regression_count_vs_bicubic": 1,
+      "geometry_candidate_regression_count_vs_bicubic": 17,
+      "mean_delta_per_image_aupro_vs_bicubic": 0.006272817914452115,
+      "median_delta_per_image_aupro_vs_bicubic": 0.0012332340187366508,
+      "worst10_mean_delta_per_image_aupro_vs_bicubic": -0.0049953768277446135,
+      "minimum_delta_per_image_aupro_vs_bicubic": -0.013521691103117517
+    },
+    {
+      "alpha": 1.0,
+      "pooled_au_pro": 0.8174863646587293,
+      "pixel_auroc": 0.9840441697487662,
+      "image_auroc": 0.9978571428571429,
+      "mean_per_image_aupro": 0.8908378080818404,
+      "median_per_image_aupro": 0.95230554107453,
+      "delta_pooled_au_pro_vs_restored": -0.023776621764019623,
+      "delta_pixel_auroc_vs_restored": -0.0010066246808569934,
+      "localization_regression_count_vs_bicubic": 0,
+      "suppression_type_regression_count_vs_bicubic": 0,
+      "geometry_candidate_regression_count_vs_bicubic": 0,
+      "mean_delta_per_image_aupro_vs_bicubic": 0.0,
+      "median_delta_per_image_aupro_vs_bicubic": 0.0,
+      "worst10_mean_delta_per_image_aupro_vs_bicubic": 0.0,
+      "minimum_delta_per_image_aupro_vs_bicubic": 0.0
+    }
+  ],
+  "fine_search_decision": {
+    "automatic_search_run": false,
+    "interior_best_alpha": 0.25,
+    "interior_best_pooled_au_pro": 0.8380053702222845,
+    "interior_best_delta_vs_restored": -0.003257616200464386,
+    "interior_exceeds_both_endpoints": false,
+    "note": "Consider a separately specified fine search only if an interior coarse alpha improves primary pooled AU-PRO over both endpoints, with defect-risk magnitudes reviewed; Hazelnut is development data."
+  }
+}
