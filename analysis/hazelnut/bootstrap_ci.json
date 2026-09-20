@@ -1,0 +1,37 @@
+{
+  "method": "Paired image-resampling bootstrap. Image-AUROC delta is recomputed from resampled image scores. Pixel-AUROC and AU-PRO intervals bootstrap the mean of per-anomalous-image paired metric deltas; they are not pooled-pixel dataset-level bootstrap intervals.",
+  "repeats": 5000,
+  "seed": 2026,
+  "image_auroc_delta_swinir_minus_bicubic": {
+    "estimate": 0.0,
+    "ci95": [
+      -0.005482456140350811,
+      0.005778259299386024
+    ],
+    "valid_bootstraps": 5000
+  },
+  "mean_per_anomaly_pixel_auroc_delta": {
+    "estimate": 0.0017446313965527396,
+    "ci95": [
+      0.0001472564015355612,
+      0.003495077807984281
+    ],
+    "n": 70
+  },
+  "mean_per_anomaly_aupro_delta": {
+    "estimate": 0.012914302130286364,
+    "ci95": [
+      0.004487330279705017,
+      0.022950177822682973
+    ],
+    "n": 70
+  },
+  "mean_defect_roi_delta": {
+    "estimate": -0.18089080508723765,
+    "ci95": [
+      -0.27720365097911304,
+      -0.08228432699067038
+    ],
+    "n": 70
+  }
+}

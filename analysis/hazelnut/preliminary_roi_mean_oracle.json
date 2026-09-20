@@ -1,0 +1,31 @@
+{
+  "definition": "Post-hoc, non-deployable upper bound: on anomalous images only, select the whole Bicubic or SwinIR prediction using whichever has the larger GT defect-ROI mean. Normal images keep SwinIR.",
+  "bicubic_selected_anomaly_images": 49,
+  "total_anomaly_images": 70,
+  "restored_only": {
+    "classification": {
+      "image_auroc": 0.9982142857142857,
+      "image_f1": null,
+      "image_threshold": null
+    },
+    "localization": {
+      "pixel_auroc": 0.9850919108713959,
+      "au_pro": 0.843461191379646,
+      "pixel_f1": null,
+      "pixel_threshold": null
+    }
+  },
+  "oracle": {
+    "classification": {
+      "image_auroc": 1.0,
+      "image_f1": null,
+      "image_threshold": null
+    },
+    "localization": {
+      "pixel_auroc": 0.9857425069369834,
+      "au_pro": 0.8312132756301442,
+      "pixel_f1": null,
+      "pixel_threshold": null
+    }
+  }
+}
