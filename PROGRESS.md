@@ -21,6 +21,48 @@ Date: 2026-09-20
 - Hazelnut Branch B full result (313 fit / 78 calibration / 110 test, seed 11, robust median/IQR per-variant normalization): degraded_only image AUROC/F1 0.997857/0.96296, pixel AUROC 0.984044, AU-PRO 0.817486, pixel F1 0.57004. restored_only 0.998571/0.96296, 0.985051, 0.841263, 0.58034. mean_0.5_0.5 1.0/0.97810, 0.985360, 0.833354, 0.57440. max 0.999643/0.97059, 0.985290, 0.840552, 0.58067. Mean minus restored: +0.00143 image AUROC, +0.01514 image F1, +0.000309 pixel AUROC, -0.005939 pixel F1, -0.007909 AU-PRO. Max minus restored: +0.001071, +0.007625, +0.000239, +0.000332, -0.000711. Fusion helps image-level slightly but does not beat restored-only on localization; single seed, so no unchanged/improved verdict per protocol.
 - The teammate models.py/runner.py were reviewed but not copied: the factory definition and image_score assignment are commented out, and the proposed memory-bank statistics are pixel-map statistics rather than nearest-neighbor distances. The existing runner already preserves per-stage runtimes and unique output paths.
 
+
+## Hazelnut defect-level post-hoc analysis
+
+Using the completed Branch A 391-train / 110-test predictions, 70 anomalous test images were re-analyzed with GT masks used only after inference.
+
+Per-image SwinIR-S x4 minus Bicubic x4 findings:
+
+- defect ROI raw mean decreased on 49/70 anomalous images (70.0%);
+- defect-to-background mean gap decreased on 25/70 (35.7%);
+- per-image Pixel AUROC decreased on 30/70 (42.9%);
+- per-image AU-PRO decreased on 30/70 (42.9%);
+- both ROI-background gap and per-image AU-PRO decreased on 14/70 (20.0%), used as the current exploratory "strong failure" subset.
+
+Mean deltas across anomalous images:
+
+- defect ROI mean: -0.180891;
+- defect-to-background gap: +0.178580;
+- per-image Pixel AUROC: +0.001745;
+- per-image AU-PRO: +0.012914.
+
+A paired image-resampling bootstrap (5000 repeats, seed 2026) gave:
+
+- image-AUROC delta estimate 0.0, 95% CI [-0.005482, +0.005778];
+- mean per-anomaly Pixel-AUROC delta +0.001745, 95% CI [+0.000147, +0.003495];
+- mean per-anomaly AU-PRO delta +0.012914, 95% CI [+0.004487, +0.022950];
+- mean defect-ROI raw-score delta -0.180891, 95% CI [-0.277204, -0.082284].
+
+Important interpretation: raw defect ROI score often falls after SwinIR, but the background score can fall even more, so raw ROI-score decrease alone is not a valid restoration-failure criterion. Aggregate localization improves on average while a nontrivial sample-level regression subset remains.
+
+The small-defect hypothesis is not supported in hazelnut so far: Spearman(defect area ratio, ROI-mean delta) = -0.0318, and the strong-failure median defect-area ratio (0.02286) is close to the remaining images (0.02091).
+
+Current exploratory strong-failure counts by defect type:
+
+- crack: 4/18;
+- cut: 1/17;
+- hole: 7/18;
+- print: 2/17.
+
+The concentration in hole is a follow-up signal, not a final generalization. The next analysis should compare representative failure and success cases visually, then compute PatchCore feature-to-normal-memory distances only for selected samples to distinguish feature suppression from spatial localization/geometry failure.
+
+The first ROI-mean-based oracle is not treated as a valid localization upper bound: choosing the branch with the larger GT ROI raw mean reduced AU-PRO relative to restored-only. The oracle definition must be revised before use in any final claim.
+
 ## Remaining work and boundaries
 
 - Two-branch plan (agreed 2026-09-20): Branch A = Jihyuk-setting reproduction on all 391 hazelnut normals (AUROC/AU-PRO, F1 empty). Branch B = detection improvement on a fixed 80/20 split (313 fit / 78 calibration, seed 11), robust median/IQR per-variant normalization, fixed mean_0.5_0.5 vs restored-only as the first comparison, degraded-only and max as preset baselines. New `src/sr_anomaly/fusion.py` (pure NumPy, 8 unit tests) plus `scripts/run_fusion_patchcore.py` implement Branch B; `split.json` freezes the reused image lists and all F1 thresholds come from fused calibration normals. Hazelnut is development/exploration; final validation goes to unseen `capsule`. Weight search (0/0.25/0.5/0.75/1) only after mean_0.5_0.5 is checked, picked on synthetic/dev cases, frozen, then evaluated once on unseen data.
