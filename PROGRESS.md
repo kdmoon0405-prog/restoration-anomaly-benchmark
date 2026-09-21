@@ -128,3 +128,7 @@ SurgClean is not present in `data/external/`; only MVTec AD and VisA are availab
 ## Generic cross-category saved-prediction analysis (2026-09-21)
 
 `scripts/analyze_cross_category.py` freezes the Hazelnut per-image taxonomy and deterministic case ranking before Screw results exist. It reads only a completed Branch A run directory and writes `per_anomaly.csv`, `regression_taxonomy.csv`, `summary.json`, `selected_cases.csv`, and `CROSS_CATEGORY_NOTE.md`; it cannot fit or run PatchCore/SwinIR. Applied to the saved Hazelnut run, it reproduced 70 anomalous images, 30 localization regressions (14 suppression, 16 geometry candidates), 40 improvement/ties, and the four stored mean deltas to floating-point precision. Synthetic guard/ranking tests pass. Screw inference and Screw analysis outputs remain ungenerated.
+
+## Device parity and category reporting tools (2026-09-22)
+
+`scripts/compare_cpu_cuda_runs.py` freezes exact artifact checks and configurable numeric comparison (`atol=rtol=1e-5` by default) for the saved CPU/CUDA fusion smoke runs. Device metadata may differ; model/split/checkpoint/method metadata, prediction shapes, labels, and masks may not. It reports numeric, raw-prediction, and separate runtime differences. No CUDA result or parity output exists yet. `scripts/aggregate_category_results.py` reads stored legacy run and cross-category summaries without inference or metric recomputation. `analysis/reporting/category_summary.csv` and `.md` currently contain Hazelnut only; Screw is omitted until both required artifacts exist.
