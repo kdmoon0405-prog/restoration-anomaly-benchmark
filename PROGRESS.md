@@ -113,6 +113,8 @@ Next: preselected Screw cross-category stress after freezing the same x4 model/d
 
 The Branch A runner now accepts `--device {cpu,auto,cuda}` with `cpu` as the unchanged default. The resolved device is used only for the PatchCore backbone/embedding and SwinIR; exact FAISS remains CPU and the detector model specification remains unchanged, allowing reuse of compatible saved banks. An explicit unavailable CUDA request fails before the run. Result JSON and per-image CSV record the resolved device.
 
+GPU execution support is now shared by Branch A and Branch B. Both keep CPU as the default, use the selected device for PatchCore/SwinIR, and retain `FaissNN(False, 4)` on CPU. CUDA timing synchronizes immediately before and after PatchCore fit, SwinIR restoration, and detector inference; Branch B aggregate calibration/test timing is synchronized as well. Each result JSON adds `requested_device`, `actual_device`, `cuda_available`, and CUDA-only `gpu_name` without changing detector specs, splits, calibration, normalization, fusion, thresholds, metrics, or saved prediction schemas. CPU-only tests pass; numerical parity and timing remain to be checked on an NVIDIA machine.
+
 GPU Screw command after installing a CUDA-enabled PyTorch build:
 
     .venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --category screw --train-limit 0 --test-limit 0 --calibration-limit 0 --skip-nn-stats --seed 11 --device cuda --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --model-dir checkpoints\legacy-patchcore\screw-seed11-train320 --output-dir outputs\legacy-patchcore\screw-full320-test160

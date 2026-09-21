@@ -28,12 +28,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from time import perf_counter
 
 import numpy as np
 from PIL import Image
 
 from sr_anomaly.dataset import MVTecADFolder, safe_component
+from sr_anomaly.device import device_metadata, elapsed_seconds, resolve_device, start_timer
 from sr_anomaly.evaluation import evaluate_predictions
 from sr_anomaly.fusion import (
     METHODS,
@@ -132,6 +132,7 @@ def main() -> None:
     parser.add_argument("--calibration-quantile", type=float, default=0.99)
     parser.add_argument("--split-json", type=Path, help="reuse an exact train/calibration split")
     parser.add_argument("--swinir-checkpoint", type=Path, required=True)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="cpu", help="Torch/SwinIR device; FAISS remains on CPU")
     parser.add_argument("--model-dir", type=Path)
     parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
@@ -142,6 +143,12 @@ def main() -> None:
     category = safe_component(args.category, "category")
 
     torch, transforms, InterpolationMode, backbones, common, patchcore, sampler, mvtec = _official_imports()
+    cuda_available = torch.cuda.is_available()
+    device = torch.device(resolve_device(args.device, cuda_available))
+    execution = device_metadata(
+        args.device, str(device), cuda_available,
+        torch.cuda.get_device_name(device) if str(device).startswith("cuda") else None,
+    )
     actual_commit = subprocess.check_output(
         ["git", "-C", str(PATCHCORE_SOURCE.parent), "rev-parse", "HEAD"], text=True
     ).strip()
@@ -220,7 +227,7 @@ def main() -> None:
     model_meta_path = model_dir / "metadata.json"
     params_path = model_dir / "patchcore_params.pkl"
     faiss_path = model_dir / "nnscorer_search_index.faiss"
-    model = patchcore.PatchCore(torch.device("cpu"))
+    model = patchcore.PatchCore(device)
     fit_seconds = 0.0
     if model_meta_path.exists():
         saved = json.loads(model_meta_path.read_text(encoding="utf-8"))
@@ -231,7 +238,7 @@ def main() -> None:
         with _faiss_staging() as staging:
             for path in (params_path, faiss_path):
                 shutil.copy2(path, Path(staging) / path.name)
-            model.load_from_path(staging, torch.device("cpu"), nn_method=common.FaissNN(False, 4))
+            model.load_from_path(staging, device, nn_method=common.FaissNN(False, 4))
     else:
         if params_path.exists() or faiss_path.exists():
             raise ValueError("Incomplete existing PatchCore artifact; choose a different --model-dir")
@@ -240,7 +247,7 @@ def main() -> None:
         model.load(
             backbone=backbone,
             layers_to_extract_from=["layer2", "layer3"],
-            device=torch.device("cpu"),
+            device=device,
             input_shape=(3, 224, 224),
             pretrain_embed_dimension=1024,
             target_embed_dimension=1024,
@@ -251,9 +258,9 @@ def main() -> None:
         loader = torch.utils.data.DataLoader(
             torch.utils.data.Subset(train_set, selected), batch_size=8, shuffle=False, num_workers=0
         )
-        started = perf_counter()
+        started = start_timer(torch, device)
         model.fit(loader)
-        fit_seconds = perf_counter() - started
+        fit_seconds = elapsed_seconds(torch, device, started)
         with _faiss_staging() as staging:
             model.save_to_path(staging)
             for path in (params_path, faiss_path):
@@ -276,23 +283,23 @@ def main() -> None:
     crop = transforms.CenterCrop(224)
     tensor = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mvtec.IMAGENET_MEAN, mvtec.IMAGENET_STD)])
     restorer = SwinIRLightweight(
-        ROOT / "third_party" / "SwinIR", args.swinir_checkpoint, scale=4, tile=56, tile_overlap=0
+        ROOT / "third_party" / "SwinIR", args.swinir_checkpoint, device=str(device), scale=4, tile=56, tile_overlap=0
     )
 
     def _variants(image: Image.Image) -> tuple[Image.Image, Image.Image, Image.Image, float]:
         clean = _canonical(image.convert("RGB"), resize_image, crop)
         low_resolution = clean.resize((56, 56), Image.Resampling.BICUBIC)
         bicubic = low_resolution.resize((224, 224), Image.Resampling.BICUBIC)
-        started = perf_counter()
+        started = start_timer(torch, device)
         restored = restorer.restore(low_resolution)
-        restoration_seconds = perf_counter() - started
+        restoration_seconds = elapsed_seconds(torch, device, started)
         if restored.size != clean.size:
             raise ValueError(f"SwinIR output size {restored.size} differs from reference {clean.size}")
         return clean, bicubic, restored, restoration_seconds
 
     # Calibration on held-out normal images only: raw scores for clean plus
     # degraded/restored pairs for robust normalization and fused thresholds.
-    calibration_started = perf_counter()
+    calibration_started = start_timer(torch, device)
     clean_scores: list[float] = []
     clean_pixels: list[np.ndarray] = []
     degraded_scores: list[float] = []
@@ -315,7 +322,7 @@ def main() -> None:
         restored_scores.append(restored_score)
         degraded_pixels.append(np.asarray(degraded_map, dtype=np.float64))
         restored_pixels.append(np.asarray(restored_map, dtype=np.float64))
-    calibration_seconds = perf_counter() - calibration_started
+    calibration_seconds = elapsed_seconds(torch, device, calibration_started)
     fusion_calibration = fit_fusion_calibration(
         np.asarray(degraded_scores),
         np.asarray(restored_scores),
@@ -334,7 +341,7 @@ def main() -> None:
     }
 
     # Test evaluation with frozen calibration.
-    test_started = perf_counter()
+    test_started = start_timer(torch, device)
     labels: list[int] = []
     masks: list[np.ndarray] = []
     clean_test_scores: list[float] = []
@@ -352,11 +359,11 @@ def main() -> None:
                 mask = np.asarray(_canonical(mask_source.convert("L"), resize_mask, crop)) > 0
         else:
             mask = np.zeros((224, 224), dtype=bool)
-        started = perf_counter()
+        started = start_timer(torch, device)
         clean_score, clean_map = _predict(model, tensor, clean)
         degraded_score, degraded_map = _predict(model, tensor, bicubic)
         restored_score, restored_map = _predict(model, tensor, restored)
-        detector_seconds = perf_counter() - started
+        detector_seconds = elapsed_seconds(torch, device, started)
         if degraded_map.shape != mask.shape or restored_map.shape != mask.shape or clean_map.shape != mask.shape:
             raise ValueError(f"anomaly map shape {degraded_map.shape} differs from mask shape {mask.shape}")
         labels.append(int(sample.metadata["label"]))
@@ -384,7 +391,7 @@ def main() -> None:
                 "detector_seconds": detector_seconds,
             }
         )
-    test_seconds = perf_counter() - test_started
+    test_seconds = elapsed_seconds(torch, device, test_started)
 
     fused_scores = fuse_test_scores(
         np.asarray(degraded_test_scores), np.asarray(restored_test_scores), fusion_calibration
@@ -484,6 +491,7 @@ def main() -> None:
         "model_spec": model_spec,
         "model_dir": str(model_dir),
         "fit_seconds_this_run": fit_seconds,
+        **execution,
         "calibration_seconds": calibration_seconds,
         "test_seconds": test_seconds,
         "restoration": {"name": restorer.name, "checkpoint_sha256": _checksum(args.swinir_checkpoint)},

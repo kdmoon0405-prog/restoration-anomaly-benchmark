@@ -13,12 +13,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from time import perf_counter
 
 import numpy as np
 from PIL import Image
 
 from sr_anomaly.dataset import MVTecADFolder, safe_component
+from sr_anomaly.device import device_metadata, elapsed_seconds, resolve_device, start_timer
 from sr_anomaly.evaluation import evaluate_predictions
 from sr_anomaly.metrics import compute_quality_metrics
 from sr_anomaly.real_models import SwinIRLightweight
@@ -80,14 +80,6 @@ def _delta(new: float | None, baseline: float | None) -> float | None:
     return None if new is None or baseline is None else new - baseline
 
 
-def _resolve_device(requested: str, cuda_available: bool) -> str:
-    if requested == "auto":
-        return "cuda" if cuda_available else "cpu"
-    if requested == "cuda" and not cuda_available:
-        raise RuntimeError("--device cuda requested, but PyTorch CUDA is unavailable")
-    return requested
-
-
 def _faiss_staging():
     # FAISS Windows wheels use narrow C paths and reject this workspace's Korean path.
     parent = Path(os.environ.get("PUBLIC", tempfile.gettempdir()))
@@ -118,7 +110,12 @@ def main() -> None:
     args = _parse_args()
     category = safe_component(args.category, "category")
     torch, transforms, InterpolationMode, backbones, common, patchcore, sampler, mvtec = _official_imports()
-    device = torch.device(_resolve_device(args.device, torch.cuda.is_available()))
+    cuda_available = torch.cuda.is_available()
+    device = torch.device(resolve_device(args.device, cuda_available))
+    execution = device_metadata(
+        args.device, str(device), cuda_available,
+        torch.cuda.get_device_name(device) if str(device).startswith("cuda") else None,
+    )
     actual_commit = subprocess.check_output(["git", "-C", str(PATCHCORE_SOURCE.parent), "rev-parse", "HEAD"], text=True).strip()
     expected_commit = "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
     if actual_commit != expected_commit:
@@ -185,9 +182,9 @@ def main() -> None:
             nn_method=common.FaissNN(False, 4),
         )
         loader = torch.utils.data.DataLoader(torch.utils.data.Subset(train_set, selected), batch_size=8, shuffle=False, num_workers=0)
-        started = perf_counter()
+        started = start_timer(torch, device)
         model.fit(loader)
-        fit_seconds = perf_counter() - started
+        fit_seconds = elapsed_seconds(torch, device, started)
         with _faiss_staging() as staging:
             model.save_to_path(staging)
             for path in (params_path, faiss_path):
@@ -244,9 +241,9 @@ def main() -> None:
         restored_seconds = 0.0
         variants = [("clean", clean), ("bicubic_x4", bicubic)]
         if restorer:
-            started = perf_counter()
+            started = start_timer(torch, device)
             restored = restorer.restore(low_resolution)
-            restored_seconds = perf_counter() - started
+            restored_seconds = elapsed_seconds(torch, device, started)
             if restored.size != clean.size:
                 raise ValueError(f"SwinIR output size {restored.size} differs from reference {clean.size}")
             variants.append(("swinir_x4", restored))
@@ -256,19 +253,19 @@ def main() -> None:
         else:
             mask = np.zeros((224, 224), dtype=bool)
         for variant, image in variants:
-            start = perf_counter()
+            start = start_timer(torch, device)
             input_tensor = tensor(image).unsqueeze(0)
             image_scores, maps = model.predict(input_tensor)
-            detector_seconds = perf_counter() - start
+            detector_seconds = elapsed_seconds(torch, device, start)
             nn_distances = None
             nn_stats_seconds = 0.0
             if not args.skip_nn_stats:
                 # Upstream FAISS IndexFlatL2 reports squared L2 distance per patch.
-                start = perf_counter()
+                start = start_timer(torch, device)
                 with torch.no_grad():
                     features = np.asarray(model.embed(input_tensor))
                 _, nn_distances, _ = model.anomaly_scorer.predict([features])
-                nn_stats_seconds = perf_counter() - start
+                nn_stats_seconds = elapsed_seconds(torch, device, start)
             score = float(image_scores[0])
             anomaly_map = np.asarray(maps[0], dtype=np.float32)
             predictions[variant]["labels"].append(int(sample.metadata["label"]))
@@ -296,7 +293,8 @@ def main() -> None:
         writer = csv.DictWriter(handle, rows[0].keys())
         writer.writeheader()
         writer.writerows(rows)
-    result = {"model_spec": model_spec, "model_dir": str(model_dir), "fit_seconds_this_run": fit_seconds, "device": str(device),
+    result = {"model_spec": model_spec, "model_dir": str(model_dir), "fit_seconds_this_run": fit_seconds,
+              "device": str(device), **execution,
               "nn_stats_enabled": not args.skip_nn_stats,
               "restoration": {"name": restorer.name, "checkpoint_sha256": _checksum(args.swinir_checkpoint)} if restorer else None,
               "calibration": calibration,

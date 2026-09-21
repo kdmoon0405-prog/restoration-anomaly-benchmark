@@ -85,6 +85,8 @@ Branch B (detection improvement) splits normal training images 80/20 with a fixe
 
 `split.json` stores the exact reused image lists. `--train-limit/--calibration-limit/--test-limit` caps are cheap plumbing checks only, not research results. Weight search (0/0.25/0.5/0.75/1) is a separate later step: pick one weight on synthetic defects or a development category, freeze it, then evaluate once on the unseen category.
 
+Branch B accepts the same `--device {cpu,auto,cuda}` option as Branch A. PatchCore and SwinIR use the resolved device; exact FAISS stays on CPU. CUDA timings synchronize before and after fit, restoration, and detector inference. `results.json` records `requested_device`, `actual_device`, `cuda_available`, and `gpu_name` only for CUDA runs.
+
 ## Run an experiment
 
 Put images under `data/images/`, then run:

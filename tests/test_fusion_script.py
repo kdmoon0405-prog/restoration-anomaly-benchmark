@@ -16,6 +16,7 @@ from types import SimpleNamespace
 
 import numpy as np
 from PIL import Image
+import pytest
 
 import scripts.run_fusion_patchcore as fusion_script
 
@@ -122,6 +123,7 @@ class _FakeRestorer:
 def _install_fakes(monkeypatch, data_root: Path) -> None:
     torch = SimpleNamespace(
         device=lambda _name: "cpu",
+        cuda=SimpleNamespace(is_available=lambda: False),
         set_num_threads=lambda _count: None,
         get_num_threads=lambda: 8,
         utils=SimpleNamespace(
@@ -196,6 +198,10 @@ def test_fusion_script_end_to_end_with_fakes(monkeypatch, tmp_path: Path) -> Non
     assert sum(int(row["label"]) for row in rows) == 3
 
     result = json.loads((output_dir / "results.json").read_text(encoding="utf-8"))
+    assert result["requested_device"] == "cpu"
+    assert result["actual_device"] == "cpu"
+    assert result["cuda_available"] is False
+    assert "gpu_name" not in result
     assert set(result["fusion_calibration"]["image_thresholds"]) == {
         "degraded_only", "restored_only", "mean_0.5_0.5", "max",
     }
@@ -225,3 +231,12 @@ def test_fusion_script_end_to_end_with_fakes(monkeypatch, tmp_path: Path) -> Non
     split2 = json.loads((output_dir2 / "split.json").read_text(encoding="utf-8"))
     assert split2["train_indices"] == split["train_indices"]
     assert split2["calibration_indices"] == split["calibration_indices"]
+
+
+def test_fusion_script_rejects_unavailable_cuda(monkeypatch, tmp_path: Path) -> None:
+    _install_fakes(monkeypatch, tmp_path / "data")
+    monkeypatch.setattr(sys, "argv", [
+        "run_fusion_patchcore.py", "--device", "cuda", "--swinir-checkpoint", str(tmp_path / "swinir.pth"),
+    ])
+    with pytest.raises(RuntimeError, match="CUDA is unavailable"):
+        fusion_script.main()
