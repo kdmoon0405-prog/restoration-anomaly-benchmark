@@ -486,3 +486,9 @@ Hazelnut에서 고른 결함 사례와 taxonomy가 다른 형태에서도 나타
 Screw test label로 fusion weight, F1 threshold, 체크포인트, 전처리, taxonomy를 조정하지 않는다. 독립 정상 calibration이 없으므로 F1은 비워둔다. Scratch로 맞출 새 가중치나 adaptive gating은 없다. 로컬에는 Screw 데이터와 SR 체크포인트가 있지만 CUDA가 없어 full run이 길고 Screw PatchCore bank도 아직 없다. GPU 장비에서 같은 알고리즘을 실행할 수 있도록 device 옵션만 최소 추가하고, 실행 명령/산출물을 고정한 뒤 결과는 별도로 기록한다. Capsule은 최종 규칙이 고정되기 전까지 열지 않는다.
 
 Branch A runner에는 기존 기본값을 유지하는 `--device cpu`와 명시적 `auto/cuda`만 추가했다. CUDA는 PatchCore feature extraction과 SwinIR에만 쓰고 exact FAISS는 CPU에 둔다. resolved device는 결과에 기록하며 model spec은 바꾸지 않는다. 현재 로컬 CUDA가 없으므로 Screw full run은 실행하지 않았다.
+
+---
+
+## 18. SurgClean 확장 보류와 최소 pilot 범위 (2026-09-21)
+
+로컬 `data/external/`에는 MVTec AD와 VisA만 있고 SurgClean은 없다. 데이터 구조·공식 split·checkpoint를 확인할 수 없어 결과 생성이나 adapter 구현을 시작하지 않는다. 향후 entry gate가 충족되면 Desmoke 한 task, 공식 severity 두 단계, 해당 task의 공식 모델 하나로만 시작한다. 인접 clean frame이 unaligned라는 전제에서 고정된 정합/공식 평가 절차 없이 pixelwise PSNR/SSIM을 주 결론으로 쓰지 않는다. downstream label이 없으면 feature 보존을 task 성능이라고 부르지 않는다. 구체적인 정지 조건과 산출물은 `docs/SURGCLEAN_EXTENSION_PLAN.md`에 기록했다. MVTec/Screw 연구축보다 우선하지 않는다.

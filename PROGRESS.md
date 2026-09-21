@@ -118,3 +118,7 @@ GPU Screw command after installing a CUDA-enabled PyTorch build:
     .venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --category screw --train-limit 0 --test-limit 0 --calibration-limit 0 --skip-nn-stats --seed 11 --device cuda --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --model-dir checkpoints\legacy-patchcore\screw-seed11-train320 --output-dir outputs\legacy-patchcore\screw-full320-test160
 
 Expected artifacts are a checksum-bound Screw PatchCore bank in the model directory and full-category clean/Bicubic/SwinIR prediction NPZ, CSV, and result JSON in the output directory. Do not reuse a partial output directory after failure; use a new empty output directory.
+
+## SurgClean extension status (2026-09-21)
+
+SurgClean is not present in `data/external/`; only MVTec AD and VisA are available locally. No download, experiment, or metric was attempted. `docs/SURGCLEAN_EXTENSION_PLAN.md` limits a future pilot to Desmoke, two official severity levels, and one matched official model after the dataset structure, terms, split, checkpoint, and evaluation protocol are verified. Because the described adjacent clean frames are unaligned, raw PSNR/SSIM is not accepted as a primary paired conclusion without an official alignment/evaluation procedure. This extension remains separate from MVTec and is lower priority than the frozen Screw stress test.
