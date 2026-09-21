@@ -492,3 +492,9 @@ Branch A runner에는 기존 기본값을 유지하는 `--device cpu`와 명시�
 ## 18. SurgClean 확장 보류와 최소 pilot 범위 (2026-09-21)
 
 로컬 `data/external/`에는 MVTec AD와 VisA만 있고 SurgClean은 없다. 데이터 구조·공식 split·checkpoint를 확인할 수 없어 결과 생성이나 adapter 구현을 시작하지 않는다. 향후 entry gate가 충족되면 Desmoke 한 task, 공식 severity 두 단계, 해당 task의 공식 모델 하나로만 시작한다. 인접 clean frame이 unaligned라는 전제에서 고정된 정합/공식 평가 절차 없이 pixelwise PSNR/SSIM을 주 결론으로 쓰지 않는다. downstream label이 없으면 feature 보존을 task 성능이라고 부르지 않는다. 구체적인 정지 조건과 산출물은 `docs/SURGCLEAN_EXTENSION_PLAN.md`에 기록했다. MVTec/Screw 연구축보다 우선하지 않는다.
+
+---
+
+## 19. Screw 결과 전 cross-category 분석 규칙 고정 (2026-09-21)
+
+Screw 결과가 존재하거나 확인되기 전에 Hazelnut의 taxonomy와 사례 선택 규칙을 generic cross-category analyzer에 고정했다. 이 결정 시점에는 Screw inference를 실행하지 않았고 Screw 수치도 생성하지 않았다.

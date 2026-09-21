@@ -124,3 +124,7 @@ Expected artifacts are a checksum-bound Screw PatchCore bank in the model direct
 ## SurgClean extension status (2026-09-21)
 
 SurgClean is not present in `data/external/`; only MVTec AD and VisA are available locally. No download, experiment, or metric was attempted. `docs/SURGCLEAN_EXTENSION_PLAN.md` limits a future pilot to Desmoke, two official severity levels, and one matched official model after the dataset structure, terms, split, checkpoint, and evaluation protocol are verified. Because the described adjacent clean frames are unaligned, raw PSNR/SSIM is not accepted as a primary paired conclusion without an official alignment/evaluation procedure. This extension remains separate from MVTec and is lower priority than the frozen Screw stress test.
+
+## Generic cross-category saved-prediction analysis (2026-09-21)
+
+`scripts/analyze_cross_category.py` freezes the Hazelnut per-image taxonomy and deterministic case ranking before Screw results exist. It reads only a completed Branch A run directory and writes `per_anomaly.csv`, `regression_taxonomy.csv`, `summary.json`, `selected_cases.csv`, and `CROSS_CATEGORY_NOTE.md`; it cannot fit or run PatchCore/SwinIR. Applied to the saved Hazelnut run, it reproduced 70 anomalous images, 30 localization regressions (14 suppression, 16 geometry candidates), 40 improvement/ties, and the four stored mean deltas to floating-point precision. Synthetic guard/ranking tests pass. Screw inference and Screw analysis outputs remain ungenerated.
