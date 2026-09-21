@@ -186,3 +186,8 @@ See:
 - `analysis/hazelnut/hazelnut_per_defect.csv`
 - `analysis/hazelnut/strong_failure_cases.csv`
 - `analysis/hazelnut/bootstrap_ci.json`
+- `analysis/hazelnut/qualitative_cases/` (nine fixed six-panel figures, case CSV, descriptive observations)
+- `analysis/hazelnut/nn_distance_selected.csv` (official PatchCore patch-to-bank squared-L2 for nine fixed cases)
+- `analysis/hazelnut/nn_distance_selected_summary.md`
+
+The selected-case NN outputs were generated from the same checksum-verified 391-normal FAISS bank and the pinned SwinIR checkpoint. They do not replace or modify the raw prediction artifacts above. All 18 recomputed Bicubic/SwinIR maps matched their stored NPZ maps exactly.

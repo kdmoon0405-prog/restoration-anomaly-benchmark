@@ -204,7 +204,8 @@ def _canonical_transform():
     return lambda image: crop(resize(image))
 
 
-def _render_cases(rows: list[dict], run_dir: Path, data_root: Path, output_dir: Path, count: int, swinir_checkpoint: Path | None) -> None:
+def _render_cases(rows: list[dict], run_dir: Path, data_root: Path, output_dir: Path, count: int, swinir_checkpoint: Path | None,
+                  selected_groups: dict[str, list[dict]] | None = None) -> None:
     if count <= 0:
         return
     if swinir_checkpoint is None:
@@ -218,9 +219,9 @@ def _render_cases(rows: list[dict], run_dir: Path, data_root: Path, output_dir: 
     from sr_anomaly.real_models import SwinIRLightweight
     restorer = SwinIRLightweight(ROOT / "third_party" / "SwinIR", swinir_checkpoint, scale=4, tile=56, tile_overlap=0, device="cpu")
 
-    groups = _case_groups(rows, count)
+    groups = selected_groups if selected_groups is not None else _case_groups(rows, count)
     for group, selected in groups.items():
-        group_dir = output_dir / f"{group}_{count}"
+        group_dir = output_dir / (group if selected_groups is not None else f"{group}_{count}")
         group_dir.mkdir(parents=True, exist_ok=True)
         for rank, row in enumerate(selected, 1):
             i = int(row["index"])
@@ -251,11 +252,13 @@ def _render_cases(rows: list[dict], run_dir: Path, data_root: Path, output_dir: 
                           vmax=map_vmax if cmap == "viridis" else None)
                 ax.set_title(title)
                 ax.axis("off")
-            fig.suptitle(f"{group.upper()} #{rank} | {row['sample']} | {row['defect_type']} | "
-                         f"delta AU-PRO={row['delta_per_image_aupro']:+.6f} | "
+            pixel_delta = row.get("delta_per_image_pixel_auroc")
+            pixel_text = f" | delta Pixel AUROC={pixel_delta:+.6f}" if pixel_delta is not None else ""
+            fig.suptitle(f"{group.upper()} #{rank} | {row['sample']} | {row['defect_type']} | {row.get('regression_type', '')}\n"
+                         f"delta AU-PRO={row['delta_per_image_aupro']:+.6f}{pixel_text} | "
                          f"delta ROI-bg gap={row['delta_roi_bg_gap']:+.6f}")
             plt.tight_layout()
-            safe_name = row["sample"].replace("/", "__").replace("\\", "__")
+            safe_name = Path(row["sample"]).with_suffix("").as_posix().replace("/", "__")
             fig.savefig(group_dir / f"{rank:02d}_{safe_name}.png", dpi=150)
             plt.close(fig)
 

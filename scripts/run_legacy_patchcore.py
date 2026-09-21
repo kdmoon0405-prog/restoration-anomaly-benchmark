@@ -80,6 +80,14 @@ def _delta(new: float | None, baseline: float | None) -> float | None:
     return None if new is None or baseline is None else new - baseline
 
 
+def _resolve_device(requested: str, cuda_available: bool) -> str:
+    if requested == "auto":
+        return "cuda" if cuda_available else "cpu"
+    if requested == "cuda" and not cuda_available:
+        raise RuntimeError("--device cuda requested, but PyTorch CUDA is unavailable")
+    return requested
+
+
 def _faiss_staging():
     # FAISS Windows wheels use narrow C paths and reject this workspace's Korean path.
     parent = Path(os.environ.get("PUBLIC", tempfile.gettempdir()))
@@ -90,7 +98,7 @@ def _faiss_staging():
     return tempfile.TemporaryDirectory(prefix="patchcore-", dir=parent)
 
 
-def main() -> None:
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=ROOT / "data" / "external" / "MVTecAD")
     parser.add_argument("--category", default="hazelnut")
@@ -100,11 +108,17 @@ def main() -> None:
     parser.add_argument("--swinir-checkpoint", type=Path, help="optional official lightweight SwinIR-S x4 weights")
     parser.add_argument("--skip-nn-stats", action="store_true", help="skip the second expensive FAISS search on large CPU runs")
     parser.add_argument("--seed", type=int, default=11)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="cpu", help="Torch/SwinIR device; FAISS remains on CPU")
     parser.add_argument("--model-dir", type=Path)
     parser.add_argument("--output-dir", type=Path)
-    args = parser.parse_args()
+    return parser.parse_args(argv)
+
+
+def main() -> None:
+    args = _parse_args()
     category = safe_component(args.category, "category")
     torch, transforms, InterpolationMode, backbones, common, patchcore, sampler, mvtec = _official_imports()
+    device = torch.device(_resolve_device(args.device, torch.cuda.is_available()))
     actual_commit = subprocess.check_output(["git", "-C", str(PATCHCORE_SOURCE.parent), "rev-parse", "HEAD"], text=True).strip()
     expected_commit = "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
     if actual_commit != expected_commit:
@@ -143,7 +157,7 @@ def main() -> None:
         "sampler": "IdentitySampler",
         "nearest_neighbor": "FaissNN(cpu)",
     }
-    model = patchcore.PatchCore(torch.device("cpu"))
+    model = patchcore.PatchCore(device)
     fit_seconds = 0.0
     if model_meta_path.exists():
         saved = json.loads(model_meta_path.read_text(encoding="utf-8"))
@@ -153,7 +167,7 @@ def main() -> None:
         with _faiss_staging() as staging:
             for path in (params_path, faiss_path):
                 shutil.copy2(path, Path(staging) / path.name)
-            model.load_from_path(staging, torch.device("cpu"), nn_method=common.FaissNN(False, 4))
+            model.load_from_path(staging, device, nn_method=common.FaissNN(False, 4))
     else:
         if params_path.exists() or faiss_path.exists():
             raise ValueError("Incomplete existing PatchCore artifact; choose a different --model-dir")
@@ -162,7 +176,7 @@ def main() -> None:
         model.load(
             backbone=backbone,
             layers_to_extract_from=["layer2", "layer3"],
-            device=torch.device("cpu"),
+            device=device,
             input_shape=(3, 224, 224),
             pretrain_embed_dimension=1024,
             target_embed_dimension=1024,
@@ -190,7 +204,7 @@ def main() -> None:
     remaining = sorted(set(range(len(train_set))) - set(selected))
     calibration_indices = [remaining[index] for index in _select_indices(len(remaining), args.calibration_limit, args.seed + 1)] if args.calibration_limit else []
     restorer = (
-        SwinIRLightweight(ROOT / "third_party" / "SwinIR", args.swinir_checkpoint, scale=4, tile=56, tile_overlap=0)
+        SwinIRLightweight(ROOT / "third_party" / "SwinIR", args.swinir_checkpoint, device=str(device), scale=4, tile=56, tile_overlap=0)
         if args.swinir_checkpoint else None
     )
     variant_names = ["clean", "bicubic_x4"] + (["swinir_x4"] if restorer else [])
@@ -268,7 +282,7 @@ def main() -> None:
                 "nn_squared_l2_max": float(np.max(nn_distances)) if nn_distances is not None else None,
                 "nn_squared_l2_min": float(np.min(nn_distances)) if nn_distances is not None else None,
                 "psnr": quality["psnr"], "ssim": quality["ssim"], "restoration_seconds": restored_seconds if variant == "swinir_x4" else 0.0,
-                "detector_seconds": detector_seconds, "nn_stats_seconds": nn_stats_seconds,
+                "detector_seconds": detector_seconds, "nn_stats_seconds": nn_stats_seconds, "device": str(device),
             })
     evaluations = {}
     for variant, values in predictions.items():
@@ -282,7 +296,7 @@ def main() -> None:
         writer = csv.DictWriter(handle, rows[0].keys())
         writer.writeheader()
         writer.writerows(rows)
-    result = {"model_spec": model_spec, "model_dir": str(model_dir), "fit_seconds_this_run": fit_seconds,
+    result = {"model_spec": model_spec, "model_dir": str(model_dir), "fit_seconds_this_run": fit_seconds, "device": str(device),
               "nn_stats_enabled": not args.skip_nn_stats,
               "restoration": {"name": restorer.name, "checkpoint_sha256": _checksum(args.swinir_checkpoint)} if restorer else None,
               "calibration": calibration,
@@ -291,7 +305,7 @@ def main() -> None:
                                      "mean_psnr": float(np.mean([row["psnr"] for row in rows if row["variant"] == variant and row["psnr"] is not None])) if variant != "clean" else None,
                                      "mean_ssim": float(np.mean([row["ssim"] for row in rows if row["variant"] == variant and row["ssim"] is not None])) if variant != "clean" else None}
                            for variant, evaluation in evaluations.items()},
-              "note": "CPU subset pilot; F1 is null when no held-out normal calibration images are available."}
+              "note": "Subset pilot unless full limits are requested; F1 is null when no held-out normal calibration images are available."}
     summary_rows = []
     for variant, item in result["variants"].items():
         summary_rows.append({"variant": variant, "test_count": len(test_samples), "train_count": len(selected),

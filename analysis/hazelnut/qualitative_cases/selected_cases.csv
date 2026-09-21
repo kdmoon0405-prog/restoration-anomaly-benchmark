@@ -1,0 +1,10 @@
+group,sample,defect_type,regression_type,delta_per_image_aupro,delta_per_image_pixel_auroc,delta_roi_bg_gap
+geometry,hazelnut/test/crack/013.png,crack,geometry_candidate,-0.07614570170860702,0.004057157353051011,0.42345647946304155
+geometry,hazelnut/test/crack/015.png,crack,geometry_candidate,-0.03741711021598937,0.007070091046534888,0.3272921066709271
+geometry,hazelnut/test/print/005.png,print,geometry_candidate,-0.015967088221213732,-0.007082897523169374,0.14605352384724446
+suppression,hazelnut/test/crack/001.png,crack,suppression,-0.022353522480275112,-0.006695655300566261,-0.19998412557271728
+suppression,hazelnut/test/crack/017.png,crack,suppression,-0.013377694549644659,-0.004003290826653405,-0.0023165389509207657
+suppression,hazelnut/test/hole/014.png,hole,suppression,-0.010259103126037394,-0.002452193265554903,-0.5372952462824081
+controls,hazelnut/test/crack/006.png,crack,improvement_or_tie,0.2123221196720137,0.001492195735976698,0.39631141747233833
+controls,hazelnut/test/cut/003.png,cut,improvement_or_tie,0.10545627645477118,0.031704641458780936,1.1909196183679225
+controls,hazelnut/test/hole/006.png,hole,improvement_or_tie,0.13995659152730033,0.0008647036167513944,-0.3702103874937337

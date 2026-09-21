@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.run_legacy_patchcore import _balanced_test, _delta, _select_indices
+from scripts.run_legacy_patchcore import _balanced_test, _delta, _parse_args, _resolve_device, _select_indices
 from sr_anomaly.dataset import ImageSample
 
 
@@ -18,3 +18,14 @@ def test_legacy_subset_is_deterministic_and_balanced() -> None:
     assert len(chosen) == 4
     assert _delta(2.0, 1.0) == 1.0
     assert _delta(None, 1.0) is None
+
+
+def test_legacy_device_resolution_preserves_cpu_default() -> None:
+    assert _parse_args([]).device == "cpu"
+    assert _parse_args(["--device", "auto"]).device == "auto"
+    assert _resolve_device("cpu", True) == "cpu"
+    assert _resolve_device("auto", False) == "cpu"
+    assert _resolve_device("auto", True) == "cuda"
+    assert _resolve_device("cuda", True) == "cuda"
+    with pytest.raises(RuntimeError, match="CUDA is unavailable"):
+        _resolve_device("cuda", False)

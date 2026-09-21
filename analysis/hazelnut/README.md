@@ -128,10 +128,10 @@ NPZ가 쓸모없어서가 아니다. 오히려 정확한 post-hoc 재분석에�
 
 새 `oracle_localization_headroom.json`은 per-image AU-PRO와 Pixel AUROC 각각의 두-branch screening upper bound, 그리고 AU-PRO 기준으로 전체 맵을 선택한 뒤 다시 계산한 pooled 지표를 구분한다. GT-assisted이므로 배포 가능한 선택법이 아니다. Per-image 평균 headroom은 두 branch 사이의 상한이지만, pooled AU-PRO가 복원 단독보다 높아진다는 보장은 없다.
 
-## Next analysis
+## Selected-case mechanism analysis
 
-1. `selected_cases.csv`의 AU-PRO worst/best와 suppression/geometry 후보를 동일 anomaly-map 색상 범위로 시각화한다.
-2. 선택한 sample에서만 PatchCore feature-to-normal-memory patch distance를 ROI와 background로 나눠 계산한다.
-3. feature-distance 감소와 anomaly-map의 spatial coverage 변화를 구분한다. 그 후 Screw를 사전 고정된 cross-category stress로 검토한다. Grid는 필요한 경우만 추가한다.
+사전 지정한 geometry 후보 3장, map-gap suppression 후보 3장, 성공 대조 3장의 6패널 그림은 `qualitative_cases/`에 있다. 각 sample의 Bicubic/SwinIR anomaly map은 같은 색 범위를 쓴다. 그림은 저장 prediction을 사용했고 RGB SwinIR 패널 9장만 원래 checkpoint로 다시 만들었다.
 
-전체 70장의 NN-distance를 다시 계산하지 않는다.
+`nn_distance_selected.csv`는 같은 9장에서 Branch A의 동일 391-normal FAISS bank에 대한 공식 PatchCore patch embedding 최근접 squared-L2를 기록한다. GT는 실제 28×28 grid cell의 positive-pixel 점유율로 가중했다. 모든 재계산 맵이 저장 맵과 일치했다. 평균 Δfeature gap은 suppression -0.2491, geometry 후보 +0.3506, 성공 대조 +0.4580이지만, 결함 거리와 gap이 함께 줄어든 성공 대조도 1장 있다. 따라서 suppression은 인과 mechanism이 아니라 map-score pattern으로 유지한다. 전체 70장의 NN-distance를 결과에 맞춰 추가 계산하지 않는다.
+
+다음 단계는 사전 고정된 Screw 전체 카테고리 stress test다. Grid는 Screw 뒤 반복 texture 질문이 남을 때만 추가하고 Capsule은 final freeze 전까지 실행하지 않는다.

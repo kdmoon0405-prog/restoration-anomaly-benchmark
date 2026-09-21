@@ -450,3 +450,39 @@ Branch A는 pooled AU-PRO를 개선했지만 70장 중 30장에서 per-image AU-
 저장된 110장 예측만으로 계산했다. alpha 0/0.25/0.5/0.75/1의 pooled AU-PRO@0.3은 각각 0.841263/0.838005/0.833354/0.826236/0.817486이다. 고정된 단일 선택 지표에 따라 alpha=0(복원 단독)이 가장 높다. 최선의 내부 점 0.25도 복원 단독보다 0.003258 낮다. alpha=0.5의 Pixel AUROC 0.985360은 alpha=0의 0.985051보다 높지만 선택 지표를 바꾸지 않는다.
 
 Bicubic 대비 per-image localization regression은 alpha 0/0.25/0.5/0.75/1에서 각각 30/27/24/18/0장이다. alpha=1의 0장은 구조적 결과다. 0/0.5/1 anchor는 저장된 prediction 및 기존 evaluation과 정확히 일치했다. 현재 Hazelnut 결과만으로 finer scalar search를 진행하지 않는다. 다른 개발 자료에서 내부 coarse weight가 양 끝점 모두보다 pooled AU-PRO를 높이고 결함별 손실도 수용 가능한 경우에만 탐색 범위와 선택 규칙을 새로 고정한다. Capsule은 여전히 untouched final validation이다.
+
+---
+
+## 14. 9개 고정 사례의 PatchCore feature-distance 확인 규칙 (2026-09-21, 실행 전)
+
+Hazelnut의 map-level taxonomy가 feature-normal 거리 변화와 대응하는지 확인한다. 사후 결과에서 고른 탐색용 사례라는 한계를 명시하고 geometry `crack/013`, `crack/015`, `print/005`, suppression `crack/001`, `crack/017`, `hole/014`, 성공 대조 `crack/006`, `cut/003`, `hole/006`의 9개를 고정한다. 두 branch 모두 동일한 Branch A 391장 normal memory bank를 사용한다. 새 fit이나 전체 test feature 재추론은 하지 않는다.
+
+공식 PatchCore embedding의 실제 feature grid에서 FAISS 최근접 **squared-L2** 거리를 측정한다. GT는 224×224 canonical mask를 grid cell별 면적 점유율로 줄여 연속 가중치로 사용한다. 결함 가중 평균 거리, 배경 가중 평균 거리, 두 값의 차이와 SwinIR−Bicubic 변화를 기록한다. 이 grid-cell 매핑은 backbone patch의 receptive field를 정확히 대변하지 않는다는 제한을 함께 적는다. 저장 anomaly map의 AU-PRO/Pixel AUROC/ROI-background gap을 연결하되, pixel map 통계를 NN 거리라고 부르지 않는다. n=3 수준 subtype 비교는 기술 통계이며 인과·유의성 주장은 하지 않는다. 결과가 맞지 않으면 suppression 명칭을 map-score pattern으로만 유지한다.
+
+---
+
+## 15. 고정 9개 사례의 시각 검토 (2026-09-21, 실행 후)
+
+가설: map-gap suppression과 geometry candidate가 이상 맵에서 서로 다른 양상으로 보이는가. 조건: 사전 지정한 각 3장, 동일한 sample 내 두 맵의 공통 색 범위, 저장된 Branch A 이상 맵과 GT를 재사용했다. RGB 패널용 SwinIR 복원만 9장 다시 계산했고 PatchCore 추론은 하지 않았다. 결과는 `analysis/hazelnut/qualitative_cases/`의 9개 패널과 CSV/README에 남겼다.
+
+`crack/013`은 SwinIR 후 ROI-background gap +0.423456, Pixel AUROC +0.004057이지만 AU-PRO -0.076146이며 가는 GT branch가 맵에서 퍼져 보인다. `crack/001`의 복원 맵에서는 결함 hotspot이 약해지고 gap/AU-PRO 모두 하락했다. 반례인 `hole/006`은 gap -0.370210에도 AU-PRO +0.139957이다. 해석: taxonomy는 서로 다른 map-level 패턴을 기술하는 데 유용하지만, 이 그림만으로 feature suppression이나 공간 왜곡의 원인을 확정할 수 없다. 다음 결정은 고정 9장에서 동일한 PatchCore normal bank에 대한 patch NN 거리를 확인한 뒤 내린다.
+
+---
+
+## 16. 동일 메모리뱅크 NN 거리 결과와 가설 수정 (2026-09-21, 실행 후)
+
+가설: suppression 후보에서는 SR 뒤 결함 patch가 normal memory에 가까워지고 feature separation이 줄어들며, geometry 후보에서는 separation이 유지될 것이다. 조건: 고정 9장, Branch A의 검증된 391장 FAISS bank 하나, PatchCore 공식 embedding의 28×28 grid, GT cell 점유율 가중 평균. 기준은 Bicubic x4, 변화량은 SwinIR−Bicubic이고 단위는 FAISS squared-L2다. 저장 맵과 재계산 맵 18개가 모두 일치했다.
+
+결과: suppression 3장의 평균 ΔD_defect -0.6123, 평균 Δfeature gap -0.2491; geometry 후보 3장은 +0.0044/+0.3506; 성공 대조 3장은 +0.1345/+0.4580이다. 그러나 두 값이 함께 감소한 사례는 suppression 2/3, geometry 0/3, control 1/3이었다. `crack/017`은 feature gap이 +0.00346으로 거의 유지됐고, 성공한 `hole/006`은 feature gap -0.35296이었다. 배경 거리도 세 그룹에서 모두 평균 약 0.3~0.4 감소했다.
+
+해석/결정: 선택된 사례에서는 geometry 후보 3장의 feature gap 증가와 AU-PRO 감소가 공간 coverage 문제와 일치하지만, suppression 후보와 control이 완전히 분리되지 않는다. “SR이 결함 feature를 지웠다”는 인과 주장은 하지 않는다. suppression은 **map-score suppression pattern**이라는 기술적 이름으로 유지한다. n=3씩의 사후 선정 사례이므로 유의성이나 전체 Hazelnut 일반화를 주장하지 않는다. 추가 Hazelnut 사례·임계값을 결과에 맞춰 고르지 않고, 사전 고정한 Screw 전체 카테고리에서 taxonomy의 재현성을 확인한다.
+
+---
+
+## 17. Screw cross-category stress 사전 고정 (2026-09-21, 실행 전)
+
+Hazelnut에서 고른 결함 사례와 taxonomy가 다른 형태에서도 나타나는지 확인한다. Screw 전체 정상 학습 320장과 전체 테스트 160장을 사용하며 seed 11, 기존 Branch A와 동일한 Amazon PatchCore pinned commit, WideResNet50 layer2+layer3, 1024/1024, patch size 3, IdentitySampler, 256 resize→224 crop, 정확한 FAISS normal bank를 고정한다. 224→56 Bicubic x4 저해상도, Bicubic x4와 동일 SwinIR-S x4 체크포인트 비교를 유지한다. GT는 동일 spatial transform/nearest-neighbor다. Dataset primary metric은 pooled AU-PRO@0.3(기존 200 thresholds), secondary는 Pixel/Image AUROC와 PSNR/SSIM이다. 회귀는 per-image AU-PRO delta<0, map-gap 부호로 suppression/geometry 후보를 나눈다. 전체 결함 유형을 보고하고 사후 사례 선택으로 결론을 바꾸지 않는다.
+
+Screw test label로 fusion weight, F1 threshold, 체크포인트, 전처리, taxonomy를 조정하지 않는다. 독립 정상 calibration이 없으므로 F1은 비워둔다. Scratch로 맞출 새 가중치나 adaptive gating은 없다. 로컬에는 Screw 데이터와 SR 체크포인트가 있지만 CUDA가 없어 full run이 길고 Screw PatchCore bank도 아직 없다. GPU 장비에서 같은 알고리즘을 실행할 수 있도록 device 옵션만 최소 추가하고, 실행 명령/산출물을 고정한 뒤 결과는 별도로 기록한다. Capsule은 최종 규칙이 고정되기 전까지 열지 않는다.
+
+Branch A runner에는 기존 기본값을 유지하는 `--device cpu`와 명시적 `auto/cuda`만 추가했다. CUDA는 PatchCore feature extraction과 SwinIR에만 쓰고 exact FAISS는 CPU에 둔다. resolved device는 결과에 기록하며 model spec은 바꾸지 않는다. 현재 로컬 CUDA가 없으므로 Screw full run은 실행하지 않았다.
