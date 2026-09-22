@@ -1,8 +1,12 @@
 # GPU experiment handoff
 
-## Current handoff: Screw cross-category stress
+## Current handoff: Screw selected-case NN distances
 
-The active GPU task is the frozen Branch A `screw` full run, not the older Bottle pilot below. Hazelnut is development/exploration, Screw is the preselected cross-category stress category, and Capsule remains untouched final validation. Do not tune a checkpoint, threshold, fusion weight, taxonomy, or preprocessing from Screw labels.
+The Screw full run and frozen cross-category analysis are complete. Do not rerun all 119 anomalous images. The remaining GPU task is the six-case feature-distance check in [`../analysis/screw/NN_HANDOFF.md`](../analysis/screw/NN_HANDOFF.md), using the unchanged 320-normal memory bank. Screw produced no geometry candidates, so the manifest contains three suppression examples and three success controls only.
+
+## Completed reference: Screw cross-category full run
+
+The following commands are retained as the completed full-run record, not as the next task. Hazelnut is development/exploration, Screw is the preselected cross-category stress category, and Capsule remains untouched final validation. Do not tune a checkpoint, threshold, fusion weight, taxonomy, or preprocessing from Screw labels.
 
 From a clean checkout of `exp/hazelnut-analysis`, install the legacy dependencies and run the read-only preflight first:
 

@@ -502,3 +502,17 @@ Branch A runner에는 기존 기본값을 유지하는 `--device cpu`와 명시�
 ## 19. Screw 결과 전 cross-category 분석 규칙 고정 (2026-09-21)
 
 Screw 결과가 존재하거나 확인되기 전에 Hazelnut의 taxonomy와 사례 선택 규칙을 generic cross-category analyzer에 고정했다. 이 결정 시점에는 Screw inference를 실행하지 않았고 Screw 수치도 생성하지 않았다.
+
+---
+
+## 20. Screw cross-category 결과 (2026-09-22, artifact 수령 후)
+
+가설: 고정된 x4 Branch A 조건에서 Hazelnut의 평균 localization 개선과 image별 regression이 Screw에서도 함께 나타날 수 있다. 조건: CUDA에서 생성된 320 normal train / 160 test(41 normal, 119 anomalous), seed 11, calibration/F1 없음, 고정 PatchCore 설정과 SwinIR-S x4 체크포인트다. 기존 generic analyzer를 그대로 사용했고 이 CPU PC에서는 inference를 실행하지 않았다.
+
+기준과 지표: Bicubic x4가 기준이며 pooled AU-PRO@0.3이 primary다. Pixel/Image AUROC와 PSNR/SSIM은 secondary다. image별 AU-PRO regression과 suppression/geometry 분류에는 Screw 결과 전에 고정한 규칙을 적용했다.
+
+결과: SwinIR-Bicubic은 PSNR +2.437479 dB, SSIM +0.016426, Image AUROC +0.198606, Pixel AUROC +0.019490, pooled AU-PRO +0.055000이다. anomalous image 119장 중 23장에서 per-image AU-PRO가 감소했다. 23장 모두 suppression pattern이며 geometry candidate는 0장이다. 나머지 96장은 improvement/tie다. Screw 안에서는 regression이 `thread_side` 12/23장, `thread_top` 8/23장에 집중됐지만 결함 유형 일반화로 사용하지 않는다.
+
+해석과 한계: 평균 localization 개선과 sample-level regression의 공존은 Hazelnut과 Screw 모두에서 관찰됐다. subtype 구성은 Hazelnut의 suppression 14 / geometry 16과 달리 Screw는 suppression 23 / geometry 0이다. 이 결과만으로 feature evidence 감소가 Screw regression의 원인이라고 할 수 없다. 두 category만으로 SwinIR이 anomaly detection을 일반적으로 개선한다고 주장하지 않는다.
+
+결정: 모델, threshold, taxonomy, fusion weight, selected case를 바꾸지 않는다. 다음 확인은 고정된 Screw 6개 사례(suppression 3, success control 3)의 NN-distance 분석 하나다. 수령한 ZIP에는 checksum-bound 320-normal FAISS bank가 없으므로 GPU PC에서 원래 bank를 전달받은 뒤 실행한다. Capsule은 계속 untouched로 둔다.

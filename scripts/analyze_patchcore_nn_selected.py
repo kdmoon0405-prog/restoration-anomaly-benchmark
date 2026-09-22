@@ -1,4 +1,4 @@
-"""Post-hoc PatchCore NN distances for nine fixed Hazelnut cases; no fitting."""
+"""Post-hoc PatchCore NN distances for frozen selected cases; no fitting."""
 
 from __future__ import annotations
 
@@ -19,9 +19,17 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from sr_anomaly.dataset import safe_join
+from sr_anomaly.device import resolve_device
 from sr_anomaly.evaluation import area_under_per_region_overlap, binary_roc_auc
 from sr_anomaly.real_models import SwinIRLightweight
-from run_legacy_patchcore import _canonical, _checksum, _faiss_staging, _official_imports
+from run_legacy_patchcore import (
+    EXPECTED_PATCHCORE_COMMIT,
+    FROZEN_PATCHCORE_SETTINGS,
+    _canonical,
+    _checksum,
+    _faiss_staging,
+    _official_imports,
+)
 
 
 # Fixed after the Hazelnut map-level analysis; exploratory, not an unbiased sample.
@@ -36,7 +44,25 @@ SELECTED = (
     ("success_control", "hazelnut/test/cut/003.png"),
     ("success_control", "hazelnut/test/hole/006.png"),
 )
-SOURCE_COMMIT = "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+SOURCE_COMMIT = EXPECTED_PATCHCORE_COMMIT
+SELECTION_GROUPS = {
+    "suppression_examples": "suppression",
+    "geometry_examples": "geometry_candidate",
+    "success_controls": "success_control",
+}
+
+
+def load_selected(path: Path) -> tuple[tuple[str, str], ...]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    if not rows or not {"sample", "selection_reason"} <= set(rows[0]):
+        raise ValueError("Selected-case manifest requires sample and selection_reason")
+    selected = tuple((SELECTION_GROUPS.get(row["selection_reason"], ""), row["sample"]) for row in rows)
+    if (any(not subtype or not sample for subtype, sample in selected)
+            or len(selected) > 9 or len({sample for _, sample in selected}) != len(selected)
+            or any(sum(kind == subtype for kind, _ in selected) > 3 for subtype in SELECTION_GROUPS.values())):
+        raise ValueError("Selected-case manifest must contain unique frozen groups with at most three cases each")
+    return selected
 
 
 def mask_occupancy(mask: np.ndarray, grid: tuple[int, int]) -> np.ndarray:
@@ -74,25 +100,23 @@ def _saved_predictions(run_dir: Path, test_paths: list[str]) -> dict[str, dict[s
     return predictions
 
 
-def _check_sources(run_dir: Path, model_dir: Path, checkpoint: Path) -> tuple[dict, list[str]]:
+def _check_sources(
+    run_dir: Path, model_dir: Path, checkpoint: Path,
+    selected: tuple[tuple[str, str], ...] = SELECTED,
+) -> tuple[dict, list[str]]:
     result = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
     metadata = json.loads((model_dir / "metadata.json").read_text(encoding="utf-8"))
     spec = result["model_spec"]
     if spec != metadata["spec"] or spec["source_commit"] != SOURCE_COMMIT:
         raise ValueError("Branch A result and memory-bank metadata do not match the pinned model")
-    if spec["category"] != "hazelnut" or spec["seed"] != 11 or len(spec["train_paths"]) != 391:
-        raise ValueError("Expected the Branch A 391-image Hazelnut memory bank, seed 11")
-    pinned = {"backbone": "wideresnet50", "layers": ["layer2", "layer3"], "resize": 256,
-              "center_crop": 224, "pretrain_embed_dimension": 1024, "target_embed_dimension": 1024,
-              "patchsize": 3, "sampler": "IdentitySampler", "nearest_neighbor": "FaissNN(cpu)"}
-    if any(spec.get(key) != value for key, value in pinned.items()):
+    if spec["seed"] != 11 or not spec.get("train_paths"):
+        raise ValueError("Expected a full Branch A memory bank with seed 11")
+    if any(spec.get(key) != value for key, value in FROZEN_PATCHCORE_SETTINGS.items()):
         raise ValueError("Branch A PatchCore architecture or preprocessing differs from the pinned setting")
-    expected_settings = {"backbone": "wideresnet50", "layers": ["layer2", "layer3"],
-                         "resize": 256, "center_crop": 224, "pretrain_embed_dimension": 1024,
-                         "target_embed_dimension": 1024, "patchsize": 3,
-                         "sampler": "IdentitySampler", "nearest_neighbor": "FaissNN(cpu)"}
-    if any(spec.get(key) != value for key, value in expected_settings.items()):
-        raise ValueError("Branch A PatchCore settings differ from the pinned detector")
+    if selected == SELECTED and (spec["category"] != "hazelnut" or len(spec["train_paths"]) != 391):
+        raise ValueError("Expected the historical 391-image Hazelnut selected-case run")
+    if spec["category"] == "screw" and len(spec["train_paths"]) != 320:
+        raise ValueError("Expected the frozen 320-image Screw memory bank")
     if set(metadata["artifact_sha256"]) != {"patchcore_params.pkl", "nnscorer_search_index.faiss"}:
         raise ValueError("Incomplete or unexpected memory-bank artifacts")
     for name, expected in metadata["artifact_sha256"].items():
@@ -101,9 +125,11 @@ def _check_sources(run_dir: Path, model_dir: Path, checkpoint: Path) -> tuple[di
     if _checksum(checkpoint) != result["restoration"]["checkpoint_sha256"]:
         raise ValueError("SwinIR checkpoint differs from the Branch A run")
     test_paths = list(result["test_paths"])
-    if len(test_paths) != 110 or len(set(test_paths)) != 110 or result["nn_stats_enabled"]:
-        raise ValueError("Expected the saved 110-test Branch A run without prior NN statistics")
-    if not set(path for _, path in SELECTED) <= set(test_paths):
+    if not test_paths or len(test_paths) != len(set(test_paths)) or result["nn_stats_enabled"]:
+        raise ValueError("Expected a unique saved Branch A test set without prior NN statistics")
+    if any(not path.startswith(f"{spec['category']}/test/") for _, path in selected):
+        raise ValueError("Selected cases do not match the run category")
+    if not set(path for _, path in selected) <= set(test_paths):
         raise ValueError("A fixed selected case is missing from Branch A test_paths")
     return result, test_paths
 
@@ -133,7 +159,7 @@ def _patch_distances(model, image_tensor, expected_map: np.ndarray, torch) -> tu
     return distances[:, 0].reshape(grid), grid, max_error
 
 
-def _summary(rows: list[dict], run_dir: Path, model_dir: Path) -> str:
+def _summary(rows: list[dict], run_dir: Path, model_dir: Path, result: dict) -> str:
     def display(path: Path) -> str:
         try:
             return path.resolve().relative_to(ROOT.resolve()).as_posix()
@@ -143,8 +169,8 @@ def _summary(rows: list[dict], run_dir: Path, model_dir: Path) -> str:
     lines = [
         "# Selected-case PatchCore NN distances",
         "",
-        "Exploratory nine cases selected after Hazelnut results; no causal or population-level claim.",
-        f"Source predictions: `{display(run_dir)}`; unchanged 391-image bank: `{display(model_dir)}`.",
+        f"Exploratory {len(rows)} cases fixed from the saved {result['model_spec']['category']} analysis; no causal or population-level claim.",
+        f"Source predictions: `{display(run_dir)}`; unchanged {len(result['model_spec']['train_paths'])}-image bank: `{display(model_dir)}`.",
         "Distances are official FAISS IndexFlatL2 squared L2 values (not smoothed anomaly-map scores).",
         "GT occupancy is the positive-pixel fraction of each nonoverlapping cell after the original 256-resize/224-center-crop; cells align to the actual PatchCore feature grid. The 3x3 feature patches and backbone receptive fields exceed these cells, so this is an approximate ROI assignment.",
         "GT was used only for post-hoc evaluation. Each recomputed map matched its saved prediction before distances were recorded.",
@@ -154,15 +180,19 @@ def _summary(rows: list[dict], run_dir: Path, model_dir: Path) -> str:
     ]
     for subtype in ("suppression", "geometry_candidate", "success_control"):
         subset = [row for row in rows if row["subtype"] == subtype]
+        if not subset:
+            continue
         means = [float(np.mean([row[key] for row in subset])) for key in (
             "delta_per_image_aupro", "delta_map_roi_bg_gap", "delta_d_defect", "delta_d_background", "delta_feature_gap"
         )]
         lines.append(f"| {subtype} | {len(subset)} | " + " | ".join(f"{value:+.6f}" for value in means) + " |")
+    present = [(kind, [row for row in rows if row["subtype"] == kind])
+               for kind in ("suppression", "geometry_candidate", "success_control")]
     lines += ["", "Cases with both ΔD_defect < 0 and Δfeature gap < 0: " + ", ".join(
-        f"{kind} {sum(row['delta_d_defect'] < 0 and row['delta_feature_gap'] < 0 for row in rows if row['subtype'] == kind)}/3"
-        for kind in ("suppression", "geometry_candidate", "success_control")
+        f"{kind} {sum(row['delta_d_defect'] < 0 and row['delta_feature_gap'] < 0 for row in subset)}/{len(subset)}"
+        for kind, subset in present if subset
     ) + "."]
-    lines += ["Descriptive only: n=3 per subtype; feature-distance patterns are not perfectly subtype-specific, and the map-level names are not proven mechanisms."]
+    lines += ["Descriptive selected cases only; feature-distance patterns are not necessarily subtype-specific, and the map-level names are not proven mechanisms."]
     return "\n".join(lines) + "\n"
 
 
@@ -173,8 +203,11 @@ def main() -> None:
     parser.add_argument("--data-root", type=Path, default=ROOT / "data/external/MVTecAD")
     parser.add_argument("--swinir-checkpoint", type=Path, default=ROOT / "checkpoints/swinir/002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "analysis/hazelnut")
+    parser.add_argument("--selected-cases", type=Path, help="frozen selected_mechanism_cases.csv")
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="cpu")
     args = parser.parse_args()
-    _, test_paths = _check_sources(args.run_dir, args.model_dir, args.swinir_checkpoint)
+    selected = load_selected(args.selected_cases) if args.selected_cases else SELECTED
+    result, test_paths = _check_sources(args.run_dir, args.model_dir, args.swinir_checkpoint, selected)
     predictions = _saved_predictions(args.run_dir, test_paths)
     index = {path: i for i, path in enumerate(test_paths)}
     actual_commit = subprocess.check_output(["git", "-C", str(ROOT / "third_party/patchcore-inspection"), "rev-parse", "HEAD"], text=True).strip()
@@ -182,19 +215,23 @@ def main() -> None:
         raise ValueError(f"PatchCore source revision changed: {actual_commit}")
 
     torch, transforms, InterpolationMode, _, common, patchcore, _, mvtec = _official_imports()
+    device = torch.device(resolve_device(args.device, torch.cuda.is_available()))
     torch.set_num_threads(min(4, torch.get_num_threads()))
-    model = patchcore.PatchCore(torch.device("cpu"))
+    model = patchcore.PatchCore(device)
     with _faiss_staging() as staging:
         for name in ("patchcore_params.pkl", "nnscorer_search_index.faiss"):
             shutil.copy2(args.model_dir / name, Path(staging) / name)
-        model.load_from_path(staging, torch.device("cpu"), nn_method=common.FaissNN(False, 4))
-    restorer = SwinIRLightweight(ROOT / "third_party/SwinIR", args.swinir_checkpoint, scale=4, tile=56, tile_overlap=0)
+        model.load_from_path(staging, device, nn_method=common.FaissNN(False, 4))
+    restorer = SwinIRLightweight(
+        ROOT / "third_party/SwinIR", args.swinir_checkpoint, scale=4, tile=56, tile_overlap=0,
+        device=str(device),
+    )
     resize = transforms.Resize(256, interpolation=InterpolationMode.BILINEAR)
     crop = transforms.CenterCrop(224)
     tensor = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mvtec.IMAGENET_MEAN, mvtec.IMAGENET_STD)])
 
     rows: list[dict] = []
-    for subtype, sample in SELECTED:
+    for subtype, sample in selected:
         i = index[sample]
         mask = np.asarray(predictions["bicubic_x4"]["masks"][i], dtype=bool)
         if predictions["bicubic_x4"]["labels"][i] != 1 or not 0 < mask.sum() < mask.size:
@@ -216,6 +253,7 @@ def main() -> None:
             print(f"{sample} {variant}: {perf_counter() - started:.1f}s", flush=True)
         bic, swin = metrics["bicubic_x4"], metrics["swinir_x4"]
         row = {"sample": sample, "subtype": subtype, "defect_type": Path(sample).parent.name,
+               "device": str(device),
                "nn_distance_unit": "faiss_indexflatl2_squared_l2", "feature_grid": bic["feature_grid"],
                "defect_occupancy_sum": bic["defect_occupancy_sum"]}
         if bic["feature_grid"] != swin["feature_grid"]:
@@ -233,7 +271,9 @@ def main() -> None:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
-    (args.output_dir / "nn_distance_selected_summary.md").write_text(_summary(rows, args.run_dir, args.model_dir), encoding="utf-8")
+    (args.output_dir / "nn_distance_selected_summary.md").write_text(
+        _summary(rows, args.run_dir, args.model_dir, result), encoding="utf-8"
+    )
     print(f"Saved {len(rows)} selected cases to {args.output_dir}", flush=True)
 
 

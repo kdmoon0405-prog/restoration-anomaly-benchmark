@@ -136,3 +136,16 @@ SurgClean is not present in `data/external/`; only MVTec AD and VisA are availab
 ## Research and reproducibility audit (2026-09-22)
 
 `docs/RESEARCH_AUDIT.md` records the design, code, artifact, performance, and claim-boundary review. The audit added fail-fast verification for the frozen SwinIR checkpoint, Branch B split replay, cross-category source configuration, reporting/parity source consistency, and a read-only full-run preflight. The existing Hazelnut cross-category summary is now tracked under `analysis/hazelnut/` so the reporting table no longer depends on an ignored derived file. No saved prediction or research metric was recomputed. All 93 tests pass. Local Screw execution remains blocked only by unavailable CUDA; the dataset, pinned sources/checkpoint, and frozen command are present, while the Screw bank and result artifacts do not yet exist.
+
+## Screw full cross-category result (2026-09-22)
+
+- **Hypothesis:** the Hazelnut aggregate localization benefit and sample-level regression pattern may recur in Screw under the unchanged x4 protocol.
+- **Condition:** received CUDA Branch A artifact, 320 normal train / 160 test (41 normal, 119 anomalous), seed 11, no calibration/F1, pinned PatchCore and SwinIR-S x4. Analysis reused saved predictions only.
+- **Baseline:** Bicubic x4. SwinIR-S x4 is the fixed comparison; no fusion or test-label tuning.
+- **Metric:** pooled AU-PRO@0.3 primary; Pixel/Image AUROC and PSNR/SSIM secondary; the Hazelnut-frozen per-image taxonomy describes heterogeneity.
+- **Result:** SwinIR minus Bicubic was +2.437479 dB PSNR, +0.016426 SSIM, +0.198606 Image AUROC, +0.019490 Pixel AUROC, and +0.055000 pooled AU-PRO. Of 119 anomalous images, 23 regressed in per-image AU-PRO; all 23 met the suppression-pattern rule and none met the geometry-candidate rule. The other 96 improved or tied. Regressions were concentrated in `thread_side` (12/23 images) and `thread_top` (8/23) within this category.
+- **Interpretation:** the aggregate restoration benefit and sample-level regression coexistence recur in Screw. The subtype composition differs from Hazelnut (14 suppression / 16 geometry): Screw's 23 regressions are all map-score suppression patterns.
+- **Limitation:** two MVTec categories do not establish generality. Defect-type concentration is descriptive, and suppression is not a proven feature-space cause. The received ZIP does not include the 320-normal FAISS bank.
+- **Next experiment:** run the frozen six-case selected NN-distance handoff only after the exact Screw bank is copied from the GPU machine. Do not open Capsule or add Grid/SurgClean before that check is recorded.
+
+Outputs are under `analysis/screw/` and the two-category paper table under `analysis/reporting/`. The source ZIP SHA256 is `DB6B7CAB2F356B4C48710E29A9C0D145957E9816BAB910AF50AB3F43A334B5D6`. No full GPU inference was run on this CPU machine. All 96 tests pass after adding the defect-type, saved-map rendering, and bounded selected-manifest checks.

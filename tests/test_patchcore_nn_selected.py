@@ -6,7 +6,9 @@ import json
 import numpy as np
 import pytest
 
-from scripts.analyze_patchcore_nn_selected import SOURCE_COMMIT, SELECTED, _check_sources, distance_region_stats, mask_occupancy
+from scripts.analyze_patchcore_nn_selected import (
+    SOURCE_COMMIT, SELECTED, _check_sources, distance_region_stats, load_selected, mask_occupancy,
+)
 
 
 def test_fixed_nine_cases_and_continuous_occupancy() -> None:
@@ -63,3 +65,17 @@ def test_bank_and_checkpoint_checksums_guard_selected_run(tmp_path) -> None:
     bank.write_bytes(b"changed")
     with pytest.raises(ValueError, match="checksum mismatch"):
         _check_sources(run_dir, model_dir, checkpoint)
+
+
+def test_screw_selected_manifest_is_bounded(tmp_path) -> None:
+    manifest = tmp_path / "selected.csv"
+    manifest.write_text(
+        "sample,selection_reason\n"
+        "screw/test/thread_side/019.png,suppression_examples\n"
+        "screw/test/scratch_neck/000.png,success_controls\n",
+        encoding="utf-8",
+    )
+    assert load_selected(manifest) == (
+        ("suppression", "screw/test/thread_side/019.png"),
+        ("success_control", "screw/test/scratch_neck/000.png"),
+    )

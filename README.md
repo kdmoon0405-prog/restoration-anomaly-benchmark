@@ -89,7 +89,7 @@ Branch B accepts the same `--device {cpu,auto,cuda}` option as Branch A. PatchCo
 
 ## Current research sequence
 
-Hazelnut is the completed development/exploration category. The next inference is the preselected full Screw Branch A stress test with the same x4 checkpoint, detector, preprocessing, pooled AU-PRO@0.3 implementation, and post-hoc taxonomy. Run `scripts/validate_experiment_ready.py` before the GPU command in `docs/GPU_HANDOFF.md`. A bounded SurgClean restoration-character pilot may follow only after its separate entry gate is satisfied; it does not reuse MVTec masks or taxonomy. Capsule remains untouched final validation and must not be used for method selection.
+Hazelnut development and the preselected full Screw Branch A stress test are complete under the same x4 checkpoint, detector, preprocessing, pooled AU-PRO@0.3 implementation, and post-hoc taxonomy. The next bounded GPU task is the six-case Screw NN-distance check in `analysis/screw/NN_HANDOFF.md`; do not rerun the full category. A SurgClean restoration-character pilot may follow only after its separate entry gate is satisfied. Capsule remains untouched final validation and must not be used for method selection.
 
 ## Run an experiment
 

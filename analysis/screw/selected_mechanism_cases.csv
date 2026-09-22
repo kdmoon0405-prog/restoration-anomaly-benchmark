@@ -1,0 +1,7 @@
+sample,defect_type,regression_type,delta_aupro,delta_pixel_auroc,delta_roi_bg_gap,selection_reason
+screw/test/thread_side/019.png,thread_side,suppression,-0.18687916443959474,-0.06609666107859691,-1.572261572574663,suppression_examples
+screw/test/thread_side/010.png,thread_side,suppression,-0.15262904962921475,-0.045408489049829304,-1.027887707790404,suppression_examples
+screw/test/scratch_head/005.png,scratch_head,suppression,-0.10319448248965823,-0.03063787508066873,-0.9425536793353766,suppression_examples
+screw/test/manipulated_front/023.png,manipulated_front,improvement_or_tie,0.3196378873137622,0.09584232182806007,0.08960296245831767,success_controls
+screw/test/scratch_neck/000.png,scratch_neck,improvement_or_tie,0.3134304932948959,0.09394069261471916,0.2504548402150719,success_controls
+screw/test/scratch_neck/006.png,scratch_neck,improvement_or_tie,0.290765725010363,0.08838364450125902,0.2860535128473287,success_controls
