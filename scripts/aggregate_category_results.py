@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from pathlib import Path
 
 
@@ -46,6 +47,12 @@ def _value(row: dict, key: str, cast=float):
     return cast(value)
 
 
+def _same_number(first, second) -> bool:
+    if first is None or second is None:
+        return first is None and second is None
+    return math.isfinite(float(first)) and math.isclose(float(first), float(second), rel_tol=0.0, abs_tol=1e-12)
+
+
 def extract_category(run_dir: Path, cross_summary_path: Path) -> dict:
     run_dir = Path(run_dir)
     result = _json(run_dir / "results.json")
@@ -63,6 +70,31 @@ def extract_category(run_dir: Path, cross_summary_path: Path) -> dict:
     required_deltas = {"delta_psnr", "delta_ssim", "delta_image_auroc", "delta_pixel_auroc", "delta_au_pro"}
     if not required_deltas <= set(delta):
         raise ValueError("results.json is missing stored Bicubic comparison deltas")
+    variants = result.get("variants", {})
+    for name, row in (("bicubic_x4", bic), ("swinir_x4", swin)):
+        item = variants.get(name, {})
+        evaluation = item.get("evaluation", {})
+        stored = {
+            "mean_psnr": item.get("mean_psnr"),
+            "mean_ssim": item.get("mean_ssim"),
+            "image_auroc": evaluation.get("classification", {}).get("image_auroc"),
+            "pixel_auroc": evaluation.get("localization", {}).get("pixel_auroc"),
+            "au_pro": evaluation.get("localization", {}).get("au_pro"),
+        }
+        if any(not _same_number(_value(row, key), value) for key, value in stored.items()):
+            raise ValueError(f"summary.csv and results.json disagree for {name}")
+    expected_deltas = {
+        "delta_psnr": _value(swin, "mean_psnr") - _value(bic, "mean_psnr"),
+        "delta_ssim": _value(swin, "mean_ssim") - _value(bic, "mean_ssim"),
+        "delta_image_auroc": _value(swin, "image_auroc") - _value(bic, "image_auroc"),
+        "delta_pixel_auroc": _value(swin, "pixel_auroc") - _value(bic, "pixel_auroc"),
+        "delta_au_pro": _value(swin, "au_pro") - _value(bic, "au_pro"),
+    }
+    if any(not _same_number(delta[key], value) for key, value in expected_deltas.items()):
+        raise ValueError("Stored Bicubic comparison deltas disagree with summary.csv")
+    if (cross.get("suppression_count", 0) + cross.get("geometry_candidate_count", 0)
+            != cross.get("localization_regression_count")):
+        raise ValueError("Cross-category taxonomy counts are inconsistent")
     return {
         "category": category,
         "train_count": _value(bic, "train_count", int),

@@ -174,7 +174,8 @@ Key findings currently recorded elsewhere in the repository include:
 - defect-background gap decreased on 25/70
 - per-image Pixel AUROC decreased on 30/70
 - per-image AU-PRO decreased on 30/70
-- strong failure candidate (`ΔROI-background gap < 0` and `Δper-image AU-PRO < 0`) occurred on 14/70 anomalous images
+- localization regression (`Δper-image AU-PRO < 0`) occurred on 30/70 anomalous images: 14 suppression patterns (`ΔROI-background gap < 0`) and 16 geometry candidates (`ΔROI-background gap >= 0`); the older `strong failure` name for the 14-image subset is deprecated
+- improvement or tie occurred on 40/70 anomalous images
 - the current Hazelnut results do not support a simple “smaller defect → stronger SR failure” hypothesis
 - failure analysis is shifting toward defect morphology/type and feature-space/spatial-localization causes
 
@@ -184,8 +185,9 @@ See:
 - `PROGRESS.md`
 - `analysis/hazelnut/README.md`
 - `analysis/hazelnut/hazelnut_per_defect.csv`
-- `analysis/hazelnut/strong_failure_cases.csv`
+- `analysis/hazelnut/strong_failure_cases.csv` (historical filename; suppression subtype only, not the primary regression set)
 - `analysis/hazelnut/bootstrap_ci.json`
+- `analysis/hazelnut/cross_category_summary.json` (tracked input for the paper/reporting aggregator)
 - `analysis/hazelnut/qualitative_cases/` (nine fixed six-panel figures, case CSV, descriptive observations)
 - `analysis/hazelnut/nn_distance_selected.csv` (official PatchCore patch-to-bank squared-L2 for nine fixed cases)
 - `analysis/hazelnut/nn_distance_selected_summary.md`

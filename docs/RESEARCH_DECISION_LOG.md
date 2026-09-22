@@ -292,6 +292,8 @@ Mean defect ROI delta:
 주의: Pixel AUROC/AU-PRO CI는 pooled-pixel dataset-level bootstrap이 아니라 **per-anomalous-image paired metric delta의 image-resampling bootstrap**이다.
 
 ### Strong failure candidate
+Historical terminology from the first exploratory pass follows. Section 11 supersedes it: these 14 images are the **suppression subtype** of 30 localization regressions, not the primary failure definition. The `strong failure` label is deprecated.
+
 현재 탐색적 정의:
 ```text
 ΔROI-background gap < 0
@@ -354,7 +356,7 @@ hole:
 ## 9. 다음 실험
 
 ### 우선순위 1: qualitative failure inspection
-대표 strong-failure와 geometry-failure sample을 비교한다.
+당시 `strong-failure`라고 부른 suppression 후보와 geometry 후보를 비교한다. 현재 명칭과 해석은 11절과 14~16절을 따른다.
 
 패널:
 - Clean
@@ -375,6 +377,8 @@ D_background = E[d(f_i, M_normal) | i outside defect]
 판단:
 - SwinIR 후 D_defect가 감소하면 defect feature가 normal memory bank에 가까워졌다는 feature-space suppression evidence.
 - feature distance는 유지되는데 AU-PRO만 낮아지면 spatial localization/geometry 변화 가능성.
+
+위 문장은 실행 전 가설이었다. 16절 결과 이후에는 어느 조건도 인과 증거로 해석하지 않고, suppression을 map-score pattern으로만 부른다.
 
 ### 우선순위 3: cross-category stress test
 - screw: local/tiny defect stress

@@ -93,6 +93,21 @@ def test_parity_rejects_exact_metadata_mismatch(tmp_path: Path) -> None:
         compare_runs(cpu, cuda)
 
 
+def test_parity_rejects_internal_summary_mismatch(tmp_path: Path) -> None:
+    cpu, cuda = tmp_path / "cpu", tmp_path / "cuda"
+    _fusion_run(cpu, "cpu")
+    _fusion_run(cuda, "cuda")
+    summary_path = cpu / "summary.csv"
+    rows = list(csv.DictReader(summary_path.open()))
+    rows[0]["pixel_auroc"] = "0.1"
+    with summary_path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=("method", *METRIC_FIELDS))
+        writer.writeheader()
+        writer.writerows(rows)
+    with pytest.raises(ValueError, match="summary.csv/results.json mismatch"):
+        compare_runs(cpu, cuda)
+
+
 @pytest.mark.parametrize("array_name", ["labels", "masks"])
 def test_parity_rejects_label_and_mask_mismatches(tmp_path: Path, array_name: str) -> None:
     cpu, cuda = tmp_path / "cpu", tmp_path / "cuda"
@@ -123,6 +138,18 @@ def test_reporting_uses_stored_artifacts(tmp_path: Path) -> None:
     run.mkdir()
     result = {
         "model_spec": {"category": "hazelnut"},
+        "variants": {
+            "bicubic_x4": {
+                "mean_psnr": 30.0, "mean_ssim": 0.9,
+                "evaluation": {"classification": {"image_auroc": 0.8},
+                               "localization": {"pixel_auroc": 0.7, "au_pro": 0.6}},
+            },
+            "swinir_x4": {
+                "mean_psnr": 32.0, "mean_ssim": 0.92,
+                "evaluation": {"classification": {"image_auroc": 0.81},
+                               "localization": {"pixel_auroc": 0.73, "au_pro": 0.64}},
+            },
+        },
         "comparison_vs_bicubic_x4": {
             "delta_psnr": 2.0, "delta_ssim": 0.02, "delta_image_auroc": 0.01,
             "delta_pixel_auroc": 0.03, "delta_au_pro": 0.04,
@@ -153,3 +180,8 @@ def test_reporting_uses_stored_artifacts(tmp_path: Path) -> None:
     write_report([row], output)
     assert "hazelnut" in (output / "category_summary.md").read_text()
     assert list(csv.DictReader((output / "category_summary.csv").open()))[0]["swinir_psnr"] == "32.0"
+
+    result["variants"]["swinir_x4"]["mean_psnr"] = 33.0
+    (run / "results.json").write_text(json.dumps(result))
+    with pytest.raises(ValueError, match="summary.csv and results.json disagree"):
+        extract_category(run, cross_path)

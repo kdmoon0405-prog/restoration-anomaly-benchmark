@@ -164,6 +164,7 @@ def test_fusion_script_end_to_end_with_fakes(monkeypatch, tmp_path: Path) -> Non
     _install_fakes(monkeypatch, data_root)
     checkpoint = tmp_path / "swinirFake.pth"
     checkpoint.write_bytes(b"checkpoint")
+    monkeypatch.setattr(fusion_script, "EXPECTED_SWINIR_X4_SHA256", fusion_script._checksum(checkpoint))
     model_dir = tmp_path / "model"
     output_dir = tmp_path / "outputs" / "fusion-test"
 

@@ -51,6 +51,7 @@ from sr_anomaly.real_models import SwinIRLightweight
 ROOT = Path(__file__).resolve().parents[1]
 PATCHCORE_SOURCE = ROOT / "third_party" / "patchcore-inspection" / "src"
 EXPECTED_PATCHCORE_COMMIT = "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+EXPECTED_SWINIR_X4_SHA256 = "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e"
 
 
 def _official_imports():
@@ -120,6 +121,24 @@ def _predict(model, tensor, image: Image.Image) -> tuple[float, np.ndarray]:
     return float(scores[0]), anomaly_map
 
 
+def _validate_replayed_split(
+    split: dict, category: str, train_count_total: int, seed: int, train_ratio: float
+) -> tuple[list[int], list[int]]:
+    if (split.get("category") != category or split.get("train_count_total") != train_count_total
+            or split.get("seed") != seed or split.get("train_ratio") != train_ratio):
+        raise ValueError("split JSON category, dataset size, seed, or train ratio does not match this run")
+    try:
+        selected = [int(index) for index in split["train_indices"]]
+        calibration = [int(index) for index in split["calibration_indices"]]
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("split JSON has invalid train/calibration indices") from exc
+    combined = selected + calibration
+    if (not selected or not calibration or len(set(combined)) != len(combined)
+            or any(index < 0 or index >= train_count_total for index in combined)):
+        raise ValueError("split JSON indices must be unique, disjoint, nonempty, and in range")
+    return selected, calibration
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=ROOT / "data" / "external" / "MVTecAD")
@@ -140,6 +159,8 @@ def main() -> None:
         parser.error("--train-ratio must be in (0, 1)")
     if not 0.0 < args.calibration_quantile < 1.0:
         parser.error("--calibration-quantile must be in (0, 1)")
+    if args.split_json and (args.train_limit or args.calibration_limit):
+        parser.error("Do not combine --split-json with additional train/calibration limits")
     category = safe_component(args.category, "category")
 
     torch, transforms, InterpolationMode, backbones, common, patchcore, sampler, mvtec = _official_imports()
@@ -149,6 +170,11 @@ def main() -> None:
         args.device, str(device), cuda_available,
         torch.cuda.get_device_name(device) if str(device).startswith("cuda") else None,
     )
+    checkpoint_sha256 = _checksum(args.swinir_checkpoint)
+    if checkpoint_sha256 != EXPECTED_SWINIR_X4_SHA256:
+        raise ValueError(
+            f"SwinIR x4 checkpoint mismatch: expected {EXPECTED_SWINIR_X4_SHA256}, got {checkpoint_sha256}"
+        )
     actual_commit = subprocess.check_output(
         ["git", "-C", str(PATCHCORE_SOURCE.parent), "rev-parse", "HEAD"], text=True
     ).strip()
@@ -162,12 +188,19 @@ def main() -> None:
     train_count_total = len(train_set)
     if args.split_json:
         split = json.loads(args.split_json.read_text(encoding="utf-8"))
-        if split["category"] != category or split["train_count_total"] != train_count_total:
-            raise ValueError("split JSON does not match this category/dataset")
-        selected = [int(index) for index in split["train_indices"]]
-        calibration_indices = [int(index) for index in split["calibration_indices"]]
-        if not selected or not calibration_indices or set(selected) & set(calibration_indices):
-            raise ValueError("split JSON must hold disjoint nonempty train/calibration lists")
+        selected, calibration_indices = _validate_replayed_split(
+            split, category, train_count_total, args.seed, args.train_ratio
+        )
+        expected_train_paths = [
+            Path(train_set.data_to_iterate[index][2]).relative_to(data_root).as_posix() for index in selected
+        ]
+        expected_calibration_paths = [
+            Path(train_set.data_to_iterate[index][2]).relative_to(data_root).as_posix()
+            for index in calibration_indices
+        ]
+        if (split.get("train_paths") != expected_train_paths
+                or split.get("calibration_paths") != expected_calibration_paths):
+            raise ValueError("split JSON paths do not match the current dataset ordering")
     else:
         selected, calibration_indices = split_train_calibration(train_count_total, args.train_ratio, args.seed)
     if args.train_limit < 0 or args.calibration_limit < 0:
@@ -494,7 +527,7 @@ def main() -> None:
         **execution,
         "calibration_seconds": calibration_seconds,
         "test_seconds": test_seconds,
-        "restoration": {"name": restorer.name, "checkpoint_sha256": _checksum(args.swinir_checkpoint)},
+        "restoration": {"name": restorer.name, "checkpoint_sha256": checkpoint_sha256},
         "fusion_calibration": fusion_calibration,
         "clean_calibration": clean_calibration,
         "test_paths": [sample.relative_path.as_posix() for sample in test_samples],

@@ -26,6 +26,19 @@ from sr_anomaly.real_models import SwinIRLightweight
 
 ROOT = Path(__file__).resolve().parents[1]
 PATCHCORE_SOURCE = ROOT / "third_party" / "patchcore-inspection" / "src"
+EXPECTED_PATCHCORE_COMMIT = "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+EXPECTED_SWINIR_X4_SHA256 = "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e"
+FROZEN_PATCHCORE_SETTINGS = {
+    "backbone": "wideresnet50",
+    "layers": ["layer2", "layer3"],
+    "resize": 256,
+    "center_crop": 224,
+    "pretrain_embed_dimension": 1024,
+    "target_embed_dimension": 1024,
+    "patchsize": 3,
+    "sampler": "IdentitySampler",
+    "nearest_neighbor": "FaissNN(cpu)",
+}
 
 
 def _official_imports():
@@ -117,9 +130,15 @@ def main() -> None:
         torch.cuda.get_device_name(device) if str(device).startswith("cuda") else None,
     )
     actual_commit = subprocess.check_output(["git", "-C", str(PATCHCORE_SOURCE.parent), "rev-parse", "HEAD"], text=True).strip()
-    expected_commit = "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
-    if actual_commit != expected_commit:
-        raise RuntimeError(f"PatchCore source revision changed: expected {expected_commit}, got {actual_commit}")
+    if actual_commit != EXPECTED_PATCHCORE_COMMIT:
+        raise RuntimeError(f"PatchCore source revision changed: expected {EXPECTED_PATCHCORE_COMMIT}, got {actual_commit}")
+    checkpoint_sha256 = None
+    if args.swinir_checkpoint:
+        checkpoint_sha256 = _checksum(args.swinir_checkpoint)
+        if checkpoint_sha256 != EXPECTED_SWINIR_X4_SHA256:
+            raise ValueError(
+                f"SwinIR x4 checkpoint mismatch: expected {EXPECTED_SWINIR_X4_SHA256}, got {checkpoint_sha256}"
+            )
     torch.set_num_threads(min(4, torch.get_num_threads()))
     data_root = args.data_root.resolve()
     train_set = mvtec.MVTecDataset(str(data_root), category, resize=256, imagesize=224, split=mvtec.DatasetSplit.TRAIN)
@@ -296,7 +315,7 @@ def main() -> None:
     result = {"model_spec": model_spec, "model_dir": str(model_dir), "fit_seconds_this_run": fit_seconds,
               "device": str(device), **execution,
               "nn_stats_enabled": not args.skip_nn_stats,
-              "restoration": {"name": restorer.name, "checkpoint_sha256": _checksum(args.swinir_checkpoint)} if restorer else None,
+              "restoration": {"name": restorer.name, "checkpoint_sha256": checkpoint_sha256} if restorer else None,
               "calibration": calibration,
               "test_paths": [sample.relative_path.as_posix() for sample in test_samples],
               "variants": {variant: {"evaluation": evaluation,

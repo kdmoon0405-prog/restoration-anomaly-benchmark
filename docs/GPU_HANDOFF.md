@@ -1,6 +1,38 @@
-# GPU pilot handoff
+# GPU experiment handoff
 
-## Goal
+## Current handoff: Screw cross-category stress
+
+The active GPU task is the frozen Branch A `screw` full run, not the older Bottle pilot below. Hazelnut is development/exploration, Screw is the preselected cross-category stress category, and Capsule remains untouched final validation. Do not tune a checkpoint, threshold, fusion weight, taxonomy, or preprocessing from Screw labels.
+
+From a clean checkout of `exp/hazelnut-analysis`, install the legacy dependencies and run the read-only preflight first:
+
+```powershell
+git submodule update --init
+uv pip install --python .venv\Scripts\python.exe -e ".[dev,legacy]"
+.venv\Scripts\python -X utf8 scripts\validate_experiment_ready.py --category screw --seed 11 --train-limit 0 --test-limit 0 --calibration-limit 0 --device cuda --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --output-dir outputs\legacy-patchcore\screw-full320-test160
+```
+
+The preflight records the actual dataset counts rather than asserting them, verifies a clean Git tree, pinned PatchCore commit, fixed SwinIR checksum, required masks, CUDA availability, GPU name, full-run limits, and an absent/empty output directory. It performs no fit or inference.
+
+If it passes, run exactly:
+
+```powershell
+.venv\Scripts\python -X utf8 scripts\run_legacy_patchcore.py --category screw --train-limit 0 --test-limit 0 --calibration-limit 0 --skip-nn-stats --seed 11 --device cuda --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --model-dir checkpoints\legacy-patchcore\screw-seed11-train320 --output-dir outputs\legacy-patchcore\screw-full320-test160
+```
+
+After the run completes, apply the already frozen saved-prediction analysis without changing its rules:
+
+```powershell
+.venv\Scripts\python -X utf8 scripts\analyze_cross_category.py --run-dir outputs\legacy-patchcore\screw-full320-test160 --output-dir analysis\screw
+```
+
+Archive the full run directory and memory bank outside normal Git, including checksums and the exact repository commit. Commit only the small analysis tables/notes after review. A later SurgClean restoration-character pilot remains blocked by its entry gate in `SURGCLEAN_EXTENSION_PLAN.md`; it does not alter the MVTec method. Capsule must not be opened until all method and reporting rules are frozen.
+
+## Historical handoff: first Bottle engineering pilot
+
+The remainder of this document is retained as the historical first-pilot checklist. It is not the current cross-category GPU instruction.
+
+### Historical goal
 
 Complete one paired pilot on MVTec AD `bottle`:
 
@@ -130,4 +162,3 @@ Transfer datasets, checkpoints, memory banks, NPZ files, anomaly maps, and full 
 - Image AUROC is present; pixel AUROC and AU-PRO are present when masks exist.
 - Test labels were not used to select thresholds, checkpoints, severities, or preprocessing.
 - A fresh clone can reproduce the result structure from the committed commands and configs.
-

@@ -12,7 +12,7 @@ Date: 2026-09-20
 
 ## Verified CPU results
 
-- Python 3.11 pytest: 74 passed on 2026-09-21. Synthetic end-to-end smoke test also passes.
+- Python 3.11 audit baseline: 93 passed. Synthetic end-to-end smoke test also passes.
 - Bottle Anomalib pilot: 168 normal training, 41 normal calibration, 4 balanced test images. SwinIR-S x2 vs bicubic x2: mean PSNR +0.8185 dB and SSIM +0.00629; pixel AUROC -0.000071 and AU-PRO -0.000203. Four images are only a pipeline check.
 - Hazelnut original-PatchCore pilot: 16 normal training, 4 held-out normal calibration, 20 balanced test images (10 normal, 10 anomalous), seed 11. Bicubic x4: PSNR 37.2866 dB, SSIM 0.93454, image AUROC 0.99, pixel AUROC 0.985777, AU-PRO@0.3 0.687230. SwinIR-S x4: PSNR 39.5309 dB, SSIM 0.95545, image AUROC 1.00, pixel AUROC 0.986678, AU-PRO@0.3 0.691774. SwinIR minus bicubic: +2.2443 dB PSNR, +0.02091 SSIM, +0.000901 pixel AUROC, +0.004544 AU-PRO. The CSV/JSON include image/pixel F1 and all raw predictions. The small, balanced subset and 16-image memory bank cannot establish a full-dataset research conclusion.
 - Hazelnut full-memory pilot: trained the original IdentitySampler on all 391 normal training images; saved the 1.26 GB FAISS index. On 10 balanced test images (5/5), clean pixel AUROC/AU-PRO were 0.987115/0.841313; bicubic x4 were 0.974984/0.721629; SwinIR-S x4 were 0.980693/0.758324. SwinIR minus bicubic: +2.0830 dB PSNR, +0.02177 SSIM, +0.005708 pixel AUROC, +0.036695 AU-PRO. All image AUROCs were 1.0 on this small subset. F1 is deliberately null because all training images entered the memory bank and no independent normal calibration set remained. Per-image NN statistics were measured in a separate 4-image full-memory run; the 10-image run used --skip-nn-stats to avoid doubling FAISS searches.
@@ -32,7 +32,7 @@ Per-image SwinIR-S x4 minus Bicubic x4 findings:
 - defect-to-background mean gap decreased on 25/70 (35.7%);
 - per-image Pixel AUROC decreased on 30/70 (42.9%);
 - per-image AU-PRO decreased on 30/70 (42.9%);
-- both ROI-background gap and per-image AU-PRO decreased on 14/70 (20.0%), used as the current exploratory "strong failure" subset.
+- both ROI-background gap and per-image AU-PRO decreased on 14/70 (20.0%); under the current taxonomy these are suppression patterns, and the older "strong failure" name is deprecated.
 
 Mean deltas across anomalous images:
 
@@ -50,16 +50,16 @@ A paired image-resampling bootstrap (5000 repeats, seed 2026) gave:
 
 Important interpretation: raw defect ROI score often falls after SwinIR, but the background score can fall even more, so raw ROI-score decrease alone is not a valid restoration-failure criterion. Aggregate localization improves on average while a nontrivial sample-level regression subset remains.
 
-The small-defect hypothesis is not supported in hazelnut so far: Spearman(defect area ratio, ROI-mean delta) = -0.0318, and the strong-failure median defect-area ratio (0.02286) is close to the remaining images (0.02091).
+The small-defect hypothesis is not supported in hazelnut so far: Spearman(defect area ratio, ROI-mean delta) = -0.0318, and the suppression-subtype median defect-area ratio (0.02286) is close to the remaining images (0.02091).
 
-Current exploratory strong-failure counts by defect type:
+Suppression-subtype counts by defect type (historically called strong failure):
 
 - crack: 4/18;
 - cut: 1/17;
 - hole: 7/18;
 - print: 2/17.
 
-The concentration in hole is a follow-up signal, not a final generalization. The next analysis should compare representative failure and success cases visually, then compute PatchCore feature-to-normal-memory distances only for selected samples to distinguish feature suppression from spatial localization/geometry failure.
+The concentration in hole was a follow-up signal, not a final generalization. The later selected-case visual and NN-distance analyses are recorded below and did not establish a clean causal separation.
 
 The first ROI-mean-based oracle is not treated as a valid localization upper bound: choosing the branch with the larger GT ROI raw mean reduced AU-PRO relative to restored-only. Its JSON remains a historical artifact and is not used in the current analysis.
 
@@ -68,7 +68,7 @@ The first ROI-mean-based oracle is not treated as a valid localization upper bou
 - `docs/EXPERIMENT_PROTOCOL_V0.2.md` freezes the hazelnut post-hoc taxonomy: 30/70 per-image AU-PRO regressions, partitioned into 14 suppression-type (`gap < 0`) and 16 geometry candidates (`gap >= 0`). It introduces no magnitude cutoff and treats the labels as map-level patterns, not proven feature-space causes.
 - `scripts/analyze_hazelnut_failures.py` now ranks worst/best cases by per-image AU-PRO delta, shares the two anomaly-map color limits within each figure, and writes `regression_taxonomy.csv` and `selected_cases.csv`. The historical ROI-mean oracle file is left untouched.
 - The new GT-assisted screening oracle gives mean per-image AU-PRO 0.907052 versus restored-only 0.903398 (headroom +0.003655). Choosing whole maps by per-image AU-PRO gives pooled AU-PRO 0.840458 versus restored-only 0.843461 (delta -0.003003); pooled selection is not a guaranteed upper bound.
-- Reanalysis used the existing 110-test NPZ files only (`--render-cases 0`); no PatchCore or SwinIR inference and no weight search were run. The coarse `alpha ∈ {0, 0.25, 0.5, 0.75, 1}` option stays deferred to a distinct Hazelnut development step if later evidence warrants it.
+- Reanalysis used the existing 110-test NPZ files only (`--render-cases 0`); no PatchCore or SwinIR inference was run. At this point the coarse grid was deferred; the later saved-prediction feasibility ablation below executed it and selected restored-only, with no fine search.
 
 ## Branch B saved-prediction feasibility ablation (decision recorded before execution, 2026-09-21)
 
@@ -80,7 +80,7 @@ The Branch A oracle headroom is small, but a five-point global scalar fusion che
 
 ## Remaining work and boundaries
 
-- Two-branch plan (agreed 2026-09-20): Branch A = Jihyuk-setting reproduction on all 391 hazelnut normals (AUROC/AU-PRO, F1 empty). Branch B = detection improvement on a fixed 80/20 split (313 fit / 78 calibration, seed 11), robust median/IQR per-variant normalization, fixed mean_0.5_0.5 vs restored-only as the first comparison, degraded-only and max as preset baselines. New `src/sr_anomaly/fusion.py` (pure NumPy, 8 unit tests) plus `scripts/run_fusion_patchcore.py` implement Branch B; `split.json` freezes the reused image lists and all F1 thresholds come from fused calibration normals. Hazelnut is development/exploration; final validation goes to unseen `capsule`. Weight search (0/0.25/0.5/0.75/1) only after mean_0.5_0.5 is checked, picked on synthetic/dev cases, frozen, then evaluated once on unseen data.
+- Two-branch plan (agreed 2026-09-20): Branch A = Jihyuk-setting reproduction on all 391 hazelnut normals (AUROC/AU-PRO, F1 empty). Branch B = detection improvement on a fixed 80/20 split (313 fit / 78 calibration, seed 11), robust median/IQR per-variant normalization, fixed mean_0.5_0.5 vs restored-only as the first comparison, degraded-only and max as preset baselines. `src/sr_anomaly/fusion.py` plus `scripts/run_fusion_patchcore.py` implement Branch B; `split.json` freezes the reused image lists and all F1 thresholds come from fused calibration normals. The later five-point Hazelnut ablation selected restored-only and does not justify fine search. Hazelnut remains development/exploration; final validation belongs on untouched `capsule` only after all rules are frozen.
 - The full hazelnut 110-test evaluation is complete. The next model-inference step, when needed, is preselected cross-category stress on Screw; Grid is optional and Capsule remains untouched final validation. Full IdentitySampler plus exact FAISS search is expensive even with a GPU backbone. For F1, use an independent normal calibration set or leave it empty; do not tune on test labels. Branch B uses its own 313-image bank; the 391 bank must not be reused because its 78 calibration images would leak into the memory bank.
 - Sandbox note (2026-09-20): this container's egress fails TLS (curl exit 35) to release-assets.githubusercontent.com, download.pytorch.org, huggingface.co, and mydrive.ch, so the SwinIR checkpoint and MVTec archive cannot be fetched here. torch 2.14/torchvision 0.29/timm 1.0.29/faiss-cpu 1.15.1 install from PyPI, both submodules check out at their pinned commits, and the real PatchCore/SwinIR import surface verifies. Real-data runs (Branch A/B, capsule final) go to the local Windows machine or a GPU box that already holds the dataset and checkpoints.
 - Connect other restoration checkpoints only after the degradation scale/task matches each model. EDSR, Restormer, Real-ESRGAN, EfficientAD, previous student code, and previous student weights are not available here. No metrics have been fabricated for them.
@@ -132,3 +132,7 @@ SurgClean is not present in `data/external/`; only MVTec AD and VisA are availab
 ## Device parity and category reporting tools (2026-09-22)
 
 `scripts/compare_cpu_cuda_runs.py` freezes exact artifact checks and configurable numeric comparison (`atol=rtol=1e-5` by default) for the saved CPU/CUDA fusion smoke runs. Device metadata may differ; model/split/checkpoint/method metadata, prediction shapes, labels, and masks may not. It reports numeric, raw-prediction, and separate runtime differences. No CUDA result or parity output exists yet. `scripts/aggregate_category_results.py` reads stored legacy run and cross-category summaries without inference or metric recomputation. `analysis/reporting/category_summary.csv` and `.md` currently contain Hazelnut only; Screw is omitted until both required artifacts exist.
+
+## Research and reproducibility audit (2026-09-22)
+
+`docs/RESEARCH_AUDIT.md` records the design, code, artifact, performance, and claim-boundary review. The audit added fail-fast verification for the frozen SwinIR checkpoint, Branch B split replay, cross-category source configuration, reporting/parity source consistency, and a read-only full-run preflight. The existing Hazelnut cross-category summary is now tracked under `analysis/hazelnut/` so the reporting table no longer depends on an ignored derived file. No saved prediction or research metric was recomputed. All 93 tests pass. Local Screw execution remains blocked only by unavailable CUDA; the dataset, pinned sources/checkpoint, and frozen command are present, while the Screw bank and result artifacts do not yet exist.

@@ -10,7 +10,7 @@ original -> deterministic degradation -> optional restoration -> anomaly detecto
 
 Every configured restoration run also keeps the `no_restoration` baseline. The built-in anomaly detector is a no-op, so anomaly scores and dataset-level detection metrics remain empty until a real detector is connected.
 
-The pre-experiment decisions are recorded in [docs/EXPERIMENT_PROTOCOL.md](docs/EXPERIMENT_PROTOCOL.md). The first GPU operator checklist is in [docs/GPU_HANDOFF.md](docs/GPU_HANDOFF.md).
+The historical v0.1 decisions remain in [docs/EXPERIMENT_PROTOCOL.md](docs/EXPERIMENT_PROTOCOL.md); the current frozen rules are in [docs/EXPERIMENT_PROTOCOL_V0.2.md](docs/EXPERIMENT_PROTOCOL_V0.2.md). The current Screw GPU checklist is in [docs/GPU_HANDOFF.md](docs/GPU_HANDOFF.md).
 
 ## Setup and checks
 
@@ -83,9 +83,13 @@ Branch B (detection improvement) splits normal training images 80/20 with a fixe
 .venv\Scripts\python -X utf8 scripts\run_fusion_patchcore.py --category hazelnut --seed 11 --train-ratio 0.8 --test-limit 0 --swinir-checkpoint checkpoints\swinir\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth --output-dir outputs\fusion-patchcore\hazelnut-313x78-test110
 ```
 
-`split.json` stores the exact reused image lists. `--train-limit/--calibration-limit/--test-limit` caps are cheap plumbing checks only, not research results. Weight search (0/0.25/0.5/0.75/1) is a separate later step: pick one weight on synthetic defects or a development category, freeze it, then evaluate once on the unseen category.
+`split.json` stores the exact reused image lists. `--train-limit/--calibration-limit/--test-limit` caps are cheap plumbing checks only, not research results. The pre-fixed five-point Hazelnut saved-prediction ablation selected restored-only (`alpha=0`) by pooled AU-PRO@0.3; no fine search or adaptive gating is authorized. This development result is not an unseen-category estimate.
 
 Branch B accepts the same `--device {cpu,auto,cuda}` option as Branch A. PatchCore and SwinIR use the resolved device; exact FAISS stays on CPU. CUDA timings synchronize before and after fit, restoration, and detector inference. `results.json` records `requested_device`, `actual_device`, `cuda_available`, and `gpu_name` only for CUDA runs.
+
+## Current research sequence
+
+Hazelnut is the completed development/exploration category. The next inference is the preselected full Screw Branch A stress test with the same x4 checkpoint, detector, preprocessing, pooled AU-PRO@0.3 implementation, and post-hoc taxonomy. Run `scripts/validate_experiment_ready.py` before the GPU command in `docs/GPU_HANDOFF.md`. A bounded SurgClean restoration-character pilot may follow only after its separate entry gate is satisfied; it does not reuse MVTec masks or taxonomy. Capsule remains untouched final validation and must not be used for method selection.
 
 ## Run an experiment
 

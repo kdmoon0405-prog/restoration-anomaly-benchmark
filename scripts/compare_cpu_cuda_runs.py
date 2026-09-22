@@ -137,8 +137,13 @@ def compare_runs(cpu_run: Path, cuda_run: Path, atol: float = 1e-5, rtol: float 
         cpu_json_metrics = _result_metrics(cpu_result, method)
         cuda_json_metrics = _result_metrics(cuda_result, method)
         for metric in METRICS:
+            cpu_summary_value, cuda_summary_value = _number(cpu_summary[method].get(metric)), _number(cuda_summary[method].get(metric))
+            if cpu_summary_value != _number(cpu_json_metrics[metric]):
+                raise ValueError(f"CPU summary.csv/results.json mismatch: {method}.{metric}")
+            if cuda_summary_value != _number(cuda_json_metrics[metric]):
+                raise ValueError(f"CUDA summary.csv/results.json mismatch: {method}.{metric}")
             rows.append(_numeric_row("summary.csv", method, metric,
-                                     cpu_summary[method].get(metric), cuda_summary[method].get(metric), atol, rtol))
+                                     cpu_summary_value, cuda_summary_value, atol, rtol))
             rows.append(_numeric_row("results.json", method, metric,
                                      cpu_json_metrics[metric], cuda_json_metrics[metric], atol, rtol))
 

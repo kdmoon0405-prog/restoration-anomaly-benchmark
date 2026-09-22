@@ -1,0 +1,50 @@
+{
+  "category": "hazelnut",
+  "source_run": "outputs/legacy-patchcore/hazelnut-full391-test110-repro",
+  "comparison": "SwinIR minus Bicubic",
+  "taxonomy_source": "Hazelnut-frozen rules in docs/EXPERIMENT_PROTOCOL_V0.2.md",
+  "total_anomalous_images": 70,
+  "localization_regression_count": 30,
+  "localization_regression_rate": 0.42857142857142855,
+  "suppression_count": 14,
+  "suppression_rate": 0.2,
+  "geometry_candidate_count": 16,
+  "geometry_candidate_rate": 0.22857142857142856,
+  "improvement_or_tie_count": 40,
+  "improvement_or_tie_rate": 0.5714285714285714,
+  "mean_delta_roi_mean": -0.18089080508723765,
+  "mean_delta_roi_bg_gap": 0.17858038756560093,
+  "mean_delta_per_image_pixel_auroc": 0.0017446313965527396,
+  "mean_delta_per_image_aupro": 0.012914302130286364,
+  "paired_bootstrap": {
+    "method": "Paired anomalous-image resampling of mean deltas",
+    "repeats": 5000,
+    "seed": 2026,
+    "delta_roi_mean": {
+      "estimate": -0.18089080508723765,
+      "ci95": [-0.2758217520490636, -0.08203014814008674],
+      "n": 70
+    },
+    "delta_roi_bg_gap": {
+      "estimate": 0.17858038756560093,
+      "ci95": [0.0840700126925612, 0.27685173081225006],
+      "n": 70
+    },
+    "delta_per_image_pixel_auroc": {
+      "estimate": 0.0017446313965527396,
+      "ci95": [0.0001757623611941436, 0.003469513858578522],
+      "n": 70
+    },
+    "delta_per_image_aupro": {
+      "estimate": 0.012914302130286364,
+      "ci95": [0.004131639606405408, 0.022888727195234482],
+      "n": 70
+    }
+  },
+  "selection_rule": {
+    "maximum_per_group": 3,
+    "worst_and_subtypes": "ascending delta_per_image_aupro, then lexical sample path",
+    "success_controls": "descending delta_per_image_aupro, then lexical sample path",
+    "purpose": "post-hoc qualitative/NN follow-up, not a population estimate"
+  }
+}

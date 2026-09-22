@@ -2,13 +2,20 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
+import json
 
 from scripts.analyze_cross_category import (
     _regression_type,
+    _validate_frozen_run,
     analyze_predictions,
     load_run,
     select_cases,
     validate_predictions,
+)
+from scripts.run_legacy_patchcore import (
+    EXPECTED_PATCHCORE_COMMIT,
+    EXPECTED_SWINIR_X4_SHA256,
+    FROZEN_PATCHCORE_SETTINGS,
 )
 
 
@@ -43,12 +50,24 @@ def test_regression_classification_and_invalid_predictions() -> None:
 
 
 def test_missing_prediction_guard(tmp_path) -> None:
-    (tmp_path / "results.json").write_text(
-        '{"model_spec":{"category":"screw"},"test_paths":["screw/test/good/000.png"]}',
-        encoding="utf-8",
-    )
+    result = {
+        "model_spec": {
+            "category": "screw", "seed": 11, "source_commit": EXPECTED_PATCHCORE_COMMIT,
+            **FROZEN_PATCHCORE_SETTINGS,
+        },
+        "restoration": {"name": "swinir_lightweight_x4", "checkpoint_sha256": EXPECTED_SWINIR_X4_SHA256},
+        "calibration": {"paths": [], "image_threshold": None, "pixel_threshold": None},
+        "variants": {name: {} for name in ("clean", "bicubic_x4", "swinir_x4")},
+        "test_paths": ["screw/test/good/000.png"],
+    }
+    (tmp_path / "results.json").write_text(json.dumps(result), encoding="utf-8")
     with pytest.raises(FileNotFoundError, match="Prediction file"):
         load_run(tmp_path)
+
+    invalid = json.loads(json.dumps(result))
+    invalid["model_spec"]["seed"] = 12
+    with pytest.raises(ValueError, match="seed"):
+        _validate_frozen_run(invalid)
 
 
 def test_selected_case_ranking_and_lexical_ties() -> None:

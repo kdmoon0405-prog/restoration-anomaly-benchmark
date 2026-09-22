@@ -21,6 +21,11 @@ from analyze_hazelnut_failures import (
     _per_image_pixel_metrics,
     _regression_type,
 )
+from run_legacy_patchcore import (
+    EXPECTED_PATCHCORE_COMMIT,
+    EXPECTED_SWINIR_X4_SHA256,
+    FROZEN_PATCHCORE_SETTINGS,
+)
 
 
 VARIANTS = ("clean", "bicubic_x4", "swinir_x4")
@@ -176,11 +181,30 @@ def _validate_per_image_csv(path: Path, test_paths: list[str]) -> None:
         raise ValueError("per_image.csv does not contain exactly one row per test sample and required variant")
 
 
+def _validate_frozen_run(result: dict) -> None:
+    spec = result.get("model_spec", {})
+    if spec.get("source_commit") != EXPECTED_PATCHCORE_COMMIT or spec.get("seed") != 11:
+        raise ValueError("Run does not use the frozen PatchCore commit and seed 11")
+    if any(spec.get(key) != value for key, value in FROZEN_PATCHCORE_SETTINGS.items()):
+        raise ValueError("Run does not use the frozen PatchCore architecture/preprocessing")
+    restoration = result.get("restoration") or {}
+    if (restoration.get("name") != "swinir_lightweight_x4"
+            or restoration.get("checkpoint_sha256") != EXPECTED_SWINIR_X4_SHA256):
+        raise ValueError("Run does not use the frozen SwinIR-S x4 checkpoint")
+    calibration = result.get("calibration", {})
+    if (calibration.get("paths") or calibration.get("image_threshold") is not None
+            or calibration.get("pixel_threshold") is not None):
+        raise ValueError("Cross-category analysis requires Branch A with calibration/F1 disabled")
+    if set(result.get("variants", {})) != set(VARIANTS):
+        raise ValueError(f"Run variants must be exactly {VARIANTS}")
+
+
 def load_run(run_dir: Path) -> tuple[str, list[str], dict[str, dict[str, np.ndarray]]]:
     result_path = run_dir / "results.json"
     if not result_path.is_file():
         raise FileNotFoundError(f"Required run artifact not found: {result_path}")
     result = json.loads(result_path.read_text(encoding="utf-8"))
+    _validate_frozen_run(result)
     category = str(result.get("model_spec", {}).get("category", ""))
     if not category or category in {".", ".."} or "/" in category or "\\" in category:
         raise ValueError("results.json must contain a safe model_spec.category")
