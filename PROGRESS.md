@@ -149,3 +149,9 @@ SurgClean is not present in `data/external/`; only MVTec AD and VisA are availab
 - **Next experiment:** run the frozen six-case selected NN-distance handoff only after the exact Screw bank is copied from the GPU machine. Do not open Capsule or add Grid/SurgClean before that check is recorded.
 
 Outputs are under `analysis/screw/` and the two-category paper table under `analysis/reporting/`. The source ZIP SHA256 is `DB6B7CAB2F356B4C48710E29A9C0D145957E9816BAB910AF50AB3F43A334B5D6`. No full GPU inference was run on this CPU machine. All 96 tests pass after adding the defect-type, saved-map rendering, and bounded selected-manifest checks.
+
+## Screw selected-case NN-distance result (2026-09-23)
+
+The frozen six-case manifest was run on CUDA with the unchanged 320-normal Screw bank, SwinIR checkpoint, preprocessing, 28x28 continuous GT occupancy, and CPU exact FAISS squared-L2 search. The incoming code differs only by moving the normalized input tensor to the resolved device before the direct private `_embed()` call. All 12 recomputed maps match the stored maps with maximum absolute error 0.0.
+
+For suppression patterns (n=3), mean SwinIR-minus-Bicubic ΔD_defect/ΔD_background/Δfeature gap are -1.824677/-0.565741/-1.258936; all 3 have both ΔD_defect<0 and Δfeature gap<0. For success controls (n=3), the corresponding means are -0.292801/-0.620176/+0.327375 and the joint-negative pattern occurs in 0/3. The selected Screw suppression-pattern cases are consistent with relative defect-feature normalization, but n=3 per subtype cannot establish a mechanism or population effect. No model, threshold, taxonomy, case selection, or research metric changed. All 96 tests pass after integration.

@@ -516,3 +516,11 @@ Screw 결과가 존재하거나 확인되기 전에 Hazelnut의 taxonomy와 사�
 해석과 한계: 평균 localization 개선과 sample-level regression의 공존은 Hazelnut과 Screw 모두에서 관찰됐다. subtype 구성은 Hazelnut의 suppression 14 / geometry 16과 달리 Screw는 suppression 23 / geometry 0이다. 이 결과만으로 feature evidence 감소가 Screw regression의 원인이라고 할 수 없다. 두 category만으로 SwinIR이 anomaly detection을 일반적으로 개선한다고 주장하지 않는다.
 
 결정: 모델, threshold, taxonomy, fusion weight, selected case를 바꾸지 않는다. 다음 확인은 고정된 Screw 6개 사례(suppression 3, success control 3)의 NN-distance 분석 하나다. 수령한 ZIP에는 checksum-bound 320-normal FAISS bank가 없으므로 GPU PC에서 원래 bank를 전달받은 뒤 실행한다. Capsule은 계속 untouched로 둔다.
+
+---
+
+## 21. Screw selected-case NN-distance 결과 (2026-09-23, 실행 후)
+
+고정된 suppression 3장과 success control 3장만 동일한 320-normal bank로 분석했다. 입력 tensor를 resolved CUDA device로 이동한 것 외에 preprocessing, PatchCore, CPU exact FAISS, 28x28 GT occupancy, metric, case selection은 바꾸지 않았다. 저장 map과 재계산 map의 12개 비교는 모두 최대 절대 오차 0.0이다.
+
+suppression 3장의 평균 ΔD_defect/ΔD_background/Δfeature gap은 -1.824677/-0.565741/-1.258936이고 세 장 모두 ΔD_defect<0 및 Δfeature gap<0이다. success control 3장은 -0.292801/-0.620176/+0.327375이며 같은 joint-negative pattern은 0/3이다. 따라서 selected Screw suppression-pattern cases are consistent with relative defect-feature normalization이라고 제한해 해석한다. n=3씩의 사후 선정 사례이므로 인과적 또는 모집단 수준 결론을 주장하지 않는다. 추가 threshold나 사례를 만들지 않고 Capsule은 untouched로 유지한다.

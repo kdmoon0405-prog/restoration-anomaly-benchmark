@@ -1,8 +1,8 @@
 # GPU experiment handoff
 
-## Current handoff: Screw selected-case NN distances
+## Completed handoff: Screw selected-case NN distances
 
-The Screw full run and frozen cross-category analysis are complete. Do not rerun all 119 anomalous images. The remaining GPU task is the six-case feature-distance check in [`../analysis/screw/NN_HANDOFF.md`](../analysis/screw/NN_HANDOFF.md), using the unchanged 320-normal memory bank. Screw produced no geometry candidates, so the manifest contains three suppression examples and three success controls only.
+The Screw full run, frozen cross-category analysis, and six-case feature-distance check are complete. Do not rerun the 119 anomalous images or the selected cases. The exact environment, command, runtime, and map validation are recorded in [`../analysis/screw/nn_distance_execution_record.md`](../analysis/screw/nn_distance_execution_record.md).
 
 ## Completed reference: Screw cross-category full run
 
