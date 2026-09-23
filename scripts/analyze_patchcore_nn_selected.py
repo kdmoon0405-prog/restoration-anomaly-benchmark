@@ -245,7 +245,7 @@ def main() -> None:
                      if variant == "bicubic_x4" else restorer.restore(low_resolution))
             started = perf_counter()
             saved_map = np.asarray(predictions[variant]["maps"][i], dtype=np.float64)
-            distances, grid, map_error = _patch_distances(model, tensor(image).unsqueeze(0), saved_map, torch)
+            distances, grid, map_error = _patch_distances(model, tensor(image).unsqueeze(0).to(device), saved_map, torch)
             occupancy = mask_occupancy(mask, grid)
             metrics[variant] = {**_map_stats(mask, saved_map), **distance_region_stats(distances, occupancy),
                                 "map_validation_max_abs": map_error, "feature_grid": f"{grid[0]}x{grid[1]}",
