@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from functools import lru_cache
 from importlib.util import module_from_spec, spec_from_file_location
+import math
 import os
 from pathlib import Path
 from typing import Any
@@ -155,6 +157,80 @@ class SwinIRLightweight:
 
 
 SwinIRLightweightX2 = SwinIRLightweight
+
+
+class ESRGANRRDBX4:
+    """Thin inference adapter around xinntao/ESRGAN's official RRDBNet."""
+
+    scale = 4
+
+    def __init__(
+        self,
+        repository: str | Path,
+        checkpoint: str | Path,
+        name: str,
+        device: str = "cpu",
+    ) -> None:
+        try:
+            import torch
+        except ImportError as exc:
+            raise RuntimeError("ESRGAN RRDB inference requires PyTorch") from exc
+        network_file = Path(repository) / "RRDBNet_arch.py"
+        checkpoint = Path(checkpoint)
+        if not network_file.is_file():
+            raise FileNotFoundError(f"Official ESRGAN implementation not found: {network_file}")
+        if not checkpoint.is_file():
+            raise FileNotFoundError(f"ESRGAN checkpoint not found: {checkpoint}")
+        spec = spec_from_file_location(f"_official_esrgan_{name}", network_file)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"Cannot load ESRGAN implementation: {network_file}")
+        module = module_from_spec(spec)
+        spec.loader.exec_module(module)
+        model = module.RRDBNet(3, 3, 64, 23, gc=32)
+        payload = torch.load(checkpoint, map_location=device, weights_only=True)
+        state_dict = payload.get("params", payload) if isinstance(payload, dict) else payload
+        model.load_state_dict(state_dict, strict=True)
+        self._torch = torch
+        self._model = model.eval().to(device)
+        self._device = device
+        self.name = name
+
+    def restore(self, image: Image.Image) -> Image.Image:
+        source = np.asarray(image.convert("RGB"), dtype=np.float32) / 255.0
+        tensor = self._torch.from_numpy(source).permute(2, 0, 1).unsqueeze(0).to(self._device)
+        with self._torch.inference_mode():
+            output = self._model(tensor)
+        array = output.squeeze(0).clamp(0, 1).permute(1, 2, 0).cpu().numpy()
+        expected = (image.height * self.scale, image.width * self.scale)
+        if array.shape[:2] != expected:
+            raise ValueError(f"ESRGAN output size {array.shape[:2]} differs from expected {expected}")
+        return Image.fromarray(np.rint(array * 255.0).astype(np.uint8), mode="RGB")
+
+
+def matlab_bicubic_resize(image: Image.Image, scale: float, basicsr_repository: str | Path) -> Image.Image:
+    """Resize with BasicSR's official MATLAB-compatible bicubic implementation."""
+    if scale <= 0:
+        raise ValueError("scale must be positive")
+    module = _matlab_functions(str(Path(basicsr_repository).resolve()))
+    source = np.asarray(image.convert("RGB"), dtype=np.float32) / 255.0
+    output = np.asarray(module.imresize(source, scale, antialiasing=scale < 1), dtype=np.float32)
+    expected = (math.ceil(image.height * scale), math.ceil(image.width * scale))
+    if output.shape[:2] != expected:
+        raise ValueError(f"MATLAB bicubic output size {output.shape[:2]} differs from expected {expected}")
+    return Image.fromarray(np.rint(np.clip(output, 0, 1) * 255.0).astype(np.uint8), mode="RGB")
+
+
+@lru_cache(maxsize=2)
+def _matlab_functions(repository: str):
+    source = Path(repository) / "basicsr" / "utils" / "matlab_functions.py"
+    if not source.is_file():
+        raise FileNotFoundError(f"BasicSR MATLAB resize implementation not found: {source}")
+    spec = spec_from_file_location("_official_basicsr_matlab_functions", source)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load BasicSR MATLAB resize implementation: {source}")
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def _numpy(value: Any) -> np.ndarray:

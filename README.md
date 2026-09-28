@@ -91,6 +91,8 @@ Branch B accepts the same `--device {cpu,auto,cuda}` option as Branch A. PatchCo
 
 Hazelnut development, the preselected full Screw Branch A stress test, and the frozen six-case Screw NN-distance check are complete under the same x4 checkpoint, detector, preprocessing, pooled AU-PRO@0.3 implementation, and post-hoc taxonomy. Do not rerun the full category or selected cases. A SurgClean restoration-character pilot may follow only after its separate entry gate is satisfied. Capsule remains untouched final validation and must not be used for method selection.
 
+The next prepared branch is the 25-image Hazelnut restoration-objective pilot in [docs/RESTORATION_OBJECTIVE_STUDY.md](docs/RESTORATION_OBJECTIVE_STUDY.md). It compares official RRDB PSNR and ESRGAN endpoints using one MATLAB-compatible x4 LR input and the existing 391-normal PatchCore bank. Its tracked manifest is fixed before inference; no pilot result exists yet.
+
 ## Run an experiment
 
 Put images under `data/images/`, then run:

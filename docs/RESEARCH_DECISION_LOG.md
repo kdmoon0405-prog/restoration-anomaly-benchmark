@@ -524,3 +524,13 @@ Screw 결과가 존재하거나 확인되기 전에 Hazelnut의 taxonomy와 사�
 고정된 suppression 3장과 success control 3장만 동일한 320-normal bank로 분석했다. 입력 tensor를 resolved CUDA device로 이동한 것 외에 preprocessing, PatchCore, CPU exact FAISS, 28x28 GT occupancy, metric, case selection은 바꾸지 않았다. 저장 map과 재계산 map의 12개 비교는 모두 최대 절대 오차 0.0이다.
 
 suppression 3장의 평균 ΔD_defect/ΔD_background/Δfeature gap은 -1.824677/-0.565741/-1.258936이고 세 장 모두 ΔD_defect<0 및 Δfeature gap<0이다. success control 3장은 -0.292801/-0.620176/+0.327375이며 같은 joint-negative pattern은 0/3이다. 따라서 selected Screw suppression-pattern cases are consistent with relative defect-feature normalization이라고 제한해 해석한다. n=3씩의 사후 선정 사례이므로 인과적 또는 모집단 수준 결론을 주장하지 않는다. 추가 threshold나 사례를 만들지 않고 Capsule은 untouched로 유지한다.
+
+---
+
+## 22. Restoration-objective pilot rules frozen before inference (2026-09-23)
+
+The primary endpoint comparison is official `RRDB_PSNR_x4` versus `RRDB_ESRGAN_x4`; Bicubic and SwinIR-S are context baselines. Both RRDB endpoints use the same 23-block x4 architecture, but the official records document DF2K for the PSNR checkpoint and DF2K+OST for the ESRGAN checkpoint. The study therefore reports an endpoint comparison, not a causal loss-only effect.
+
+For this new pilot only, replace the historical Pillow downsampling with BasicSR's pinned MATLAB-compatible bicubic implementation. Feed the exact same 56x56 RGB input to every learned restorer and keep historical Branch A unchanged. Freeze a 25-image Hazelnut development manifest by lexical first-five selection in normal/crack/cut/hole/print before inference. Reuse the exact 391-normal PatchCore bank; no fit, fusion, threshold, F1, interpolation, new detector, or test-label tuning is allowed.
+
+Proceed to full Hazelnut only if the stored 25-image outputs show an actual quality/detection, regression-composition, or repeatable qualitative endpoint difference. Do not create a post-hoc cutoff. If the endpoints are nearly indistinguishable, stop instead of adding models. Real-ESRNet/Real-ESRGAN is deferred to a separate realistic-degradation study. Capsule remains untouched.

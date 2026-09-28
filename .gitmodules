@@ -4,3 +4,9 @@
 [submodule "third_party/patchcore-inspection"]
 	path = third_party/patchcore-inspection
 	url = https://github.com/amazon-science/patchcore-inspection.git
+[submodule "third_party/ESRGAN"]
+	path = third_party/ESRGAN
+	url = https://github.com/xinntao/ESRGAN.git
+[submodule "third_party/BasicSR"]
+	path = third_party/BasicSR
+	url = https://github.com/XPixelGroup/BasicSR.git
