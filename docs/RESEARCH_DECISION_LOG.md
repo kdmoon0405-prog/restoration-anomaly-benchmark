@@ -534,3 +534,13 @@ The primary endpoint comparison is official `RRDB_PSNR_x4` versus `RRDB_ESRGAN_x
 For this new pilot only, replace the historical Pillow downsampling with BasicSR's pinned MATLAB-compatible bicubic implementation. Feed the exact same 56x56 RGB input to every learned restorer and keep historical Branch A unchanged. Freeze a 25-image Hazelnut development manifest by lexical first-five selection in normal/crack/cut/hole/print before inference. Reuse the exact 391-normal PatchCore bank; no fit, fusion, threshold, F1, interpolation, new detector, or test-label tuning is allowed.
 
 Proceed to full Hazelnut only if the stored 25-image outputs show an actual quality/detection, regression-composition, or repeatable qualitative endpoint difference. Do not create a post-hoc cutoff. If the endpoints are nearly indistinguishable, stop instead of adding models. Real-ESRNet/Real-ESRGAN is deferred to a separate realistic-degradation study. Capsule remains untouched.
+
+---
+
+## 23. Frozen 25-image restoration-endpoint pilot result (2026-09-29)
+
+질문: 공식 RRDB의 PSNR 지향 endpoint와 perceptual/GAN 지향 endpoint가 동일한 x4 LR 입력에서 화질과 anomaly localization의 trade-off를 다르게 보이는가? `95d097799c10135a982dbddf91f97b71e3ca29e6`에서 고정한 Hazelnut 25장 manifest, BasicSR bicubic, 391-normal PatchCore bank, 지표, taxonomy를 바꾸지 않고 전달된 CUDA 결과를 검증했다. 이 단계에서 새 추론이나 튜닝은 하지 않았다.
+
+저장된 summary의 RRDB-ESRGAN minus RRDB-PSNR은 PSNR `-2.622296262852899 dB`, SSIM `-0.03448956157055605`, LPIPS `-0.04259542234241963`, Pixel AUROC `+0.0005923647012515687`, pooled AU-PRO@0.3 `+0.005095647801611869`이다. Image AUROC는 양쪽 모두 1.0이다. 20장 anomaly의 Bicubic 대비 per-image AU-PRO regression은 RRDB-PSNR 8장(3 suppression/5 geometry), RRDB-ESRGAN 5장(4/1)이었고, 직접 endpoint 쌍에서는 ESRGAN 11장, PSNR 9장이 우세했다. 원본 ZIP·NPZ·CSV의 구조와 해시 및 모델/메모리뱅크 provenance는 `analysis/restoration_objective_pilot/`에 기록했다.
+
+결정: 기존 stop/go 규칙에서 요구한 fidelity/perceptual 품질 차이와 downstream 차이의 신호가 있어 full Hazelnut endpoint 평가를 **다음 별도 작업으로 준비**한다. 그러나 25장 결과만으로 한 endpoint의 일반적 우월성을 주장하지 않는다. Full Hazelnut도 이미 탐색에 사용한 development category이므로 독립 최종 검증이 아니다. 두 공식 checkpoint는 objective뿐 아니라 학습 데이터(DF2K 대 DF2K+OST)도 다르다. 따라서 질문을 “Does restoration objective affect defect-evidence preservation?”에서 “Do PSNR-oriented and perceptual/GAN-oriented restoration endpoints trade image quality against anomaly localization differently?”로 좁히고, objective-only 인과 표현을 피한다. Phase C gating, Capsule, 새 degradation/detector, feature NN 후속 분석은 계속 보류한다.
