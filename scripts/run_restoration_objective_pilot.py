@@ -1,4 +1,4 @@
-"""Run the frozen 25-image Hazelnut restoration-objective pilot without fitting PatchCore."""
+"""Run a frozen Hazelnut restoration-endpoint cohort without fitting PatchCore."""
 
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ from sr_anomaly.dataset import safe_join  # noqa: E402
 from sr_anomaly.device import device_metadata, elapsed_seconds, resolve_device, start_timer  # noqa: E402
 from sr_anomaly.evaluation import area_under_per_region_overlap, binary_roc_auc, evaluate_predictions  # noqa: E402
 from sr_anomaly.metrics import compute_quality_metrics  # noqa: E402
-from sr_anomaly.objective_study import load_pilot_manifest, regression_type  # noqa: E402
+from sr_anomaly.objective_study import load_full_manifest, load_pilot_manifest, regression_type  # noqa: E402
 from sr_anomaly.real_models import ESRGANRRDBX4, SwinIRLightweight, matlab_bicubic_resize  # noqa: E402
 
 
@@ -41,26 +41,47 @@ EXPECTED_SWINIR_COMMIT = "6545850fbf8df298df73d81f3e8cba638787c8bd"
 EXPECTED_RRDB_PSNR_SHA256 = "f372b59f22929e1bc83fa58d78215c96f976de3b2eaeee736da1b348913da6cc"
 EXPECTED_RRDB_ESRGAN_SHA256 = "65fece06e1ccb48853242aa972bdf00ad07a7dd8938d2dcbdf4221b59f6372ce"
 EXPECTED_MANIFEST_SHA256 = "4d3b23548b5add0f067bec44330062870cde00a1521b9680198744f32bbf3603"
+EXPECTED_FULL_MANIFEST_SHA256 = "2ddb62748c750b3e4fae2b4b0b0cb4f3c354fd02faac74c95117afe1b3e116cc"
 EXPECTED_BANK_SHA256 = {
     "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
     "nnscorer_search_index.faiss": "e665e08ac3d108ae095566df7baf7e966561333fdf50a6d85c6f5d77bfc3f9b4",
 }
 VARIANTS = ("bicubic_x4", "swinir_x4", "rrdb_psnr_x4", "rrdb_esrgan_x4")
+COHORTS = {
+    "pilot25": {
+        "manifest": ROOT / "analysis" / "restoration_objective_pilot" / "pilot_manifest.csv",
+        "sha256": EXPECTED_MANIFEST_SHA256,
+        "counts": (25, 5, 20),
+        "output": ROOT / "outputs" / "restoration-objective" / "hazelnut-pilot25",
+        "load": load_pilot_manifest,
+    },
+    "full110": {
+        "manifest": ROOT / "analysis" / "restoration_objective_full" / "full_manifest.csv",
+        "sha256": EXPECTED_FULL_MANIFEST_SHA256,
+        "counts": (110, 40, 70),
+        "output": ROOT / "outputs" / "restoration-objective" / "hazelnut-full110",
+        "load": load_full_manifest,
+    },
+}
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--cohort", choices=tuple(COHORTS), default="pilot25")
     parser.add_argument("--data-root", type=Path, default=ROOT / "data" / "external" / "MVTecAD")
-    parser.add_argument("--manifest", type=Path, default=ROOT / "analysis" / "restoration_objective_pilot" / "pilot_manifest.csv")
+    parser.add_argument("--manifest", type=Path, help="Alternate location of the selected cohort's checksum-bound manifest")
     parser.add_argument("--model-dir", type=Path, default=ROOT / "checkpoints" / "legacy-patchcore" / "hazelnut-seed11-train391")
     parser.add_argument("--swinir-checkpoint", type=Path, default=ROOT / "checkpoints" / "swinir" / "002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth")
     parser.add_argument("--rrdb-psnr-checkpoint", type=Path, default=ROOT / "checkpoints" / "esrgan" / "RRDB_PSNR_x4.pth")
     parser.add_argument("--rrdb-esrgan-checkpoint", type=Path, default=ROOT / "checkpoints" / "esrgan" / "RRDB_ESRGAN_x4.pth")
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "outputs" / "restoration-objective" / "hazelnut-pilot25")
+    parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="cpu", help="Models use this device; FAISS stays on CPU")
     parser.add_argument("--with-lpips", action="store_true", help="Add the single frozen perceptual metric (AlexNet LPIPS)")
     parser.add_argument("--lpips-device", choices=("cpu", "cuda"), default="cpu")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    args.manifest = args.manifest or COHORTS[args.cohort]["manifest"]
+    args.output_dir = args.output_dir or COHORTS[args.cohort]["output"]
+    return args
 
 
 def _git_head(path: Path) -> str:
@@ -137,14 +158,25 @@ def _write_csv(path: Path, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
+def _load_frozen_manifest(args: argparse.Namespace, data_root: Path) -> tuple[str, list[dict[str, str]]]:
+    cohort = COHORTS[args.cohort]
+    manifest_sha = _require_file_hash(args.manifest.resolve(), cohort["sha256"], f"frozen {args.cohort} manifest")
+    rows = cohort["load"](args.manifest.resolve(), data_root)
+    counts = (len(rows), sum(int(row["label"]) == 0 for row in rows), sum(int(row["label"]) == 1 for row in rows))
+    if counts != cohort["counts"]:
+        raise ValueError(f"{args.cohort} cohort counts changed: expected {cohort['counts']}, got {counts}")
+    return manifest_sha, rows
+
+
 def main() -> None:
     args = _parse_args()
     output_dir = args.output_dir.resolve()
     if output_dir.exists() and any(output_dir.iterdir()):
         raise FileExistsError(f"Experiment output directory is not empty: {output_dir}")
     data_root = args.data_root.resolve()
-    manifest_sha = _require_file_hash(args.manifest.resolve(), EXPECTED_MANIFEST_SHA256, "frozen pilot manifest")
-    manifest_rows = load_pilot_manifest(args.manifest.resolve(), data_root)
+    manifest_sha, manifest_rows = _load_frozen_manifest(args, data_root)
+    if args.cohort == "full110" and not args.with_lpips:
+        raise ValueError("full110 requires --with-lpips to preserve the frozen quality metrics")
 
     torch, transforms, InterpolationMode, _, common, patchcore, _, mvtec = _official_imports()
     cuda_available = torch.cuda.is_available()
@@ -275,7 +307,8 @@ def main() -> None:
             "defect_type": manifest_row["defect_type"],
             "label": label,
             **{f"delta_{key}_esrgan_minus_psnr": _delta(gan[key], psnr[key])
-               for key in ("psnr", "ssim", "lpips", "image_score", "per_image_pixel_auroc", "per_image_aupro", "roi_bg_gap")},
+               for key in ("psnr", "ssim", "lpips", "image_score", "per_image_pixel_auroc", "per_image_aupro", "roi_bg_gap")
+               + (("roi_mean",) if args.cohort == "full110" else ())},
         })
 
     evaluations = {}
@@ -310,11 +343,12 @@ def main() -> None:
         for key in ("mean_psnr", "mean_ssim", "mean_lpips", "image_auroc", "pixel_auroc", "au_pro")
     }
     result = {
-        "study": "restoration_objective_pilot",
+        "study": "restoration_objective_full" if args.cohort == "full110" else "restoration_objective_pilot",
         "category_role": "Hazelnut development/exploration; not untouched validation",
         "manifest": str(args.manifest),
         "manifest_sha256": manifest_sha,
-        "selection_rule": "lexical first 5 in normal/crack/cut/hole/print; fixed before inference",
+        "selection_rule": ("all 110 Hazelnut test images in lexical path order; fixed before inference"
+                           if args.cohort == "full110" else "lexical first 5 in normal/crack/cut/hole/print; fixed before inference"),
         "sample_count": len(manifest_rows),
         "source_commit": _git_head(ROOT),
         "device": str(device),

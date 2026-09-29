@@ -1,11 +1,14 @@
 from pathlib import Path
 import json
+import csv
 
 import numpy as np
 from PIL import Image
 import pytest
 
-from sr_anomaly.objective_study import build_pilot_manifest, load_pilot_manifest, regression_type, write_pilot_manifest
+from sr_anomaly.objective_study import (
+    build_full_manifest, build_pilot_manifest, load_full_manifest, load_pilot_manifest, regression_type, write_pilot_manifest,
+)
 from sr_anomaly.real_models import ESRGANRRDBX4, matlab_bicubic_resize
 from scripts import run_restoration_objective_pilot as pilot
 
@@ -38,6 +41,64 @@ def test_manifest_is_lexical_stratified_and_checksum_bound(tmp_path: Path) -> No
     _paint(root / loaded[0]["sample"], 99)
     with pytest.raises(ValueError, match="missing or changed"):
         load_pilot_manifest(manifest, root)
+
+
+def test_full_manifest_includes_every_test_image_and_checks_hashes(tmp_path: Path) -> None:
+    root = tmp_path / "MVTecAD"
+    for defect, count in (("good", 4), ("crack", 3), ("cut", 2), ("hole", 2), ("print", 2)):
+        for index in range(count):
+            _paint(root / "hazelnut" / "test" / defect / f"{index:03d}.png", index)
+            if defect != "good":
+                mask = root / "hazelnut" / "ground_truth" / defect / f"{index:03d}_mask.png"
+                mask.parent.mkdir(parents=True, exist_ok=True)
+                Image.new("L", (16, 16), 255).save(mask)
+    rows = build_full_manifest(root)
+    paths = [row["sample"] for row in rows]
+    assert len(rows) == 13 and paths == sorted(paths) and len(set(paths)) == len(paths)
+    assert sum(row["label"] == 0 for row in rows) == 4
+    assert sum(row["label"] == 1 for row in rows) == 9
+    assert all(row["image_sha256"] and (row["mask_sha256"] if row["label"] else not row["mask_sha256"]) for row in rows)
+    manifest = tmp_path / "full.csv"
+    write_pilot_manifest(rows, manifest)
+    assert len(load_full_manifest(manifest, root)) == 13
+    with manifest.open("r", encoding="utf-8", newline="") as handle:
+        saved = list(csv.DictReader(handle))
+    saved[0]["sample"] = saved[1]["sample"]
+    write_pilot_manifest(saved, manifest)
+    with pytest.raises(ValueError, match="missing or changed"):
+        load_full_manifest(manifest, root)
+    write_pilot_manifest(build_full_manifest(root), manifest)
+    mask_path = root / rows[-1]["mask"]
+    Image.new("L", (16, 16), 0).save(mask_path)
+    with pytest.raises(ValueError, match="missing or changed"):
+        load_full_manifest(manifest, root)
+
+
+def test_frozen_cohort_profiles_and_manifest_hashes(tmp_path: Path) -> None:
+    pilot_args = pilot._parse_args([])
+    full_args = pilot._parse_args(["--cohort", "full110"])
+    assert pilot_args.cohort == "pilot25"
+    assert pilot_args.manifest == pilot.COHORTS["pilot25"]["manifest"]
+    assert pilot_args.output_dir == pilot.COHORTS["pilot25"]["output"]
+    assert full_args.manifest == pilot.COHORTS["full110"]["manifest"]
+    assert full_args.output_dir == pilot.COHORTS["full110"]["output"]
+    assert pilot.COHORTS["pilot25"]["counts"] == (25, 5, 20)
+    assert pilot.COHORTS["full110"]["counts"] == (110, 40, 70)
+    assert pilot._checksum(pilot_args.manifest) == pilot.EXPECTED_MANIFEST_SHA256
+    assert pilot._checksum(full_args.manifest) == pilot.EXPECTED_FULL_MANIFEST_SHA256
+    substituted = tmp_path / "wrong.csv"
+    substituted.write_bytes(pilot_args.manifest.read_bytes())
+    full_args.manifest = substituted
+    with pytest.raises(ValueError, match="SHA-256 mismatch"):
+        pilot._load_frozen_manifest(full_args, tmp_path)
+
+
+def test_tracked_full_manifest_matches_local_dataset_if_present() -> None:
+    root = pilot.ROOT / "data" / "external" / "MVTecAD"
+    if not (root / "hazelnut" / "test").is_dir():
+        pytest.skip("MVTec AD data is not part of the repository")
+    rows = load_full_manifest(pilot.COHORTS["full110"]["manifest"], root)
+    assert (len(rows), sum(int(row["label"]) == 0 for row in rows), sum(int(row["label"]) == 1 for row in rows)) == (110, 40, 70)
 
 
 def test_taxonomy_is_unchanged() -> None:

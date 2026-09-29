@@ -60,6 +60,29 @@ def build_pilot_manifest(data_root: Path, category: str = "hazelnut") -> list[di
     return rows
 
 
+def build_full_manifest(data_root: Path, category: str = "hazelnut") -> list[dict[str, str | int]]:
+    """Record every test image in lexical path order, without selecting cases."""
+    samples = sorted(MVTecADFolder(data_root, category).samples(), key=lambda sample: sample.relative_path.as_posix())
+    ranks: dict[str, int] = {}
+    rows: list[dict[str, str | int]] = []
+    for sample in samples:
+        defect_type = str(sample.metadata["defect_type"])
+        stratum = "normal" if defect_type == "good" else defect_type
+        ranks[stratum] = ranks.get(stratum, 0) + 1
+        rows.append({
+            "sample": sample.relative_path.as_posix(),
+            "mask": sample.mask_path.relative_to(data_root.resolve()).as_posix() if sample.mask_path else "",
+            "label": int(sample.metadata["label"]),
+            "defect_type": defect_type,
+            "stratum": stratum,
+            "stratum_rank": ranks[stratum],
+            "selection_rule": "all_test_images_lexical",
+            "image_sha256": file_sha256(sample.path),
+            "mask_sha256": file_sha256(sample.mask_path) if sample.mask_path else "",
+        })
+    return rows
+
+
 def write_pilot_manifest(rows: list[dict[str, str | int]], output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", encoding="utf-8", newline="") as handle:
@@ -80,6 +103,18 @@ def load_pilot_manifest(path: Path, data_root: Path) -> list[dict[str, str]]:
     ]
     if rows != expected:
         raise ValueError("Pilot manifest selection, metadata, or file contents are missing or changed")
+    return rows
+
+
+def load_full_manifest(path: Path, data_root: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != MANIFEST_FIELDS:
+            raise ValueError("Full manifest fields changed")
+        rows = list(reader)
+    expected = [{key: str(value) for key, value in row.items()} for row in build_full_manifest(data_root)]
+    if rows != expected:
+        raise ValueError("Full manifest paths, metadata, or source file contents are missing or changed")
     return rows
 
 

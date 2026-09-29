@@ -91,7 +91,7 @@ Branch B accepts the same `--device {cpu,auto,cuda}` option as Branch A. PatchCo
 
 Hazelnut development, the preselected full Screw Branch A stress test, and the frozen six-case Screw NN-distance check are complete under the same x4 checkpoint, detector, preprocessing, pooled AU-PRO@0.3 implementation, and post-hoc taxonomy. Do not rerun the full category or selected cases. A SurgClean restoration-character pilot may follow only after its separate entry gate is satisfied. Capsule remains untouched final validation and must not be used for method selection.
 
-The frozen 25-image Hazelnut restoration-endpoint pilot is complete; its verified small-text results and claim limits are in [PILOT_RESULT.md](analysis/restoration_objective_pilot/PILOT_RESULT.md). Full 110-image Hazelnut endpoint evaluation is the next separate preparation step, not part of this result record. Capsule remains untouched.
+The frozen 25-image Hazelnut restoration-endpoint pilot is complete; its verified small-text results and claim limits are in [PILOT_RESULT.md](analysis/restoration_objective_pilot/PILOT_RESULT.md). The [full 110-image confirmation protocol](docs/RESTORATION_ENDPOINT_FULL_HAZELNUT.md) and manifest are now prepared, but full inference has not run. Capsule remains untouched.
 
 ## Run an experiment
 

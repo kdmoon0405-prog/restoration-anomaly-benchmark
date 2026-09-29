@@ -1,2 +1,3 @@
 analysis/restoration_objective_pilot/pilot_manifest.csv text eol=lf
+analysis/restoration_objective_full/full_manifest.csv text eol=lf
 analysis/restoration_objective_pilot/results/* -text whitespace=cr-at-eol
