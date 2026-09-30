@@ -70,3 +70,31 @@ From `research_code/` on the CUDA machine, after syncing this preparation commit
 ```
 
 Do **not** run this command during protocol preparation. The original pilot command without `--cohort` still selects `pilot25`.
+
+## Pre-inference preregistration hardening (2026-09-29, after `982cbe0`)
+
+An external design review occurred after preparation commit `982cbe0` and before any full110 inference. This dated amendment supersedes the qualitative A/B/C wording above; it does not alter the cohort, manifest/hash, degradation, models/checkpoints, PatchCore bank, primary pooled AU-PRO@0.3, strict-sign taxonomy, bootstrap seed/repeats, or GPU command. The review itself remains private/local.
+
+Define every direct endpoint delta as RRDB-ESRGAN minus RRDB-PSNR. Report quality-trade-off reproduction independently as `mean_delta_psnr < 0 AND mean_delta_lpips < 0`. Classify *localization* on all 70 anomalous images by this deterministic rule:
+
+- **A:** pooled AU-PRO delta `> 0`, mean paired per-image AU-PRO delta `> 0`, and 95% bootstrap CI lower bound `> 0`.
+- **C:** pooled AU-PRO delta `< 0`, mean paired per-image AU-PRO delta `< 0`, and 95% bootstrap CI upper bound `< 0`.
+- **B:** every other result, including mixed directions, near-zero deltas, or a CI containing zero.
+
+Pooled AU-PRO and mean per-image AU-PRO are different estimands. A and C require agreement of both directions and uncertainty excluding zero. Quality trade-off is reported separately and cannot force A/B/C. No effect-size threshold chooses a case, and no case proves objective causality.
+
+Keep regression taxonomy at `delta_per_image_aupro < 0`. Add a *secondary* magnitude sensitivity for each learned model relative to the new MATLAB Bicubic baseline: for each frozen `tau ∈ {0, 0.005, 0.01, 0.02, 0.05}`, report `count(delta < -tau)` and `count / anomalous-image denominator`. No tau is privileged as the true or meaningful cutoff. For direct RRDB per-anomaly deltas at the same tau grid, report counts `delta > +tau` and `delta < -tau`; do not select a model from these counts. If applied to historical Hazelnut/Screw artifacts, label these counts **post-hoc sensitivity**, not preregistered analysis. Pilot tau counts in this code-validation step are also post-hoc and do not revise the pilot GO/STOP decision.
+
+The full anomalous set comprises 20 images already in pilot25 and 50 that were not. The primary result uses all 70. Separately label the 50 as the **pilot-unseen within-category confirmation subset** and report its direct endpoint per-image AU-PRO mean, median, min/max, positive/negative/tie counts, and the same tau sensitivity. The overlapping pilot20 is a reproducibility check: compare each future full-run per-image model metric against the original pilot artifact using `atol=rtol=1e-5`, report mismatches explicitly, and do not use overlap or unseen50 to redefine A/B/C. Neither subset is external validation.
+
+For each learned model, report the count and rate of `delta_roi_bg_gap < 0` both among regression images and among non-regression images. These denominators provide base-rate context for suppression counts. The taxonomy remains a descriptive post-inference anomaly-map pattern, not an independently proven feature-space mechanism; selected NN-distance cases are consistency evidence only. No normalized-gap taxonomy is introduced.
+
+The primary descriptive figure is now a two-panel presentation: (A) sorted **direct RRDB ESRGAN-minus-PSNR** per-image AU-PRO deltas for all anomalous images, one visible mark per image, defect-type color, and a visible zero line; (B) learned-model Bicubic-relative regression counts across the frozen tau grid. The originally registered PSNR-gain and LPIPS-improvement versus AU-PRO-gain scatter figures remain supporting figures, with descriptive per-model Spearman rho. Do not hide near-zero marks or interpret rho causally.
+
+`scripts/analyze_restoration_endpoint_full.py` is frozen before full inference. It reads completed runner CSV/JSON and the tracked manifests only, never imports or calls restoration/PatchCore. It writes `analysis_summary.json`, `endpoint_bootstrap.json`, `regression_intervals.csv`, `magnitude_sensitivity.csv`, `endpoint_pair_sensitivity.csv`, `taxonomy_base_rates.csv`, `quality_localization.csv`, and the four registered PNG figures. AlexNet LPIPS and existing aligned RGB outputs could support a defect-ROI fidelity descriptor, but the tracked pilot artifact lacks those RGB files. ROI fidelity is intentionally deferred: adding image-loading and a new metric now is unnecessary for this preregistered comparison, and it is not an A/B/C criterion.
+
+Only after the future full runner has completed, derive the frozen analysis without rerunning any model:
+
+```powershell
+.venv\Scripts\python -X utf8 scripts\analyze_restoration_endpoint_full.py --run-dir outputs\restoration-objective\hazelnut-full110-gpu --output-dir analysis\restoration_objective_full\derived
+```

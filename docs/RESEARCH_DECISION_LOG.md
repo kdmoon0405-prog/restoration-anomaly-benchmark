@@ -549,3 +549,9 @@ Proceed to full Hazelnut only if the stored 25-image outputs show an actual qual
 ## 24. Full Hazelnut endpoint confirmation frozen before inference (2026-09-29)
 
 The frozen 25-image pilot showed a PSNR/SSIM versus LPIPS trade-off and a small, mixed localization difference. That is enough to justify one full 110-image Hazelnut stability check, not a new model search. The question remains a comparison of official PSNR-oriented and perceptual/GAN-oriented *endpoints*, not an objective-only causal claim: the checkpoints also differ in training data. The full manifest, four variants, 391-normal bank, pooled AU-PRO@0.3 primary metric, paired uncertainty plan, and interpretation cases A/B/C are fixed in `docs/RESTORATION_ENDPOINT_FULL_HAZELNUT.md` before inference. No new model family follows automatically from the full result. Phase C, Capsule, new degradation, and new detector stay closed. No full-run result exists yet.
+
+---
+
+## 25. Pre-inference full110 preregistration hardening (2026-09-30)
+
+An external design review occurred after `982cbe0` and before full110 inference. The scientific question, cohort/manifest hash, degradation, four restorers, PatchCore bank, and primary pooled AU-PRO did not change. The dated protocol amendment replaces discretionary A/B/C interpretation with a sign-and-bootstrap-CI rule; separately pre-registers five tau values for regression magnitude, pilot20 overlap and pilot-unseen50 reporting, negative-gap base rates for both regression and non-regression images, and a sorted per-image AU-PRO waterfall. The analysis script was implemented and checked against saved pilot CSVs before any full110 result. Pilot tau counts are post-hoc code-validation sensitivity, not a revision of the prior GO decision. No new model search, Phase C, Capsule, or causal mechanism claim is opened.
