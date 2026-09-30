@@ -1,6 +1,7 @@
 from pathlib import Path
 import json
 import csv
+from types import SimpleNamespace
 
 import numpy as np
 from PIL import Image
@@ -11,6 +12,38 @@ from sr_anomaly.objective_study import (
 )
 from sr_anomaly.real_models import ESRGANRRDBX4, matlab_bicubic_resize
 from scripts import run_restoration_objective_pilot as pilot
+
+
+def test_execution_provenance_serializes_versions_and_exact_argv(monkeypatch) -> None:
+    fake_torch = SimpleNamespace(__version__="synthetic", version=SimpleNamespace(cuda="12.1"),
+        backends=SimpleNamespace(cudnn=SimpleNamespace(version=lambda: 8900)))
+    monkeypatch.setattr(pilot.package_metadata, "version", lambda name: "0.1.4")
+    args = pilot._parse_args(["--cohort", "full110", "--device", "cuda", "--with-lpips"])
+    argv = ["scripts/run_restoration_objective_pilot.py", "--cohort", "full110", "--device", "cuda", "--with-lpips"]
+    interpreter_argv = ["python", "-X", "utf8", *argv]
+    monkeypatch.setattr(pilot.sys, "orig_argv", interpreter_argv)
+    metadata = pilot._execution_provenance(fake_torch, args, argv)
+    serialized = json.loads(json.dumps(metadata))
+    assert serialized["invocation_argv"] == argv
+    assert serialized["interpreter_argv"] == interpreter_argv
+    assert serialized["pytorch_version"] == "synthetic"
+    assert serialized["torch_cuda_build_version"] == "12.1"
+    assert serialized["cudnn_version"] == 8900
+    assert serialized["lpips_package_version"] == "0.1.4"
+    assert isinstance(serialized["resolved_arguments"]["manifest"], str)
+    args.with_lpips = False
+    assert pilot._execution_provenance(fake_torch, args, argv)["lpips_package_version"] is None
+
+
+def test_output_artifact_hashing_does_not_touch_model_outputs(tmp_path: Path) -> None:
+    names = ["summary.csv", "per_image.csv", "regression_taxonomy.csv", "objective_pair_per_image.csv"]
+    names += [f"{variant}_predictions.npz" for variant in pilot.VARIANTS]
+    for name in names:
+        (tmp_path / name).write_bytes(name.encode("utf-8"))
+    hashes = pilot._output_artifact_hashes(tmp_path)
+    assert set(hashes) == set(names)
+    assert hashes == {name: pilot._checksum(tmp_path / name) for name in names}
+    assert all((tmp_path / name).read_bytes() == name.encode("utf-8") for name in names)
 
 
 def _paint(path: Path, value: int) -> None:

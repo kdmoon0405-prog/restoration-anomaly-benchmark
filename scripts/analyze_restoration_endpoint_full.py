@@ -1,4 +1,4 @@
-"""Analyze saved Hazelnut restoration-endpoint CSVs; never run model inference."""
+"""Analyze saved Hazelnut restoration-endpoint artifacts; never run model inference."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PILOT_RESULTS = ROOT / "analysis" / "restoration_objective_pilot" / "results"
 sys.path.insert(0, str(ROOT / "scripts"))
 from analyze_hazelnut_failures import _bootstrap_mean_delta, _spearman  # noqa: E402
+from sr_anomaly.evaluation import evaluate_predictions  # noqa: E402
 
 VARIANTS = ("bicubic_x4", "swinir_x4", "rrdb_psnr_x4", "rrdb_esrgan_x4")
 LEARNED = VARIANTS[1:]
@@ -101,12 +102,78 @@ def sign_summary(deltas: np.ndarray) -> dict:
     }
 
 
-def classify_case(pooled_delta: float, mean_delta: float, ci: tuple[float, float]) -> str:
-    if pooled_delta > 0 and mean_delta > 0 and ci[0] > 0:
+def delta_distribution(deltas: np.ndarray) -> dict:
+    if deltas.size == 0 or not np.isfinite(deltas).all():
+        raise ValueError("Delta distribution requires finite nonempty values")
+    quantiles = np.quantile(deltas, [0, 0.25, 0.5, 0.75, 1])
+    near_zero = int(np.sum(np.abs(deltas) <= 0.01))
+    return {**dict(zip(("minimum", "q25", "median", "q75", "maximum"), map(float, quantiles))),
+            "anomaly_count": int(deltas.size), "absolute_delta_le_0_01_count": near_zero,
+            "absolute_delta_le_0_01_rate": near_zero / int(deltas.size)}
+
+
+def classify_case(pooled_delta: float, mean_delta: float, ci: tuple[float, float], unseen_mean: float) -> str:
+    if pooled_delta > 0 and mean_delta > 0 and ci[0] > 0 and unseen_mean > 0:
         return "A"
-    if pooled_delta < 0 and mean_delta < 0 and ci[1] < 0:
+    if pooled_delta < 0 and mean_delta < 0 and ci[1] < 0 and unseen_mean < 0:
         return "C"
     return "B"
+
+
+def b_description(ci: tuple[float, float]) -> str:
+    return "B-small" if ci[0] >= -0.01 and ci[1] <= 0.01 else "B-uncertain"
+
+
+def partition_test_images(full: set[str], pilot: set[str]) -> set[str]:
+    unseen = full - pilot
+    if not pilot <= full or (len(full), len(pilot), len(unseen)) != (110, 25, 85):
+        raise ValueError("Full/pilot test-image split is not 110/25/85")
+    return unseen
+
+
+def baseline_terciles(baseline: dict[str, float]) -> list[tuple[str, list[str]]]:
+    ordered = sorted(baseline, key=lambda sample: (baseline[sample], sample))
+    size = len(ordered) // 3
+    return [("low", ordered[:size]), ("middle", ordered[size:2 * size]), ("high", ordered[2 * size:])]
+
+
+def taxonomy_contingency(base_rates: list[dict]) -> dict:
+    regression, non_regression = base_rates
+    return {"variant": regression["variant"],
+            "regression_gap_negative": regression["negative_gap_count"],
+            "regression_gap_nonnegative": regression["count"] - regression["negative_gap_count"],
+            "non_regression_gap_negative": non_regression["negative_gap_count"],
+            "non_regression_gap_nonnegative": non_regression["count"] - non_regression["negative_gap_count"]}
+
+
+def evaluate_unseen_predictions(run_dir: Path, manifest: list[dict], unseen: set[str], per_image: dict) -> list[dict]:
+    """Reuse stored maps in manifest order, with paired-array and score-order guards."""
+    indices = [i for i, row in enumerate(manifest) if row["sample"] in unseen]
+    expected_labels = np.asarray([int(row["label"]) for row in manifest])
+    reference_masks = None
+    rows = []
+    for variant in VARIANTS:
+        with np.load(run_dir / f"{variant}_predictions.npz", allow_pickle=False) as data:
+            labels, scores, masks, maps = (data[key] for key in ("labels", "scores", "masks", "maps"))
+            if (not np.array_equal(labels, expected_labels) or scores.shape != labels.shape
+                    or masks.ndim != 3 or maps.shape != masks.shape or maps.shape[0] != len(manifest)
+                    or not np.isfinite(scores).all() or not np.isfinite(maps).all()
+                    or not np.isin(masks, [0, 1]).all()):
+                raise ValueError(f"Invalid saved prediction arrays: {variant}")
+            if reference_masks is not None and not np.array_equal(masks, reference_masks):
+                raise ValueError(f"Unpaired saved masks: {variant}")
+            reference_masks = masks.copy()
+            expected_scores = [_number(per_image[(row["sample"], variant)], "image_score") for row in manifest]
+            if not np.allclose(scores, expected_scores, atol=1e-5, rtol=1e-5):
+                raise ValueError(f"NPZ scores do not match manifest-ordered per_image.csv: {variant}")
+            evaluation = evaluate_predictions(labels[indices], scores[indices], masks[indices], maps[indices])
+        rows.append({"subset": "pilot-unseen85 within-category subset", "variant": variant,
+                     "test_count": len(indices), "normal_count": int(np.sum(expected_labels[indices] == 0)),
+                     "anomaly_count": int(np.sum(expected_labels[indices] == 1)),
+                     "pooled_au_pro": evaluation["localization"]["au_pro"],
+                     "pixel_auroc": evaluation["localization"]["pixel_auroc"],
+                     "image_auroc": evaluation["classification"]["image_auroc"]})
+    return rows
 
 
 def partition_anomalies(full: set[str], pilot: set[str], *, expected: bool = False) -> tuple[set[str], set[str]]:
@@ -196,17 +263,27 @@ def analyze(run_dir: Path) -> tuple[dict, dict, dict[str, list[dict]], dict]:
     lpips_delta = _number(summary[("rrdb_esrgan_x4",)], "mean_lpips") - _number(summary[("rrdb_psnr_x4",)], "mean_lpips")
     pooled_delta = _number(summary[("rrdb_esrgan_x4",)], "au_pro") - _number(summary[("rrdb_psnr_x4",)], "au_pro")
     full = study == "restoration_objective_full"
-    pilot_anomalies = {row["sample"] for row in _manifest("restoration_objective_pilot") if row["label"] == "1"}
+    pilot_manifest = _manifest("restoration_objective_pilot")
+    pilot_anomalies = {row["sample"] for row in pilot_manifest if row["label"] == "1"}
     overlap, unseen = partition_anomalies(set(anomalous), pilot_anomalies, expected=full) if full else (set(anomalous), set())
     overlap_result = None
     unseen_summary = None
+    unseen_confirmation = []
     if full:
         pilot_rows = _unique(_read_csv(PILOT_RESULTS / "per_image.csv", ("sample", "variant", *COMPARE_FIELDS)), ("sample", "variant"))
         overlap_result = overlap_check(per_image, pilot_rows, overlap)
         unseen_summary = sign_summary(np.asarray([_number(pair[(sample,)], "delta_per_image_aupro_esrgan_minus_psnr") for sample in sorted(unseen)]))
+        unseen_all = partition_test_images(set(samples), {row["sample"] for row in pilot_manifest})
+        if (sum(samples[path]["label"] == "0" for path in unseen_all), sum(samples[path]["label"] == "1" for path in unseen_all)) != (35, 50):
+            raise ValueError("Pilot-unseen85 must contain 35 normal and 50 anomalous images")
+        unseen_confirmation = evaluate_unseen_predictions(run_dir, manifest, unseen_all, per_image)
 
-    tables: dict[str, list[dict]] = {name: [] for name in ("regression_intervals", "magnitude_sensitivity", "endpoint_pair_sensitivity", "taxonomy_base_rates", "quality_localization")}
+    tables: dict[str, list[dict]] = {name: [] for name in ("regression_intervals", "magnitude_sensitivity", "endpoint_pair_sensitivity", "taxonomy_base_rates", "taxonomy_contingency", "localization_delta_distribution", "baseline_tercile_regression", "quality_localization")}
+    if full:
+        tables["pilot_unseen_confirmation"] = unseen_confirmation
     spearman = {}
+    baseline_association = {}
+    baseline_values = {sample: _number(per_image[(sample, "bicubic_x4")], "per_image_aupro") for sample in anomalous}
     for variant in LEARNED:
         variant_tax = [taxonomy[(sample, variant)] for sample in anomalous]
         deltas = np.asarray([_number(row, "delta_per_image_aupro") for row in variant_tax])
@@ -216,7 +293,20 @@ def analyze(run_dir: Path) -> tuple[dict, dict, dict[str, list[dict]], dict]:
         for tau in TAUS:
             count, rate = magnitude(deltas, tau)
             tables["magnitude_sensitivity"].append({"variant": variant, "tau": tau, "count_delta_lt_minus_tau": count, "rate_delta_lt_minus_tau": rate, "anomaly_count": len(anomalous)})
-        tables["taxonomy_base_rates"].extend(taxonomy_base_rates(variant_tax, variant))
+        base_rates = taxonomy_base_rates(variant_tax, variant)
+        tables["taxonomy_base_rates"].extend(base_rates)
+        tables["taxonomy_contingency"].append(taxonomy_contingency(base_rates))
+        tables["localization_delta_distribution"].append({"variant": variant, **delta_distribution(deltas)})
+        delta_by_sample = {sample: _number(taxonomy[(sample, variant)], "delta_per_image_aupro") for sample in anomalous}
+        baseline_association[variant] = _spearman(np.asarray([baseline_values[sample] for sample in anomalous]), deltas)
+        for group, paths in baseline_terciles(baseline_values):
+            group_deltas = np.asarray([delta_by_sample[sample] for sample in paths])
+            strict_count, strict_rate = magnitude(group_deltas, 0)
+            loss_count, loss_rate = magnitude(group_deltas, 0.01)
+            tables["baseline_tercile_regression"].append({"variant": variant, "baseline_group": group, "image_count": len(paths),
+                "mean_bicubic_per_image_aupro": float(np.mean([baseline_values[sample] for sample in paths])),
+                "mean_delta_per_image_aupro": float(group_deltas.mean()), "strict_regression_count": strict_count,
+                "strict_regression_rate": strict_rate, "delta_lt_minus_0_01_count": loss_count, "delta_lt_minus_0_01_rate": loss_rate})
         quality = []
         for sample in anomalous:
             baseline, restored = per_image[(sample, "bicubic_x4")], per_image[(sample, variant)]
@@ -235,13 +325,22 @@ def analyze(run_dir: Path) -> tuple[dict, dict, dict[str, list[dict]], dict]:
         for tau in TAUS:
             tables["endpoint_pair_sensitivity"].append({"subset": name, "tau": tau, "esrgan_delta_gt_tau": int(np.sum(values > tau)),
                                                         "psnr_delta_lt_minus_tau": int(np.sum(values < -tau)), "within_band": int(np.sum(np.abs(values) <= tau)), "anomaly_count": len(values)})
+    localization_case = classify_case(pooled_delta, float(direct.mean()), tuple(boot["ci95"]), unseen_summary["mean"]) if full else None
     analysis = {"study": study, "source_run": str(run_dir), "manifest_sha256": expected_hash, "anomalous_images": len(anomalous),
                 "primary_metric": "pooled AU-PRO@0.3", "pooled_delta_aupro_esrgan_minus_psnr": pooled_delta,
                 "mean_delta_psnr_esrgan_minus_psnr": psnr_delta, "mean_delta_lpips_esrgan_minus_psnr": lpips_delta,
                 "quality_tradeoff_reproduced": psnr_delta < 0 and lpips_delta < 0,
                 "direct_per_image_aupro": sign_summary(direct),
-                "localization_case": classify_case(pooled_delta, float(direct.mean()), tuple(boot["ci95"])) if full else None,
+                "localization_case": localization_case,
+                "localization_b_description": b_description(tuple(boot["ci95"])) if localization_case == "B" else None,
                 "pilot_overlap_reproducibility": overlap_result, "pilot_unseen_within_category": unseen_summary,
+                "pilot_unseen85": {"variants": unseen_confirmation,
+                    "pooled_delta_aupro_esrgan_minus_psnr": unseen_confirmation[3]["pooled_au_pro"] - unseen_confirmation[2]["pooled_au_pro"]} if full else None,
+                "aggregate_methods": [summary[(variant,)] for variant in VARIANTS],
+                "localization_delta_distribution": tables["localization_delta_distribution"],
+                "baseline_aupro_vs_delta_spearman_descriptive": baseline_association,
+                "reporting_order": ["aggregate quality/detection", "per-image delta distribution", "magnitude sensitivity", "baseline diagnostic", "quality/localization association", "supporting taxonomy"],
+                "pooled_uncertainty_note": "Pooled AU-PRO is a point estimate; paired bootstrap covers the mean anomalous-image AU-PRO difference, not pooled AU-PRO.",
                 "spearman_descriptive": spearman,
                 "sensitivity_status": "pre-registered before full110 inference" if full else "pilot validation; post-hoc sensitivity, not a revised pilot decision"}
     plot_data = {"pair": [(sample, samples[sample]["defect_type"], _number(pair[(sample,)], "delta_per_image_aupro_esrgan_minus_psnr")) for sample in anomalous]}

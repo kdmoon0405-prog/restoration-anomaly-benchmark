@@ -54,7 +54,7 @@ Pre-register two anomalous-image scatter figures, with one point per image, defe
 - **B:** Quality trade-off persists but localization difference is small or uncertain. Report differing image-quality character with no stable downstream ranking; close model-comparison expansion, do not add GAN models.
 - **C:** Localization direction reverses materially. Record the pilot localization signal as sample-sensitive/unstable; do not search for a favorable subset or another endpoint.
 
-All three are valid. No post-hoc numerical cutoff or threshold may be introduced to choose a story. The full Hazelnut result is still development evidence, not external generalization or final Capsule validation. Feature NN-distance work is considered only if a stable scientifically useful endpoint-dependent failure pattern remains. Phase C gating, Capsule, new degradation, new detector, and new endpoint models stay closed. Capsule remains untouched until a separately frozen final method and evaluation plan authorize its single validation use.
+All three are valid. No post-hoc numerical cutoff or threshold may be introduced to choose a story. The full Hazelnut result is still development evidence, not external generalization or final Capsule validation. The dated amendments below define the final classification and stop rule. Additional NN-distance work, Phase C gating, Capsule, new degradation, new detector, and new endpoint models are closed for this graduation project.
 
 ## Execution boundary and runtime
 
@@ -98,3 +98,42 @@ Only after the future full runner has completed, derive the frozen analysis with
 ```powershell
 .venv\Scripts\python -X utf8 scripts\analyze_restoration_endpoint_full.py --run-dir outputs\restoration-objective\hazelnut-full110-gpu --output-dir analysis\restoration_objective_full\derived
 ```
+
+## Second pre-inference review hardening (2026-10-01, after `607510b`)
+
+A second external adversarial review was conducted before inference. No full110 prediction or result exists at this amendment. This section supersedes the previous A/B/C and subset-confirmation rules only where explicitly stated; all frozen scientific inputs, metrics, taxonomy, tau grid, bootstrap, figures, and execution commands remain unchanged.
+
+The contribution is quantifying the magnitude and distribution of localization changes, their relation to baseline performance, and their association with conventional image quality. The existence of strict-sign regressions alone is not the headline or a practical failure rate. Report in this order: aggregate quality/detection; per-image delta distribution; magnitude sensitivity; baseline-performance diagnostic; quality–localization association; supporting taxonomy.
+
+### Final interpretation and confirmation
+
+All direct deltas are RRDB-ESRGAN minus RRDB-PSNR. Let `P` be full110 pooled AU-PRO delta, `D70` the mean paired per-image AU-PRO delta over all 70 anomalies, `CI` its existing paired-bootstrap 95% interval, and `D50` the mean over the 50 anomalies absent from pilot25.
+
+- **A:** `P > 0 AND D70 > 0 AND CI.lower > 0 AND D50 > 0`.
+- **C:** `P < 0 AND D70 < 0 AND CI.upper < 0 AND D50 < 0`.
+- **B:** every other outcome, including a zero/mixed unseen50 direction.
+- Within B only, **B-small** means `CI` is fully contained in `[-0.01, +0.01]`, inclusive; **B-uncertain** covers other B outcomes. This band is a pre-declared magnitude descriptor, not an industrial equivalence margin, statistical equivalence, practical equivalence proof, or non-inferiority.
+
+Quality-trade-off reproduction remains separately `mean_delta_psnr < 0 AND mean_delta_lpips < 0`; it cannot choose A/B/C. Checkpoints differ in training data as well as objective, so there is no objective-only causal claim.
+
+Retain pilot20 overlap reproducibility and anomalous pilot-unseen50 summaries. Additionally, the **pilot-unseen85 within-category subset** comprises every test image absent from pilot25: 35 normal + 50 anomaly. Read the four saved NPZs in manifest order, validate paired shapes/labels/masks and CSV score order, and reuse existing evaluation to report pooled AU-PRO, Pixel AUROC, and valid Image AUROC per variant, plus direct RRDB pooled delta. These are secondary confirmation, not external validation, an independent dataset, or a held-out test set. A/B/C uses `P/D70/CI/D50`, never unseen85 pooled AU-PRO.
+
+Pooled AU-PRO is reported as a point estimate; the preregistered paired bootstrap quantifies uncertainty of the mean anomalous-image AU-PRO difference, not pooled AU-PRO. No expensive pooled bootstrap or Wilcoxon is added: they address different estimands or add a test not needed for this frozen comparison.
+
+### Magnitude, baseline, and map context
+
+For each learned restorer versus MATLAB Bicubic, retain every frozen tau count/rate. Add inclusive `count/rate(|delta AU-PRO| <= 0.01)` and minimum, 25th percentile, median, 75th percentile, maximum (NumPy's default linear quantiles) in `localization_delta_distribution.csv`. No threshold is selected as the true failure cutoff.
+
+Sort the 70 anomalies by `(Bicubic per-image AU-PRO, lexical sample path)` ascending. Split into low/middle/high groups of **23/23/24**. For each learned restorer and group, `baseline_tercile_regression.csv` records count, mean baseline AU-PRO, mean delta, strict regression count/rate, and `delta < -0.01` count/rate. Report descriptive Spearman between baseline AU-PRO and restoration delta, with average-rank ties. This is a ceiling/baseline association diagnostic, not regression-to-the-mean causality or a new primary question.
+
+`taxonomy_contingency.csv` makes four cells explicit per restorer: negative/nonnegative AU-PRO delta crossed with negative/nonnegative ROI–background-gap delta. Existing base-rate denominators and strict-sign taxonomy remain unchanged. This is a post-inference anomaly-map description, not a mechanism classifier. Selected PatchCore NN-distance analyses are historical consistency/resolution-level diagnostics only: maps derive from those distances, so they are not independent mechanism evidence.
+
+Report the four-method quality/localization ordering descriptively from saved `summary.csv` (also carried into `analysis_summary.json`). Keep the per-image Spearman associations for each learned restorer distinct from this method-level ranking; four methods are not a correlation analysis. No binary rho threshold is adopted. Within this setup, quality improvement may not guarantee localization improvement for each image; it does not establish that PSNR/LPIPS is an unreliable proxy in general. The optional method-level plot is omitted because the aggregate table already supplies the comparison. ROI fidelity, including arbitrary 8-pixel ROI PSNR and new MAE/MSE families, stays deferred; the frozen metrics answer the central question without another spatial choice.
+
+### Execution record and end of the GPU branch
+
+Runner changes are provenance only. Retain repository HEAD, requested/actual device, GPU name, `fit_performed=false`, bank/detector, checkpoint and manifest hashes, and existing per-stage timings. Add Python/PyTorch/torch-CUDA-build/cuDNN versions; LPIPS package version when enabled; exact `sys.argv`, `sys.orig_argv` (including interpreter flags), and parsed arguments; and `artifact_sha256` for the four CSVs (`summary`, `per_image`, `regression_taxonomy`, `objective_pair_per_image`) and four prediction NPZs. End-to-end `wall_clock_seconds` spans main entry through setup, inference, evaluation, file writes, and artifact hashing, with final device synchronization; it excludes interpreter import startup and final `results.json` serialization. No RGB-per-file hashes or self-hash are required. Scientific outputs and their computation are unchanged.
+
+Additional derived outputs are `localization_delta_distribution.csv`, `baseline_tercile_regression.csv`, `taxonomy_contingency.csv`, and, for a completed full run only, `pilot_unseen_confirmation.csv`; summary JSON includes the final case, B descriptor, baseline association, and unseen85 metrics. There are no empty pre-run result placeholders. Pilot25-derived additions are post-hoc code-validation descriptors only, not a changed pilot decision.
+
+**One valid full110 execution closes this restoration-endpoint GPU branch for every A/B/C outcome.** No further endpoints, Real-ESRGAN, network interpolation, NN-distance cases, adaptive gating/Phase C, Capsule, new degradation/detector, Screw reruns, or SurgClean follow. Existing selected NN analyses may remain supporting appendix evidence. Capsule stays unused in the graduation thesis; no untouched-category final generalization claim is made. Any expansion requires a separately designed future study, not a continuation triggered by full110. Full110 is now ready for one execution; no further preregistration changes are planned.

@@ -5,10 +5,13 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from importlib import metadata as package_metadata
 from pathlib import Path
+import platform
 import shutil
 import subprocess
 import sys
+from time import perf_counter
 
 import numpy as np
 from PIL import Image
@@ -168,7 +171,33 @@ def _load_frozen_manifest(args: argparse.Namespace, data_root: Path) -> tuple[st
     return manifest_sha, rows
 
 
+def _execution_provenance(torch, args: argparse.Namespace, argv: list[str]) -> dict:
+    lpips_version = None
+    if args.with_lpips:
+        try:
+            lpips_version = package_metadata.version("lpips")
+        except package_metadata.PackageNotFoundError:
+            pass
+    return {
+        "python_version": platform.python_version(),
+        "pytorch_version": str(torch.__version__),
+        "torch_cuda_build_version": torch.version.cuda,
+        "cudnn_version": torch.backends.cudnn.version(),
+        "lpips_package_version": lpips_version,
+        "invocation_argv": list(argv),
+        "interpreter_argv": list(sys.orig_argv),
+        "resolved_arguments": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
+    }
+
+
+def _output_artifact_hashes(output_dir: Path) -> dict[str, str]:
+    names = ("summary.csv", "per_image.csv", "regression_taxonomy.csv", "objective_pair_per_image.csv")
+    names += tuple(f"{variant}_predictions.npz" for variant in VARIANTS)
+    return {name: _checksum(output_dir / name) for name in names}
+
+
 def main() -> None:
+    wall_started = perf_counter()
     args = _parse_args()
     output_dir = args.output_dir.resolve()
     if output_dir.exists() and any(output_dir.iterdir()):
@@ -384,6 +413,10 @@ def main() -> None:
         "objective_pair_delta_rrdb_esrgan_minus_rrdb_psnr": objective_pair,
         "note": "No model selection, threshold fitting, fusion, or PatchCore fitting is performed by this pilot.",
     }
+    result["execution_provenance"] = _execution_provenance(torch, args, sys.argv)
+    result["artifact_sha256"] = _output_artifact_hashes(output_dir)
+    result["wall_clock_seconds"] = elapsed_seconds(torch, device, wall_started)
+    result["wall_clock_scope"] = "main entry through setup, inference, evaluation, file writes and artifact hashing; excludes final results.json serialization"
     (output_dir / "results.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"output": str(output_dir), "objective_pair_delta": objective_pair}, ensure_ascii=False))
 
