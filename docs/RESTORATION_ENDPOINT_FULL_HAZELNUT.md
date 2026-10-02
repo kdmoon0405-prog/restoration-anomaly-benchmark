@@ -137,3 +137,7 @@ Runner changes are provenance only. Retain repository HEAD, requested/actual dev
 Additional derived outputs are `localization_delta_distribution.csv`, `baseline_tercile_regression.csv`, `taxonomy_contingency.csv`, and, for a completed full run only, `pilot_unseen_confirmation.csv`; summary JSON includes the final case, B descriptor, baseline association, and unseen85 metrics. There are no empty pre-run result placeholders. Pilot25-derived additions are post-hoc code-validation descriptors only, not a changed pilot decision.
 
 **One valid full110 execution closes this restoration-endpoint GPU branch for every A/B/C outcome.** No further endpoints, Real-ESRGAN, network interpolation, NN-distance cases, adaptive gating/Phase C, Capsule, new degradation/detector, Screw reruns, or SurgClean follow. Existing selected NN analyses may remain supporting appendix evidence. Capsule stays unused in the graduation thesis; no untouched-category final generalization claim is made. Any expansion requires a separately designed future study, not a continuation triggered by full110. Full110 is now ready for one execution; no further preregistration changes are planned.
+
+---
+
+**Post-execution note (2026-10-02, added after this protocol closed; the text above is unchanged):** the one authorized full110 execution completed and was verified. Result: case **B (B-uncertain)**. See `analysis/restoration_objective_full/FULL_RESULT.md` and `EXECUTION_RECORD.md` for the full numbers and provenance.

@@ -1,0 +1,11 @@
+{
+  "estimate": 0.005109973203956189,
+  "ci95": [
+    -0.0009074316211144674,
+    0.013954090376626465
+  ],
+  "n": 70,
+  "repeats": 5000,
+  "seed": 2026,
+  "estimand": "mean paired anomalous-image AU-PRO delta, ESRGAN minus PSNR"
+}

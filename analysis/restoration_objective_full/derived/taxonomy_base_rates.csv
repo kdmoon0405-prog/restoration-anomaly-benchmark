@@ -1,0 +1,7 @@
+variant,group,count,negative_gap_count,negative_gap_rate
+swinir_x4,regression,29,13,0.4482758620689655
+swinir_x4,non_regression,41,11,0.2682926829268293
+rrdb_psnr_x4,regression,30,9,0.3
+rrdb_psnr_x4,non_regression,40,10,0.25
+rrdb_esrgan_x4,regression,22,13,0.5909090909090909
+rrdb_esrgan_x4,non_regression,48,30,0.625

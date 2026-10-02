@@ -1,0 +1,5 @@
+subset,variant,test_count,normal_count,anomaly_count,pooled_au_pro,pixel_auroc,image_auroc
+pilot-unseen85 within-category subset,bicubic_x4,85,35,50,0.8303190830464247,0.9846515372321848,1.0
+pilot-unseen85 within-category subset,swinir_x4,85,35,50,0.8558654189740041,0.9851284720767824,0.9982857142857143
+pilot-unseen85 within-category subset,rrdb_psnr_x4,85,35,50,0.8584170657036752,0.9846626871660508,0.9988571428571429
+pilot-unseen85 within-category subset,rrdb_esrgan_x4,85,35,50,0.8647501580153868,0.985068565079428,1.0

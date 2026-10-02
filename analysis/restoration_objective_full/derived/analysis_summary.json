@@ -1,0 +1,226 @@
+{
+  "study": "restoration_objective_full",
+  "source_run": "outputs/restoration-objective/hazelnut-full110-gpu",
+  "manifest_sha256": "2ddb62748c750b3e4fae2b4b0b0cb4f3c354fd02faac74c95117afe1b3e116cc",
+  "anomalous_images": 70,
+  "primary_metric": "pooled AU-PRO@0.3",
+  "pooled_delta_aupro_esrgan_minus_psnr": 0.00679042038152855,
+  "mean_delta_psnr_esrgan_minus_psnr": -2.6963011698084074,
+  "mean_delta_lpips_esrgan_minus_psnr": -0.04413308440284295,
+  "quality_tradeoff_reproduced": true,
+  "direct_per_image_aupro": {
+    "count": 70,
+    "mean": 0.005109973203956189,
+    "median": 0.0007459261517061555,
+    "min": -0.03628578827422435,
+    "max": 0.2517757490603978,
+    "esrgan_wins": 39,
+    "psnr_wins": 31,
+    "ties": 0
+  },
+  "localization_case": "B",
+  "localization_b_description": "B-uncertain",
+  "pilot_overlap_reproducibility": {
+    "samples": 20,
+    "compared_values": 720,
+    "atol": 1e-05,
+    "rtol": 1e-05,
+    "max_absolute_difference": 2.9802322387695312e-08,
+    "mismatch_count": 0,
+    "passed": true,
+    "mismatch_examples": []
+  },
+  "pilot_unseen_within_category": {
+    "count": 50,
+    "mean": 0.005062470251033995,
+    "median": 0.0011365929664861052,
+    "min": -0.03628578827422435,
+    "max": 0.2517757490603978,
+    "esrgan_wins": 28,
+    "psnr_wins": 22,
+    "ties": 0
+  },
+  "pilot_unseen85": {
+    "variants": [
+      {
+        "subset": "pilot-unseen85 within-category subset",
+        "variant": "bicubic_x4",
+        "test_count": 85,
+        "normal_count": 35,
+        "anomaly_count": 50,
+        "pooled_au_pro": 0.8303190830464247,
+        "pixel_auroc": 0.9846515372321848,
+        "image_auroc": 1.0
+      },
+      {
+        "subset": "pilot-unseen85 within-category subset",
+        "variant": "swinir_x4",
+        "test_count": 85,
+        "normal_count": 35,
+        "anomaly_count": 50,
+        "pooled_au_pro": 0.8558654189740041,
+        "pixel_auroc": 0.9851284720767824,
+        "image_auroc": 0.9982857142857143
+      },
+      {
+        "subset": "pilot-unseen85 within-category subset",
+        "variant": "rrdb_psnr_x4",
+        "test_count": 85,
+        "normal_count": 35,
+        "anomaly_count": 50,
+        "pooled_au_pro": 0.8584170657036752,
+        "pixel_auroc": 0.9846626871660508,
+        "image_auroc": 0.9988571428571429
+      },
+      {
+        "subset": "pilot-unseen85 within-category subset",
+        "variant": "rrdb_esrgan_x4",
+        "test_count": 85,
+        "normal_count": 35,
+        "anomaly_count": 50,
+        "pooled_au_pro": 0.8647501580153868,
+        "pixel_auroc": 0.985068565079428,
+        "image_auroc": 1.0
+      }
+    ],
+    "pooled_delta_aupro_esrgan_minus_psnr": 0.006333092311711641
+  },
+  "aggregate_methods": [
+    {
+      "variant": "bicubic_x4",
+      "test_count": "110",
+      "normal_count": "40",
+      "anomaly_count": "70",
+      "mean_psnr": "36.48300326258048",
+      "mean_ssim": "0.9321788805330182",
+      "mean_lpips": "0.17211688567291605",
+      "image_auroc": "0.9982142857142857",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9840601483537625",
+      "au_pro": "0.8203407025011096",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.0",
+      "mean_detector_seconds": "7.249040709998966"
+    },
+    {
+      "variant": "swinir_x4",
+      "test_count": "110",
+      "normal_count": "40",
+      "anomaly_count": "70",
+      "mean_psnr": "38.79502326049746",
+      "mean_ssim": "0.9544089195310369",
+      "mean_lpips": "0.09243962480263276",
+      "image_auroc": "0.9982142857142857",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9849749631192865",
+      "au_pro": "0.8427470063788147",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.37240828545658256",
+      "mean_detector_seconds": "7.480414041827052"
+    },
+    {
+      "variant": "rrdb_psnr_x4",
+      "test_count": "110",
+      "normal_count": "40",
+      "anomaly_count": "70",
+      "mean_psnr": "38.86066286986179",
+      "mean_ssim": "0.9552139624148429",
+      "mean_lpips": "0.088818090476773",
+      "image_auroc": "0.9989285714285714",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9845862091698752",
+      "au_pro": "0.8452849771577416",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.14661214272385803",
+      "mean_detector_seconds": "7.1458977118198"
+    },
+    {
+      "variant": "rrdb_esrgan_x4",
+      "test_count": "110",
+      "normal_count": "40",
+      "anomaly_count": "70",
+      "mean_psnr": "36.164361700053384",
+      "mean_ssim": "0.920652644624396",
+      "mean_lpips": "0.04468500607393005",
+      "image_auroc": "1.0",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9851029107149624",
+      "au_pro": "0.8520753975392702",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.1427356281846931",
+      "mean_detector_seconds": "7.316735190900297"
+    }
+  ],
+  "localization_delta_distribution": [
+    {
+      "variant": "swinir_x4",
+      "minimum": -0.06970992446251145,
+      "q25": -0.0018909313951993856,
+      "median": 0.0014038958819250213,
+      "q75": 0.011837269367457631,
+      "maximum": 0.22001621101121982,
+      "anomaly_count": 70,
+      "absolute_delta_le_0_01_count": 44,
+      "absolute_delta_le_0_01_rate": 0.6285714285714286
+    },
+    {
+      "variant": "rrdb_psnr_x4",
+      "minimum": -0.08066375470552434,
+      "q25": -0.003285911692649801,
+      "median": 0.0010198067819926493,
+      "q75": 0.014479880403537815,
+      "maximum": 0.2703726859583717,
+      "anomaly_count": 70,
+      "absolute_delta_le_0_01_count": 41,
+      "absolute_delta_le_0_01_rate": 0.5857142857142857
+    },
+    {
+      "variant": "rrdb_esrgan_x4",
+      "minimum": -0.1001162482284298,
+      "q25": -0.00044636731268507535,
+      "median": 0.0029317397310636983,
+      "q75": 0.012954899077473658,
+      "maximum": 0.292689008536827,
+      "anomaly_count": 70,
+      "absolute_delta_le_0_01_count": 43,
+      "absolute_delta_le_0_01_rate": 0.6142857142857143
+    }
+  ],
+  "baseline_aupro_vs_delta_spearman_descriptive": {
+    "swinir_x4": -0.4221327967806841,
+    "rrdb_psnr_x4": -0.31530049864403814,
+    "rrdb_esrgan_x4": -0.5280902808153267
+  },
+  "reporting_order": [
+    "aggregate quality/detection",
+    "per-image delta distribution",
+    "magnitude sensitivity",
+    "baseline diagnostic",
+    "quality/localization association",
+    "supporting taxonomy"
+  ],
+  "pooled_uncertainty_note": "Pooled AU-PRO is a point estimate; paired bootstrap covers the mean anomalous-image AU-PRO difference, not pooled AU-PRO.",
+  "spearman_descriptive": {
+    "swinir_x4": {
+      "psnr_gain_vs_bicubic": -0.02864141369958884,
+      "lpips_improvement_vs_bicubic": -0.07493657597760475
+    },
+    "rrdb_psnr_x4": {
+      "psnr_gain_vs_bicubic": -0.14957571516052837,
+      "lpips_improvement_vs_bicubic": -0.12620068235499957
+    },
+    "rrdb_esrgan_x4": {
+      "psnr_gain_vs_bicubic": -0.20633365409850404,
+      "lpips_improvement_vs_bicubic": 0.13851806491120636
+    }
+  },
+  "sensitivity_status": "pre-registered before full110 inference"
+}
