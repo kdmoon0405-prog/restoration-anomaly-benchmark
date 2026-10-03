@@ -1,0 +1,216 @@
+{
+  "scope": "Existing development data, exploratory feasibility; not independent validation",
+  "smoke": false,
+  "protocol_sha256": "f558ab6cf2d329fe2cf7b62df8ad3b7a145873dfa3169e47be4bc499a2f36b58",
+  "program_sha256": "eff08d17d178270f2996365b1415dd59030b7f5175f9c9db88a8199ef0aa5934",
+  "actual_device": "cpu",
+  "torch_version": "2.14.0+cpu",
+  "initialization_seconds": 19.7284683000762,
+  "wall_seconds": 225.21405840001535,
+  "fit_seconds_this_run": 0,
+  "calibration_seconds_this_run": 0,
+  "prediction_scale": "raw scores, same frozen detector; normalization used only for saved protection/anchor checks",
+  "cost_note": "Includes Bicubic selection inference for partial/uniform, shared SwinIR cost; composition times cover both RGB candidates. Cached selection used in this run. Wall time includes initialization, evaluation and plots.",
+  "f1_note": "No F1/operating-point safety claim: no new-condition calibration performed",
+  "test_paths": [
+    "hazelnut/test/good/000.png",
+    "hazelnut/test/good/001.png",
+    "hazelnut/test/crack/000.png",
+    "hazelnut/test/crack/001.png",
+    "hazelnut/test/cut/000.png",
+    "hazelnut/test/cut/001.png",
+    "hazelnut/test/hole/000.png",
+    "hazelnut/test/hole/001.png",
+    "hazelnut/test/print/000.png",
+    "hazelnut/test/print/001.png"
+  ],
+  "replay_checks": [
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "method": "bicubic",
+      "max_abs_normalized_map_diff": 0.0
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "method": "full_swinir",
+      "max_abs_normalized_map_diff": 0.0
+    }
+  ],
+  "summary": [
+    {
+      "method": "bicubic",
+      "test_count": 10,
+      "anomalous_count": 8,
+      "pooled_au_pro": 0.7144464564441093,
+      "mean_per_image_au_pro": 0.8655765336666128,
+      "mean_delta_vs_bicubic": 0.0,
+      "minimum_delta_vs_bicubic": 0.0,
+      "negative_count_vs_bicubic": 0,
+      "below_minus_0_01_count": 0,
+      "mean_psnr": 35.417966190874594,
+      "mean_ssim": 0.9297081244742802,
+      "inference_seconds_sum": 39.24707699997816
+    },
+    {
+      "method": "full_swinir",
+      "test_count": 10,
+      "anomalous_count": 8,
+      "pooled_au_pro": 0.7216879614606803,
+      "mean_per_image_au_pro": 0.8695419973284916,
+      "mean_delta_vs_bicubic": 0.003965463661878787,
+      "minimum_delta_vs_bicubic": -0.021141868952294307,
+      "negative_count_vs_bicubic": 4,
+      "below_minus_0_01_count": 1,
+      "mean_psnr": 37.87077242992068,
+      "mean_ssim": 0.9548480196903648,
+      "inference_seconds_sum": 48.358431800152175
+    },
+    {
+      "method": "partial",
+      "test_count": 10,
+      "anomalous_count": 8,
+      "pooled_au_pro": 0.7169711659095905,
+      "mean_per_image_au_pro": 0.8703805995576643,
+      "mean_delta_vs_bicubic": 0.004804065891051625,
+      "minimum_delta_vs_bicubic": -0.007156991712388483,
+      "negative_count_vs_bicubic": 6,
+      "below_minus_0_01_count": 0,
+      "mean_psnr": 36.729265418151186,
+      "mean_ssim": 0.9482356052328713,
+      "inference_seconds_sum": 88.09347819990944
+    },
+    {
+      "method": "uniform",
+      "test_count": 10,
+      "anomalous_count": 8,
+      "pooled_au_pro": 0.7222549065627367,
+      "mean_per_image_au_pro": 0.8700239840514078,
+      "mean_delta_vs_bicubic": 0.004447450384795031,
+      "minimum_delta_vs_bicubic": -0.015806410533696247,
+      "negative_count_vs_bicubic": 4,
+      "below_minus_0_01_count": 1,
+      "mean_psnr": 37.88227385931954,
+      "mean_ssim": 0.9545754339277671,
+      "inference_seconds_sum": 88.5670197000727
+    }
+  ],
+  "comparisons": {
+    "partial": {
+      "mean_delta_vs_full": 0.0008386022291728377,
+      "better_than_full_count": 3,
+      "worse_than_full_count": 5,
+      "full_gain_images_count": 4,
+      "full_gain_images_worsened_count": 4,
+      "summed_gain_sacrifice_on_full_gain_images": 0.018015227934594646,
+      "full_loss_images_count": 4,
+      "full_loss_images_improved_count": 3
+    },
+    "uniform": {
+      "mean_delta_vs_full": 0.00048198672291624445,
+      "better_than_full_count": 2,
+      "worse_than_full_count": 6,
+      "full_gain_images_count": 4,
+      "full_gain_images_worsened_count": 4,
+      "summed_gain_sacrifice_on_full_gain_images": 0.0013025309739186364,
+      "full_loss_images_count": 4,
+      "full_loss_images_improved_count": 2
+    },
+    "partial_vs_uniform": {
+      "mean_delta": 0.0003566155062565933,
+      "better_count": 3,
+      "worse_count": 5
+    }
+  },
+  "figure_renderer_sha256": "919bf9c31b21338db718ee6e274118c133dcb01fa95d3fd15071241985248c60",
+  "artifact_note": "After inference, figure spacing and a text report were added. Saved RGB, predictions, CSV metrics and measured run times are unchanged. program.py preserves the inference source."
+}
