@@ -89,9 +89,9 @@ Branch B accepts the same `--device {cpu,auto,cuda}` option as Branch A. PatchCo
 
 ## Current research sequence
 
-Hazelnut development, the preselected full Screw Branch A stress test, and the frozen six-case Screw NN-distance check are complete under the same x4 checkpoint, detector, preprocessing, pooled AU-PRO@0.3 implementation, and post-hoc taxonomy. Do not rerun the full category or selected cases. A SurgClean restoration-character pilot may follow only after its separate entry gate is satisfied. Capsule remains untouched final validation and must not be used for method selection.
+Hazelnut development, the preselected full Screw Branch A stress test, and the frozen six-case Screw NN-distance check are complete. The experimental phase is closed: no category/selected-case reruns, new endpoints, Phase C/gating, Capsule, or SurgClean work follows in this thesis. Capsule remains unused; there is no untouched-category final-validation claim.
 
-The frozen 25-image Hazelnut restoration-endpoint pilot is complete; its verified small-text results and claim limits are in [PILOT_RESULT.md](analysis/restoration_objective_pilot/PILOT_RESULT.md). The [full 110-image confirmation protocol](docs/RESTORATION_ENDPOINT_FULL_HAZELNUT.md) and manifest are now prepared, but full inference has not run. Capsule remains untouched.
+The pilot and one frozen full110 endpoint run are complete. The full result is **B / B-uncertain**: the quality trade-off reproduced, but stable localization superiority was not established. See [FULL_RESULT.md](analysis/restoration_objective_full/FULL_RESULT.md) and the [thesis synthesis](analysis/thesis_synthesis/THESIS_SYNTHESIS.md) for the two distinct experimental families, source-backed tables, claim limits, and figure hierarchy. Remaining work is writing, presentation, and saved-evidence verification, not further experiments.
 
 ## Run an experiment
 

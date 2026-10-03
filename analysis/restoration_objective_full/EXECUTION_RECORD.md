@@ -62,7 +62,7 @@ Saved per-variant stage seconds (mean restoration + mean detector, ×110 images)
 | rrdb_esrgan_x4 | 0.1427 | 7.3167 | 820.8 |
 | **Sum of timed stages** | | | **3284.0** |
 
-The ~280 s gap between the timed-stage sum and the end-to-end wall clock is model/bank loading, writing 110×6 RGB images plus GT, and output hashing, none of which is a timed research stage. This full run is about 10.4× the pilot's summed timed-stage seconds (342.2 s for 25 images), close to the 4.4× image-count ratio given the fixed per-run loading overhead.
+The full110 timed-stage sum is approximately `3283.923 s`, compared with `342.224 s` for pilot25 under the same timing scope: approximately `9.596×`. The image-count ratio is `4.4×`, so the per-image timed-stage cost is approximately `2.181×` higher. The current records do not establish why that per-image cost increased. Dividing full110 wall-clock time (`3563.561 s`) by pilot25 timed-stage time gives approximately `10.413×`, but these are different timing scopes and that ratio is not evidence of performance scaling.
 
 ## Analysis step
 
