@@ -2,6 +2,10 @@
 
 Date: 2026-09-20
 
+## Native postprocessing memory readiness (2026-10-17)
+
+Separate resource-only CLI reuses v0.6 helpers and unchanged evaluator, with preflight default, explicit execute,12 sequential exited workers, OS RSS high-water plus sampled RSS/free RAM/disk and checksummed completion records. Maps/scores/RGB are generated independently of GT; native hash-checked GT loads only in evaluation. No real model/index, full producer or research-performance output. Native guard adds fixed2GiB OS/runtime headroom:21923497568 available bytes required, not merely32GB installed RAM. Small final run passed, max individual worker OS peak109289472 bytes; native preflight BLOCKED_MEMORY with2856202240 available bytes and no workspace created. Full pytest280 passed/1 optional MVTec-data skip; no-Torch/FAISS focused tests22 passed; CPU smoke passed. See `docs/PCB_NATIVE_MEMORY_HANDOFF.md` and `analysis/pcb_native_memory/implementation-20261017/VERIFICATION.md`. Native execution and full pilot remain unapproved; incoming CUDA smoke's dirty=true provenance is preserved.
+
 ## Implemented
 
 - CPU-safe framework: deterministic degradations, MVTec AD/AD 2/VisA adapters, manifests, PSNR/SSIM, optional LPIPS, model protocols, YAML runner, CSV aggregation, bounded experiment matrices, image/pixel AUROC and F1, and AU-PRO@0.3.

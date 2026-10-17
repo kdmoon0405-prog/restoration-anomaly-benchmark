@@ -2,6 +2,10 @@
 
 Date: 2026-09-20
 
+## Resource-only readiness update (2026-10-17)
+
+Review of received CUDA smoke confirmed subset bank37632x1024,9 maps,12 stored-file hashes and13 recorded code hashes; preserve its source_worktree_dirty=true. It is not a full bank/calibration cohort or PCB performance result. v0.6 rules already exist and are not reselected. Add a separate synthetic-score/RGB native postprocessing resource rehearsal with evaluation-only hash-checked GT, unchanged metrics and explicit RAM/disk gates. Fixed2GiB runtime reserve is a technical safety budget, not a research threshold. Small execution passes; native remains BLOCKED_MEMORY locally. A measured synthetic scenario cannot approve full orchestration, model/VRAM peaks or full pilot. Existing negative gates/full110 B/B-uncertain remain unchanged.
+
 이 문서는 단순 실행 기록이 아니라, 연구 질문이 어떤 실험과 관찰을 거쳐 현재 형태로 바뀌었는지를 남긴다. 각 단계는 **가설 → 실험 → 관찰 → 해석 → 다음 결정** 순서로 기록한다.
 
 ## 0. 출발점: 화질 개선이 downstream 검사에도 항상 좋은가?

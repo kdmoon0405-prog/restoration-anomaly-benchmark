@@ -36,3 +36,5 @@ scripts/run_legacy_patchcore.py text eol=lf
 # The frozen local audit bound this file's mixed line endings byte-for-byte.
 scripts/run_fusion_patchcore.py -text whitespace=cr-at-eol
 src/sr_anomaly/fusion.py text eol=crlf
+src/sr_anomaly/pcb_native_memory.py text eol=lf
+scripts/check_pcb_native_memory.py text eol=lf
