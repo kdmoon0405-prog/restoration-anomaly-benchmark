@@ -6,7 +6,7 @@ import weakref
 import numpy as np
 import pytest
 
-from scripts.check_pcb_board_pipeline import fixture, produce
+from scripts.check_pcb_board_pipeline import RAM_CAP, fixture, produce
 from sr_anomaly import pcb_board_analysis as board
 from sr_anomaly.bounded_bank import file_sha256
 from sr_anomaly.fusion import normalize, quantile_threshold, robust_params
@@ -25,8 +25,8 @@ def dump(path, value):
 
 def prepare(raw,tmp_path):
     cal,normalized=tmp_path/"cal",tmp_path/"normalized"
-    board.fit_calibration(raw,cal,ram_budget=1024**3)
-    board.apply_calibration(raw,cal,normalized,ram_budget=1024**3)
+    board.fit_calibration(raw,cal,ram_budget=RAM_CAP)
+    board.apply_calibration(raw,cal,normalized,ram_budget=RAM_CAP)
     return cal,normalized
 
 
@@ -49,7 +49,7 @@ def test_exact_calibration_reload_application_and_scopes(raw,tmp_path):
         original=next(r for r in source["rows"] if (r["sample"],r["variant"]) == (row["sample"],row["variant"]))
         np.testing.assert_array_equal(board._map(norm,row,dtype=np.float64),normalize(board._map(raw,original),params[row["variant"]]["pixel"]))
     with pytest.raises(FileExistsError):
-        board.fit_calibration(raw,cal,ram_budget=1024**3)
+        board.fit_calibration(raw,cal,ram_budget=RAM_CAP)
 
 
 def test_test_values_labels_and_gt_do_not_fit_calibration(raw,tmp_path,monkeypatch):
@@ -137,7 +137,8 @@ def test_region_mask_explosion_blocks_before_existing_evaluator(raw,tmp_path,mon
         y,x=np.indices(parent.size_wh[::-1])
         return ((x+y)%2 == 0) if parent.label else np.zeros(parent.size_wh[::-1],bool)
     with pytest.raises(MemoryError,match="BLOCKED_MEMORY"):
-        board.evaluate_variant(raw,cal,norm,"clean",checkerboard,tmp_path/"eval",ram_budget=64*1024**2)
+        board.evaluate_variant(raw,cal,norm,"clean",checkerboard,tmp_path/"eval",
+                               ram_budget=board.RAM_RESERVE+64*1024**2)
     assert json.loads((tmp_path/"eval/status.json").read_text())["status"] == "FAILED"
 
 
@@ -155,7 +156,7 @@ def test_large_phase_arrays_released_and_metric_reference_unchanged(raw,tmp_path
     assert refs and all(r() is None for r in refs)
     from sr_anomaly.evaluation import evaluate_predictions
     _,_,_,gt=fixture()
-    result=board.evaluate_variant(raw,cal,norm,"clean",gt,tmp_path/"eval",ram_budget=1024**3)
+    result=board.evaluate_variant(raw,cal,norm,"clean",gt,tmp_path/"eval",ram_budget=RAM_CAP)
     gc.collect()
     assert all(r() is None for r in refs)
     state=board.load_normalized(norm,raw,cal)

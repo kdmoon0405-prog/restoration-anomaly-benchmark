@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from numbers import Integral
 from pathlib import Path
 import shutil
 
@@ -14,6 +15,7 @@ from .tiled_cpu_pipeline import Parent, validate_parents
 
 RULE_ID = "pcb_board_robust_after_mean_v0_6"
 QUANTILE = .99
+RAM_RESERVE = 2 * 1024**3  # Fixed technical OS/runtime headroom, not a research threshold.
 
 
 def _json(path):
@@ -27,13 +29,30 @@ def _complete(directory, kind=None):
     return state
 
 
-def _budget(required, budget):
+def _budget(required, budget, *, live_bytes=0, available_bytes=None):
+    """Cap the TOTAL envelope + reserve; free RAM covers only its not-yet-live part.
+
+    live_bytes is known allocated payload already included in required, never
+    process RSS, mmap address space or another worker's peak. The cap includes
+    the reserve and is not relaxed by live allocations.
+    """
     from .pcb_tiled_runner import available_ram
-    if budget is not None and (isinstance(budget, bool) or not isinstance(budget, int) or budget < 1):
+    if budget is not None and (isinstance(budget, bool) or not isinstance(budget, Integral) or budget < 1):
         raise ValueError("Positive RAM budget bytes required")
-    available = available_ram()
-    if required > min(available, budget if budget is not None else available):
-        raise MemoryError("BLOCKED_MEMORY: planned phase payload exceeds available/capped RAM; workspace is additional")
+    for name, value in (("required", required), ("live_bytes", live_bytes)):
+        if isinstance(value, bool) or not isinstance(value, Integral) or value < 0:
+            raise ValueError(f"Nonnegative integer {name} bytes required")
+    if live_bytes > required:
+        raise ValueError("Live bytes must be included in the phase envelope")
+    available = available_ram() if available_bytes is None else available_bytes
+    if isinstance(available, bool) or not isinstance(available, Integral) or available < 0:
+        raise ValueError("Nonnegative integer available RAM bytes required")
+    # Convert NumPy scalars before arithmetic to avoid fixed-width overflow.
+    required, live_bytes, available = int(required), int(live_bytes), int(available)
+    if budget is not None and required + RAM_RESERVE > int(budget):
+        raise MemoryError("BLOCKED_MEMORY: fixed phase plan plus 2 GiB headroom exceeds RAM cap")
+    if required - live_bytes + RAM_RESERVE > available:
+        raise MemoryError("BLOCKED_MEMORY: insufficient available RAM including fixed 2 GiB headroom")
 
 
 def _new_output(output, state, *, source_dirs=(), disk_bytes=0):
@@ -280,7 +299,8 @@ def evaluate_variant(raw, calibration, normalized, variant, mask_loader, output,
             masks[i] = mask
             region_bytes += int(connected_components(mask, connectivity=1).max())*mask.size
             del mask
-        _budget(memory_plan(parents, region_mask_bytes=region_bytes)["evaluation_planning_envelope_bytes"], ram_budget)
+        _budget(memory_plan(parents, region_mask_bytes=region_bytes)["evaluation_planning_envelope_bytes"],
+                ram_budget, live_bytes=maps.nbytes + masks.nbytes)
         fitted = params[variant]
         metrics = evaluate_predictions(np.asarray([r["label"] for r in rows]), np.asarray([r["score"] for r in rows]),
             masks=masks, anomaly_maps=maps, image_threshold=fitted["image_threshold"],

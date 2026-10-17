@@ -29,7 +29,7 @@ from .pcb_tiling import tile_boxes
 from .tiled_cpu_pipeline import Parent
 
 KIND = "resource_rehearsal_synthetic_scores_rgb_not_predictions"
-RAM_RESERVE = 2 * 1024**3  # Fixed technical OS/runtime headroom, not a research threshold.
+RAM_RESERVE = board.RAM_RESERVE
 DISK_RESERVE = 1024**3
 SEED = 11
 STAGES = ("calibration", "normalization", "quality", "evaluation")
@@ -144,11 +144,7 @@ class Monitor:
 
 
 def guard_memory(required, cap=None, *, live_bytes=0):
-    available = available_ram()
-    if cap is not None and required + RAM_RESERVE > cap:
-        raise MemoryError("BLOCKED_MEMORY: fixed phase plan plus 2 GiB headroom exceeds RAM cap")
-    if max(0, required - live_bytes) + RAM_RESERVE > available:
-        raise MemoryError("BLOCKED_MEMORY: insufficient available RAM including fixed 2 GiB headroom")
+    board._budget(required, cap, live_bytes=live_bytes, available_bytes=available_ram())
 
 
 def stage_plan(parents, region_bytes):

@@ -2,6 +2,12 @@
 
 Date: 2026-09-20
 
+## Align board/rehearsal memory accounting (2026-10-18)
+
+Correct the board evaluator's post-allocation double budgeting: subtract only already-filled float64 maps/bool masks from the remaining available-RAM requirement. Board and rehearsal now reuse one guard, preserving the fixed2GiB reserve and total envelope-plus-reserve cap. Small synthetic checker caps explicitly include1GiB payload plus2GiB reserve, recorded in their protocols. Native pre-allocation requirement remains21923497568bytes; no native allocation, model execution or full approval. Evaluation/metric/model/geometry/bank/protocol sources are unchanged outside these technical guard wrappers.
+
+Full pytest326 passed/1 optional-data skip(186.46s); focused tests68 passed; no-Torch/FAISS boundary/producer tests46 passed; existing CPU smoke passed(2 rows). Exact-boundary/one-byte-short, invalid inputs, NumPy overflow and already-live-array integration checks pass; existing unchanged-evaluator equivalence and region-explosion guards remain tested. See docs/PCB_MEMORY_GUARD_ALIGNMENT.md. Earlier native ZIP evidence belongs to its recorded older source revision and is not rewritten. Real RGB/GT binding, model/index RAM/VRAM/runtime and producer disk review remain separate full-pilot blockers. No push.
+
 ## Streaming producer candidate, fake-process integration (2026-10-17)
 
 Local exp/pcb-full-producer-integration from public bb22cf8 adds an injected synthetic-only streaming producer, lossless already-produced test RGB spool/reader and seven-worker integration checker. Reuses bounded-bank streaming, canonical map mean/max tile score, v0.6 calibration/quality and unchanged exact evaluation; no real factory/full CLI or old guard change. Small generated2-fit/2-calibration/2-test fixture produces16 vectors/7 retained,12 maps, one bank bind and no second quality transform. Seven workers exit0, owned fake references release and2258944 RGB spool bytes are cleaned after validation. Maximum individual OS lifetime peak109326336 bytes is small-scenario-only, not native/VRAM/global peak. All14 executable source hashes match; pre-commit run source bb22cf8/dirty=true is preserved.

@@ -24,7 +24,7 @@ from sr_anomaly.pcb_tiled_runner import (BUDGET, GEOMETRY, available_ram, load_i
                                          run_raw_smoke, write_json)
 from sr_anomaly.tiled_cpu_pipeline import Parent
 
-RAM_CAP = 1024**3  # Technical synthetic-test ceiling, NOT a research hyperparameter.
+RAM_CAP = board.RAM_RESERVE + 1024**3  # 1 GiB synthetic payload cap + unchanged 2 GiB reserve.
 
 
 def fixture():
@@ -182,6 +182,8 @@ def run(run_id):
     protocol = {"input_kind":"synthetic", "frozen_at_utc":datetime.now(timezone.utc).isoformat(),
         "source_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),
         "code_sha256":{n:file_sha256(ROOT/n) for n in source_files},"rule_id":board.RULE_ID,
+        "phase_ram_cap_bytes":RAM_CAP,"ram_reserve_bytes":board.RAM_RESERVE,
+        "cap_semantics":"total_phase_envelope_plus_reserve",
         "toy_settings":{"fit":2,"calibration":2,"test":2,"size_wh":[336,224],"patch_grid":[2,2],"D":4,"K":7},
         "real_data_or_model_execution":False,"full_pilot":"NOT_READY_FOR_FULL_PILOT"}
     report.mkdir(parents=True)

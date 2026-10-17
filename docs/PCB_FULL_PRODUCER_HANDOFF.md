@@ -148,3 +148,13 @@ fresh actual source/checkpoint/input binding; explicit final full-execution revi
 The present checker deliberately has no real factory or dataset execution path.
 No inference, GPU/model smoke rerun, full bank/calibration, tuning or full pilot
 is authorized. Original negative gating and full110 B/B-uncertain stay unchanged.
+
+## 2026-10-18 memory-guard correction
+
+The delivered native synthetic rehearsal has now passed for its recorded older
+revision; this does not validate actual model/index/VRAM resources or this new
+revision's native run. Board wrappers and the rehearsal now share total-cap,
+already-live-array and fixed2GiB-reserve accounting. Small checker caps explicitly
+include1GiB payload plus2GiB reserve and record this in their protocols. See
+PCB_MEMORY_GUARD_ALIGNMENT.md for formulas, CPU boundary checks and remaining
+full-execution blockers. Historical evidence above remains unchanged.

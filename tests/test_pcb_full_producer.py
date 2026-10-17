@@ -226,6 +226,10 @@ def test_sequential_process_end_to_end_completion_and_tamper(tmp_path):
     # ROOT contains code/references; unique ignored output, no native RGB/GT read.
     run_id = "pytest-producer-" + tmp_path.parent.name[-12:] + "-" + tmp_path.name
     state, output = checker.run(ROOT, run_id)
+    protocol = json.loads((output / "PROTOCOL.json").read_text(encoding="utf-8"))
+    assert protocol["phase_ram_cap_bytes"] == 3 * 1024**3
+    assert protocol["ram_reserve_bytes"] == 2 * 1024**3
+    assert protocol["cap_semantics"] == "total_phase_envelope_plus_reserve"
     assert len(state["workers"]) == 7 and state["rgb_spool_removed"]
     assert state["all_workers_exited_before_next_stage"] and not state["full_pilot_approved"]
     produced = json.loads((output / "stages/produce-all.json").read_text(encoding="utf-8"))

@@ -31,7 +31,7 @@ SEQUENCE = (("produce", None), ("calibration", None), ("normalize", None), ("qua
     ("evaluate", v) for v in VARIANTS)
 CODE = ("scripts/check_pcb_full_producer.py", "src/sr_anomaly/pcb_full_producer.py",
         "scripts/check_pcb_board_pipeline.py", *memory.CODE[1:])
-RAM_CAP = 1024**3  # Small fake fixture only; never a native execution override.
+RAM_CAP = board.RAM_RESERVE + 1024**3  # 1 GiB fake payload + 2 GiB reserve; no native override.
 
 
 def _read(path):
@@ -164,6 +164,8 @@ def run(root, run_id, *, timeout=120):
     board._budget(max(synthetic_plan["producer_prediction_visible_bytes"],
                       synthetic_plan["postprocessing"]["quality_planning_envelope_bytes"]), RAM_CAP)
     protocol = {"input_kind": "synthetic", "kind": KIND, "real_execution": False,
+                "phase_ram_cap_bytes": RAM_CAP, "ram_reserve_bytes": board.RAM_RESERVE,
+                "cap_semantics": "total_phase_envelope_plus_reserve",
                 "code_sha256": {n: file_sha256(root / n) for n in dict.fromkeys(CODE)},
                 "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
                 "source_worktree_dirty": bool(subprocess.check_output(
