@@ -15,6 +15,12 @@ weights, raw prediction arrays, local-only research journals, virtual environmen
 and browser screenshots are not included. Historical reports and their hashes are
 preserved, not regenerated. A report may reference an intentionally local-only image.
 
+Input-delivery amendment: the licensed original VisA pcb2 subset is separately
+provided as the `pcb2-inputs-v1` GitHub Release asset, not in the Git tree. Run the
+setup command below before preflight. It also downloads the two frozen checkpoints
+from their original publishers; model weights are not rehosted by this project.
+License and attribution are included in the ZIP and `docs/third_party/`.
+
 Read `PCB_FULL_FOV_PROTOCOL_V0.6.md`, `PCB_BOARD_LIFECYCLE_HANDOFF.md`, and
 `PCB_TILED_GPU_HANDOFF.md` in that order. The v0.5 handoff's publication status is
 historical; this document records the new publication boundary. No research rule,
@@ -41,26 +47,42 @@ git rev-parse HEAD
 
 The destination and local branch must be unused; if either exists, inspect it or
 choose a new name, never overwrite it. This new worktree does not inherit `.venv`,
-datasets or checkpoints. Use the established CUDA environment and actual local input
-paths described in the GPU handoff. Do not commit those inputs or environment files.
+datasets or checkpoints. Use the established CUDA environment, then install the
+frozen inputs as follows. Do not commit those inputs or environment files.
 The commands below assume the CUDA environment's Python is active as `python`.
 
 ```powershell
+python scripts/setup_pcb_gpu_inputs.py --visa-root data/external/VisA
+python scripts/setup_pcb_gpu_inputs.py --visa-root data/external/VisA --verify-only
 python -m pytest -q
 python scripts/smoke_test.py
 python -c "import torch; print(torch.__version__, torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'NO CUDA')"
 $checkId = 'pcb-tiled-cuda-preflight-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
-python scripts/run_pcb_tiled_patchcore.py --run-id $checkId --scope model-smoke --device cuda
+python scripts/run_pcb_tiled_patchcore.py --run-id $checkId --scope model-smoke --device cuda --data-root data/external/VisA
 ```
 
-Set `VISA_ROOT`, `PATCHCORE_BACKBONE_CHECKPOINT` and `SWINIR_X4_CHECKPOINT` to
-existing local inputs before preflight when the default locations do not apply.
+Setup needs Python 3.11 and outbound HTTPS only; it does not import Torch, run models
+or change the Python environment. It verifies every image/mask and the official CSV
+against the frozen inventory, refuses to overwrite different existing files, and
+can safely resume from identical files. The ZIP contains 1101 RGB + 100 GT + the
+official split CSV + 3 license/attribution files (1205 entries, 274645313 bytes).
+Allow at least 2 GiB free disk for input setup, with separate space for the Python
+environment and future smoke outputs. This is a setup margin, not an execution RAM
+or disk guarantee. It is
+not the entire VisA dataset; all current pcb2 inventory paths are present, other
+categories are intentionally absent. No MVTec dataset is redistributed here.
+
+The backbone uses `TORCH_HOME/hub/checkpoints` or the default user Torch cache;
+SwinIR uses `checkpoints/swinir`. Existing `PATCHCORE_BACKBONE_CHECKPOINT` and
+`SWINIR_X4_CHECKPOINT` overrides are honored by both setup and runner. If VisA
+already exists elsewhere, use its actual location for both `--visa-root` and
+`--data-root`; no duplicate dataset download is required when all hashes match.
 Do not bypass missing files, pinned checkpoint hashes, split or resource checks.
 Only after reviewing exit code 0 and `PREFLIGHT_PASS`, run the limited raw smoke:
 
 ```powershell
 $smokeId = 'pcb-tiled-cuda-raw-smoke-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
-python scripts/run_pcb_tiled_patchcore.py --run-id $smokeId --scope model-smoke --device cuda --execute
+python scripts/run_pcb_tiled_patchcore.py --run-id $smokeId --scope model-smoke --device cuda --data-root data/external/VisA --execute
 ```
 
 Return the preflight report, raw smoke status/bank/predictions, source and checkpoint
@@ -85,3 +107,12 @@ distributed). `scripts/smoke_test.py` passed with 2 result rows. All 18 distinct
 code-file hashes bound by the native geometry and board lifecycle protocols match
 the delivery checkout. `git diff --cached --check` passed. The original local
 branch and source worktree were preserved. No GPU/model inference was run.
+
+Input-delivery amendment verification: 258 passed, 1 optional MVTec-data test skipped;
+CPU smoke passed. The 1205-entry ZIP was installed into an initially absent dataset
+folder, all 1202 frozen input-file hashes and both checkpoint hashes passed, and
+re-running setup in verify-only mode passed. SwinIR was actually downloaded from
+its original publisher; the matching backbone already existed in the user cache.
+Model-free CPU preflight on the installed tree returned PREFLIGHT_PASS with no
+blockers. GitHub's uploaded asset digest matches the pinned ZIP SHA256. None of
+these checks ran a model or established real CUDA/full-pilot readiness.

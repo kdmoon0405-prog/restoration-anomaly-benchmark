@@ -1,5 +1,13 @@
 # PCB tiled GPU handoff, raw smoke only
 
+2026-10-17 input-delivery amendment: first follow `PCB_GITHUB_HANDOFF.md` on
+`exp/pcb-tiled-gpu-handoff`. Run `python scripts/setup_pcb_gpu_inputs.py --visa-root
+data/external/VisA` before resolving dataset paths below. This obtains the licensed
+pcb2 Release bundle and the pinned checkpoints from their publishers, verifies
+hashes, and runs no models. When not using VISA_ROOT, pass `--data-root
+data/external/VisA` explicitly to preflight and smoke. Earlier publication/input
+availability statements below describe the pre-publication local state.
+
 This session runs CPU tests/preflight only. No real PatchCore/SwinIR/index/PCB inference has run.
 Use the same code package/local commit and frozen audit/bank metadata; this document does not
 authorize pushing it or imply it is already available on the remote repository.

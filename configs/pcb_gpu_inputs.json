@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "purpose": "Frozen pcb2 input delivery only; no inference or research-rule changes",
+  "bundle": {
+    "name": "visa-pcb2-frozen-v1.zip",
+    "url": "https://github.com/kdmoon0405-prog/restoration-anomaly-benchmark/releases/download/pcb2-inputs-v1/visa-pcb2-frozen-v1.zip",
+    "sha256": "bf5fcce555140be6b460ecbfac849c5580fafcc64c4c7093308448f05b484fc5",
+    "bytes": 274645313,
+    "entries": 1205,
+    "license": "CC-BY-4.0",
+    "upstream": "https://github.com/amazon-science/spot-diff"
+  },
+  "backbone": {
+    "name": "wide_resnet50_2-95faca4d.pth",
+    "url": "https://download.pytorch.org/models/wide_resnet50_2-95faca4d.pth",
+    "sha256": "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8"
+  },
+  "swinir": {
+    "name": "002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth",
+    "url": "https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth",
+    "sha256": "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e"
+  }
+}
