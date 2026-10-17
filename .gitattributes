@@ -38,3 +38,5 @@ scripts/run_fusion_patchcore.py -text whitespace=cr-at-eol
 src/sr_anomaly/fusion.py text eol=crlf
 src/sr_anomaly/pcb_native_memory.py text eol=lf
 scripts/check_pcb_native_memory.py text eol=lf
+src/sr_anomaly/pcb_full_producer.py text eol=lf
+scripts/check_pcb_full_producer.py text eol=lf
