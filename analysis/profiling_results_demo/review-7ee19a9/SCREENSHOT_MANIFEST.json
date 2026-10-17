@@ -1,0 +1,138 @@
+{
+  "local_only": true,
+  "reason": "May contain licensed dataset RGB; ignored by Git, not published",
+  "files": [
+    {
+      "path": "screenshots/after-candidate1-unavailable.png",
+      "sha256": "0de83f96c5c6a16675736d6478f857013cf03265d57ea2f4f4374bb58f6cfa9a",
+      "bytes": 313003,
+      "pixels": [
+        1440,
+        1876
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/after-candidate2-gt-rgb.png",
+      "sha256": "562a60051bf575789d12b4d932a28736700b77be24e508d1e445352d4c3ee3ab",
+      "bytes": 441110,
+      "pixels": [
+        1440,
+        2258
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/after-initial-restored.png",
+      "sha256": "fe94d1a4fad5f3681efa7060e0610482c06dde566f78acea3b838884189de319",
+      "bytes": 416355,
+      "pixels": [
+        1440,
+        1889
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/after-narrow-scrolled.png",
+      "sha256": "98185f3fca8e17a7d47e451f6b0daefb062c4b257b3c0be53faa09a12a75ead9",
+      "bytes": 424411,
+      "pixels": [
+        760,
+        2920
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/after-narrow.png",
+      "sha256": "3a6fd14701cd80181b8807f15869254b404bc4d2702eef478a981e32bef2e2d5",
+      "bytes": 373577,
+      "pixels": [
+        760,
+        3015
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/after-normal-degraded-rgb.png",
+      "sha256": "59f0e8937b831db3ddd95b8a2ad706b5c0883bcdb853173a2606f34562202d75",
+      "bytes": 426961,
+      "pixels": [
+        1440,
+        1876
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/before-candidate1-unavailable.png",
+      "sha256": "38123cb4f3b1b9b7625b0bed5da3104d5e3f738be466e8bb6276568b0a1fd6ac",
+      "bytes": 296257,
+      "pixels": [
+        1440,
+        1781
+      ],
+      "direct_view_image_review": false,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/before-candidate2-gt-rgb.png",
+      "sha256": "c81d4d3c433ec8886aae37a8d0cbf68e44892bdb92fb18ce306e6dfa7b880d9a",
+      "bytes": 427177,
+      "pixels": [
+        1440,
+        2163
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/before-initial-restored.png",
+      "sha256": "eaf76135ee034b3e016c6506d6b7225a2a78f4cd1a5a691bda6e8ec2d73b7351",
+      "bytes": 401374,
+      "pixels": [
+        1440,
+        1794
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/before-narrow.png",
+      "sha256": "89f9851dca4f9aff39631d20479cec27cfd88f40a1532d3d10c4f71f3f9b1980",
+      "bytes": 364690,
+      "pixels": [
+        882,
+        2873
+      ],
+      "direct_view_image_review": true,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/before-normal-degraded-rgb.png",
+      "sha256": "43fe8997c09a3731444089c6793077cb786bb33f018facce9a19b101281e757b",
+      "bytes": 414076,
+      "pixels": [
+        1440,
+        1781
+      ],
+      "direct_view_image_review": false,
+      "kind": "actual Edge page screenshot"
+    },
+    {
+      "path": "screenshots/pcb-crop-structural-examples.png",
+      "sha256": "fc3616679594e7a1b966e28ed079252825134b2da243c27f1d9cc4a3000806d3",
+      "bytes": 1452082,
+      "pixels": [
+        1400,
+        1120
+      ],
+      "direct_view_image_review": true,
+      "kind": "structural data figure, not browser screenshot"
+    }
+  ]
+}

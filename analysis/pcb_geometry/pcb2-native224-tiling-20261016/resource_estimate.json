@@ -1,0 +1,66 @@
+{
+  "planning_only": true,
+  "measured_runtime_or_peak_memory": false,
+  "sampler": "IdentitySampler",
+  "coreset_reduction": "none; unchanged",
+  "reference_fit_images": 313,
+  "reference_bank_vectors": 245392,
+  "patches_per_224_tile": 784,
+  "embedding_dimension": 1024,
+  "dtype": "float32",
+  "tiles": {
+    "fit": 34608,
+    "calibration": 8640,
+    "test": 9600
+  },
+  "embedding_vectors": {
+    "fit": 27132672,
+    "calibration": 6773760,
+    "test": 7526400
+  },
+  "embedding_bytes_by_partition": {
+    "fit": 111135424512,
+    "calibration": 27745320960,
+    "test": 30828134400
+  },
+  "cpu_exact_index_vector_bytes": 111135424512,
+  "fit_list_plus_concatenation_vector_bytes": 222270849024,
+  "fit_features_plus_scorer_copy_plus_index_vector_bytes": 333406273536,
+  "post_fit_scorer_features_plus_index_vector_bytes": 222270849024,
+  "test_pixels": 300456000,
+  "test_float32_maps_one_method_bytes": 1201824000,
+  "test_float32_maps_three_methods_bytes": 3605472000,
+  "test_bool_masks_bytes": 300456000,
+  "test_float64_score_copy_bytes": 2403648000,
+  "one_full_length_int64_sort_or_rank_array_bytes": 2403648000,
+  "test_tile_float32_maps_one_method_bytes": 1926758400,
+  "evaluation_4connected_regions": 332,
+  "aupro_retained_region_bool_masks_bytes": 498756960,
+  "formulas": {
+    "vectors": "tiles * (saved ntotal / saved fit image count)",
+    "bank": "fit_tiles * patches_per_tile * D * 4; CPU IndexFlatL2, no coreset",
+    "fit_buffers": "_fit concatenation, ConcatMerger copy, IndexFlatL2.add copy can coexist; not measured RSS",
+    "evaluation": "N*H*W*(4 map / 1 bool / 8 float64 or int64); regions keep one H*W bool each"
+  },
+  "limits": "No runtime/GPU/VRAM estimate. Includes payloads only, not backbone/activations/allocator/FAISS scratch, sorting/unique temporaries or all evaluator live buffers. Buffer fields are overlapping scenarios, NOT additive totals. Saved bank only supplies shape/config, never reused as PCB bank. New tile boundary effects and native scale are unmeasured.",
+  "valid_for_complete_cohort": true,
+  "reference_model_spec": {
+    "implementation": "amazon-science/patchcore-inspection",
+    "source_commit": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad",
+    "category": "hazelnut",
+    "seed": 11,
+    "train_ratio": 0.8,
+    "backbone": "wideresnet50",
+    "layers": [
+      "layer2",
+      "layer3"
+    ],
+    "resize": 256,
+    "center_crop": 224,
+    "pretrain_embed_dimension": 1024,
+    "target_embed_dimension": 1024,
+    "patchsize": 3,
+    "sampler": "IdentitySampler",
+    "nearest_neighbor": "FaissNN(cpu)"
+  }
+}

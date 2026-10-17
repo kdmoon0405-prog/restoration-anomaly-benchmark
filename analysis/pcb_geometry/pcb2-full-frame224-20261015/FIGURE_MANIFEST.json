@@ -1,0 +1,13 @@
+{
+  "purpose": "Post-audit explanation of frozen examples, not model inputs or additional geometry candidates",
+  "rgb_figures_local_only": true,
+  "direct_image_view_completed": true,
+  "verified_on_kst_date": "2026-10-16",
+  "figures": {
+    "figures/geometry_examples.png": "499c8855d685f0cc82e3c100e40a041c949e5923df663d7729339d7182668f3b",
+    "figures/component_sampling_details.png": "094ec7c6885d98c91f83787063aaf19914e35acca4075b3c7be36921a81f4530"
+  },
+  "companion_renderer": "scripts/render_pcb_geometry_ids.py",
+  "companion_renderer_sha256": "d022a956cf2549ab7b5e89441187f2eabe43c73cdb8265ea840bc54f95b16989",
+  "verification": "1,201 input RGB/GT file hashes, frozen protocol/source hashes and INPUTS.csv hash match; protected prior scientific paths have no diff"
+}

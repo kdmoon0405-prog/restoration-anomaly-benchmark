@@ -1,0 +1,15 @@
+{
+  "status": "SYNTHETIC_COMPLETE_NOT_PCB",
+  "observed_vectors": 1000003,
+  "stored_vectors": 257,
+  "dimension": 8,
+  "bank_payload_bytes": 8224,
+  "index_payload_bytes": 2056,
+  "max_chunk_vectors_seen": 8192,
+  "reference_equality": true,
+  "state_file": "outputs/pcb-bank-budget/pcb2-uniform-cap262144-20261016/synthetic-bank/status.json",
+  "state_file_sha256": "49135604e28e9c4f1a549f0e9c333787be49f07106b631a4c0597de1dfd0e99c",
+  "pcb_bank": "NOT_CREATED",
+  "pcb_calibration": "NOT_CREATED",
+  "pilot": "NOT_READY_FOR_PILOT"
+}

@@ -1,0 +1,7 @@
+{
+  "cpu_name": "Intel(R) Core(TM) Ultra 5 125H",
+  "physical_cores": 14,
+  "logical_processors": 18,
+  "source": "Post-run local Win32_Processor inventory on 2026-10-15; not a runtime utilization or peak-memory measurement",
+  "computer_name_recorded": false
+}

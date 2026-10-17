@@ -1,0 +1,19 @@
+{
+  "synthetic_integration": "PASS",
+  "parents": 5,
+  "fit_parents": 2,
+  "calibration_parents": 1,
+  "test_parents": 2,
+  "saved_parent_variants": 6,
+  "feature_vectors_expected": 32,
+  "feature_vectors_observed": 32,
+  "stored_vectors": 17,
+  "dimension": 4,
+  "reload_exact": true,
+  "bank_unchanged": true,
+  "payload_status": "outputs/pcb-cpu-integration/tiled-dummy-20261016/status.json",
+  "payload_status_sha256": "b5ceead784abdfcb805ef87d32d5c94566d7053513c5b1fcbfc7d5be58de2909",
+  "actual_pcb_bank": "NOT_CREATED",
+  "actual_pcb_calibration": "NOT_CREATED",
+  "pilot": "NOT_READY_FOR_PILOT"
+}

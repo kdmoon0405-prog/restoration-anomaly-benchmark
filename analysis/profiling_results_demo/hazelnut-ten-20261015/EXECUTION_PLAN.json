@@ -1,0 +1,6 @@
+{
+  "warmup_seconds": 23.373536200029776,
+  "estimated_seconds_per_pair": 11.686768100014888,
+  "actual_repeats": 2,
+  "reason": "Fixed wall-budget estimate from warmup, not performance metrics"
+}

@@ -1,0 +1,36 @@
+{
+  "input_kind": "synthetic",
+  "frozen_at_utc": "2026-10-16T15:45:41.336933+00:00",
+  "source_commit": "7167cd196e32690847fd6f32022c0d6579245021",
+  "code_sha256": {
+    "src/sr_anomaly/pcb_board_analysis.py": "c78941b0664644b0292dd1666d0ce1c61fccea206678948e8afc0f5448eee2b1",
+    "scripts/check_pcb_board_pipeline.py": "494ec4325d035b0a62f6b9979e10d45e461bb2e058846d7a31a8d42c1f86d804",
+    "src/sr_anomaly/pcb_tiled_models.py": "86dec44c0f5e982f31e8a0f5af71e084e5d412b103d53cd48a2a6b4f482c31a2",
+    "src/sr_anomaly/pcb_tiled_runner.py": "6b1d19cbf922f0b7e6ad445042b750acaacbd10313184deeeeb01ea464822a21",
+    "src/sr_anomaly/bounded_bank.py": "f71593890402f4b352479042fae96ce43d258dbc9700981be6454f5176522b71",
+    "src/sr_anomaly/tiled_cpu_pipeline.py": "529036820278cf28506a23837e0d64bd2fb346f331499bf235127e1e5c6de7bf",
+    "src/sr_anomaly/pcb_tiling.py": "779b721d93a1cba943cb09a7d6f9adba282f1f0fec0652329320f4e3a09226fc",
+    "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+    "docs/PCB_FULL_FOV_PROTOCOL_V0.6.md": "076bf775c93b8986b6df96edfa1fed0ab0f8702d131664751735db23105e8563"
+  },
+  "rule_id": "pcb_board_robust_after_mean_v0_6",
+  "toy_settings": {
+    "fit": 2,
+    "calibration": 2,
+    "test": 2,
+    "size_wh": [
+      336,
+      224
+    ],
+    "patch_grid": [
+      2,
+      2
+    ],
+    "D": 4,
+    "K": 7
+  },
+  "real_data_or_model_execution": false,
+  "full_pilot": "NOT_READY_FOR_FULL_PILOT"
+}

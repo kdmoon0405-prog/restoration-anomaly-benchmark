@@ -1,0 +1,107 @@
+{
+  "payload_estimates_only_not_RSS_or_VRAM": true,
+  "bank_and_feature_stage": {
+    "bounded_bank_vector_bytes": 1073741824,
+    "selected_int64_index_bytes": 2097152,
+    "input_chunk_payload_limit_bytes": 33554432,
+    "finite_check_bool_temporary_limit_bytes": 8388608,
+    "selected_rows_gather_temporary_limit_bytes": 33554432
+  },
+  "synthetic_boards": [
+    {
+      "source_wh": [
+        336,
+        224
+      ],
+      "tiles": 2,
+      "one_RGB_board_bytes": 225792,
+      "owned_tile_map_buffer_bytes": 401408,
+      "float64_accumulator_bytes": 602112,
+      "uint32_coverage_bytes": 301056,
+      "float32_output_bytes": 301056,
+      "reload_finite_check_bool_bytes": 75264,
+      "map_lifetime": "one parent/variant, never dataset stack"
+    },
+    {
+      "source_wh": [
+        448,
+        336
+      ],
+      "tiles": 6,
+      "one_RGB_board_bytes": 451584,
+      "owned_tile_map_buffer_bytes": 1204224,
+      "float64_accumulator_bytes": 1204224,
+      "uint32_coverage_bytes": 602112,
+      "float32_output_bytes": 602112,
+      "reload_finite_check_bool_bytes": 150528,
+      "map_lifetime": "one parent/variant, never dataset stack"
+    },
+    {
+      "source_wh": [
+        336,
+        224
+      ],
+      "tiles": 2,
+      "one_RGB_board_bytes": 225792,
+      "owned_tile_map_buffer_bytes": 401408,
+      "float64_accumulator_bytes": 602112,
+      "uint32_coverage_bytes": 301056,
+      "float32_output_bytes": 301056,
+      "reload_finite_check_bool_bytes": 75264,
+      "map_lifetime": "one parent/variant, never dataset stack"
+    },
+    {
+      "source_wh": [
+        336,
+        224
+      ],
+      "tiles": 2,
+      "one_RGB_board_bytes": 225792,
+      "owned_tile_map_buffer_bytes": 401408,
+      "float64_accumulator_bytes": 602112,
+      "uint32_coverage_bytes": 301056,
+      "float32_output_bytes": 301056,
+      "reload_finite_check_bool_bytes": 75264,
+      "map_lifetime": "one parent/variant, never dataset stack"
+    },
+    {
+      "source_wh": [
+        448,
+        336
+      ],
+      "tiles": 6,
+      "one_RGB_board_bytes": 451584,
+      "owned_tile_map_buffer_bytes": 1204224,
+      "float64_accumulator_bytes": 1204224,
+      "uint32_coverage_bytes": 602112,
+      "float32_output_bytes": 602112,
+      "reload_finite_check_bool_bytes": 150528,
+      "map_lifetime": "one parent/variant, never dataset stack"
+    }
+  ],
+  "native_board_scenarios": [
+    {
+      "source_wh": [
+        1404,
+        1070
+      ],
+      "tiles": 48,
+      "one_RGB_board_bytes": 4506840,
+      "owned_tile_map_buffer_bytes": 9633792,
+      "float64_accumulator_bytes": 12018240,
+      "uint32_coverage_bytes": 6009120,
+      "float32_output_bytes": 6009120,
+      "reload_finite_check_bool_bytes": 1502280,
+      "map_lifetime": "one parent/variant, never dataset stack"
+    }
+  ],
+  "native_evaluation_payloads_unchanged": {
+    "test_float32_maps_one_method_bytes": 1201824000,
+    "test_float64_score_copy_bytes": 2403648000,
+    "one_full_length_int64_sort_or_rank_array_bytes": 2403648000,
+    "aupro_retained_region_bool_masks_bytes": 498756960
+  },
+  "RGB_feature_batch": "B*224*224*3 bytes for copied tiles, plus same-size stack while callback runs; B*Py*Px<=8192",
+  "I_O": "np.save contiguous one-board output; streaming hashes; read-only mmap load + one-board finite bool check",
+  "limits": "Per-board map buffer/accumulator/count/output coexist during assembly, but feature-stage buffers and reload scenarios differ. Do not sum all fields as measured peak. Callback internals/model/FAISS/upstream prefetch/allocator/OS cache and full evaluation remain unmeasured."
+}

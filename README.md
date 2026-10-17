@@ -93,6 +93,18 @@ Hazelnut development, the preselected full Screw Branch A stress test, and the f
 
 The pilot and one frozen full110 endpoint run are complete. The full result is **B / B-uncertain**: the quality trade-off reproduced, but stable localization superiority was not established. See [FULL_RESULT.md](analysis/restoration_objective_full/FULL_RESULT.md) and the [thesis synthesis](analysis/thesis_synthesis/THESIS_SYNTHESIS.md) for the two distinct experimental families, source-backed tables, claim limits, and figure hierarchy. Remaining work is writing, presentation, and saved-evidence verification, not further experiments.
 
+## Separate saved-map follow-up
+
+The separate [2026-10-14 map-gating follow-up](analysis/map_gating_feasibility/hazelnut-branchb-20261014/REPORT.md) uses only saved Branch B normalized predictions. Its [audit](analysis/map_gating_feasibility/hazelnut-branchb-20261014/AUDIT.md) distinguishes the completed historical study, missing calibration/full110 raw artifacts, and local versus remote CI. Both fixed candidates failed to exceed restored-only on the primary metric; no additional search follows. This follow-up does not revise the earlier closure or B/B-uncertain result.
+
+CPU reporting/renderer tests require `pip install -e ".[dev]"`; this extra includes matplotlib, not torch/FAISS. Saved-map analysis (no fitting, inference, or new calibration):
+
+```powershell
+python scripts/analyze_map_gating_feasibility.py --run-id hazelnut-branchb-replay
+```
+
+Each run-id is write-once. Candidate NPZ files stay in ignored `outputs/map-gating-feasibility/`; small protocols, CSVs and figures go under `analysis/map_gating_feasibility/`. A replay is reporting reproduction on the same development data, not another independent experiment.
+
 ## Run an experiment
 
 Put images under `data/images/`, then run:
@@ -165,3 +177,20 @@ Generation stops before writing if the Cartesian product exceeds `max_runs`. The
 - Previous student code: add a thin adapter around its existing inference entry point. Do not copy model internals into this package unless reuse is impossible.
 
 GPU-specific libraries and large model repositories are intentionally absent. Add them when checkpoints, the previous code, and the Linux GPU environment are available.
+
+## Frozen timing and local result viewer
+
+The later frozen Branch B timing study is separate from the completed endpoint study and negative map-gating feasibility. See [timing report](analysis/profiling_results_demo/hazelnut-ten-20261015/REPORT.md), [PCB readiness only](analysis/profiling_results_demo/hazelnut-ten-20261015/PCB_READINESS.md), and [read-only demo](demo_results/README.md). Existing raw baseline/candidate artifacts are required for the viewer; they are not committed.
+
+```powershell
+.venv\Scripts\python scripts/serve_results_demo.py --port 8765
+# Open http://127.0.0.1:8765 ; Ctrl+C stops the local server.
+```
+
+Regenerate report prose/tables from saved timings/inventory without inference:
+
+```powershell
+.venv\Scripts\python scripts/summarize_profiling_readiness.py --input analysis/profiling_results_demo/hazelnut-ten-20261015
+```
+
+`profile_patchcore_stages.py` performs bounded real inference; it is not needed to view/report these results. It requires the exact existing bank/weights/data and a new unique `--run-id`, never overwrites a previous run and never fits. `check_pcb_readiness.py` audits local VisA files only into a fresh `--output` directory. No PCB execution or independent-validation result is available.

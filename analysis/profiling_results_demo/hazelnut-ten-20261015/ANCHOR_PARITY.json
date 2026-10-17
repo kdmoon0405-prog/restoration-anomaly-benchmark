@@ -1,0 +1,581 @@
+{
+  "checks": [
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "degraded",
+      "phase": "warmup",
+      "repeat": 0,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "restored",
+      "phase": "warmup",
+      "repeat": 0,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "degraded",
+      "phase": "warmup",
+      "repeat": 0,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "restored",
+      "phase": "warmup",
+      "repeat": 0,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "variant": "degraded",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "variant": "restored",
+      "phase": "instrumented",
+      "repeat": 2,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/000.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/good/001.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/000.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/crack/001.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/000.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/cut/001.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/000.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/hole/001.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/000.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "variant": "degraded",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    },
+    {
+      "sample": "hazelnut/test/print/001.png",
+      "variant": "restored",
+      "phase": "end_to_end",
+      "repeat": 1,
+      "map_max_abs_difference": 0.0,
+      "score_abs_difference": 0.0,
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

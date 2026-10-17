@@ -1,0 +1,38 @@
+{
+  "frozen_at_utc": "2026-10-15T14:56:43.801213+00:00",
+  "source_commit": "53b5e21d99249a37cbb1aafb887e0b89bacbac10",
+  "category": "pcb2",
+  "geometry_id": "pcb_full_frame_224_bilinear_nearest_v0_1",
+  "scope": "one draft geometry audit only; no degradation/fit/inference/performance metric",
+  "target_wh": [
+    224,
+    224
+  ],
+  "image_interpolation": "BILINEAR",
+  "gt_interpolation": "binary >0 then NEAREST",
+  "crop": null,
+  "padding": null,
+  "seed": 11,
+  "fit_ratio": 0.8,
+  "official_csv_sha256": "a48557e6033318cb90556f706196bc9d247a776a23ea51aecee5a80dd0332995",
+  "reference_split_sha256": "d048fac104803f08c5ad63eba112ca8db4195582408e4827277cf90c727999fc",
+  "historical_crop_csv_sha256": "837c33d90b95bf84cc74787ea456b2980ea43de7cee58b4c080d411e51d76c1e",
+  "code_sha256": {
+    "scripts/prepare_pcb_geometry.py": "5c3c7bf0d9d37f26b24ca0075941b865c6a107e8d6bea9136437fbb7957b4b31",
+    "src/sr_anomaly/pcb_geometry.py": "fbd2487703396e4833c9a1f89ec391cf64b7cab6e3fa99c71236470de395a5d7"
+  },
+  "component_tracking": "Label original binary GT with 8-connectivity; resize int32 label IDs by the same Pillow NEAREST; count each original ID's target samples; IDs>0 must equal transformed binary GT",
+  "readiness_rule": "BLOCKED_GEOMETRY if no anomalous cases, any input/size/alignment error, nonempty normal GT, empty/full anomaly GT or any original GT component not sampled. Passing is only a presence/alignment guard, never proof of shape/accuracy preservation.",
+  "normal_gt_policy": "Official normals have no mask file; implicit all-background. Empty-mask transform is tested synthetically, not inferred from a fabricated file.",
+  "pixel_units": "Do not divide target pixel counts by original pixel counts as a retention ratio",
+  "figure_selection": "Up to two anomalous images with largest total lost source-component area, lexical path ties; one lexical no-loss control. Within image largest lost source area then ID. Figures only, not population estimates or adaptive model inputs.",
+  "versions": {
+    "numpy": "2.4.6",
+    "Pillow": "12.3.0",
+    "scikit-image": "0.26.0"
+  },
+  "python": "3.11.16",
+  "future_x4": "canonical224 -> LR56 -> output224, planned only",
+  "teammate_prior_use": "unconfirmed",
+  "no_new_search_or_model_execution": true
+}

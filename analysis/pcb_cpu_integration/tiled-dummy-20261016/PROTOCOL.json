@@ -1,0 +1,44 @@
+{
+  "frozen_at_utc": "2026-10-16T08:19:24.576772+00:00",
+  "source_commit": "5cb2c1e774eb07f7cddd93d3ebded7e1f64797b2",
+  "scope": "SYNTHETIC CPU integration; real PCB/model/FAISS/degradation/calibration/metrics forbidden",
+  "geometry_id": "pcb_native224_maxstride192_halfup_v0_2",
+  "map_merger": "float64 sum in canonical tile-ID order / uint32 coverage -> float32",
+  "board_score": "max original tile image scores; NOT max assembled map",
+  "synthetic_settings": {
+    "patch_shape": [
+      2,
+      2
+    ],
+    "dimension": 4,
+    "capacity": 17,
+    "batch_tiles": 2,
+    "seed": 11
+  },
+  "gt_policy": "coordinate/binary validation only, never forwarded to extractor/predictor",
+  "prior_budget_references": {
+    "PROTOCOL.json": "ad902d280dc15ced24a0a5e7626424b3ae5849eacaa2e4364c3857c09b7124b7",
+    "selection_plan.json": "940744f64e4e2f1794d2b2c7f54a3a7cac95a71fe7d0632da83f0452ef480919",
+    "resource_plan.json": "14a5ea7961c5dbbdbfff91558847584e632d0fd05234ef397b5ff8aa9a4d66bc"
+  },
+  "code_sha256": {
+    "src/sr_anomaly/tiled_cpu_pipeline.py": "529036820278cf28506a23837e0d64bd2fb346f331499bf235127e1e5c6de7bf",
+    "scripts/check_tiled_cpu_integration.py": "524b6c37d410c03cb86ee8c2cae5f299692d057557cd4daa090e5c0ad022c4e9",
+    "src/sr_anomaly/bounded_bank.py": "f71593890402f4b352479042fae96ce43d258dbc9700981be6454f5176522b71",
+    "src/sr_anomaly/pcb_tiling.py": "779b721d93a1cba943cb09a7d6f9adba282f1f0fec0652329320f4e3a09226fc"
+  },
+  "python": "3.11.16",
+  "numpy": "2.4.6",
+  "pending": [
+    "real _embed adapter and runtime ordering proof",
+    "normalization/calibration stage/formula",
+    "180-normal calibration usage",
+    "tile-wise x4 boundaries",
+    "quality overlap accounting",
+    "native evaluation memory",
+    "checkpoint/device smoke"
+  ],
+  "actual_pcb_bank": "NOT_CREATED",
+  "actual_pcb_calibration": "NOT_CREATED",
+  "pilot": "NOT_READY_FOR_PILOT"
+}

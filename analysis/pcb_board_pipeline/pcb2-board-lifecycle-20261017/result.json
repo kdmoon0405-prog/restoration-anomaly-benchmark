@@ -1,0 +1,65 @@
+{
+  "scope": "SYNTHETIC_ONLY_NOT_RESEARCH_RESULTS",
+  "cpu": "CPU_CALIBRATION_QUALITY_TEST_PASS",
+  "synthetic_memory_lifecycle": "MEMORY_LIFECYCLE_VALIDATED",
+  "full_memory": "BLOCKED_MEMORY",
+  "stages": [
+    {
+      "raw_status": "COMPLETE",
+      "owned_model_index_features_released": true,
+      "stage": "produce",
+      "pid": 30956,
+      "rss_peak_bytes": null
+    },
+    {
+      "calibration": "COMPLETE_SYNTHETIC_ONLY",
+      "stage": "calibration",
+      "pid": 21532,
+      "rss_peak_bytes": null
+    },
+    {
+      "normalized": "COMPLETE_SYNTHETIC_ONLY",
+      "stage": "normalize",
+      "pid": 14320,
+      "rss_peak_bytes": null
+    },
+    {
+      "quality": "COMPLETE_SYNTHETIC_ONLY",
+      "stage": "quality",
+      "pid": 16940,
+      "rss_peak_bytes": null
+    },
+    {
+      "evaluation": "COMPLETE_SYNTHETIC_ONLY",
+      "variant": "clean",
+      "stage": "evaluate",
+      "pid": 26636,
+      "rss_peak_bytes": null
+    },
+    {
+      "evaluation": "COMPLETE_SYNTHETIC_ONLY",
+      "variant": "bicubic_x4",
+      "stage": "evaluate",
+      "pid": 31532,
+      "rss_peak_bytes": null
+    },
+    {
+      "evaluation": "COMPLETE_SYNTHETIC_ONLY",
+      "variant": "swinir_x4",
+      "stage": "evaluate",
+      "pid": 31928,
+      "rss_peak_bytes": null
+    }
+  ],
+  "all_workers_exited_before_next_stage": true,
+  "reference": {
+    "calibration_reference_equal": true,
+    "normalized_files_exact": true,
+    "unchanged_evaluator_reference_equal": true,
+    "board_quality_reference_equal": true
+  },
+  "real_gpu_smoke": "NOT_REVIEWED_NO_LOCAL_EVIDENCE",
+  "full_pilot": "NOT_READY_FOR_FULL_PILOT",
+  "actual_pcb_bank": "NOT_CREATED",
+  "actual_pcb_calibration": "NOT_CREATED"
+}

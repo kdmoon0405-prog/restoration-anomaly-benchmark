@@ -1,0 +1,24 @@
+{
+  "geometry_status": "GEOMETRY_IDENTITY_PASS",
+  "pilot_status": "NOT_READY_FOR_PILOT",
+  "input_images": 1101,
+  "official_anomaly_masks": 100,
+  "implicit_normal_masks": 1001,
+  "errors": [],
+  "all_covered": true,
+  "rgb_exact_images": 1101,
+  "gt_exact_images": 1101,
+  "source_components_8connected": 324,
+  "lost_components": 0,
+  "historical_lost_components": 19,
+  "historical_lost_ids_recovered_exactly": 19,
+  "tile_counts": {
+    "fit": 34608,
+    "calibration": 8640,
+    "test": 9600
+  },
+  "no_scientific_metric_or_model_execution": true,
+  "bank_created": false,
+  "calibration_created": false,
+  "teammate_prior_use": "unconfirmed"
+}

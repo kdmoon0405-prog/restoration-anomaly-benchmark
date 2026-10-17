@@ -1,0 +1,61 @@
+{
+  "frozen_at_utc": "2026-10-16T07:12:03.302858+00:00",
+  "source_commit": "195df549991d09ae773e92253bf31e29bf4b4987",
+  "geometry_id": "pcb_native224_maxstride192_halfup_v0_2",
+  "tile_wh": [
+    224,
+    224
+  ],
+  "maximum_stride": 192,
+  "axis_rule": "n=ceil((L-224)/192)+1; starts=round_half_up(i*(L-224)/(n-1)); L=224 -> [0]",
+  "rounding": "integer exact: (2*i*span+intervals)//(2*intervals); ties upward, no floats",
+  "small_input_policy": "reject any axis <224; never implicitly resize/pad",
+  "native_slices_only": true,
+  "tile_order": "row-major y then x; GT-independent",
+  "component_reference": "original binary GT 8-connected IDs, reconstruct IDs at source coordinates, not physical defects",
+  "normal_gt_policy": "Official normal masks absent; use explicit implicit-zero array for geometry audit only, not a read GT file",
+  "readiness": "geometry identity pass is NOT GPU/pilot readiness; no fit, inference, degradation or anomaly metric",
+  "figure_selection": "reuse prior selected examples; plus lexical first normal test sample; no tile selection by GT",
+  "pending": [
+    "anomaly-map overlap merger",
+    "board score aggregation",
+    "normal calibration stage/domain",
+    "tile-wise x4 protocol",
+    "resource feasibility",
+    "runner integration",
+    "checkpoint/device smoke"
+  ],
+  "official_csv_sha256": "a48557e6033318cb90556f706196bc9d247a776a23ea51aecee5a80dd0332995",
+  "seed": 11,
+  "fit_ratio": 0.8,
+  "reference_split_sha256": "d048fac104803f08c5ad63eba112ca8db4195582408e4827277cf90c727999fc",
+  "prior_artifact_sha256": {
+    "PROTOCOL.json": "43fbc034f5e2606a035e2a6cb0822ebc7abffe285255fe394702bd2765a3b8fa",
+    "INPUTS.csv": "944eb87bde1c8e0b16bf57bf596a74a7036419a50395d4172f5821c9168e9184",
+    "components.csv": "b04a32a15d6b1d046c19a20d81408928a31636296850019837121746fede046b",
+    "summary.json": "1e66014a756e0d01c6c3fe1421261654667da241425fecf63c4a274dfcaf3c72",
+    "selected_examples.json": "ab1c45c1bfe7c8bf1dd7023ca8d49745c284bc62ac4c6e00bd5c1ec122b05ad2"
+  },
+  "resource_reference_sha256": {
+    "PROTOCOL.json": "558491367197daeecca3645bba4ee8694002f14afa83f2b7d889a25706addf2b",
+    "summary.json": "aeeeda2b9a8ce3104cc03bc4469a0605c4789746a0111c77edcf9073d8b5f11c"
+  },
+  "code_sha256": {
+    "scripts/prepare_pcb_tiling.py": "b36eb1e9cc325fbfd5f4aa1dc3d83f3bec85cd3cfc0807d6664c29e5fe45b272",
+    "src/sr_anomaly/pcb_tiling.py": "779b721d93a1cba943cb09a7d6f9adba282f1f0fec0652329320f4e3a09226fc",
+    "scripts/prepare_pcb_geometry.py": "5c3c7bf0d9d37f26b24ca0075941b865c6a107e8d6bea9136437fbb7957b4b31",
+    "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "scripts/run_legacy_patchcore.py": "0b9d5d483eb007f4523449e444e317663c144470907ebf06fada14718227c39a",
+    "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+    "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+    "third_party/patchcore-inspection/src/patchcore/patchcore.py": "280f72ed95f962b3e8a3207c7a18ad5b4c5406756f9b417a112880fc26e5d2d2",
+    "third_party/patchcore-inspection/src/patchcore/common.py": "8fd1dbf86c7634c005161edeea435b8c6777476d74db98a86bc80b63f3a47551"
+  },
+  "python": "3.11.16",
+  "versions": {
+    "numpy": "2.4.6",
+    "Pillow": "12.3.0",
+    "scikit-image": "0.26.0"
+  }
+}

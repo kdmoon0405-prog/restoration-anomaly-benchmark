@@ -1,0 +1,27 @@
+{
+  "browser": "Microsoft Edge headless",
+  "browser_version": "154.0.4258.48",
+  "playwright": "1.64.0",
+  "phase": "before",
+  "real_browser_rendered": true,
+  "screenshots": [
+    "screenshots/before-initial-restored.png",
+    "screenshots/before-normal-degraded-rgb.png",
+    "screenshots/before-candidate2-gt-rgb.png",
+    "screenshots/before-candidate1-unavailable.png",
+    "screenshots/before-narrow.png"
+  ],
+  "console_errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "console_warnings": [],
+  "request_failures": [],
+  "http_errors": [],
+  "narrow_horizontal_overflow": true,
+  "catalog_and_csv_exact": true,
+  "sample_variant_metrics_and_panel_urls_checked": true,
+  "gt_overlay_roundtrip": true,
+  "normal_aupro_null": true,
+  "rgb_availability_checked": true,
+  "export_exact": true
+}

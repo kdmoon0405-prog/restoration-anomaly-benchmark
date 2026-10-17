@@ -10,4 +10,10 @@ __pycache__/
 .pytest_cache/
 .coverage
 .venv/
+.serena/
 .firecrawl/
+# Browser/crop screenshots may contain licensed dataset RGB; keep them local.
+analysis/profiling_results_demo/review-*/screenshots/
+analysis/pcb_geometry/**/figures/
+# Qualitative panels contain licensed dataset RGB; keep them local.
+analysis/map_gating_feasibility/**/figures/

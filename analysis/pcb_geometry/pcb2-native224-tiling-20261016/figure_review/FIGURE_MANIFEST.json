@@ -1,0 +1,10 @@
+{
+  "reason": "Shorter title typography only; original PNGs and frozen audit unchanged",
+  "renderer_sha256": "cfe71b31a809c27c9f900b67fd8b3528b94f3812777189abdffdc0a9d19776f1",
+  "audit_protocol_sha256": "b14b59a28e77607b352b81c6a79a15e9bb6c153e395efefa8a547b25b9cf22b5",
+  "rgb_local_only": true,
+  "sha256": {
+    "component_reassembly.png": "ca0d3f865b885db0b97dcafaa764ca6bbf0c1de9117015516c4be5d1096b128a",
+    "tiling_overview.png": "e605fe71c874782b261685490f59f328ccf382fa5db91ccc7a649dc2e78644d8"
+  }
+}

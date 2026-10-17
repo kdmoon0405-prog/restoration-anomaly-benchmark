@@ -1,0 +1,17 @@
+[
+  {
+    "sample": "pcb2/Data/Images/Anomaly/071.JPG",
+    "illustrated_source_component_id": 5,
+    "selection": "largest total lost source area, lexical ties; then lexical no-loss control; explanatory only"
+  },
+  {
+    "sample": "pcb2/Data/Images/Anomaly/077.JPG",
+    "illustrated_source_component_id": 5,
+    "selection": "largest total lost source area, lexical ties; then lexical no-loss control; explanatory only"
+  },
+  {
+    "sample": "pcb2/Data/Images/Anomaly/000.JPG",
+    "illustrated_source_component_id": 1,
+    "selection": "largest total lost source area, lexical ties; then lexical no-loss control; explanatory only"
+  }
+]

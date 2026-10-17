@@ -1,0 +1,27 @@
+{
+  "geometry_id": "pcb_native224_maxstride192_halfup_v0_2",
+  "partitions": {
+    "fit": {
+      "normal": 721,
+      "anomaly": 0
+    },
+    "calibration": {
+      "normal": 180,
+      "anomaly": 0
+    },
+    "test": {
+      "normal": 100,
+      "anomaly": 100
+    }
+  },
+  "partition_overlap": false,
+  "input_inventory_matches_previous": true,
+  "all_input_hashes_match_previous": true,
+  "protocol_sha256": "b14b59a28e77607b352b81c6a79a15e9bb6c153e395efefa8a547b25b9cf22b5",
+  "inputs_csv_sha256": "0b4d45229d51aa633d91bb8919a71f5c4d9ea9e0827160fcc6ea0551b360a296",
+  "layouts_sha256": "9264b9f89181d8507e79c3dd0a6f8ffb5af0bb80a851e04f4c325ff11f2a5e73",
+  "path_base": "VisA root relative",
+  "pcb_bank": "not_created",
+  "pcb_calibration": "not_created",
+  "reuse_hazelnut_bank_or_threshold": false
+}

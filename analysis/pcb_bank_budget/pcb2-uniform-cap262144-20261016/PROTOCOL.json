@@ -1,0 +1,48 @@
+{
+  "frozen_at_utc": "2026-10-16T07:53:05.290136+00:00",
+  "source_commit": "41d45cac490829163309181766247986cc01d72b",
+  "scope": "index-only planning + synthetic bank; no real feature/model/FAISS/metric execution",
+  "implementation_id": "uniform_global_patch_preselection_stream_v0_3",
+  "geometry_id": "pcb_native224_maxstride192_halfup_v0_2",
+  "settings": {
+    "total_vectors": 27132672,
+    "capacity": 262144,
+    "dimension": 1024,
+    "seed": 11,
+    "max_chunk_vectors": 8192
+  },
+  "global_order": "fit INPUTS.csv order -> layout boxes row-major -> _embed batch-major, patch-y then patch-x (width fastest)",
+  "patch_grid": [
+    28,
+    28
+  ],
+  "patch_grid_evidence": "784 from saved bank shape; Unfold/reshape ordering read statically; actual native-runner integration still pending",
+  "geometry_references": {
+    "MANIFEST.json": "11f921c34099b7d6a77cfd68e9b1d1c1a80561e996bd105479d66fe74e99d851",
+    "PROTOCOL.json": "b14b59a28e77607b352b81c6a79a15e9bb6c153e395efefa8a547b25b9cf22b5",
+    "INPUTS.csv": "0b4d45229d51aa633d91bb8919a71f5c4d9ea9e0827160fcc6ea0551b360a296",
+    "layouts.json": "9264b9f89181d8507e79c3dd0a6f8ffb5af0bb80a851e04f4c325ff11f2a5e73",
+    "resource_estimate.json": "29a8d2d44304dcbe5070a2cdd38b601866d391489eaa4f97105e80c21e1a2f80"
+  },
+  "code_sha256": {
+    "src/sr_anomaly/bounded_bank.py": "f71593890402f4b352479042fae96ce43d258dbc9700981be6454f5176522b71",
+    "scripts/check_pcb_bank_budget.py": "bfc9af0671a055e2f9f75ee5f99749ed3a150e477f9676dcf081cbd8da63e67f",
+    "third_party/patchcore-inspection/src/patchcore/patchcore.py": "280f72ed95f962b3e8a3207c7a18ad5b4c5406756f9b417a112880fc26e5d2d2",
+    "third_party/patchcore-inspection/src/patchcore/common.py": "8fd1dbf86c7634c005161edeea435b8c6777476d74db98a86bc80b63f3a47551",
+    "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2"
+  },
+  "python": "3.11.16",
+  "numpy": "2.4.6",
+  "pending": [
+    "map merger",
+    "board score",
+    "normal calibration stage",
+    "tile-wise x4/boundaries",
+    "native evaluation memory",
+    "PCB runner wiring",
+    "checkpoint/device smoke"
+  ],
+  "pcb_bank": "NOT_CREATED",
+  "pcb_calibration": "NOT_CREATED",
+  "pilot": "NOT_READY_FOR_PILOT"
+}

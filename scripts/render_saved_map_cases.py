@@ -20,6 +20,23 @@ sys.path.insert(0, str(ROOT))
 from scripts.analyze_hazelnut_failures import _canonical_transform, _load_npz
 
 
+def save_panels(panels, destination: Path, title: str, vmin: float, vmax: float) -> None:
+    """Shared six-panel renderer; anomaly maps use one sample-level scale."""
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure(figsize=(18, 6))
+    for panel, (label, array, cmap) in enumerate(panels, 1):
+        axis = fig.add_subplot(2, 3, panel)
+        axis.imshow(array, cmap=cmap, vmin=vmin if cmap == "viridis" else None,
+                    vmax=vmax if cmap == "viridis" else None)
+        axis.set_title(label)
+        axis.axis("off")
+    fig.suptitle(title)
+    fig.tight_layout()
+    fig.savefig(destination, dpi=150)
+    plt.close(fig)
+
+
 def render_cases(run_dir: Path, data_root: Path, manifest: Path, output_dir: Path) -> int:
     result = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
     paths = list(result["test_paths"])
@@ -34,8 +51,6 @@ def render_cases(run_dir: Path, data_root: Path, manifest: Path, output_dir: Pat
         selected = list(csv.DictReader(handle))
     if not selected or len({row["sample"] for row in selected}) != len(selected):
         raise ValueError("Selected-case manifest must be nonempty and unique")
-
-    import matplotlib.pyplot as plt
 
     output_dir.mkdir(parents=True, exist_ok=True)
     canonical = _canonical_transform()
@@ -63,23 +78,14 @@ def render_cases(run_dir: Path, data_root: Path, manifest: Path, output_dir: Pat
             ("Bicubic anomaly map", bic_map, "viridis"),
             ("SwinIR anomaly map", swin_map, "viridis"),
         )
-        fig = plt.figure(figsize=(18, 6))
-        for panel, (title, image, cmap) in enumerate(panels, 1):
-            axis = fig.add_subplot(2, 3, panel)
-            axis.imshow(image, cmap=cmap, vmin=vmin if cmap == "viridis" else None,
-                        vmax=vmax if cmap == "viridis" else None)
-            axis.set_title(title)
-            axis.axis("off")
-        fig.suptitle(
+        title = (
             f"{sample} | {row['defect_type']} | {row['regression_type']}\n"
             f"delta AU-PRO={float(row['delta_aupro']):+.6f} | "
             f"delta Pixel AUROC={float(row['delta_pixel_auroc']):+.6f} | "
             f"delta ROI-bg gap={float(row['delta_roi_bg_gap']):+.6f}"
         )
-        fig.tight_layout()
         filename = f"{rank:02d}_{Path(sample).with_suffix('').as_posix().replace('/', '__')}.png"
-        fig.savefig(output_dir / filename, dpi=150)
-        plt.close(fig)
+        save_panels(panels, output_dir / filename, title, vmin, vmax)
         rendered.append((row["selection_reason"], sample, filename))
 
     lines = [

@@ -1,0 +1,92 @@
+[
+  {
+    "global_index": 50,
+    "fit_parent_index": 0,
+    "sample": "pcb2/Data/Images/Normal/0001.JPG",
+    "tile_index": 0,
+    "tile_xyxy": [
+      0,
+      0,
+      224,
+      224
+    ],
+    "patch_index": 50,
+    "patch_y": 1,
+    "patch_x": 22
+  },
+  {
+    "global_index": 57,
+    "fit_parent_index": 0,
+    "sample": "pcb2/Data/Images/Normal/0001.JPG",
+    "tile_index": 0,
+    "tile_xyxy": [
+      0,
+      0,
+      224,
+      224
+    ],
+    "patch_index": 57,
+    "patch_y": 2,
+    "patch_x": 1
+  },
+  {
+    "global_index": 245,
+    "fit_parent_index": 0,
+    "sample": "pcb2/Data/Images/Normal/0001.JPG",
+    "tile_index": 0,
+    "tile_xyxy": [
+      0,
+      0,
+      224,
+      224
+    ],
+    "patch_index": 245,
+    "patch_y": 8,
+    "patch_x": 21
+  },
+  {
+    "global_index": 27132245,
+    "fit_parent_index": 720,
+    "sample": "pcb2/Data/Images/Normal/0999.JPG",
+    "tile_index": 47,
+    "tile_xyxy": [
+      1180,
+      846,
+      1404,
+      1070
+    ],
+    "patch_index": 357,
+    "patch_y": 12,
+    "patch_x": 21
+  },
+  {
+    "global_index": 27132329,
+    "fit_parent_index": 720,
+    "sample": "pcb2/Data/Images/Normal/0999.JPG",
+    "tile_index": 47,
+    "tile_xyxy": [
+      1180,
+      846,
+      1404,
+      1070
+    ],
+    "patch_index": 441,
+    "patch_y": 15,
+    "patch_x": 21
+  },
+  {
+    "global_index": 27132569,
+    "fit_parent_index": 720,
+    "sample": "pcb2/Data/Images/Normal/0999.JPG",
+    "tile_index": 47,
+    "tile_xyxy": [
+      1180,
+      846,
+      1404,
+      1070
+    ],
+    "patch_index": 681,
+    "patch_y": 24,
+    "patch_x": 9
+  }
+]

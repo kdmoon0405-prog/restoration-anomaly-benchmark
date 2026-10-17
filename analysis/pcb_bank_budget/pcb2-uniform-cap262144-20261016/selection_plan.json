@@ -1,0 +1,17 @@
+{
+  "status": "INDICES_ONLY_NO_PCB_FEATURES",
+  "total_vectors": 27132672,
+  "dimension": 1024,
+  "capacity": 262144,
+  "seed": 11,
+  "max_chunk_vectors": 8192,
+  "selected_count": 262144,
+  "selection_indices_sha256": "480f53ec4fbe355a3a5948e6a895dfdd63058eb903b8e108613a8e3a63afb402",
+  "index_file_sha256": "691add22b7e57066214ab12f5e098b640c236d51e612ca077c9181b5c31b1335",
+  "index_file": "outputs/pcb-bank-budget/pcb2-uniform-cap262144-20261016/planned_global_indices.npy",
+  "geometry_id": "pcb_native224_maxstride192_halfup_v0_2",
+  "fit_parent_order_reference": "INPUTS.csv fit rows; no re-sorting",
+  "pcb_observed_vectors": 0,
+  "pcb_bank": "NOT_CREATED",
+  "pcb_calibration": "NOT_CREATED"
+}

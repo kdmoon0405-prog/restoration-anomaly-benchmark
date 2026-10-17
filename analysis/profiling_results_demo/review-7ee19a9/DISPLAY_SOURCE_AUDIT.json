@@ -1,0 +1,11 @@
+{
+  "baseline_json_csv_metric_anchors": 4,
+  "independent_saved_npz_to_png_exact_checks": 18,
+  "samples": [
+    "hazelnut/test/crack/000.png",
+    "hazelnut/test/good/000.png",
+    "hazelnut/test/crack/016.png"
+  ],
+  "units": "normalized anomaly maps, not probabilities",
+  "note": "No evaluation/model inference executed; original stored scalar metrics and raw maps compared only."
+}

@@ -1,0 +1,98 @@
+{
+  "source_files": [
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/results.json",
+      "bytes": 24925,
+      "sha256": "ff3b37d07fa7a021316fde076b0cf1fad827a06b4b68d4540ed33d6215cf6a12",
+      "matches_existing_pilot_ledger": true
+    },
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/split.json",
+      "bytes": 18137,
+      "sha256": "faa9518397c2d68f4095d63231eb0802b4a566219e0e781dde94a371255ec9cb",
+      "matches_existing_pilot_ledger": true
+    },
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/summary.csv",
+      "bytes": 964,
+      "sha256": "e2ca04f237ca215933dbd6b215575fe88e021c8514651f79556a7e8d666d0566",
+      "matches_existing_pilot_ledger": null
+    },
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/per_image.csv",
+      "bytes": 30091,
+      "sha256": "d669c7755ddae9c69e26fafae37ad5ad275ac70e85c11b96c9e91cacaf9218d8",
+      "matches_existing_pilot_ledger": null
+    },
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/degraded_only_predictions.npz",
+      "bytes": 41966365,
+      "sha256": "cffb95cb54ba4c0e2609e4966d5baa64cfbbad9bd20ab8bd41fbf6e291905c15",
+      "matches_existing_pilot_ledger": true
+    },
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/restored_only_predictions.npz",
+      "bytes": 41996517,
+      "sha256": "025089b01a222cf92cb2a4e44a250657ff7cf7e6c9b68a9681d076ec508fb0a7",
+      "matches_existing_pilot_ledger": true
+    },
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/mean_0.5_0.5_predictions.npz",
+      "bytes": 41948772,
+      "sha256": "8c1b2c86cd8b8f17d9f59111bea794fc94f7cf23797e7078439ec9996df291a9",
+      "matches_existing_pilot_ledger": null
+    },
+    {
+      "path": "outputs/fusion-patchcore/hazelnut-313x78-test110/max_predictions.npz",
+      "bytes": 42001238,
+      "sha256": "dc2a36e1a7e2b1d21eae622b247e74f86d12cde611d6807a475c9d934cc7a699",
+      "matches_existing_pilot_ledger": null
+    },
+    {
+      "path": "checkpoints/fusion-patchcore/hazelnut-seed11-train313/metadata.json",
+      "bytes": 15718,
+      "sha256": "71ccfcc855f19586603fc0aab2466979f288807ed644877745220857db2e815a",
+      "matches_existing_pilot_ledger": true
+    },
+    {
+      "path": "src/sr_anomaly/fusion.py",
+      "bytes": 7991,
+      "sha256": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+      "matches_existing_pilot_ledger": true
+    },
+    {
+      "path": "src/sr_anomaly/evaluation.py",
+      "bytes": 7168,
+      "sha256": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+      "matches_existing_pilot_ledger": true
+    },
+    {
+      "path": "scripts/run_fusion_patchcore.py",
+      "bytes": 27706,
+      "sha256": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+      "matches_existing_pilot_ledger": true
+    }
+  ],
+  "bank_spec_matches": true,
+  "bank_artifact_sha256_from_ledger": {
+    "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+    "nnscorer_search_index.faiss": "74d8faca8628948e458df377429becf4565d2bce01fb421b1e1fac9ccefbcdc3"
+  },
+  "bank_bytes_rehashed": false,
+  "checkpoint_bytes_rehashed": false,
+  "checkpoint_sha256_from_results": "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e",
+  "calibration_prediction_files": [],
+  "normalization_status": "already normalized; source runner fuse_test_maps writes robust-normalized arrays",
+  "protocol_sha256": "eaf84392bb328e9bae58abffde41bfd265626dc4e4c1ec7c2c809065a933f299",
+  "base_commit": "47422007daf62c7d39385c7ea6f470d92acf15d2",
+  "code_sha256": {
+    "scripts/analyze_map_gating_feasibility.py": "50b895520f776559ece8dc83896768317436aef665dc53d92fabdb822de319c8",
+    "src/sr_anomaly/map_gating.py": "64dec30b781cd887c8867caf43728d7d64f7585a6a78d6d1299246092953a6c7",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+    "scripts/analyze_fusion_weights.py": "4740a16d84af1cacf78f9f36c133e9e1acc40e9dcee6b678bf2ee52d0ac44642",
+    "scripts/analyze_hazelnut_failures.py": "71d8880b62324edd66fad87ae268603419caf595ac53806cf3a6d908a3a49a7d",
+    "scripts/render_saved_map_cases.py": "923cfa32861384da7efe91d95236c41062d9428582f339a62c9049e4a9a86b88",
+    "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2"
+  }
+}

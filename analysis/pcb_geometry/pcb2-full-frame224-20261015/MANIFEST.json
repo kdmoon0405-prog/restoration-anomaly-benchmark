@@ -1,0 +1,109 @@
+{
+  "protocol_sha256": "43fbc034f5e2606a035e2a6cb0822ebc7abffe285255fe394702bd2765a3b8fa",
+  "inputs_csv": "INPUTS.csv",
+  "inputs_csv_sha256": "944eb87bde1c8e0b16bf57bf596a74a7036419a50395d4172f5821c9168e9184",
+  "input_rows": 1101,
+  "input_path_base": "VisA data root; paths portable relative to this root",
+  "partitions": {
+    "fit": {
+      "normal": 721,
+      "anomaly": 0
+    },
+    "calibration": {
+      "normal": 180,
+      "anomaly": 0
+    },
+    "test": {
+      "normal": 100,
+      "anomaly": 100
+    }
+  },
+  "partition_paths_exactly_match_reference": true,
+  "partition_path_overlap": false,
+  "byte_identical_groups": [],
+  "duplicate_scope": "file SHA256 only, not scene/perceptual duplicates",
+  "geometry_by_source_size": {
+    "1404x1070": {
+      "geometry_id": "pcb_full_frame_224_bilinear_nearest_v0_1",
+      "source_size_wh": [
+        1404,
+        1070
+      ],
+      "target_size_wh": [
+        224,
+        224
+      ],
+      "image_interpolation": "Pillow BILINEAR",
+      "mask_interpolation": "Pillow NEAREST on binary foreground (>0)",
+      "crop": null,
+      "padding": null,
+      "fov_edge_coverage": "entire [0,width] x [0,height] domain",
+      "coordinate_convention": "x=column,y=row; edge coordinates; pixel centers use integer source/target indices",
+      "source_to_target_edge_affine": [
+        [
+          0.15954415954415954,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.20934579439252338,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_to_target_center_affine": [
+        [
+          0.15954415954415954,
+          0.0,
+          -0.4202279202279202
+        ],
+        [
+          0.0,
+          0.20934579439252338,
+          -0.3953271028037383
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "target_to_source_center_affine": [
+        [
+          6.267857142857143,
+          0.0,
+          2.6339285714285716
+        ],
+        [
+          0.0,
+          4.776785714285714,
+          1.8883928571428572
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "target_pixel_center_to_source": "((x+0.5)*width/224-0.5, (y+0.5)*height/224-0.5)",
+      "aspect_ratio_preserved": false,
+      "axis_scale_x_over_y": 0.7621082621082621,
+      "limits": "Full FOV does not guarantee foreground/component/shape preservation after point sampling; non-square inputs are anisotropically resized."
+    }
+  },
+  "pcb_bank": {
+    "status": "not_created_for_this_protocol",
+    "reuse_hazelnut_bank": false
+  },
+  "pcb_calibration": {
+    "status": "not_created_for_this_protocol",
+    "reuse_hazelnut_thresholds": false
+  },
+  "runner_integration": "not yet connected to a model runner; geometry API/manifest only",
+  "teammate_prior_use": "unconfirmed"
+}

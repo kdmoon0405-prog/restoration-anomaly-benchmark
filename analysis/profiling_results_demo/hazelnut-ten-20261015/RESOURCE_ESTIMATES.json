@@ -1,0 +1,12 @@
+{
+  "planning_only": true,
+  "bank_size_ratio": 2.303514376996805,
+  "vectors": 565264,
+  "float32_vector_bytes": 2315321344,
+  "calibration_plus_test_images": 380,
+  "detector_passes_per_image": 3,
+  "detector_seconds_reference": 19.180081732846098,
+  "fit_batch1_embedding_reference_seconds": 521.2698741902365,
+  "calibration_test_seconds_reference": 22350.432966236804,
+  "note": "Linear FAISS scaling from instrumented CPU means, clean/degraded/restored paths; excludes decoding, bank building, calibration/evaluation/IO and memory pressure. Not PCB or GPU measurements. Batch1 fit embedding reference is not batch8 fit throughput."
+}

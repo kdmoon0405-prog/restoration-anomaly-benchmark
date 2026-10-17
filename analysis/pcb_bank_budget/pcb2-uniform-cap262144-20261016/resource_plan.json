@@ -1,0 +1,21 @@
+{
+  "planning_only_not_RSS_or_VRAM": true,
+  "old_full_bank_vector_bytes": 111135424512,
+  "bounded_bank_vector_bytes": 1073741824,
+  "selected_int64_index_bytes": 2097152,
+  "input_chunk_payload_limit_bytes": 33554432,
+  "finite_check_bool_temporary_limit_bytes": 8388608,
+  "selected_rows_gather_temporary_limit_bytes": 33554432,
+  "selection_python_list_set_overhead": "O(min(N,K)); not measured; CPython sample/sort list objects coexist transiently",
+  "hypothetical_three_bank_payload_fit_bytes": 3221225472,
+  "hypothetical_scorer_plus_CPU_index_payload_bytes": 2147483648,
+  "faiss_created": false,
+  "PCB_features_extracted": false,
+  "native_evaluation_payloads_unchanged": {
+    "test_float32_maps_one_method_bytes": 1201824000,
+    "test_float64_score_copy_bytes": 2403648000,
+    "one_full_length_int64_sort_or_rank_array_bytes": 2403648000,
+    "aupro_retained_region_bool_masks_bytes": 498756960
+  },
+  "limits": "Buffer scenarios overlap, do not sum as measured peaks. Excludes upstream model/producer buffering, Python/runtime/allocator, filesystem cache and FAISS workspace. Artifact loader hashes sequentially then mmaps; no bank-sized tobytes. No real PCB bounded bank or hardware feasibility demonstrated."
+}

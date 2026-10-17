@@ -2,11 +2,27 @@ from __future__ import annotations
 
 import csv
 import json
+from hashlib import sha256
 
 import numpy as np
 from PIL import Image
 
 from scripts.render_saved_map_cases import render_cases
+from scripts.analyze_hazelnut_failures import _canonical_transform
+
+
+def test_pillow_canonical_matches_recorded_torchvision_bytes():
+    # Recorded Resize(256, BILINEAR)/CenterCrop(224), torchvision 0.29.0+cpu.
+    references = {
+        (33, 65): "82f0afdb71da13791d2078591858d7dfc8f6c86cea7c21071f057432dabf2b11",
+        (65, 33): "39dec4a72107e7e9cd1e22e61792295550231c96a2cb0055ee1ca9152ce2e5d0",
+        (512, 512): "7ad5ed6b0ecdbeccb5c328e5cbed4797c41228fd071c38d648a5b247a620e75d",
+    }
+    for (height, width), expected in references.items():
+        image = Image.fromarray(np.arange(height * width * 3, dtype=np.uint8).reshape(height, width, 3))
+        result = np.asarray(_canonical_transform()(image))
+        assert result.shape == (224, 224, 3)
+        assert sha256(result.tobytes()).hexdigest() == expected
 
 
 def test_saved_map_renderer_needs_no_model_inference(tmp_path) -> None:

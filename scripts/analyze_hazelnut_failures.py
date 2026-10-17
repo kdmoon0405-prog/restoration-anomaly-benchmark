@@ -197,11 +197,14 @@ def _plot_outputs(rows: list[dict], output_dir: Path) -> None:
 
 
 def _canonical_transform():
-    from torchvision import transforms
-    from torchvision.transforms import InterpolationMode
-    resize = transforms.Resize(256, interpolation=InterpolationMode.BILINEAR)
-    crop = transforms.CenterCrop(224)
-    return lambda image: crop(resize(image))
+    def resize_crop(image):
+        width, height = image.size
+        size = (256, int(256 * height / width)) if width <= height else (int(256 * width / height), 256)
+        image = image.resize(size, Image.Resampling.BILINEAR)
+        # Match torchvision's floor-resize dimensions and round-to-even crop offsets.
+        left, top = (int(round((side - 224) / 2.0)) for side in image.size)
+        return image.crop((left, top, left + 224, top + 224))
+    return resize_crop
 
 
 def _render_cases(rows: list[dict], run_dir: Path, data_root: Path, output_dir: Path, count: int, swinir_checkpoint: Path | None,

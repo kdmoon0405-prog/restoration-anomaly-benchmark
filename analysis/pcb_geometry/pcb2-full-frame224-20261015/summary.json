@@ -1,0 +1,26 @@
+{
+  "status": "BLOCKED_GEOMETRY",
+  "geometry_id": "pcb_full_frame_224_bilinear_nearest_v0_1",
+  "full_fov_domain_included": true,
+  "all_input_images_geometry_checked": 1101,
+  "anomalous_gt_checked": 100,
+  "input_or_alignment_errors": [],
+  "empty_target_anomaly_images": 0,
+  "images_with_lost_source_components": 9,
+  "source_components": 324,
+  "represented_source_components": 305,
+  "lost_source_components": 19,
+  "lost_component_source_area_min": 1,
+  "lost_component_source_area_max": 28,
+  "historical_crop_reference": {
+    "basis": "same 335x256 resized GT before/after 224 center crop; not original-ID aliasing audit",
+    "images_with_pixels_cut": 9,
+    "images_with_components_lost": 3,
+    "components_lost": 4
+  },
+  "scientific_inference_or_metric_performed": false,
+  "normal_mask_policy": "Official normals have no mask file; implicit all-background. Empty-mask transform is tested synthetically, not inferred from a fabricated file.",
+  "bank_created": false,
+  "calibration_created": false,
+  "independent_validation_claim": false
+}

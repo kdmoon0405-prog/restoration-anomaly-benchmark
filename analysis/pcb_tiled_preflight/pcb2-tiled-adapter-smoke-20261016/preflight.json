@@ -1,0 +1,166 @@
+{
+  "status": "PREFLIGHT_PASS",
+  "scope": "model-smoke",
+  "blockers": [],
+  "execution": {
+    "requested_device": "cpu",
+    "actual_device": "cpu",
+    "cuda_available": false,
+    "torch_installed": true,
+    "torch_version": "2.14.0+cpu"
+  },
+  "checkpoints": {
+    "backbone": {
+      "path": "C:\\Users\\\ubb38\uacbd\ub3c8\\.cache\\torch\\hub\\checkpoints\\wide_resnet50_2-95faca4d.pth",
+      "sha256": "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8",
+      "expected_sha256": "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8"
+    },
+    "swinir": {
+      "path": "C:\\Users\\\ubb38\uacbd\ub3c8\\OneDrive\\\ubc14\ud0d5 \ud654\uba74\\DesignProject\\research_code\\checkpoints\\swinir\\002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth",
+      "sha256": "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e",
+      "expected_sha256": "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e"
+    }
+  },
+  "memory": {
+    "estimated_not_measured": true,
+    "tiles": {
+      "fit": 48,
+      "calibration": 48,
+      "test": 96
+    },
+    "pixels": {
+      "fit": 1502280,
+      "calibration": 1502280,
+      "test": 3004560
+    },
+    "fit_vectors": 37632,
+    "bank_bytes": 154140672,
+    "scorer_copy_bytes": 154140672,
+    "CPU_index_vector_bytes": 154140672,
+    "selected_indices_bytes": 301056,
+    "feature_chunk_bytes": 6422528,
+    "bank_scorer_index_plus_chunk_and_board_bytes": 507021656,
+    "calibration_float32_pixel_pool_bytes": 6009120,
+    "calibration_float64_plus_quantile_copy_bytes": 24036480,
+    "test_float32_map_one_variant_bytes": 12018240,
+    "pixel_AUROC_visible_live_payload_lower_bound_bytes": 117177840,
+    "pixel_AUROC_lower_bound_formula": "4 map +1 mask +8 float64 score +1 uint8 label +1 positive +8 order +8 sorted_score +8 ranks bytes/pixel",
+    "evaluation_locations": [
+      "evaluation.py:pixel_metrics",
+      "evaluation.py:binary_roc_auc",
+      "evaluation.py:area_under_per_region_overlap"
+    ],
+    "minimum_payload_disk_bytes": 208523808,
+    "scope": "one shared clean-fit bank; variants sequential; raw maps only in model smoke",
+    "excluded": [
+      "model/activations/VRAM",
+      "FAISS scratch",
+      "Python allocator/index-selection objects",
+      "filesystem page cache",
+      "sort/unique workspace",
+      "AU-PRO region-mask list",
+      "calibration copies beyond scenario",
+      "RGB quality workspaces"
+    ],
+    "evaluation_peak_validated": false
+  },
+  "ram_available_or_capped_bytes": 3128897536,
+  "disk_free_bytes": 140118929408,
+  "geometry_id": "pcb_native224_maxstride192_halfup_v0_2",
+  "manifest_sha256": "11f921c34099b7d6a77cfd68e9b1d1c1a80561e996bd105479d66fe74e99d851",
+  "protocol_sha256": "758b3dfd4107d785753215a5606449a3427dab124717d792aaeac2c730855c42",
+  "official_csv_sha256": "a48557e6033318cb90556f706196bc9d247a776a23ea51aecee5a80dd0332995",
+  "bank_settings": {
+    "total_vectors": 27132672,
+    "capacity": 262144,
+    "dimension": 1024,
+    "seed": 11,
+    "max_chunk_vectors": 8192
+  },
+  "parents": [
+    {
+      "sample": "pcb2/Data/Images/Normal/0001.JPG",
+      "split": "fit",
+      "label": 0,
+      "size_wh": [
+        1404,
+        1070
+      ]
+    },
+    {
+      "sample": "pcb2/Data/Images/Normal/0000.JPG",
+      "split": "calibration",
+      "label": 0,
+      "size_wh": [
+        1404,
+        1070
+      ]
+    },
+    {
+      "sample": "pcb2/Data/Images/Normal/0011.JPG",
+      "split": "test",
+      "label": 0,
+      "size_wh": [
+        1404,
+        1070
+      ]
+    },
+    {
+      "sample": "pcb2/Data/Images/Anomaly/000.JPG",
+      "split": "test",
+      "label": 1,
+      "size_wh": [
+        1404,
+        1070
+      ]
+    }
+  ],
+  "full_partition_counts": {
+    "fit": {
+      "normal": 721,
+      "anomaly": 0
+    },
+    "calibration": {
+      "normal": 180,
+      "anomaly": 0
+    },
+    "test": {
+      "normal": 100,
+      "anomaly": 100
+    }
+  },
+  "variants": [
+    "clean",
+    "bicubic_x4",
+    "swinir_x4"
+  ],
+  "selection_indices_sha256": "213a5e5d6d13b91f5f2a434c47633926be225e1626fb87645bdb38cad27d8179",
+  "bank_scope": "shared clean normal-fit bank; smoke subset is not full bank",
+  "cpu_adapter_validation": "NOT_RUN_BY_PREFLIGHT; see separate CPU test verification",
+  "data_root": "data\\external\\VisA",
+  "references_sha256": {
+    "analysis\\pcb_geometry\\pcb2-native224-tiling-20261016\\PROTOCOL.json": "b14b59a28e77607b352b81c6a79a15e9bb6c153e395efefa8a547b25b9cf22b5",
+    "analysis\\pcb_bank_budget\\pcb2-uniform-cap262144-20261016\\PROTOCOL.json": "ad902d280dc15ced24a0a5e7626424b3ae5849eacaa2e4364c3857c09b7124b7",
+    "analysis\\pcb_bank_budget\\pcb2-uniform-cap262144-20261016\\selection_plan.json": "940744f64e4e2f1794d2b2c7f54a3a7cac95a71fe7d0632da83f0452ef480919"
+  },
+  "source_commit": "0c5c101b905cac3d3198915c2bf9c4d7364976d4",
+  "source_worktree_dirty": true,
+  "code_sha256": {
+    "src/sr_anomaly/pcb_tiled_models.py": "35937d1d85ba4d59f3bc567f87a8c0ae5a0e352616900bf450086b26cdaed2f4",
+    "src/sr_anomaly/pcb_tiled_runner.py": "286ec2a02fc6e85ba8b2b947feca9467ea585f283c55e392e491b32041f7013e",
+    "scripts/run_pcb_tiled_patchcore.py": "86b28eb02469eb4613de7e966e28a1cd51affcc1f59f8bdcbb52ab5f3c0c1aa3",
+    "src/sr_anomaly/device.py": "94d5aa5defed3e1718a0fd35c74a614c59e1ee783d38970827ef9fa27a1fbcdb",
+    "src/sr_anomaly/bounded_bank.py": "f71593890402f4b352479042fae96ce43d258dbc9700981be6454f5176522b71",
+    "src/sr_anomaly/tiled_cpu_pipeline.py": "529036820278cf28506a23837e0d64bd2fb346f331499bf235127e1e5c6de7bf",
+    "src/sr_anomaly/pcb_tiling.py": "779b721d93a1cba943cb09a7d6f9adba282f1f0fec0652329320f4e3a09226fc",
+    "src/sr_anomaly/real_models.py": "0ae1fbdc5709d4909ecebf76cfed1626a0a378c1f792485e610a50a4d6b5b655",
+    "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "third_party/SwinIR/models/network_swinir.py": "7be9fa5bb586c61089c4f78dd947712c3e22a2492e265586c10bbbbec3505afe",
+    "third_party/patchcore-inspection/src/patchcore/backbones.py": "8a428376704566249cb87d64502a1bfd4b33f2f5e59d46e9b39bb34fadc92219"
+  },
+  "actual_pcb_bank": "NOT_CREATED",
+  "actual_pcb_calibration": "NOT_CREATED",
+  "real_model_smoke": "REAL_MODEL_SMOKE_NOT_RUN",
+  "pilot": "NOT_READY_FOR_FULL_PILOT"
+}

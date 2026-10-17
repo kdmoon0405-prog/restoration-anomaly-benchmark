@@ -1,0 +1,74 @@
+{
+  "categories": [
+    {
+      "category": "pcb1",
+      "train_normal": 904,
+      "test_normal": 100,
+      "test_anomaly": 100,
+      "total_images": 1104,
+      "sizes": {
+        "1404x1070": 1104
+      },
+      "raw_mask_invalid_count": 0,
+      "mask_dimension_mismatch_count": 0,
+      "canonical_mask_empty_count": 0,
+      "raw_complete": true,
+      "proposed_fit": 723,
+      "proposed_calibration": 181,
+      "execution_traces": []
+    },
+    {
+      "category": "pcb2",
+      "train_normal": 901,
+      "test_normal": 100,
+      "test_anomaly": 100,
+      "total_images": 1101,
+      "sizes": {
+        "1404x1070": 1101
+      },
+      "raw_mask_invalid_count": 0,
+      "mask_dimension_mismatch_count": 0,
+      "canonical_mask_empty_count": 0,
+      "raw_complete": true,
+      "proposed_fit": 721,
+      "proposed_calibration": 180,
+      "execution_traces": []
+    },
+    {
+      "category": "pcb3",
+      "train_normal": 905,
+      "test_normal": 101,
+      "test_anomaly": 100,
+      "total_images": 1106,
+      "sizes": {
+        "1562x960": 1106
+      },
+      "raw_mask_invalid_count": 0,
+      "mask_dimension_mismatch_count": 0,
+      "canonical_mask_empty_count": 0,
+      "raw_complete": true,
+      "proposed_fit": 724,
+      "proposed_calibration": 181,
+      "execution_traces": []
+    },
+    {
+      "category": "pcb4",
+      "train_normal": 904,
+      "test_normal": 101,
+      "test_anomaly": 100,
+      "total_images": 1105,
+      "sizes": {
+        "1358x1104": 1105
+      },
+      "raw_mask_invalid_count": 0,
+      "mask_dimension_mismatch_count": 0,
+      "canonical_mask_empty_count": 0,
+      "raw_complete": true,
+      "proposed_fit": 723,
+      "proposed_calibration": 181,
+      "execution_traces": []
+    }
+  ],
+  "recommended_category": "pcb2",
+  "prior_use_scope": "No claim about external teammate machines; obtain usage confirmation before independent-validation label"
+}

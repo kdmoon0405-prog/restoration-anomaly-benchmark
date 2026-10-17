@@ -1,0 +1,27 @@
+{
+  "calibration_pool_float64_bytes": 2163283200,
+  "calibration_pool_plus_quantile_copy_scenario_bytes": 4326566400,
+  "calibration_planning_envelope_bytes": 6537922560,
+  "normalized_test_files_bytes": 7210944000,
+  "evaluation_float64_stack_one_variant_bytes": 2403648000,
+  "evaluation_input_bool_masks_bytes": 300456000,
+  "evaluation_visible_pixel_auroc_scenario_bytes": 10816416000,
+  "evaluation_planning_envelope_bytes": 19776013920,
+  "known_aupro_region_mask_bytes": 498756960,
+  "quality_RGB_accumulator_coverage_output_bytes": 51077520,
+  "quality_planning_envelope_bytes": 769167360,
+  "scope": "sequential variants; no model/index alive during postprocessing; no dataset-wide raw-map stack",
+  "planning_not_RSS": true,
+  "native_peak_validated": false,
+  "formula": "calibration24Pcal+32Bmax; evaluator visible36Ptest; planning64Ptest+known region masks+32Bmax; quality512Bmax",
+  "excluded": [
+    "Python/runtime",
+    "OS/page cache",
+    "unvalidated library workspaces",
+    "SSIM workspace beyond RGB payload"
+  ],
+  "available_ram_bytes": 2834808832,
+  "gpu_host_ram": "UNCONFIRMED",
+  "rss_peak_bytes": null,
+  "status": "BLOCKED_MEMORY"
+}

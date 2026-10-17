@@ -1,0 +1,345 @@
+{
+  "timing_statistics_from_csv": {
+    "warmup/degraded": {
+      "observations": 2,
+      "unique_samples": 2,
+      "repeats": 1,
+      "image_preprocessing_seconds": {
+        "mean": 0.11326120002195239,
+        "median": 0.11326120002195239,
+        "min": 0.09535739989951253,
+        "max": 0.13116500014439225
+      },
+      "sr_seconds": {
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tensor_preprocessing_seconds": {
+        "mean": 0.010657700011506677,
+        "median": 0.010657700011506677,
+        "min": 0.003389500081539154,
+        "max": 0.0179258999414742
+      },
+      "detector_total_seconds": {
+        "mean": 5.155043500009924,
+        "median": 5.155043500009924,
+        "min": 5.054268500069156,
+        "max": 5.255818499950692
+      },
+      "end_to_end_seconds": {
+        "mean": 5.279625749913976,
+        "median": 5.279625749913976,
+        "min": 5.189496699953452,
+        "max": 5.369754799874499
+      }
+    },
+    "warmup/restored": {
+      "observations": 2,
+      "unique_samples": 2,
+      "repeats": 1,
+      "image_preprocessing_seconds": {
+        "mean": 0.11326120002195239,
+        "median": 0.11326120002195239,
+        "min": 0.09535739989951253,
+        "max": 0.13116500014439225
+      },
+      "sr_seconds": {
+        "mean": 1.3849218500545248,
+        "median": 1.3849218500545248,
+        "min": 1.3371532000601292,
+        "max": 1.4326905000489205
+      },
+      "tensor_preprocessing_seconds": {
+        "mean": 0.0017524500144645572,
+        "median": 0.0017524500144645572,
+        "min": 0.0016475000884383917,
+        "max": 0.0018573999404907227
+      },
+      "detector_total_seconds": {
+        "mean": 5.016099949949421,
+        "median": 5.016099949949421,
+        "min": 4.926865099929273,
+        "max": 5.105334799969569
+      },
+      "end_to_end_seconds": {
+        "mean": 6.5160611000610515,
+        "median": 6.5160611000610515,
+        "min": 6.39706000010483,
+        "max": 6.635062200017273
+      }
+    },
+    "instrumented/degraded": {
+      "observations": 20,
+      "unique_samples": 10,
+      "repeats": 2,
+      "image_preprocessing_seconds": {
+        "mean": 0.09870675500715151,
+        "median": 0.09140369994565845,
+        "min": 0.04245559987612069,
+        "max": 0.20376880001276731
+      },
+      "sr_seconds": {
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tensor_preprocessing_seconds": {
+        "mean": 0.005360579956322909,
+        "median": 0.002047449932433665,
+        "min": 0.0010101997759193182,
+        "max": 0.046140999998897314
+      },
+      "backbone_embedding_seconds": {
+        "mean": 0.7229817949933931,
+        "median": 0.5297560000326484,
+        "min": 0.35452399984933436,
+        "max": 1.6403025998733938
+      },
+      "feature_detach_cpu_numpy_seconds": {
+        "mean": 0.011180914973374456,
+        "median": 0.011277449899353087,
+        "min": 0.0031143000815063715,
+        "max": 0.025579199893400073
+      },
+      "faiss_search_seconds": {
+        "mean": 8.001779790001455,
+        "median": 5.361587249906734,
+        "min": 4.492007300024852,
+        "max": 18.84165469999425
+      },
+      "score_map_postprocessing_seconds": {
+        "mean": 0.004623340058606118,
+        "median": 0.004715250222943723,
+        "min": 0.0015551999676972628,
+        "max": 0.010840400122106075
+      },
+      "detector_glue_seconds": {
+        "mean": 0.00908089498989284,
+        "median": 0.007974950014613569,
+        "min": 0.00531500019133091,
+        "max": 0.030555000063031912
+      },
+      "detector_total_seconds": {
+        "mean": 8.749646735016722,
+        "median": 5.944435699959286,
+        "min": 5.018870299914852,
+        "max": 20.031417299993336
+      },
+      "end_to_end_seconds": {
+        "mean": 8.854308530013077,
+        "median": 6.037216799915768,
+        "min": 5.09792620013468,
+        "max": 20.127781300107017
+      }
+    },
+    "instrumented/restored": {
+      "observations": 20,
+      "unique_samples": 10,
+      "repeats": 2,
+      "image_preprocessing_seconds": {
+        "mean": 0.09870675500715151,
+        "median": 0.09140369994565845,
+        "min": 0.04245559987612069,
+        "max": 0.20376880001276731
+      },
+      "sr_seconds": {
+        "mean": 1.2766836599796079,
+        "median": 1.3263576499884948,
+        "min": 0.49200990004464984,
+        "max": 2.0985098001547158
+      },
+      "tensor_preprocessing_seconds": {
+        "mean": 0.0017192550585605204,
+        "median": 0.0016238499665632844,
+        "min": 0.0009578999597579241,
+        "max": 0.004002500092610717
+      },
+      "backbone_embedding_seconds": {
+        "mean": 0.7438459100085311,
+        "median": 0.523163800011389,
+        "min": 0.3873355002142489,
+        "max": 2.821506400126964
+      },
+      "feature_detach_cpu_numpy_seconds": {
+        "mean": 0.008890794985927642,
+        "median": 0.01038320001680404,
+        "min": 0.003037999849766493,
+        "max": 0.01474060001783073
+      },
+      "faiss_search_seconds": {
+        "mean": 7.5395980050321665,
+        "median": 5.145502950064838,
+        "min": 4.423372100107372,
+        "max": 14.685631199972704
+      },
+      "score_map_postprocessing_seconds": {
+        "mean": 0.005027079931460321,
+        "median": 0.004627749905921519,
+        "min": 0.001627899706363678,
+        "max": 0.009345900034531951
+      },
+      "detector_glue_seconds": {
+        "mean": 0.007703095069155097,
+        "median": 0.007787100155837834,
+        "min": 0.004241099813953042,
+        "max": 0.015179499983787537
+      },
+      "detector_total_seconds": {
+        "mean": 8.30506488502724,
+        "median": 5.689217849983834,
+        "min": 4.9538875999860466,
+        "max": 17.19434960000217
+      },
+      "end_to_end_seconds": {
+        "mean": 9.682189669972285,
+        "median": 7.064753249986097,
+        "min": 6.323269600048661,
+        "max": 18.634238599799573
+      }
+    },
+    "end_to_end/degraded": {
+      "observations": 10,
+      "unique_samples": 10,
+      "repeats": 1,
+      "image_preprocessing_seconds": {
+        "mean": 0.11783961998298764,
+        "median": 0.1238088000100106,
+        "min": 0.06156919989734888,
+        "max": 0.20759439980611205
+      },
+      "sr_seconds": {
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tensor_preprocessing_seconds": {
+        "mean": 0.004810600006021559,
+        "median": 0.0027278499910607934,
+        "min": 0.0009232000447809696,
+        "max": 0.021977900061756372
+      },
+      "detector_total_seconds": {
+        "mean": 14.354897379968316,
+        "median": 14.013606599997729,
+        "min": 6.250858699902892,
+        "max": 30.637708199908957
+      },
+      "end_to_end_seconds": {
+        "mean": 14.478163609979674,
+        "median": 14.17485635005869,
+        "min": 6.3136362000368536,
+        "max": 30.748736300040036
+      }
+    },
+    "end_to_end/restored": {
+      "observations": 10,
+      "unique_samples": 10,
+      "repeats": 1,
+      "image_preprocessing_seconds": {
+        "mean": 0.11783961998298764,
+        "median": 0.1238088000100106,
+        "min": 0.06156919989734888,
+        "max": 0.20759439980611205
+      },
+      "sr_seconds": {
+        "mean": 1.7126242600381374,
+        "median": 1.7012934498488903,
+        "min": 0.4469755000900477,
+        "max": 3.037026100093499
+      },
+      "tensor_preprocessing_seconds": {
+        "mean": 0.004666019999422133,
+        "median": 0.0018634999869391322,
+        "min": 0.0011239999439567327,
+        "max": 0.027770700166001916
+      },
+      "detector_total_seconds": {
+        "mean": 14.691641169996,
+        "median": 13.00614944996778,
+        "min": 7.21858480013907,
+        "max": 31.427274300018325
+      },
+      "end_to_end_seconds": {
+        "mean": 16.52678682997357,
+        "median": 14.054223149898462,
+        "min": 8.086462700041011,
+        "max": 34.29847330017947
+      }
+    }
+  },
+  "detector_child_sum_max_abs_residual": 0.0,
+  "faiss_fraction_of_detector_parent": {
+    "degraded": 0.9145260411460673,
+    "restored": 0.9078313185276742
+  },
+  "conditional_cost_simulation": {
+    "scope": "same separate uninstrumented phase; detector includes tensor prep; shared RGB preprocessing excluded",
+    "raw_detector": 14.359707979974337,
+    "restored_detector": 14.696307189995423,
+    "sr": 1.7126242600381374,
+    "always_sr": 16.40893145003356,
+    "break_even_p": 0.1248846383629101,
+    "rows": [
+      {
+        "p": 0,
+        "conditional": 14.359707979974337
+      },
+      {
+        "p": 0.25,
+        "conditional": 18.461940842482726
+      },
+      {
+        "p": 0.5,
+        "conditional": 22.564173704991116
+      },
+      {
+        "p": 0.75,
+        "conditional": 26.666406567499507
+      },
+      {
+        "p": 1,
+        "conditional": 30.768639430007894
+      }
+    ]
+  },
+  "source_hashes": {
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/ANCHOR_PARITY.json": "708b12c2799fc30bc49935562b0c9ad39f1065c4cce4a9c665181796c3a02412",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/DEMO_VERIFICATION.md": "108f549dd64833918f1aef33250d2fdf8849bdf4b7dbc2f449b8f587ac11e00f",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/EXECUTION_PLAN.json": "9639b5dbf48672654b052b1b9761aacb7029a0eaaa8210794805fbf65e1a4fa8",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/HOST_RESOURCES.json": "bd38a728b011298cfb5952c64f0cf688c1c9d6f024b3a3302fbbcd0162ec7c53",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/INPUT_MANIFEST.json": "39fd58c8fc124447ee1e67c6439f823ea0e21ef476a081c92dc3072a3295bf6b",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/PCB_INVENTORY.json": "6029732ca42fa870f8b374d68093ce6b0f2e9282ce431e3cdf976b2b807c7776",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/PCB_READINESS.md": "567594cfcf67dcded274a73fb0a160e408eb59f13e4f3a7001564bb62081bba7",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/PCB_SELECTION_RULE.json": "5a2c7a06d775b97a31b3c8c284647e334bcf0525ecca22f0c1cd9543c0e33d49",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/PROTOCOL.json": "558491367197daeecca3645bba4ee8694002f14afa83f2b7d889a25706addf2b",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/REPORT.md": "b51370715441fef30ba84327eea388d666145e41c488b7e46c05e9c2b9362226",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/RESOURCE_ESTIMATES.json": "a6c3cf36d700f6382bc1d3249efd6ed53aa397d15bfb60098c998610438f4674",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/summary.json": "aeeeda2b9a8ce3104cc03bc4469a0605c4789746a0111c77edcf9073d8b5f11c",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/timings.csv": "366d7a49dadbe43b017ab1c4e4446803038ae335dc09f6ada4c0a0c7fe354d98",
+    "analysis/profiling_results_demo/hazelnut-ten-20261015/VERIFICATION.md": "4369831783ca9a1db11826a9ab0361ae6559a308f3f425acfc8b2737a269410e",
+    "analysis/map_gating_feasibility/hazelnut-branchb-20261014/AUDIT.md": "06647e25d2c1b5829d93c17c5e736e669f3020a2c34d443c88383fc5af4d8ed7",
+    "analysis/map_gating_feasibility/hazelnut-branchb-20261014/INPUT_MANIFEST.json": "c66586b619db6fc076cc43491195fa27d2e9a8ee3ce3cedefe8df619b149d9b2",
+    "analysis/map_gating_feasibility/hazelnut-branchb-20261014/per_image.csv": "f7fb30c9ba0bcd01deeefa1fdabb14ef0ef1015fc8d6dd65fe99fc653a3e4e77",
+    "analysis/map_gating_feasibility/hazelnut-branchb-20261014/PROTOCOL.json": "eaf84392bb328e9bae58abffde41bfd265626dc4e4c1ec7c2c809065a933f299",
+    "analysis/map_gating_feasibility/hazelnut-branchb-20261014/REPORT.md": "3b2e2577db8f6158c673eb58e1f34403f063aacb882bf4d84412be5e50070e77",
+    "analysis/map_gating_feasibility/hazelnut-branchb-20261014/summary.csv": "af662b183e49c3333d27874253b4d4d611d11dfff5e0cb6dd6591a75fa11a4b3"
+  },
+  "frozen_input_hashes_unchanged": 30,
+  "pcb_crop_summary": {
+    "anomalous_images": 100,
+    "empty_after_crop": 0,
+    "images_with_defect_pixels_cut": 9,
+    "images_with_complete_component_loss": 3,
+    "fully_removed_components": 4,
+    "partially_cut_components": 10,
+    "mean_lost_fraction": 0.0194684670047275,
+    "max_lost_fraction": 0.3933415536374846
+  },
+  "local_pcb2_execution_traces": [],
+  "unreadable_trace_json": [],
+  "teammate_prior_use": "unconfirmed"
+}

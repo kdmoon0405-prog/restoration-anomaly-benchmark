@@ -1,0 +1,7 @@
+{
+  "rule": "Before file/mask audit: among complete PCB categories with no observed local result trace, lowest official train+test count; exact tie lexical category",
+  "scope": "Readiness only, no model execution/performance selection; no claim about unobserved machines",
+  "geometry": "Resize shortest edge 256, center crop 224; GT nearest-neighbor; later 224->56 Pillow x4",
+  "source_csv": "data/external/VisA/split_csv/1cls.csv",
+  "source_csv_sha256": "a48557e6033318cb90556f706196bc9d247a776a23ea51aecee5a80dd0332995"
+}
