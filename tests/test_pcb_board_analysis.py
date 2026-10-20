@@ -8,9 +8,16 @@ import pytest
 
 from scripts.check_pcb_board_pipeline import RAM_CAP, fixture, produce
 from sr_anomaly import pcb_board_analysis as board
+from sr_anomaly import pcb_tiled_runner as runner
 from sr_anomaly.bounded_bank import file_sha256
 from sr_anomaly.fusion import normalize, quantile_threshold, robust_params
 from sr_anomaly.pcb_tiled_models import VARIANTS
+
+
+@pytest.fixture(autouse=True)
+def synthetic_available_ram(monkeypatch):
+    # Only tiny, in-process generated fixtures: test logic, not current desktop RAM.
+    monkeypatch.setattr(runner, "available_ram", lambda: 64 * 1024**3)
 
 
 @pytest.fixture

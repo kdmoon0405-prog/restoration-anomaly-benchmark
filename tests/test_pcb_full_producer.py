@@ -19,6 +19,23 @@ from sr_anomaly.pcb_tiling import tile_boxes, extract_tiles
 from sr_anomaly.tiled_cpu_pipeline import TilePrediction, assemble_board, feature_chunks
 
 ROOT = Path(__file__).resolve().parents[1]
+REAL_AVAILABLE_RAM = runner.available_ram
+
+
+@pytest.fixture(autouse=True)
+def synthetic_available_ram(monkeypatch):
+    # Tiny in-process fixtures only; real subprocess tests restore the actual probe.
+    monkeypatch.setattr(runner, "available_ram", lambda: 64 * 1024**3)
+
+
+def require_real_worker_ram(monkeypatch):
+    plan = producer.resource_plan(fixture()[0], patch_shape=(2, 2), dimension=4, capacity=7)
+    phases = [v for k, v in plan["postprocessing"].items() if k.endswith("_planning_envelope_bytes")]
+    required = max(plan["producer_bank_build_visible_bytes"], plan["producer_prediction_visible_bytes"], *phases) + board.RAM_RESERVE
+    available = REAL_AVAILABLE_RAM()
+    if available < required:
+        pytest.skip(f"Actual subprocess RAM prerequisite: {available} bytes available, {required} bytes required including unchanged 2 GiB reserve; no resource override")
+    monkeypatch.setattr(runner, "available_ram", REAL_AVAILABLE_RAM)
 
 
 def make_raw(output, *, parents=None, batch_tiles=2, fail=False):
@@ -196,11 +213,11 @@ def test_disk_index_and_partial_map_failure_guards(tmp_path, monkeypatch):
                          expected_index_sha="wrong", patch_shape=(2, 2), dimension=4, capacity=7)
     assert not calls
     original = board.shutil.disk_usage
-    monkeypatch.setattr(board.shutil, "disk_usage", lambda p: original(p)._replace(free=0))
-    with pytest.raises(OSError, match="disk"):
-        make_raw(tmp_path / "no-disk")
+    with monkeypatch.context() as disk_patch:
+        disk_patch.setattr(board.shutil, "disk_usage", lambda p: original(p)._replace(free=0))
+        with pytest.raises(OSError, match="disk"):
+            make_raw(tmp_path / "no-disk")
     assert not (tmp_path / "no-disk").exists()
-    monkeypatch.undo()
     mappings = []
     original_open = np.lib.format.open_memmap
     def tracked_open(*args, **kwargs):
@@ -222,8 +239,9 @@ def test_disk_index_and_partial_map_failure_guards(tmp_path, monkeypatch):
     assert json.loads((tmp_path / "bad-map/status.json").read_text(encoding="utf-8"))["status"] == "FAILED"
 
 
-def test_sequential_process_end_to_end_completion_and_tamper(tmp_path):
+def test_sequential_process_end_to_end_completion_and_tamper(tmp_path, monkeypatch):
     # ROOT contains code/references; unique ignored output, no native RGB/GT read.
+    require_real_worker_ram(monkeypatch)
     run_id = "pytest-producer-" + tmp_path.parent.name[-12:] + "-" + tmp_path.name
     state, output = checker.run(ROOT, run_id)
     protocol = json.loads((output / "PROTOCOL.json").read_text(encoding="utf-8"))
@@ -246,6 +264,8 @@ def test_sequential_process_end_to_end_completion_and_tamper(tmp_path):
 
 @pytest.mark.parametrize("failure", ["exit", "timeout"])
 def test_orchestrator_worker_failure_and_incomplete_guard(tmp_path, monkeypatch, failure):
+    if failure == "exit":
+        require_real_worker_ram(monkeypatch)  # This case launches a real generated-data producer.
     run_id = "pytest-failed-" + failure + "-" + tmp_path.parent.name[-12:] + "-" + tmp_path.name
     original_run = subprocess.run
     def fail(command, **kwargs):

@@ -40,3 +40,7 @@ src/sr_anomaly/pcb_native_memory.py text eol=lf
 scripts/check_pcb_native_memory.py text eol=lf
 src/sr_anomaly/pcb_full_producer.py text eol=lf
 scripts/check_pcb_full_producer.py text eol=lf
+src/sr_anomaly/pcb_input_binding.py text eol=lf
+scripts/check_pcb_input_binding.py text eol=lf
+src/sr_anomaly/pcb_model_resources.py text eol=lf
+scripts/profile_pcb_model_smoke.py text eol=lf

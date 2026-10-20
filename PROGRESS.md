@@ -2,6 +2,14 @@
 
 Date: 2026-09-20
 
+## Frozen inputs and limited resource-smoke tooling (2026-10-20)
+
+Added hash-bound native RGB/test-GT callbacks and a model-free input audit. Actual local1101 RGB files and100 anomaly GT files match frozen hashes;100 normal test masks remain implicit zeros. Full decoded audit passed1101 native RGB/200 test masks, fixed721/180/100-normal/100-anomaly composition,332 four-connected GT regions/payload498756960bytes. RGB/GT structural verification68.733/4.794s is not inference runtime. Earlier low-RAM blocked decode and hash-only evidence are preserved; later sequential decode passed its single-board96,145,920byte plan + unchanged2GiB reserve. Actual native180/200 map-stack guard20.42GiB is not bypassed.
+
+Added opt-in limited-smoke resource instrumentation around unchanged preflight/execute: disjoint synchronized phase timings, RSS samples vs OS lifetime high-water vs CUDA counters, fresh source/reference/official/checkpoint guards and preserved partial failures. Local CPU preflight passes with factory/model_execution_started=false, torch2.14.0+cpu/cuda_available=false. No actual model/index/GPU inference, bank/calibration, degradation or anomaly-performance result. Limited37632-vector resource evidence still cannot validate full262144 bank.
+
+Final pytest376passed/1 optional-data skip(221.69s), CPU smoke2 rows passed, no-Torch binding/budget53passed and resource29passed; protected science/model/geometry/guard/protocol files unchanged. Tiny unit tests now isolate host RAM, while real subprocess tests use actual resource checks (none skipped in final run). First full attempt's20 RAM-dependent unit failures and one OneDrive-folder atomic replace error are retained; final OS-temp test run passes without altering production statewriters/guards. See docs/PCB_INPUT_BINDING_HANDOFF.md, docs/PCB_MODEL_RESOURCE_SMOKE.md and analysis/pcb_input_binding/implementation-20261020/VERIFICATION.md. Original research checkout preserved; private rationale note remains ignored. No push or full approval.
+
 ## Align board/rehearsal memory accounting (2026-10-18)
 
 Correct the board evaluator's post-allocation double budgeting: subtract only already-filled float64 maps/bool masks from the remaining available-RAM requirement. Board and rehearsal now reuse one guard, preserving the fixed2GiB reserve and total envelope-plus-reserve cap. Small synthetic checker caps explicitly include1GiB payload plus2GiB reserve, recorded in their protocols. Native pre-allocation requirement remains21923497568bytes; no native allocation, model execution or full approval. Evaluation/metric/model/geometry/bank/protocol sources are unchanged outside these technical guard wrappers.
