@@ -2,6 +2,12 @@
 
 Date: 2026-09-20
 
+## Read-only returned-resource consistency review (2026-10-20)
+
+Added scripts/review_pcb_model_resources.py and a metadata/hash-only checker for the future limited GPU resource-smoke return. It checks source/reference coverage, completion/hash chains, fixed subset/parent/variant inventory, RGB receipts, call counts, timing arithmetic and RSS/CUDA counter consistency. CPU/injected fixtures are not GPU evidence; omitted payloads remain explicitly unverified. Even matching hashes do not independently validate array contents or attest remote execution. No actual CUDA resource return exists yet and no full-pilot approval is issued.
+
+Final full pytest399 passed/1 optional-data skip(178.95s), no-Torch/FAISS reviewer23 passed(13.67s), existing CPU smoke2 rows passed. The local CPU preflight-only folder is correctly rejected as incomplete execution evidence. No existing scientific/model/geometry/guard/protocol source changed relative4b3368e. See docs/PCB_RESOURCE_RETURN_REVIEW.md; test logs remain ignored under outputs/resource-review-*.log. Local-only rationale/progress mirrors are maintained separately. No actual model/index/GPU/native inference, performance result or push.
+
 ## Frozen inputs and limited resource-smoke tooling (2026-10-20)
 
 Added hash-bound native RGB/test-GT callbacks and a model-free input audit. Actual local1101 RGB files and100 anomaly GT files match frozen hashes;100 normal test masks remain implicit zeros. Full decoded audit passed1101 native RGB/200 test masks, fixed721/180/100-normal/100-anomaly composition,332 four-connected GT regions/payload498756960bytes. RGB/GT structural verification68.733/4.794s is not inference runtime. Earlier low-RAM blocked decode and hash-only evidence are preserved; later sequential decode passed its single-board96,145,920byte plan + unchanged2GiB reserve. Actual native180/200 map-stack guard20.42GiB is not bypassed.
