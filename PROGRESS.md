@@ -2,6 +2,12 @@
 
 Date: 2026-09-20
 
+## Audited two-operator delivery preparation (2026-10-27)
+
+Reviewed all four linear commits from public bb22cf8 through ef2ca86, including40 historical blobs across27 paths (largest64937bytes). No forbidden input/private/binary path or credential signature found; original private79a1c0f history is not an ancestor. Required13 files,13 frozen geometry artifact/source checks, pinned submodules and36 current byte-bound source/reference hashes verified. pcb2 bundle/backbone/SwinIR HEAD requests return200 with274645313/138223492/17225941bytes respectively; payloads were not downloaded by this check.
+
+Fresh full CPU pytest397 passed/3 skipped(205.37s), CPU smoke2 rows passed. Two real generated-worker tests skip under unchanged actual-RAM guard; focused confirmation1 passed/2 skipped records1848459264/1848520704bytes available versus2186018816 required. The third skip is optional MVTec data. No guard, production code, model, metric, bank, geometry or frozen hash changed. Added docs/PCB_TWO_OPERATOR_HANDOFF.md: established operator instruments the fixed limited smoke; new operator verifies setup/inputs and runs independent raw smoke. Neither task approves full pilot or strict cross-device parity. Publication and fresh GitHub receipt must be verified separately; no actual model/native execution here. Detailed local evidence remains ignored under outputs/publication-20261027-124910/. Private rationale stays outside the published history.
+
 ## Read-only returned-resource consistency review (2026-10-20)
 
 Added scripts/review_pcb_model_resources.py and a metadata/hash-only checker for the future limited GPU resource-smoke return. It checks source/reference coverage, completion/hash chains, fixed subset/parent/variant inventory, RGB receipts, call counts, timing arithmetic and RSS/CUDA counter consistency. CPU/injected fixtures are not GPU evidence; omitted payloads remain explicitly unverified. Even matching hashes do not independently validate array contents or attest remote execution. No actual CUDA resource return exists yet and no full-pilot approval is issued.
