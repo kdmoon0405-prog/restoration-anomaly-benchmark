@@ -2,6 +2,12 @@
 
 Date: 2026-09-20
 
+## Bounded full-cap synthetic resource probe implemented (2026-10-27)
+
+Added a separate no-execute-by-default engineering CLI/module and30 tests. It validates accepted reported-CUDA limited-smoke metadata, bound model/source/submodule/checkpoint bytes and current RAM/disk before allocating. Opt-in runs only a synthetic262144x1024 float32 payload and2 generated RGB tiles across3 unchanged variants(6 predictions), retaining CPU exact scorer behavior. It never fits a PCB bank, selects indices, uses GT or exports predictions/metrics; full-bank/full-pilot approval flags remain false. Temporary payload is removed only after successful query/owned-cleanup/monitor checks; failures retain evidence. No full executor or scientific source change.
+
+Full pytest429 passed/1 optional-data skip(180.96s); final30 new tests pass with backend imports explicitly denied(5.57s), including scope/drift/shortage/failure/cleanup guards. Existing CPU smoke passes. Local no-execute preflight plans8.283056GiB including unchanged2GiB reserve and blocks inadequate current RAM before NPY/model creation. The prior temporary no-Torch environment failed startup and was not repaired; import-denial checks used the normal Python. See docs/PCB_FULLCAP_RESOURCE_PROBE_DRAFT.md. The accepted old limited resource ZIP remains metadata-only locally; this new artifact kind cannot be passed to the old limited-smoke checker. No actual model/FAISS/GPU/native run here; full real bank/producer/resource approval remain pending.
+
 ## Audited two-operator delivery preparation (2026-10-27)
 
 Reviewed all four linear commits from public bb22cf8 through ef2ca86, including40 historical blobs across27 paths (largest64937bytes). No forbidden input/private/binary path or credential signature found; original private79a1c0f history is not an ancestor. Required13 files,13 frozen geometry artifact/source checks, pinned submodules and36 current byte-bound source/reference hashes verified. pcb2 bundle/backbone/SwinIR HEAD requests return200 with274645313/138223492/17225941bytes respectively; payloads were not downloaded by this check.

@@ -46,3 +46,5 @@ src/sr_anomaly/pcb_model_resources.py text eol=lf
 scripts/profile_pcb_model_smoke.py text eol=lf
 src/sr_anomaly/pcb_resource_review.py text eol=lf
 scripts/review_pcb_model_resources.py text eol=lf
+src/sr_anomaly/pcb_fullcap_probe.py text eol=lf
+scripts/check_pcb_fullcap_probe.py text eol=lf
