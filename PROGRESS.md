@@ -2,6 +2,12 @@
 
 Date: 2026-09-20
 
+## Read-only full-cap return checker ready on CPU (2026-10-28)
+
+Added scripts/review_pcb_fullcap_probe.py, its small review module, 73 deterministic tests and docs/PCB_FULLCAP_RETURN_REVIEW.md. The new kind has a separate checker; the old limited-smoke checker and producer/model/evaluator bytes are unchanged. Explicit local reference metadata is required for a passing review, with no automatic reads of recorded remote reference/checkpoint paths. Source commit/canonical bindings and raw-byte bindings, six query records, sixteen ordered calls, summaries, RSS/CUDA domains and cleanup contracts are checked. Status-file SHA is a computed receipt, separate from the three verified artifact hash links. Missing/deleted arrays remain unverified; every classification keeps full approval false.
+
+Final related tests126 passed(39.39s); full pytest502 passed/1 optional-data skip(139.36s). Fresh-process runtime import denial covers a complete metadata review plus CLI help; the actual tiny injected producer is rejected as CUDA full-cap evidence. Existing CPU smoke passed with2 rows and git diff --check passed. Known83ef04e execution-source bindings and the existing reported-CUDA limited reference are compatible; its11 omitted arrays remain unverified. Evidence is local-only outputs/pcb-fullcap-review-readiness-20261028-230346/. No new full-cap GPU return, actual model/FAISS/native run, bank/metric/geometry change, full executor activation or push. Next is real returned-metadata review followed by separate actual fit/selection, full producer, current resource and final-approval gates.
+
 ## Bounded full-cap synthetic resource probe implemented (2026-10-27)
 
 Added a separate no-execute-by-default engineering CLI/module and30 tests. It validates accepted reported-CUDA limited-smoke metadata, bound model/source/submodule/checkpoint bytes and current RAM/disk before allocating. Opt-in runs only a synthetic262144x1024 float32 payload and2 generated RGB tiles across3 unchanged variants(6 predictions), retaining CPU exact scorer behavior. It never fits a PCB bank, selects indices, uses GT or exports predictions/metrics; full-bank/full-pilot approval flags remain false. Temporary payload is removed only after successful query/owned-cleanup/monitor checks; failures retain evidence. No full executor or scientific source change.
