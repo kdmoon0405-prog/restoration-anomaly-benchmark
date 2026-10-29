@@ -50,3 +50,5 @@ src/sr_anomaly/pcb_fullcap_probe.py text eol=lf
 scripts/check_pcb_fullcap_probe.py text eol=lf
 src/sr_anomaly/pcb_fullcap_review.py text eol=lf
 scripts/review_pcb_fullcap_probe.py text eol=lf
+src/sr_anomaly/pcb_fit_bank.py text eol=lf
+scripts/run_pcb_fit_bank.py text eol=lf

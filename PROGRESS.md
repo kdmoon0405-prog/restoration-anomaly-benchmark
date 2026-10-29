@@ -2,6 +2,16 @@
 
 Date: 2026-09-20
 
+## Real normal-fit bank path ready for separate CUDA execution (2026-10-29)
+
+Added scripts/run_pcb_fit_bank.py and pcb_fit_bank.py as a separate fit-only path. Static preflight binds frozen metadata/source/submodule/checkpoint/fit file hashes without importing Torch/FAISS or decoding RGB; opt-in execution repeats bindings and RAM/disk checks and requires live CUDA. It reuses the existing model factory, input RGB callback, feature_chunks and bounded_bank writer/loader. Only721 normal-fit parents enter extraction; no cal/test RGB or GT, restoration, scorer binding, predictions, thresholds or metrics. The existing synthetic-only full producer and full-pilot guard remain unchanged.
+
+Observed/validated expectation is27132672 vectors, stored262144x1024 float32, with the frozen selection SHA and unchanged geometry/batch/seed/chunk rules. Saved payloads are reloaded and checked chunkwise; progress and source/input/resource/timing receipts remain separate. Actual-fit integrity flags cannot promote CPU fixtures or full-pilot approval. Fit RAM/disk estimates are6.204393GiB available including2GiB reserve and2.064453GiB disk; these are planning scenarios, not measured actual-fit peaks. The existing factory also constructs SwinIR but no restoration is invoked.
+
+Final new tests34 passed; final full pytest536 passed/1 optional MVTec-data skip in185.59s; existing CPU smoke passed with2 result rows. Earlier related suites179/181 passed before the final approval-flag test. New deterministic tests cover tiny fit/reuse, runtime import denial through static preflight, source/input/order/selection/metadata changes, invalid streams, shortage, CUDA failure and cleanup. The fresh-process test uses this worktree's explicit src path; vendored-source guards have separate fake-source tests so CI does not require model submodules merely to run CPU fixtures. Delivery commands and resource/lifecycle/return scopes are in docs/PCB_REAL_FIT_BANK_HANDOFF.md.
+
+An actual static preflight checked721 fit RGB file hashes,20 bound source files,7 references and both pinned checkpoints, then blocked before models/bank arrays: available RAM2626314240bytes versus required6661915776bytes. CUDA was not checked by this static preflight. That local snapshot does not predict the GPU host's current availability. No real PCB fit/model inference or new research metric ran; model/metric tests used synthetic fixtures. Publication and receiving evidence is recorded separately after audit; full cohort producer/postprocessing/final approval remain pending.
+
 ## Read-only full-cap return checker ready on CPU (2026-10-28)
 
 Added scripts/review_pcb_fullcap_probe.py, its small review module, 73 deterministic tests and docs/PCB_FULLCAP_RETURN_REVIEW.md. The new kind has a separate checker; the old limited-smoke checker and producer/model/evaluator bytes are unchanged. Explicit local reference metadata is required for a passing review, with no automatic reads of recorded remote reference/checkpoint paths. Source commit/canonical bindings and raw-byte bindings, six query records, sixteen ordered calls, summaries, RSS/CUDA domains and cleanup contracts are checked. Status-file SHA is a computed receipt, separate from the three verified artifact hash links. Missing/deleted arrays remain unverified; every classification keeps full approval false.
