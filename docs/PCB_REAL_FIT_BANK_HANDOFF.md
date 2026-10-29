@@ -63,7 +63,14 @@ is absent. Then:
 
 ```powershell
 git switch --detach $pcbCommit
-git -c core.autocrlf=true submodule update --init -- third_party/SwinIR third_party/patchcore-inspection
+$pcbOldLfsSkip = [Environment]::GetEnvironmentVariable('GIT_LFS_SKIP_SMUDGE','Process')
+try {
+    $env:GIT_LFS_SKIP_SMUDGE = '1'
+    git -c core.autocrlf=true submodule update --init -- third_party/SwinIR third_party/patchcore-inspection
+    if ($LASTEXITCODE -ne 0) { throw 'Pinned source initialization failed' }
+} finally {
+    [Environment]::SetEnvironmentVariable('GIT_LFS_SKIP_SMUDGE',$pcbOldLfsSkip,'Process')
+}
 $pcbPython = (Resolve-Path '.venv/Scripts/python.exe').Path
 $pcbData = (Resolve-Path 'data/external/VisA').Path
 & $pcbPython -c "import sys,torch; print(sys.executable); print(torch.__version__); print(torch.cuda.is_available())"
@@ -81,6 +88,14 @@ Explicit `--backbone-checkpoint`/`--swinir-checkpoint` or existing
 `PATCHCORE_BACKBONE_CHECKPOINT`/`SWINIR_X4_CHECKPOINT` are supported. No downloads
 occur in this runner; `scripts/setup_pcb_gpu_inputs.py --help` documents the
 separate existing input setup if a first-time operator needs it.
+
+The process-scoped LFS setting skips upstream precomputed FAISS/model payloads
+that this fit-only runner does not use. It preserves the pinned source revision
+and all frozen source checks; the two publisher checkpoints above still require
+their original hashes. No global Git/LFS or OS configuration is changed. A plain
+fresh submodule checkout attempted such an unused LFS download during receiving
+verification and hit a DNS error; the source-only initialization avoids that
+unnecessary dependency.
 
 After actual `PREFLIGHT_PASS`, review blockers/plan and run once with a NEW ID:
 
