@@ -101,6 +101,9 @@ def admit_bank(root, bank_run, inputs):
             or r['bank_sha256']['status.json'] != bank.file_sha256(bank_run/'bank/status.json')
             or r['bank_sha256']['selected_indices.npy'] != b['artifact_sha256']['selected_indices.npy']):
         raise ValueError("Reviewed bank identity/provenance mismatch")
+    for name,expected in (('backbone',fit.models.BACKBONE_SHA256),('swinir',fit.models.SWINIR_SHA256)):
+        if p['checkpoints'][name]['sha256'] != expected:  # Before the 1 GiB bank scan.
+            raise ValueError("Bank checkpoint identity differs")
     # Existing loader verifies NPY bytes, indices, count and dtype. Additional finite
     # scan is chunked; this helper closes its own validation mmaps before returning.
     verified = fit._verify_bank(bank_run, SPEC, SELECTION_SHA256)
@@ -120,9 +123,6 @@ def admit_bank(root, bank_run, inputs):
         if (item['file_sha256'] != rows[parent.sample]['image_sha256'] or item['dtype'] != 'uint8'
                 or item['shape'] != [*parent.size_wh[::-1],3]):
             raise ValueError("Fit receipt identity/geometry changed")
-    for name,expected in (('backbone',fit.models.BACKBONE_SHA256),('swinir',fit.models.SWINIR_SHA256)):
-        if p['checkpoints'][name]['sha256'] != expected:
-            raise ValueError("Bank checkpoint identity differs")
     hashes = {n:bank.file_sha256(bank_run/n) for n in BANK_FILES if not n.endswith('.npy')}
     hashes.update({'bank/'+n:digest for n,digest in verified['artifact_sha256'].items()})
     return dict(fit_commit=p['source_commit'], fit_source_worktree_dirty=p['source_worktree_dirty'],
@@ -163,6 +163,24 @@ def resource_plan(parents):
         existing_bank_copied=False, estimates_not_measured=True, upper_bound=False,
         exclusions=['Extra FAISS/BLAS/allocator/page-cache/VRAM allocations are not bounded.',
                     'No calibration/quality/evaluation stacks are allocated by this integration.'])
+
+
+def unit_ledger(recorder,first,t0,t1,t2,snapshot,**fields):
+    """Board x variant spans. Leaf calls lie INSIDE the inclusive span: never add both.
+
+    RSS here is call-boundary/unit-end sampling; the OS value is the process-lifetime
+    high-water mark read at unit end, NOT this unit's peak.
+    """
+    leaves=recorder.rows[first:]
+    leaf=sum(r['elapsed_seconds'] for r in leaves)
+    process=fit.memory.process_memory()
+    boundary=[v for r in leaves for v in (r['rss_before_bytes'],r['rss_after_bytes'])]
+    return dict(fields,inclusive_unit_seconds=t2-t0,inclusive_assemble_seconds=t1-t0,
+        leaf_calls_within_unit=len(leaves),leaf_seconds_within_unit=leaf,
+        assemble_spool_exclusive_seconds=t1-t0-leaf,map_save_hash_seconds=t2-t1,
+        call_boundary_rss_max_bytes=max(boundary,default=None),rss_at_unit_end_bytes=process['rss_bytes'],
+        os_process_lifetime_peak_rss_at_unit_end_bytes=process['os_lifetime_peak_rss_bytes'],
+        **{f'torch_cuda_{k}_at_unit_end':v for k,v in (snapshot() or {}).items()})
 
 
 def _guard(plan, output):
@@ -281,18 +299,20 @@ def execute(output,root,bank_run,data_root,*,factory=None):
         checkpoints=p['checkpoints']
         adapter,transform=recorder.call('model_factory',factory or fit.models.create_models,root,
             'cpu' if fixture else 'cuda',checkpoints['backbone']['path'],checkpoints['swinir']['path'])
-        values,indices,_=bank.load_complete_bank(bank_run/'bank')
+        values,indices,_=recorder.call('load_complete_bank_mmap_verify',bank.load_complete_bank,bank_run/'bank')
         recorder.call('bind_existing_bank_CPU_exact_index',adapter.bind_bank,values)
-        result.update(bind_calls=1,bank_reused=True,actual_bank_reused=not fixture)
+        result.update(bind_calls=1,bank_reused=True,actual_bank_reused=not fixture,board_ledger=[])
         (output/'predictions').mkdir();(output/'rgb').mkdir()
         for parent in parents:
             if parent.split not in ('calibration','test'):
                 raise ValueError('Fit RGB may not enter inference')
-            rgb=inputs.rgb(parent)
+            rgb=recorder.call('source_rgb_decode_verify',inputs.rgb,parent)
             boxes=geometry.tile_boxes(parent.size_wh)
             if parent.split=='test':
-                result['reference_rows'].append(dict(_save(output,f"rgb/reference-{len(result['reference_rows']):04d}.npy",rgb),sample=parent.sample))
+                result['reference_rows'].append(dict(recorder.call('reference_rgb_save_hash',_save,output,
+                    f"rgb/reference-{len(result['reference_rows']):04d}.npy",rgb),sample=parent.sample))
             for variant in fit.models.VARIANTS:
+                first=len(recorder.rows)
                 def stream():
                     spool=None
                     try:
@@ -319,17 +339,23 @@ def execute(output,root,bank_run,data_root,*,factory=None):
                     finally:
                         if spool is not None:spool._mmap.close()
                 predictions=stream()
+                t0=time.perf_counter()
                 try:board=assemble_board(parent.sample,variant,parent.size_wh,predictions)
                 finally:predictions.close()
+                t1=time.perf_counter()
                 result['rows'].append(dict(_save(output,f"predictions/{len(result['rows']):04d}.npy",board.anomaly_map),
                     sample=parent.sample,split=parent.split,label=parent.label,variant=variant,size_wh=list(parent.size_wh),score=board.score))
+                t2=time.perf_counter()
+                result['board_ledger'].append(unit_ledger(recorder,first,t0,t1,t2,snapshot,
+                    sample=parent.sample,split=parent.split,variant=variant))
                 del board
             del rgb
         if (result['predict_calls']!=p['counts']['queries'] or len(result['rows'])!=p['counts']['maps']
                 or len(result['reference_rows'])!=p['counts']['reference_rgb'] or len(result['rgb_rows'])!=p['counts']['variant_rgb']):
             raise ValueError('Incomplete integration inventory/call counts')
         inputs.verify_references()
-        if _hashes(bank_run)!=p['bank_admission']['file_sha256'] or _sources(root)!=p['code_sha256']:
+        after=recorder.call('bank_and_source_rehash_after_inference',lambda:(_hashes(bank_run),_sources(root)))
+        if after!=(p['bank_admission']['file_sha256'],p['code_sha256']):
             raise ValueError('Bank/source changed during inference')
         result.update(bank_unchanged=True,rgb_receipts=inputs.rgb_receipts)
         state['status']=FIXTURE_COMPLETE if fixture else COMPLETE
@@ -434,7 +460,25 @@ def load_integration(directory,*,bank_run,_fixture=False):
                 for y in range(0,len(value),256):
                     if not np.isfinite(value[y:y+256]).all():raise ValueError('Nonfinite saved map')
         finally:value._mmap.close()
+    if [(x['sample'],x['variant']) for x in r.get('board_ledger',[])]!=[(x.sample,v) for x,v in expected_pairs]:
+        raise ValueError('Board x variant ledger incomplete')
+    check_spool(directory,r,test)
     return r,parents
+
+
+def check_spool(directory,r,test):
+    """Clean tiles reassemble byte-equal to the reference; restored variants differ from clean."""
+    from .pcb_tiled_models import assemble_rgb
+    load=lambda row:np.load(fit.runner.safe_source(directory,row['file']),allow_pickle=False)
+    tiles={(x['sample'],x['variant']):x for x in r['rgb_rows']}
+    for parent,ref in zip(test,r['reference_rows'],strict=True):
+        clean=load(tiles[parent.sample,'clean'])
+        if not np.array_equal(assemble_rgb(parent.size_wh,clean),load(ref)):
+            raise ValueError('Clean RGB spool does not reassemble to the reference board')
+        for variant in fit.models.VARIANTS[1:]:
+            if np.array_equal(load(tiles[parent.sample,variant]),clean):
+                raise ValueError('Restored variant spool equals clean tiles')
+        del clean
 
 
 class IntegrationRGBSpool:

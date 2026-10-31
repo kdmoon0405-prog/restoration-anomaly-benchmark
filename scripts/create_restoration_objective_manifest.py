@@ -1,4 +1,4 @@
-"""Freeze a deterministic Hazelnut restoration-endpoint test manifest."""
+"""Freeze a deterministic restoration-endpoint test manifest (Hazelnut pilot/full, Screw full)."""
 
 from __future__ import annotations
 
@@ -17,14 +17,17 @@ from sr_anomaly.objective_study import (  # noqa: E402
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=ROOT / "data" / "external" / "MVTecAD")
-    parser.add_argument("--cohort", choices=("pilot25", "full110"), default="pilot25")
+    parser.add_argument("--cohort", choices=("pilot25", "full110", "screw160"), default="pilot25")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--check", action="store_true", help="Validate the frozen manifest without rewriting it")
     args = parser.parse_args()
-    full = args.cohort == "full110"
-    output = args.output or ROOT / "analysis" / ("restoration_objective_full" if full else "restoration_objective_pilot") / ("full_manifest.csv" if full else "pilot_manifest.csv")
-    build = build_full_manifest if full else build_pilot_manifest
-    load = load_full_manifest if full else load_pilot_manifest
+    full = args.cohort != "pilot25"
+    category = "screw" if args.cohort == "screw160" else "hazelnut"
+    folder = {"pilot25": "restoration_objective_pilot", "full110": "restoration_objective_full", "screw160": "restoration_objective_screw"}[args.cohort]
+    output = args.output or ROOT / "analysis" / folder / ("full_manifest.csv" if full else "pilot_manifest.csv")
+    build = (lambda root: build_full_manifest(root, category)) if full else build_pilot_manifest
+    load = (lambda path, root: load_full_manifest(path, root, category)) if full else load_pilot_manifest
+    counts = {"full110": (110, 40, 70), "screw160": (160, 41, 119)}.get(args.cohort)
     if args.check:
         rows = load(output, args.data_root.resolve())
         print(f"Validated {len(rows)} frozen images in {output}")
@@ -32,8 +35,8 @@ def main() -> None:
         if full and output.exists():
             raise FileExistsError(f"Manifest already exists: {output}; use --check")
         rows = build(args.data_root.resolve())
-        if full and (len(rows), sum(int(row["label"]) == 0 for row in rows), sum(int(row["label"]) == 1 for row in rows)) != (110, 40, 70):
-            raise ValueError("Full Hazelnut cohort must contain 110 images: 40 normal and 70 anomalous")
+        if full and (len(rows), sum(int(row["label"]) == 0 for row in rows), sum(int(row["label"]) == 1 for row in rows)) != counts:
+            raise ValueError(f"Full {category} cohort must contain total/normal/anomalous {counts}")
         write_pilot_manifest(rows, output)
         print(f"Saved {len(rows)} pre-inference images to {output}")
 

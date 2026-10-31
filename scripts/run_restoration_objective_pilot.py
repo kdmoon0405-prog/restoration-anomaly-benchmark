@@ -1,4 +1,4 @@
-"""Run a frozen Hazelnut restoration-endpoint cohort without fitting PatchCore."""
+"""Run a frozen restoration-endpoint cohort (Hazelnut pilot/full, Screw full) without fitting PatchCore."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import argparse
 import csv
 import json
 from importlib import metadata as package_metadata
+from functools import partial
 from pathlib import Path
 import platform
 import shutil
@@ -49,6 +50,14 @@ EXPECTED_BANK_SHA256 = {
     "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
     "nnscorer_search_index.faiss": "e665e08ac3d108ae095566df7baf7e966561333fdf50a6d85c6f5d77bfc3f9b4",
 }
+# Existing Screw Branch A 320-normal bank (all train/good), same frozen settings; reused, never refit.
+EXPECTED_SCREW_BANK_SHA256 = {
+    "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+    "nnscorer_search_index.faiss": "d4910f28c4c74d9a1cb29ab5d4b07b58d8be711ecf66c2bfaaa3a278dac1cd12",
+}
+EXPECTED_SCREW_MANIFEST_SHA256 = "b680d6714fd9e1ca222ef4a5192478fd970c0b2dc70c5672d9c7aeb7e2bd51ec"
+HAZELNUT_BANK = {"category": "hazelnut", "train_count": 391, "sha256": None,  # None: module EXPECTED_BANK_SHA256
+                 "model_dir": ROOT / "checkpoints" / "legacy-patchcore" / "hazelnut-seed11-train391"}
 VARIANTS = ("bicubic_x4", "swinir_x4", "rrdb_psnr_x4", "rrdb_esrgan_x4")
 COHORTS = {
     "pilot25": {
@@ -57,6 +66,7 @@ COHORTS = {
         "counts": (25, 5, 20),
         "output": ROOT / "outputs" / "restoration-objective" / "hazelnut-pilot25",
         "load": load_pilot_manifest,
+        "bank": HAZELNUT_BANK,
     },
     "full110": {
         "manifest": ROOT / "analysis" / "restoration_objective_full" / "full_manifest.csv",
@@ -64,6 +74,16 @@ COHORTS = {
         "counts": (110, 40, 70),
         "output": ROOT / "outputs" / "restoration-objective" / "hazelnut-full110",
         "load": load_full_manifest,
+        "bank": HAZELNUT_BANK,
+    },
+    "screw160": {
+        "manifest": ROOT / "analysis" / "restoration_objective_screw" / "full_manifest.csv",
+        "sha256": EXPECTED_SCREW_MANIFEST_SHA256,
+        "counts": (160, 41, 119),
+        "output": ROOT / "outputs" / "restoration-objective" / "screw-full160",
+        "load": partial(load_full_manifest, category="screw"),
+        "bank": {"category": "screw", "train_count": 320, "sha256": EXPECTED_SCREW_BANK_SHA256,
+                 "model_dir": ROOT / "checkpoints" / "legacy-patchcore" / "screw-seed11-train320"},
     },
 }
 
@@ -73,7 +93,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--cohort", choices=tuple(COHORTS), default="pilot25")
     parser.add_argument("--data-root", type=Path, default=ROOT / "data" / "external" / "MVTecAD")
     parser.add_argument("--manifest", type=Path, help="Alternate location of the selected cohort's checksum-bound manifest")
-    parser.add_argument("--model-dir", type=Path, default=ROOT / "checkpoints" / "legacy-patchcore" / "hazelnut-seed11-train391")
+    parser.add_argument("--model-dir", type=Path, help="Defaults to the cohort's frozen category bank")
     parser.add_argument("--swinir-checkpoint", type=Path, default=ROOT / "checkpoints" / "swinir" / "002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth")
     parser.add_argument("--rrdb-psnr-checkpoint", type=Path, default=ROOT / "checkpoints" / "esrgan" / "RRDB_PSNR_x4.pth")
     parser.add_argument("--rrdb-esrgan-checkpoint", type=Path, default=ROOT / "checkpoints" / "esrgan" / "RRDB_ESRGAN_x4.pth")
@@ -84,6 +104,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     args.manifest = args.manifest or COHORTS[args.cohort]["manifest"]
     args.output_dir = args.output_dir or COHORTS[args.cohort]["output"]
+    args.model_dir = args.model_dir or COHORTS[args.cohort]["bank"]["model_dir"]
     return args
 
 
@@ -107,7 +128,9 @@ def _require_file_hash(path: Path, expected: str, name: str) -> str:
     return actual
 
 
-def _load_frozen_detector(model_dir: Path, device, common, patchcore) -> tuple[object, dict, dict]:
+def _load_frozen_detector(model_dir: Path, device, common, patchcore, bank: dict | None = None) -> tuple[object, dict, dict]:
+    bank = dict(bank or HAZELNUT_BANK)
+    bank["sha256"] = bank["sha256"] or EXPECTED_BANK_SHA256
     metadata_path = model_dir / "metadata.json"
     params_path = model_dir / "patchcore_params.pkl"
     faiss_path = model_dir / "nnscorer_search_index.faiss"
@@ -117,18 +140,18 @@ def _load_frozen_detector(model_dir: Path, device, common, patchcore) -> tuple[o
     spec = metadata.get("spec", {})
     if (
         spec.get("source_commit") != EXPECTED_PATCHCORE_COMMIT
-        or spec.get("category") != "hazelnut"
+        or spec.get("category") != bank["category"]
         or spec.get("seed") != 11
-        or len(spec.get("train_paths", ())) != 391
-        or len(set(spec.get("train_paths", ()))) != 391
-        or any(not path.startswith("hazelnut/train/good/") for path in spec.get("train_paths", ()))
+        or len(spec.get("train_paths", ())) != bank["train_count"]
+        or len(set(spec.get("train_paths", ()))) != bank["train_count"]
+        or any(not path.startswith(f"{bank['category']}/train/good/") for path in spec.get("train_paths", ()))
         or any(spec.get(key) != value for key, value in FROZEN_PATCHCORE_SETTINGS.items())
     ):
-        raise ValueError("PatchCore bank is not the frozen Hazelnut Branch A 391-normal bank")
+        raise ValueError(f"PatchCore bank is not the frozen {bank['category'].capitalize()} Branch A {bank['train_count']}-normal bank")
     expected_artifacts = metadata.get("artifact_sha256", {})
     for path in (params_path, faiss_path):
-        if (not path.is_file() or expected_artifacts.get(path.name) != EXPECTED_BANK_SHA256[path.name]
-                or _checksum(path) != EXPECTED_BANK_SHA256[path.name]):
+        if (not path.is_file() or expected_artifacts.get(path.name) != bank["sha256"][path.name]
+                or _checksum(path) != bank["sha256"][path.name]):
             raise ValueError(f"PatchCore bank artifact is missing or changed: {path}")
     model = patchcore.PatchCore(device)
     with _faiss_staging() as staging:
@@ -204,8 +227,8 @@ def main() -> None:
         raise FileExistsError(f"Experiment output directory is not empty: {output_dir}")
     data_root = args.data_root.resolve()
     manifest_sha, manifest_rows = _load_frozen_manifest(args, data_root)
-    if args.cohort == "full110" and not args.with_lpips:
-        raise ValueError("full110 requires --with-lpips to preserve the frozen quality metrics")
+    if args.cohort != "pilot25" and not args.with_lpips:
+        raise ValueError(f"{args.cohort} requires --with-lpips to preserve the frozen quality metrics")
 
     torch, transforms, InterpolationMode, _, common, patchcore, _, mvtec = _official_imports()
     cuda_available = torch.cuda.is_available()
@@ -229,7 +252,7 @@ def main() -> None:
         "rrdb_psnr_x4": _require_file_hash(args.rrdb_psnr_checkpoint, EXPECTED_RRDB_PSNR_SHA256, "RRDB PSNR x4"),
         "rrdb_esrgan_x4": _require_file_hash(args.rrdb_esrgan_checkpoint, EXPECTED_RRDB_ESRGAN_SHA256, "RRDB ESRGAN x4"),
     }
-    detector, detector_spec, bank_metadata = _load_frozen_detector(args.model_dir.resolve(), device, common, patchcore)
+    detector, detector_spec, bank_metadata = _load_frozen_detector(args.model_dir.resolve(), device, common, patchcore, COHORTS[args.cohort]["bank"])
 
     resize_image = transforms.Resize(256, interpolation=InterpolationMode.BILINEAR)
     resize_mask = transforms.Resize(256, interpolation=InterpolationMode.NEAREST)
@@ -337,7 +360,7 @@ def main() -> None:
             "label": label,
             **{f"delta_{key}_esrgan_minus_psnr": _delta(gan[key], psnr[key])
                for key in ("psnr", "ssim", "lpips", "image_score", "per_image_pixel_auroc", "per_image_aupro", "roi_bg_gap")
-               + (("roi_mean",) if args.cohort == "full110" else ())},
+               + (("roi_mean",) if args.cohort != "pilot25" else ())},
         })
 
     evaluations = {}
@@ -372,12 +395,14 @@ def main() -> None:
         for key in ("mean_psnr", "mean_ssim", "mean_lpips", "image_auroc", "pixel_auroc", "au_pro")
     }
     result = {
-        "study": "restoration_objective_full" if args.cohort == "full110" else "restoration_objective_pilot",
-        "category_role": "Hazelnut development/exploration; not untouched validation",
+        "study": {"full110": "restoration_objective_full", "screw160": "restoration_objective_screw"}.get(args.cohort, "restoration_objective_pilot"),
+        "category_role": ("Screw full official test; second category for the fixed endpoint comparison, not untouched validation"
+                          if args.cohort == "screw160" else "Hazelnut development/exploration; not untouched validation"),
         "manifest": str(args.manifest),
         "manifest_sha256": manifest_sha,
-        "selection_rule": ("all 110 Hazelnut test images in lexical path order; fixed before inference"
-                           if args.cohort == "full110" else "lexical first 5 in normal/crack/cut/hole/print; fixed before inference"),
+        "selection_rule": {"full110": "all 110 Hazelnut test images in lexical path order; fixed before inference",
+                           "screw160": "all 160 Screw test images in lexical path order; fixed before inference"}.get(
+                               args.cohort, "lexical first 5 in normal/crack/cut/hole/print; fixed before inference"),
         "sample_count": len(manifest_rows),
         "source_commit": _git_head(ROOT),
         "device": str(device),
