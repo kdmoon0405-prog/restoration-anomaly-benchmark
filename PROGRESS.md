@@ -2,6 +2,16 @@
 
 Date: 2026-09-20
 
+## Reviewed-bank reuse integration implemented on CPU (2026-10-31)
+
+Added run_pcb_reuse_inference.py, its small scope-specific module/reader,34 new tests and PCB_BANK_REUSE_INFERENCE_HANDOFF.md. The explicit reviewed bank-run remains external/read-only: no1GiB copy, normal-fit RGB/feature stream or new patch bank. Its historical865f26a/dirty=true and fit receipts are preserved while inference gets a separate source record. Shared20 fit source/7 reference bytes match; the new execution binds24 source files. Admission pins reviewed bank bytes, validates payload/settings/indices/provenance and permits a newer compatible inference commit. JSON remote bank/data/checkpoint paths are not followed as inputs.
+
+The fixed integration processes calibration1/test-normal1/test-anomaly1 across3 variants:bank bind1,query432,maps9,reference RGB2/produced tile RGB6. It reuses native map overlap mean/score max and existing adapter/transform without GT or statistics/threshold/metric generation. New actual/fake kinds and a dedicated reader preserve old synthetic/full guards. Bank/source invariance, same-RGB prediction/spooling, sequential payload validation and success/error cleanup are checked. Current engineering choice is an explicit external bank reference; future full/portable contracts and independent reviews remain pending.
+
+Final full pytest568 passed/3 skipped(193.16s);34 final new tests passed and CPU smoke2 rows passed. Existing two subprocess tests skipped at996282368/996286464bytes available versus2186018816bytes required including unchanged2GiB reserve; MVTec-data test also skipped. No resource override was used. Runtime import-denial and tiny fixtures cover mandatory new behavior without real models/FAISS. Initial tuple/list serialization comparison and one shell JUnit argument issue were corrected; final logs preserve prior attempts. Metadata-only actual-bank preflight rejects absent NPY files before models, rather than fabricating local bank validation.
+
+Inference-specific plan8.687914GiB available RAM/1.161637GiB new-output free disk is an allocation scenario, not a measured bound. The actual bank/model/GPU integration has not run here; no full executor is enabled. Independent design GO plus fresh source/bank/resource/CUDA checks precede the GPU's one integration. Publication and clean-receipt evidence is recorded locally after audit. Existing scientific definitions, old protocol/fit/source artifacts and prior native rehearsal status are unchanged.
+
 ## Real normal-fit bank path ready for separate CUDA execution (2026-10-29)
 
 Added scripts/run_pcb_fit_bank.py and pcb_fit_bank.py as a separate fit-only path. Static preflight binds frozen metadata/source/submodule/checkpoint/fit file hashes without importing Torch/FAISS or decoding RGB; opt-in execution repeats bindings and RAM/disk checks and requires live CUDA. It reuses the existing model factory, input RGB callback, feature_chunks and bounded_bank writer/loader. Only721 normal-fit parents enter extraction; no cal/test RGB or GT, restoration, scorer binding, predictions, thresholds or metrics. The existing synthetic-only full producer and full-pilot guard remain unchanged.
