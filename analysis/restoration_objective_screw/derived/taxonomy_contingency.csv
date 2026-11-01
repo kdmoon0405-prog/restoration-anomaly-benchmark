@@ -1,0 +1,4 @@
+variant,regression_gap_negative,regression_gap_nonnegative,non_regression_gap_negative,non_regression_gap_nonnegative
+swinir_x4,22,0,84,13
+rrdb_psnr_x4,18,0,92,9
+rrdb_esrgan_x4,32,0,74,13
