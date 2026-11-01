@@ -1,5 +1,6 @@
 analysis/restoration_objective_pilot/pilot_manifest.csv text eol=lf
 analysis/restoration_objective_full/full_manifest.csv text eol=lf
+analysis/restoration_objective_screw/full_manifest.csv text eol=lf
 analysis/restoration_objective_pilot/results/* -text whitespace=cr-at-eol
 analysis/map_gating_feasibility/**/PROTOCOL.json -text whitespace=cr-at-eol
 analysis/profiling_results_demo/**/PROTOCOL.json -text whitespace=cr-at-eol
