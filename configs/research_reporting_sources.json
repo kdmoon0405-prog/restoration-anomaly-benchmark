@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "table": "analysis/thesis_synthesis/master_results.csv",
+      "status": "COMPLETE",
+      "study_family_column": "study_family",
+      "protocol_id_column": "degradation_protocol",
+      "category_column": "dataset",
+      "dataset_id": "MVTecAD",
+      "evidence_kind": "stored_research_results",
+      "column_map": {
+        "pooled_aupro": "aupro"
+      }
+    }
+  ]
+}

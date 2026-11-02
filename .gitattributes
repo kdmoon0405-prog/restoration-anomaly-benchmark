@@ -54,3 +54,26 @@ src/sr_anomaly/pcb_fit_bank.py text eol=lf
 scripts/run_pcb_fit_bank.py text eol=lf
 src/sr_anomaly/pcb_reuse_inference.py text eol=lf
 scripts/run_pcb_reuse_inference.py text eol=lf
+
+# CPU read-only analysis and reporting source bytes
+src/sr_anomaly/analysis_io.py text eol=lf
+src/sr_anomaly/analysis_statistics.py text eol=lf
+src/sr_anomaly/bank_domain_analysis.py text eol=lf
+src/sr_anomaly/mvtec_transfer.py text eol=lf
+src/sr_anomaly/artifact_receipts.py text eol=lf
+src/sr_anomaly/research_reporting.py text eol=lf
+scripts/analyze_bank_domain_study.py text eol=lf
+scripts/prepare_mvtec_transfer.py text eol=lf
+scripts/cache_artifact_receipt.py text eol=lf
+scripts/build_research_master_table.py text eol=lf
+scripts/analyze_hazelnut_failures.py text eol=lf
+tests/_bank_domain_fixtures.py text eol=lf
+tests/test_bank_domain_analysis.py text eol=lf
+tests/test_research_delivery_reporting.py text eol=lf
+configs/bank_domain_analysis.json text eol=lf
+configs/research_reporting_sources.json text eol=lf
+docs/BANK_DOMAIN_ANALYSIS_HANDOFF.md text eol=lf
+docs/CPU_DATA_REPORTING_HANDOFF.md text eol=lf
+
+.gitattributes text eol=lf
+PROGRESS.md text eol=lf

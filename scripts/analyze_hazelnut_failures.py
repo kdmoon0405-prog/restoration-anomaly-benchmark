@@ -12,6 +12,10 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from sr_anomaly.analysis_statistics import (
+    paired_bootstrap_mean_delta as _bootstrap_mean_delta,
+    percentile_ci as _percentile_ci,
+)
 from sr_anomaly.evaluation import binary_roc_auc, area_under_per_region_overlap, evaluate_predictions
 
 
@@ -24,15 +28,6 @@ def _load_npz(path: Path) -> dict[str, np.ndarray]:
         if missing:
             raise ValueError(f"{path.name} missing keys: {sorted(missing)}")
         return {key: np.asarray(data[key]) for key in required}
-
-
-def _percentile_ci(values: np.ndarray, alpha: float = 0.05) -> list[float]:
-    values = np.asarray(values, dtype=np.float64)
-    values = values[np.isfinite(values)]
-    if values.size == 0:
-        return [float("nan"), float("nan")]
-    lo, hi = np.quantile(values, [alpha / 2.0, 1.0 - alpha / 2.0])
-    return [float(lo), float(hi)]
 
 
 def _rankdata(values: np.ndarray) -> np.ndarray:
@@ -123,19 +118,6 @@ def _per_image_pixel_metrics(mask: np.ndarray, bic_map: np.ndarray, swin_map: np
     bic_pro = area_under_per_region_overlap(binary[None, ...], bic_map[None, ...], max_fpr=0.3, num_thresholds=200)
     swin_pro = area_under_per_region_overlap(binary[None, ...], swin_map[None, ...], max_fpr=0.3, num_thresholds=200)
     return float(bic_auc), float(swin_auc), float(bic_pro), float(swin_pro)
-
-
-def _bootstrap_mean_delta(deltas: np.ndarray, repeats: int, rng: np.random.Generator) -> dict:
-    deltas = np.asarray(deltas, dtype=np.float64)
-    deltas = deltas[np.isfinite(deltas)]
-    if deltas.size == 0:
-        return {"estimate": None, "ci95": [None, None], "n": 0}
-    draws = np.empty(repeats, dtype=np.float64)
-    n = deltas.size
-    for i in range(repeats):
-        idx = rng.integers(0, n, n)
-        draws[i] = deltas[idx].mean()
-    return {"estimate": float(deltas.mean()), "ci95": _percentile_ci(draws), "n": int(n)}
 
 
 def _bootstrap_image_auroc_delta(labels, bic_scores, swin_scores, repeats: int, rng: np.random.Generator) -> dict:

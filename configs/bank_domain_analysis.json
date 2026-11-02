@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 11,
+  "quality_atol": 1e-9,
+  "quality_rtol": 1e-9
+}

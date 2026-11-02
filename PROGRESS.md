@@ -2,6 +2,18 @@
 
 Date: 2026-09-20
 
+## CPU bank-domain analysis, input transfer and reporting (2026-11-02)
+
+Implemented read-only analyze_bank_domain_study.py and its analysis module. The five-file producer contract binds config/provenance and summary/per-image CSVs, preserves family/protocol/category/seed, verifies the complete 2x2 paired cohort, deduplicates identical run copies and rejects conflicting conditions. Same-query bank quality is counted once. Dataset pooled AU-PRO remains a stored point estimate; per-anomaly-image paired delta CI is supplementary and within-seed only. Three seeds of the same images are not treated as independent image observations. The existing Hazelnut percentile/paired-bootstrap helper was moved unchanged into analysis_statistics.py and shared; inference/evaluator semantics were not changed.
+
+Added category-only MVTec transfer preparation/verification, ZIP manifest receipt cache and manifest-driven research master reporting. Original local Hazelnut/Screw/Capsule inputs are present: normal train391/320/219, official test110/160/132, seed11 normal fit/cal313/78,256/64,175/44. Source bytes and notices were preserved; local-only category ZIPs verify575/603/464 source entries including duplicate root notices. No RGB/GT decoding, model inference or actual anomaly metric was performed. Official dataset/CC BY-NC-SA notices are linked in the handoff. Data archives/inventories remain outside Git.
+
+Existing stored thesis tables generate10 actual metric rows in3 protocol groups without recomputation. The new ZIP receipt records5 supplied manifest matches for Jihyuk's existing return and reuses the cached receipt on the second call; this is not independent GPU/array/source acceptance. New bank-domain results have not arrived, so none of their research numbers or figures were fabricated. Both GPU execution owners keep their scripts.
+
+Validation:37 related tests passed(4.57s), full suite603 passed/3 skipped(256.99s), existing CPU smoke2 rows passed, git diff --check passed. Two existing subprocess tests skipped with1827414016bytes available versus2186018816bytes required including the unchanged2GiB reserve; one optional MVTec dataset check skipped in this data-free code checkout. All20 fit-source and7 reference hashes still match the integration base. Existing GPU bank/model/metric/geometry/seed/fusion code was not modified. Python3.11 environment was explicitly reused from the original checkout.
+
+New handoffs: docs/BANK_DOMAIN_ANALYSIS_HANDOFF.md and docs/CPU_DATA_REPORTING_HANDOFF.md. Local verification/logs: outputs/verification-20261101/. The first interrupted full-suite attempt had no completion record; the fresh Nov02 run above completed. Only code/tests/config/docs and this public progress entry are in the CPU branch; original checkout/private evolution notes are updated separately and are not included in its commit.
+
 ## Reviewed-bank reuse integration implemented on CPU (2026-10-31)
 
 Added run_pcb_reuse_inference.py, its small scope-specific module/reader,34 new tests and PCB_BANK_REUSE_INFERENCE_HANDOFF.md. The explicit reviewed bank-run remains external/read-only: no1GiB copy, normal-fit RGB/feature stream or new patch bank. Its historical865f26a/dirty=true and fit receipts are preserved while inference gets a separate source record. Shared20 fit source/7 reference bytes match; the new execution binds24 source files. Admission pins reviewed bank bytes, validates payload/settings/indices/provenance and permits a newer compatible inference commit. JSON remote bank/data/checkpoint paths are not followed as inputs.
