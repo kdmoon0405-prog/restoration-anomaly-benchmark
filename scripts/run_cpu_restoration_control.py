@@ -17,12 +17,15 @@ def main():
     parser.add_argument("--cache", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--include-fit", action="store_true")
+    parser.add_argument("--reuse-cache", type=Path)
     args = parser.parse_args()
     if args.stage == "cache":
         if not args.reference or args.repository is None or args.checkpoint is None:
             parser.error("Cache requires --reference, --repository and --checkpoint")
         from sr_anomaly.cpu_restoration_control import cache_restoration
-        result = cache_restoration(args.reference, args.output, args.repository, args.checkpoint, resume=args.resume)
+        result = cache_restoration(args.reference, args.output, args.repository, args.checkpoint,
+            resume=args.resume, include_fit=args.include_fit, reuse_cache=args.reuse_cache)
     elif args.stage == "infer":
         if len(args.reference) != 1 or args.cache is None:
             parser.error("Inference requires one --reference and --cache")

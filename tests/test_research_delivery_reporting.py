@@ -124,6 +124,18 @@ def test_master_keeps_families_and_source_precision(tmp_path):
     assert all(r["raw_prediction_arrays_checked"] == "False" for r in claims)
 
 
+def test_portable_master_paths_and_hashes(tmp_path):
+    config, source = catalog(tmp_path)
+    write_json(config, dict(schema_version=1, portable_paths=True, sources=[source]))
+    report = build_master(config, tmp_path, tmp_path / "out", allow_synthetic=True)
+    rows = csv_rows(tmp_path / "out/master_results.csv")
+    assert all(r["source_table"] == "stored.csv" for r in rows)
+    assert report["sources"][0]["table"] == "stored.csv"
+    for name, sha in report["tables"].items():
+        assert digest(tmp_path / "out" / name) == sha
+        assert b"\r\n" not in (tmp_path / "out" / name).read_bytes()
+
+
 def test_master_duplicate_partial_synthetic_and_output_guards(tmp_path):
     config, source = catalog(tmp_path)
     write_json(config, dict(schema_version=1, sources=[source, source,

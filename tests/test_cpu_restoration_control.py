@@ -106,3 +106,26 @@ def test_bank_reuse_gt_after_predictions(tmp_path, monkeypatch):
     assert digest(reference / "bank.npy") == original_bank
     final = evaluate_category(out)
     assert final["status"] == "EVALUATED_COMPLETE"
+
+
+def test_fit_cache_extension_reuses_rgb_bytes(tmp_path, monkeypatch):
+    reference, repository, checkpoint = fixture(tmp_path, monkeypatch)
+    prior = tmp_path / "prior"
+    original = study.cache_restoration([reference], prior, repository, checkpoint, model_factory=FakeRestorer)
+    original_status_sha = digest(prior / "status.json")
+    fit = "tiny/train/good/fit.png"
+    path = reference / "canonical" / fit
+    Image.new("RGB", (224, 224), "gray").save(path)
+    receipts = read_json(reference / "rgb_receipts.json")
+    receipts[fit] = dict(canonical_file_sha256=digest(path))
+    write_json(reference / "rgb_receipts.json", receipts)
+    split = read_json(reference / "split.json")
+    split["fit_paths"] = [fit]
+    write_json(reference / "split.json", split)
+    extended = study.cache_restoration([reference], tmp_path / "extended", repository, checkpoint,
+        include_fit=True, reuse_cache=prior, model_factory=FakeRestorer)
+    assert extended["reused_queries"] == 3 and extended["generated_queries"] == 1
+    assert digest(prior / "status.json") == original_status_sha
+    for sample, receipt in original["completed"].items():
+        assert extended["completed"][sample]["output_sha256"] == receipt["output_sha256"]
+        assert extended["completed"][sample]["restoration_seconds"] == 0

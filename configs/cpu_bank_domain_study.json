@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "study_family": "cpu_hog_bank_domain_v1",
+  "dataset": "MVTecAD",
+  "categories": ["hazelnut", "screw"],
+  "seeds": [11, 23, 37],
+  "bank_domains": ["clean", "bicubic_matched", "swinir_restored"],
+  "new_bank_domains": ["bicubic_matched", "swinir_restored"],
+  "query_domains": ["bicubic_x4", "swinir_x4"],
+  "primary_metric": "pooled AU-PRO@0.3",
+  "normal_quantile": 0.99,
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 11,
+  "cpu_threads": 4,
+  "bank_policy": "reuse identical clean-reference selected patch ordinals and capacity",
+  "core_contract_banks": ["clean", "swinir_restored"],
+  "additional_control_bank": "bicubic_matched"
+}

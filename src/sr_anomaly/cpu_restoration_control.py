@@ -24,10 +24,18 @@ CHECKPOINT_SHA256 = "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a80630
 def _checkpoint(path, state):
     temporary = path.with_suffix(".tmp")
     write_json(temporary, state)
-    temporary.replace(path)
+    for attempt in range(7):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 6:
+                raise
+            time.sleep(0.05 * 2**attempt)
 
 
-def cache_restoration(inputs, output, repository, checkpoint, *, resume=False, model_factory=None):
+def cache_restoration(inputs, output, repository, checkpoint, *, resume=False, model_factory=None,
+                      include_fit=False, reuse_cache=None):
     sources, references = {}, []
     for directory in sorted(Path(p).resolve() for p in inputs):
         state = read_json(directory / "status.json")
@@ -35,7 +43,10 @@ def cache_restoration(inputs, output, repository, checkpoint, *, resume=False, m
             raise ValueError("CPU cache requires completed HOG references")
         split = read_json(directory / "split.json")
         receipts = read_json(directory / "rgb_receipts.json")
-        for sample in sorted(set(split["calibration_paths"] + split["test_paths"])):
+        selected = split["calibration_paths"] + split["test_paths"]
+        if include_fit:
+            selected += split["fit_paths"]
+        for sample in sorted(set(selected)):
             source = relative_source(directory / "canonical", sample)
             expected = receipts[sample]["canonical_file_sha256"]
             if sample in sources and sources[sample][1] != expected:
@@ -51,6 +62,18 @@ def cache_restoration(inputs, output, repository, checkpoint, *, resume=False, m
         code_sha256=digest(Path(__file__)), source_runs=references,
         canonical_shape=[224, 224], low_shape=[56, 56], device="cpu", cpu_threads=4,
         source_queries={name: sha for name, (_, sha) in sorted(sources.items())})
+    prior = None
+    if reuse_cache is not None:
+        reuse_cache = Path(reuse_cache).resolve()
+        prior = read_json(reuse_cache / "status.json")
+        if prior["status"] != "CPU_RESTORATION_CACHE_COMPLETE":
+            raise ValueError("Reusable restoration cache is incomplete")
+        for key in ("checkpoint_sha256", "network_sha256", "adapter_sha256", "canonical_shape",
+                    "low_shape", "device", "cpu_threads"):
+            if prior["binding"][key] != binding[key]:
+                raise ValueError("Reusable cache model/geometry differs")
+        binding["reused_cache_status_sha256"] = digest(reuse_cache / "status.json")
+    binding["include_fit"] = include_fit
     output = Path(output).resolve()
     if resume:
         state = read_json(output / "status.json")
@@ -62,7 +85,7 @@ def cache_restoration(inputs, output, repository, checkpoint, *, resume=False, m
         if state["status"] == "CPU_RESTORATION_CACHE_COMPLETE":
             return state
     else:
-        output = new_output(output, inputs)
+        output = new_output(output, [*inputs, *([reuse_cache] if reuse_cache is not None else [])])
         state = dict(status="RUNNING", worker_pid=os.getpid(), binding=binding, completed={}, target_queries=len(sources))
     required = 1280 * 1024**2
     state["available_before_bytes"] = available_ram()
@@ -85,6 +108,20 @@ def cache_restoration(inputs, output, repository, checkpoint, *, resume=False, m
         model = model_factory()
         for sample, (source, expected) in sorted(sources.items()):
             if sample in state["completed"]:
+                continue
+            if prior is not None and sample in prior["completed"]:
+                receipt = prior["completed"][sample]
+                previous = relative_source(reuse_cache / "images", sample)
+                if receipt["input_sha256"] != expected or digest(previous) != receipt["output_sha256"]:
+                    raise ValueError("Reusable RGB cache/source changed")
+                destination = relative_source(output / "images", sample)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                if destination.exists():
+                    raise FileExistsError("Unrecorded cached image exists; choose a new run")
+                shutil.copyfile(previous, destination)
+                state["completed"][sample] = dict(receipt, reused_from_prior_cache=True,
+                    original_restoration_seconds=receipt["restoration_seconds"], restoration_seconds=0.0)
+                _checkpoint(output / "status.json", state)
                 continue
             raw = source.read_bytes()
             if hashlib.sha256(raw).hexdigest() != expected:
@@ -109,7 +146,9 @@ def cache_restoration(inputs, output, repository, checkpoint, *, resume=False, m
         del model
         gc.collect()
         state.update(status="CPU_RESTORATION_CACHE_COMPLETE", worker_pid=None,
-            elapsed_seconds=time.perf_counter() - started, process_memory=process_memory())
+            elapsed_seconds=time.perf_counter() - started, process_memory=process_memory(),
+            reused_queries=sum(r.get("reused_from_prior_cache", False) for r in state["completed"].values()),
+            generated_queries=sum(not r.get("reused_from_prior_cache", False) for r in state["completed"].values()))
         _checkpoint(output / "status.json", state)
         return state
     except BaseException as error:

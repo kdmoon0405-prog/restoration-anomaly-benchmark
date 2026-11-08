@@ -1,0 +1,48 @@
+{
+  "kind": "public_numeric_cpu_bank_domain_results",
+  "status": "COMPLETE",
+  "source_analysis_sha256": "c690c2fea4cd8714ab817aa73e1032b75fcd9aef04ce37f3256ffcaad24704e6",
+  "source_execution_sha256": "aa25bd5fb6462a7fdaa62272f545e7c74379a09bf4e945a076860028e59ddd89",
+  "source_analysis_code_sha256": "02782d220212ba224b0ae8824c6391257e93bcfc9147a06b18ac0e9221243944",
+  "export_code_sha256": "3ef7f45deb741afe61a91473fdba829062e8f59b5205fdc6cb989378a2ca3985",
+  "matrix_rows": 48,
+  "new_conditions": 36,
+  "reused_clean_conditions": 12,
+  "bank_domains": [
+    "clean",
+    "bicubic_matched",
+    "swinir_restored",
+    "balanced_mixed"
+  ],
+  "ci_scope": "image resampling conditional on fixed seed fits; pooled effects are point estimates",
+  "mixed_protocol": {
+    "ratio": 0.5,
+    "capacity_policy": "same reference ordinals and total capacity",
+    "assignment_seed_policy": "study seed plus20261109",
+    "query_calibration": "normal only, separately per query",
+    "source_execution_sha256": "aa25bd5fb6462a7fdaa62272f545e7c74379a09bf4e945a076860028e59ddd89",
+    "constructor_sha256": "a1acfa648768eb4d914add67f83b6f3afb535b4004856b9611095ab24f5de49f"
+  },
+  "mixed_status_sha256": "f13add5d39fc6fce5db51dd6c55b8e22e1bb59acb51e263efe07eedf37c22017",
+  "input_table_sha256": {
+    "matrix_summary.csv": "4c220ea345fb898b5e6d65be2f656e02950cd1a578645fbbd2bbde6d53177a4b",
+    "paired_effects.csv": "bcb5c31989e790c9dba9a862d962b130461a9bad788736a3dcca9fc022a5eae2",
+    "per_image_deltas.csv": "d8872f6ed9bb679586181ef83379959989c1f864f8f011a52dc4ab07e8edf1da",
+    "image_seed_mean_deltas.csv": "ca5115db6e1a44e926decd7db2949ce4ae54e3a731cffd3c505d99bed6a832fb",
+    "seed_summary.csv": "c0ddfc3fddcdc0c91939e4ffeddf375790edf841fd351679b1b4193d1fe0f5ff"
+  },
+  "tables": {
+    "matrix_summary.csv": "d047c0afc322ab7555552d150e04485b5581932f699768dd7f567bcf36030d6f",
+    "paired_effects.csv": "470e6c6a1bfb5d72fc74d147afa4710af7f7703d3d634935b8d3203c56be2a5e",
+    "per_image_deltas.csv": "346d9379a73c65a810204a45c9be2a61ebba140f184a7e2c519e7ee9ef256a59",
+    "image_seed_mean_deltas.csv": "d611bf6a633f334e73e00f82605205e288da380c8a9141a94fe2afe9ad498e82",
+    "seed_summary.csv": "6bd8652b85c92deeb52b24dc94e61f3650297cb191ccfba1eddb5bba59ac3899",
+    "new_conditions_for_master.csv": "f9937942f81cb3bb60bb88a8cff60dc9c0b29590f867fbd3a4a072898216dd5f"
+  },
+  "figures": {
+    "bank_query_matrix.png": "b8f209e0513f7b4ce7ba2cba8538ebdfc73774b6dd84dbb507475816b2c107f4",
+    "conditional_bank_effects.png": "d94610a998f13f60395d10095a240310e2df12148753d29e5a74c5db3300c9a1"
+  },
+  "raw_arrays_exported": false,
+  "detection_metrics_recomputed": false
+}

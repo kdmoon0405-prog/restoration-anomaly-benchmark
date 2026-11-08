@@ -3,6 +3,18 @@
 Date: 2026-09-20
 
 
+## CPU bank/query domain 추가 결과 (2026-11-09)
+
+Public base b247500 위의 exp/cpu-bank-domain-study에서 신규 36조건과 test prediction 4,860건을 완료했다. 기존 정상 HOG bank의 같은 patch ordinal 4,096개를 사용해 Bicubic/SwinIR 정상 bank 12개를 fit하고 24조건을 평가했다. 이후 50:50·동일 용량 규칙을 결과 계산 전에 고정한 혼합 bank 6개와 12조건을 추가했다. 비교표 48조건 중 clean-bank 12조건은 재사용이다. 앞선 CPU 24조건과 합친 고유 조건은 60개/prediction 8,100건이며 고유 test 영상 270장과 구분한다.
+
+전용 bank끼리의 SwinIR−Bicubic 평균 pooled AU-PRO는 Hazelnut +0.027039, Screw −0.004475였다. 보조 conditional per-image CI는 두 category 모두 0을 포함한다. 혼합 bank는 전용 bank 대비 네 category/query cell 평균이 모두 낮아 성능 개선 성공으로 분류하지 않았다. HOG 탐색 결과이며 PatchCore/PCB로 일반화하지 않는다. Test GT는 prediction 저장 후 평가에서만 사용했다.
+
+SwinIR cache 981장 중 614장은 byte 검증 복사하고 부족한 정상 fit 367장만 신규 복원했다. 일시적 Windows checkpoint 교체 오류는 IO retry만 수정해 재개했고 중단 기록·AST 동등성·원본 완성 cache를 보존했다. 최종 cache elapsed/peak는 마지막 재개 process 범위다. HOG/evaluation/fusion/metrics/dataset 원본 5개 source는 b247500과 동일하다.
+
+analysis/cpu_bank_domain_20261109/에 48조건 표·seed/사례 delta·수치 PNG 2개·source manifest·master 70행/5 protocol groups를 저장했다. 신규 36조건만 master에 추가했다. 전체 pytest 643 pass/1 skip(310.98s), 최종 분석/export 6 pass(5.25s), 기존 CPU smoke 2행 통과다. 두 PNG를 직접 확인했고 CI 그림의 reference 제목을 수정했다. 첫 render는 로컬에 보존했다. 상세 결과와 재현 명령은 docs/CPU_BANK_DOMAIN_RESULTS_20261109.md다.
+
+코드·테스트·공개 문서·수치만 새 branch로 전달한다. Dataset/RGB/GT/rawmap/bank/weights/개인 노트는 local-only다. 원본 exp/profiling-results-demo와 GPU 구현 branch를 보존한다. 다음 연구 우선순위는 GPU PatchCore의 같은-query 정상 bank 적응 결과와의 대조다.
+
 ## 실제 CPU 연구 확장 완료 (2026-11-08)
 
 Branch exp/cpu-research-expansion에서 saved PatchCore spatial/operating 분석과 실제 HOG-kNN/SwinIR 대조 실험을 완료했다. Hazelnut110·Screw160, seed11/23/37, Clean/Bicubic/Unsharp/SwinIR24조건, test prediction3240건이다. SwinIR는 고유614개 calibration/test RGB를 CPU cache로 한 번 복원하고 기존 HOG bank6개를 재사용했다.

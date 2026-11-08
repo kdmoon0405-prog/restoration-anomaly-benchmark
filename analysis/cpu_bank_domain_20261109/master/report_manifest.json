@@ -1,0 +1,29 @@
+{
+  "kind": "stored_research_master_table",
+  "schema_version": 1,
+  "rows": 70,
+  "protocol_groups": 5,
+  "duplicates_removed": [],
+  "skipped": [],
+  "catalog_sha256": "9d66e220ba7fe30643726ec8cd4c154ee6cc0aba73675b5319fe689b0d2ee044",
+  "sources": [
+    {
+      "table": "analysis/thesis_synthesis/MASTER_RESULTS.csv",
+      "sha256": "2e7e4b7b929ecf288d5f68ef032914db5b170569fc92e5c6aa77eb1b707c9055"
+    },
+    {
+      "table": "analysis/cpu_research_20261108/hog_four_condition_summary.csv",
+      "sha256": "0b19a068f941efcd895594dfea82cc46936b43e18287f52bb8314b1ccd29a5df"
+    },
+    {
+      "table": "analysis/cpu_bank_domain_20261109/new_conditions_for_master.csv",
+      "sha256": "f9937942f81cb3bb60bb88a8cff60dc9c0b29590f867fbd3a4a072898216dd5f"
+    }
+  ],
+  "raw_prediction_arrays_checked": false,
+  "detection_metrics_recomputed": false,
+  "tables": {
+    "master_results.csv": "6df177f34362f8a0ceb4c7305b49ce75a52b8b7b290dc63341703903d447a952",
+    "claim_evidence_index.csv": "c3a67cb5d66154bc199082fb5b51ef73e200b9c99641a260538999e94cc7d87d"
+  }
+}

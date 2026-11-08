@@ -54,6 +54,9 @@ def build_master(catalog, root, output, *, bank_analyses=(), allow_synthetic=Fal
     config = read_json(catalog)
     if config.get("schema_version") != 1:
         raise ValueError("Unsupported reporting catalog")
+    portable = config.get("portable_paths", False)
+    def display(path):
+        return Path(path).resolve().relative_to(root).as_posix() if portable else str(path)
     sources = []
     skipped = []
     for source in config.get("sources", []):
@@ -91,7 +94,7 @@ def build_master(catalog, root, output, *, bank_analyses=(), allow_synthetic=Fal
             if raw.get("status", "COMPLETE") != "COMPLETE":
                 skipped.append(dict(source=str(path), status=raw["status"], scope="table row"))
                 continue
-            row = _normalize(raw, source, path, sha)
+            row = _normalize(raw, source, display(path), sha)
             if row["evidence_kind"] == "synthetic_fixture" and not allow_synthetic:
                 raise ValueError("Synthetic data cannot enter a real master table without explicit opt-in")
             key = tuple(row[k] for k in KEY)
@@ -99,7 +102,7 @@ def build_master(catalog, root, output, *, bank_analyses=(), allow_synthetic=Fal
                 compare = (*NUMERIC, "train_count", "test_count", "n_anomaly", "evidence_kind")
                 if any(rows[key][k] != row[k] for k in compare):
                     raise ValueError("Conflicting duplicate master-table condition")
-                duplicates.append(dict(entry_id=row["entry_id"], duplicate_source=str(path)))
+                duplicates.append(dict(entry_id=row["entry_id"], duplicate_source=display(path)))
                 continue
             rows[key] = row
     ordered = sorted(rows.values(), key=lambda r: tuple(str(r[k]) for k in KEY))
@@ -131,10 +134,17 @@ def build_master(catalog, root, output, *, bank_analyses=(), allow_synthetic=Fal
     lines += ["Source CSVs and their SHA256 are retained per row. Array-level or remote-execution validation is separate.",
               "Absent experiments do not create numeric rows. Partial/failed sources are excluded.", ""]
     (out / "master_results.md").write_text("\n".join(lines), encoding="utf-8")
+    if portable:
+        for name in ("master_results.csv", "claim_evidence_index.csv", "master_results.md"):
+            path = out / name
+            path.write_bytes(path.read_bytes().replace(b"\r\n", b"\n"))
     receipt = dict(kind="stored_research_master_table", schema_version=1,
         rows=len(ordered), protocol_groups=len(groups), duplicates_removed=duplicates, skipped=skipped,
-        catalog_sha256=digest(catalog), sources=[dict(table=str(p), sha256=digest(p)) for _, p in sources],
+        catalog_sha256=digest(catalog), sources=[dict(table=display(p), sha256=digest(p)) for _, p in sources],
         raw_prediction_arrays_checked=False, detection_metrics_recomputed=False,
         tables={n: digest(out / n) for n in ("master_results.csv", "claim_evidence_index.csv")})
     write_json(out / "report_manifest.json", receipt)
+    if portable:
+        path = out / "report_manifest.json"
+        path.write_bytes(path.read_bytes().replace(b"\r\n", b"\n"))
     return receipt
