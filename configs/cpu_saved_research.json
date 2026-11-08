@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "analysis_family": "exploratory_inspection_budget_and_operating_points_v1",
+  "area_fractions": [0.001, 0.005, 0.01, 0.02, 0.05],
+  "budget_rounding": "ceil",
+  "score_ties": "stable_descending_row_major",
+  "gt_connectivity": 1,
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 11,
+  "confidence_level": 0.95,
+  "reserve_ram_bytes": 268435456,
+  "runs": [
+    {"category": "hazelnut", "directory": "outputs/legacy-patchcore/hazelnut-full391-test110-repro"},
+    {"category": "screw", "directory": "outputs/legacy-patchcore/screw-full320-test160"}
+  ],
+  "calibrated_run": "outputs/fusion-patchcore/hazelnut-313x78-test110",
+  "qualitative_area_fraction": 0.01,
+  "qualitative_cases": "one_lowest_and_one_highest_paired_pixel_recall_delta_per_category_lexical_ties"
+}

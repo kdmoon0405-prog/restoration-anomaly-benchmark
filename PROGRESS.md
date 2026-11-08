@@ -2,6 +2,17 @@
 
 Date: 2026-09-20
 
+
+## 실제 CPU 연구 확장 완료 (2026-11-08)
+
+Branch exp/cpu-research-expansion에서 saved PatchCore spatial/operating 분석과 실제 HOG-kNN/SwinIR 대조 실험을 완료했다. Hazelnut110·Screw160, seed11/23/37, Clean/Bicubic/Unsharp/SwinIR24조건, test prediction3240건이다. SwinIR는 고유614개 calibration/test RGB를 CPU cache로 한 번 복원하고 기존 HOG bank6개를 재사용했다.
+
+Unsharp−Bicubic의 평균 pooled AU-PRO 차이는 Hazelnut−0.003956, Screw−0.026889이고, SwinIR−Bicubic은+0.072742, +0.133538이었다. 두 조건 모두 PSNR/SSIM이 증가했다. Sample-level 감소도 모두 보고했고 HOG의 낮은 절대 성능과 이미 탐색한 category의 한계를 함께 기록했다. 같은 영상의 seed 반복은 독립 이미지 수로 늘리지 않았다.
+
+기존 저장 맵의 top1% pixel recall delta는 Hazelnut−0.116%p, Screw+24.309%p다. Branch B의 기존 정상 calibration 운영 지점에서는 mean fusion FN5→3, FP0/40이었다. Primary pooled metric과 supplementary 운영 지점을 분리했다. 공개 numeric summary/그림은 analysis/cpu_research_20261108/, 상세 결과·명령은 docs/CPU_RESEARCH_RESULTS_20261108.md다. Master는34행/4protocol groups이며 raw/data/RGB/GT/bank는 local output에 보존한다.
+
+전체 pytest623pass/3skip(269.50s), 기존 CPU smoke2행을 확인했다. 두 skip은 실제 RAM 사전조건, 한 skip은 optional dataset 부재다. Source 초기화와 Windows 임시 폴더 문제를 해결한 뒤 검증했고 초기 실패 로그를 보존했다. 실행 당시 source_worktree_dirty=true, base1f0c801과 실제 source/table digest를 기록했다. GPU 담당 source·기존 결과·Capsule은 보존했다.
+
 ## CPU bank-domain analysis, input transfer and reporting (2026-11-02)
 
 Implemented read-only analyze_bank_domain_study.py and its analysis module. The five-file producer contract binds config/provenance and summary/per-image CSVs, preserves family/protocol/category/seed, verifies the complete 2x2 paired cohort, deduplicates identical run copies and rejects conflicting conditions. Same-query bank quality is counted once. Dataset pooled AU-PRO remains a stored point estimate; per-anomaly-image paired delta CI is supplementary and within-seed only. Three seeds of the same images are not treated as independent image observations. The existing Hazelnut percentile/paired-bootstrap helper was moved unchanged into analysis_statistics.py and shared; inference/evaluator semantics were not changed.

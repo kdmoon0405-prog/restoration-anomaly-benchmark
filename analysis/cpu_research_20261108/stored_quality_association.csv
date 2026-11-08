@@ -1,0 +1,5 @@
+category,quality_delta,response,area_fraction,n_paired_anomaly_images,spearman_rho,scope
+hazelnut,psnr,delta_gt_pixel_recall,0.01,70,0.1527403125092037,exploratory association
+hazelnut,ssim,delta_gt_pixel_recall,0.01,70,-0.059165552157645955,exploratory association
+screw,psnr,delta_gt_pixel_recall,0.01,119,-0.0035167380524167772,exploratory association
+screw,ssim,delta_gt_pixel_recall,0.01,119,-0.022067711071249243,exploratory association

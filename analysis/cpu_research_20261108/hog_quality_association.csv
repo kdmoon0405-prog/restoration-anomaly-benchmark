@@ -1,0 +1,5 @@
+category,quality_metric,n_images,response,spearman_rho
+hazelnut,psnr,70,mean_across_seed_delta_per_image_aupro,-0.10637497764302657
+hazelnut,ssim,70,mean_across_seed_delta_per_image_aupro,-0.09839422907355962
+screw,psnr,119,mean_across_seed_delta_per_image_aupro,0.0602500283032288
+screw,ssim,119,mean_across_seed_delta_per_image_aupro,0.14162247960845878

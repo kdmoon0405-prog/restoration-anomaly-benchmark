@@ -1,0 +1,51 @@
+{
+  "kind": "public_cpu_research_numeric_summary",
+  "date": "2026-11-08",
+  "execution_git_head": "1f0c801df111357d92bb759ccb051f3832008286",
+  "source_worktree_dirty_during_execution": true,
+  "unique_test_images": 270,
+  "independent_anomalous_image_units": 189,
+  "seed_values": [
+    11,
+    23,
+    37
+  ],
+  "cpu_hog_banks": 6,
+  "real_test_predictions": 3240,
+  "condition_rows": 24,
+  "swinir_unique_calibration_and_test_rgb_queries": 614,
+  "cache_elapsed_seconds": 553.7363203999703,
+  "cache_os_lifetime_peak_bytes": 457326592,
+  "source_receipts": {
+    "outputs/cpu-research-campaign-20261108/spatial-v1/status.json": "14b0af6aba1da32a6f35669a5b2d2b711a9ab53cf7e980f4d35a0409053e3825",
+    "outputs/cpu-research-campaign-20261108/hog-analysis/analysis_manifest.json": "5449f7377fb68c90ab5303074ba7021271ed9635191efc2ad976c19fa7ae8a39",
+    "outputs/cpu-research-campaign-20261108/hog-four-condition-analysis/analysis_manifest.json": "569609e15d66708e4fd1f453dac82cbf56cfba90fe40844f18c0fa67eaf5a138",
+    "outputs/cpu-research-campaign-20261108/swinir-cache/status.json": "06cd96f37a235267d2d81bec3c57966379e6dbe0b094f01c1c9a705bb6ace100"
+  },
+  "figures": {
+    "patchcore_inspection_recall.png": "5621d863a5aae2171c644da3bd0265999b18f32a80a620397f8e30c044474881",
+    "patchcore_paired_inspection_gain.png": "453c05d86fc5b7c4a67396cebcc50fd5eab3e2b79be8e7b7c813053b17d63af8",
+    "hazelnut_calibrated_operating_points.png": "1b4c1210e2ec9b6841dd3d4b4eab08d317d653c07d3aa076ddad01891dcad1d1",
+    "hog_four_condition_aupro.png": "1fb2720231311f6d442fb976026af49cd1158b804e7e58cec1fe79be36900a1c",
+    "hog_swinir_quality_localization.png": "af0b7f133596a2009aa27e2f4f211c1c9bb228aacfa000a3eb8aa0a841de04f1"
+  },
+  "tables": {
+    "defect_budget_effects.csv": "f7464128d8a6e53d6a29cbb424dd986fc1b5c8879be7283cdbee818d4498fbc3",
+    "hog_category_effects.csv": "72066b6d53417a98e72ce853c086e28f067b38d8c7fe29c74b9ea5d2227a2c60",
+    "hog_control_summary.csv": "fad355a5299569b953a0c4908dd61ec7bdc680f8c2ceb9a1638ce6eff787677b",
+    "hog_four_condition_summary.csv": "0b19a068f941efcd895594dfea82cc46936b43e18287f52bb8314b1ccd29a5df",
+    "hog_quality_association.csv": "78b4607b200a677b27ee786b1fdd65875bac59f378e24824d74a65ff36915549",
+    "hog_resource_observations.csv": "b53234723e95098c28e951c607d8109ad806ecbe16f20b4b87b0192ad0278fc6",
+    "hog_seed_effects.csv": "f373d56913e9930d7f61c0420730cc30708c9e34138d843aa4b06a056ae82ee5",
+    "stored_operating_points.csv": "4f6481e940ff59c6bde87026bbd703c8c4891c46af15fb32ae4147ccc7835236",
+    "stored_paired_budget_effects.csv": "84980e1e79766fbef9f1c13d135353b59f825c5208738fd37a53e4a912a03542",
+    "stored_paired_operating_effects.csv": "cf144c32723fc334d5f8aa9d6166854eedc40396375d695923a52e048f84e1b4",
+    "stored_quality_association.csv": "5d080d54b10b1bd7f478946e5a7cf338093552d3dfbb129210ab55247ed21139",
+    "swinir_category_effects.csv": "85243a2fb036918afdbd3c71109504251489b17cc77072ffb8e8de4580666b83",
+    "swinir_quality_association.csv": "c93ce28d985742f1ad97bcced24fa735a3bf081a72b5a215ab2676cd45ed5f44",
+    "swinir_seed_effects.csv": "49c4d8f946cb346eb1f3036e0b2d94fcf27fdf6a176edd19c14458a91ae826b4"
+  },
+  "scope": "Exploratory CPU HOG family and supplementary historical PatchCore analyses; no seed independence inflation",
+  "public_table_encoding": "UTF-8 with LF export; source run CSV bytes preserved",
+  "environment_sha256": "aed4efd29bdf5dbf7670e34bbb0d4c256d73d8544c3c74f78c328f430c67ea36"
+}

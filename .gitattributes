@@ -77,3 +77,24 @@ docs/CPU_DATA_REPORTING_HANDOFF.md text eol=lf
 
 .gitattributes text eol=lf
 PROGRESS.md text eol=lf
+
+# New CPU artifacts bind source/table bytes across Windows and Linux.
+src/sr_anomaly/cpu_saved_research.py text eol=lf
+src/sr_anomaly/cpu_hog_control.py text eol=lf
+src/sr_anomaly/cpu_control_analysis.py text eol=lf
+src/sr_anomaly/cpu_restoration_control.py text eol=lf
+scripts/run_cpu_saved_research.py text eol=lf
+scripts/run_cpu_hog_control.py text eol=lf
+scripts/analyze_cpu_controls.py text eol=lf
+scripts/analyze_inspection_defects.py text eol=lf
+scripts/plot_cpu_saved_research.py text eol=lf
+scripts/plot_cpu_controls.py text eol=lf
+scripts/profile_cpu_restoration.py text eol=lf
+scripts/run_cpu_restoration_control.py text eol=lf
+analysis/cpu_research_20261108/*.csv text eol=lf
+configs/cpu_hog_control.json text eol=lf
+configs/cpu_hog_control_seed23.json text eol=lf
+configs/cpu_hog_control_seed37.json text eol=lf
+configs/cpu_saved_research.json text eol=lf
+configs/research_reporting_cpu_20261108.json text eol=lf
+analysis/cpu_research_20261108/*.json text eol=lf

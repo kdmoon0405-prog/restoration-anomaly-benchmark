@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "study_family": "cpu_hog_knn_control_x4_v1",
+  "categories": [
+    "hazelnut",
+    "screw"
+  ],
+  "seed": 23,
+  "fit_ratio": 0.8,
+  "bank_capacity": 4096,
+  "cpu_threads": 4,
+  "normal_quantile": 0.99,
+  "variants": [
+    "clean",
+    "bicubic_x4",
+    "unsharp_x4"
+  ],
+  "canonical": {
+    "resize_short_edge": 256,
+    "center_crop": 224,
+    "image_interpolation": "bilinear",
+    "mask_interpolation": "nearest"
+  },
+  "hog": {
+    "orientations": 9,
+    "pixels_per_cell": [
+      8,
+      8
+    ],
+    "cells_per_block": [
+      2,
+      2
+    ],
+    "block_norm": "L2-Hys",
+    "transform_sqrt": true
+  },
+  "unsharp": {
+    "radius": 1.0,
+    "percent": 100,
+    "threshold": 0
+  },
+  "reserve_ram_bytes": 268435456,
+  "runtime_allowance_bytes": 201326592
+}

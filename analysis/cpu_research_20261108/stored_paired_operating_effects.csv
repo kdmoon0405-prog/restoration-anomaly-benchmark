@@ -1,0 +1,9 @@
+method,reference,metric,n_images,mean_delta,ci95_low,ci95_high,reference_alert_candidate_clear,reference_clear_candidate_alert,ci_unit
+clean_reference,degraded_only,normal_image_fpr,40,0.0,0.0,0.0,0,0,paired test image within label group
+clean_reference,degraded_only,anomaly_image_sensitivity,70,0.07142857142857142,0.014285714285714285,0.14285714285714285,0,5,paired test image within label group
+restored_only,degraded_only,normal_image_fpr,40,0.0,0.0,0.0,0,0,paired test image within label group
+restored_only,degraded_only,anomaly_image_sensitivity,70,0.0,-0.07142857142857142,0.07142857142857142,3,3,paired test image within label group
+mean_0.5_0.5,degraded_only,normal_image_fpr,40,0.0,0.0,0.0,0,0,paired test image within label group
+mean_0.5_0.5,degraded_only,anomaly_image_sensitivity,70,0.02857142857142857,-0.02857142857142857,0.08571428571428572,1,3,paired test image within label group
+max,degraded_only,normal_image_fpr,40,0.0,0.0,0.0,0,0,paired test image within label group
+max,degraded_only,anomaly_image_sensitivity,70,0.014285714285714285,-0.04285714285714286,0.07142857142857142,2,3,paired test image within label group

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "table": "analysis/thesis_synthesis/master_results.csv",
+      "status": "COMPLETE",
+      "study_family_column": "study_family",
+      "protocol_id_column": "degradation_protocol",
+      "category_column": "dataset",
+      "dataset_id": "MVTecAD",
+      "evidence_kind": "stored_research_results",
+      "column_map": {
+        "pooled_aupro": "aupro"
+      }
+    },
+    {
+      "table": "analysis/cpu_research_20261108/hog_four_condition_summary.csv",
+      "status": "COMPLETE",
+      "identity": {
+        "study_family": "cpu_hog_knn_control_x4_v1",
+        "protocol_id": "ae20fe73aeea04d66a8f988f590dbebdde1901c579dfedd6d026c8327edf895d",
+        "dataset": "MVTecAD"
+      },
+      "category_column": "category",
+      "evidence_kind": "real_cpu_control_predictions",
+      "column_map": {
+        "psnr": "mean_psnr",
+        "ssim": "mean_ssim",
+        "pooled_aupro": "au_pro"
+      }
+    }
+  ]
+}
