@@ -1,0 +1,85 @@
+{
+ "linkage": {
+  "rows": 1140,
+  "plan": 1140,
+  "order_matches_plan": true,
+  "file_index_matches": true
+ },
+ "variants": {
+  "clean": {
+   "reconstructed_threshold": 2.1143701398463053,
+   "stored_threshold": 2.1143701398463053,
+   "threshold_match": true,
+   "image_median_raw": 4.365386962890625,
+   "image_scale_raw": 0.6049189567565918,
+   "calibration_top5_normalized": [
+    2.275815914621313,
+    2.2390133429817114,
+    2.0812371364811955,
+    2.0227036426568668,
+    1.8756163256233018
+   ],
+   "calibration_above_threshold": 2,
+   "q99_interpolation": "np.quantile linear: 0.99*(180-1)=177.21 -> between 3rd and 2nd highest",
+   "threshold_minus_3rd_highest": 0.033133003365109825,
+   "top1_minus_threshold": 0.16144577477500777,
+   "auroc": 0.9714,
+   "tp": 76,
+   "fn": 24,
+   "fp": 4,
+   "tn": 96,
+   "f1": 0.8444444444444444,
+   "test_normal_above_calibration_max": 3
+  },
+  "bicubic_x4": {
+   "reconstructed_threshold": 2.7207500362237633,
+   "stored_threshold": 2.7207500362237633,
+   "threshold_match": true,
+   "image_median_raw": 5.38747501373291,
+   "image_scale_raw": 0.3850369453430176,
+   "calibration_top5_normalized": [
+    3.011872725178673,
+    2.7830475268148724,
+    2.704189943788151,
+    2.6204827110483095,
+    2.2380538984818217
+   ],
+   "calibration_above_threshold": 2,
+   "q99_interpolation": "np.quantile linear: 0.99*(180-1)=177.21 -> between 3rd and 2nd highest",
+   "threshold_minus_3rd_highest": 0.016560092435612184,
+   "top1_minus_threshold": 0.29112268895490967,
+   "auroc": 0.968,
+   "tp": 71,
+   "fn": 29,
+   "fp": 3,
+   "tn": 97,
+   "f1": 0.8160919540229885,
+   "test_normal_above_calibration_max": 2
+  },
+  "swinir_x4": {
+   "reconstructed_threshold": 2.264221115706282,
+   "stored_threshold": 2.264221115706282,
+   "threshold_match": true,
+   "image_median_raw": 5.444894790649414,
+   "image_scale_raw": 0.5131964683532715,
+   "calibration_top5_normalized": [
+    2.815949067643143,
+    2.4249324739303377,
+    2.2215003749125435,
+    2.194157310887516,
+    2.1749461789117968
+   ],
+   "calibration_above_threshold": 2,
+   "q99_interpolation": "np.quantile linear: 0.99*(180-1)=177.21 -> between 3rd and 2nd highest",
+   "threshold_minus_3rd_highest": 0.04272074079373844,
+   "top1_minus_threshold": 0.551727951936861,
+   "auroc": 0.9544,
+   "tp": 54,
+   "fn": 46,
+   "fp": 1,
+   "tn": 99,
+   "f1": 0.6967741935483871,
+   "test_normal_above_calibration_max": 0
+  }
+ }
+}
