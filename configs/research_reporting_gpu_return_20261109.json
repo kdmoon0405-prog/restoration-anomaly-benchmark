@@ -2,7 +2,7 @@
   "schema_version": 1,
   "sources": [
     {
-      "table": "analysis/thesis_synthesis/master_results.csv",
+      "table": "analysis/thesis_synthesis/MASTER_RESULTS.csv",
       "status": "COMPLETE",
       "study_family_column": "study_family",
       "protocol_id_column": "degradation_protocol",

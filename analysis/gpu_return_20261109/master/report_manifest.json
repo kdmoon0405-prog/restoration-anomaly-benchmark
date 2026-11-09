@@ -5,7 +5,7 @@
   "protocol_groups": 9,
   "duplicates_removed": [],
   "skipped": [],
-  "catalog_sha256": "f14907578a4f2fe06ec7a0c45198986c27795a48707a3c6afd5eb602597db628",
+  "catalog_sha256": "85a7722faa6462e915867d77294b135eee2e1a2d3b7534167d3ee8b3caa48472",
   "sources": [
     {
       "table": "analysis/thesis_synthesis/MASTER_RESULTS.csv",
