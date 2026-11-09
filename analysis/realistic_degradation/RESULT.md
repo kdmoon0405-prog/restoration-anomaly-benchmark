@@ -38,7 +38,7 @@
 | screw | none | 0.801 | **0.858** | 0.826 | 0.831 |
 | screw | noise σ5 | 0.749 | 0.738 | 0.824 | **0.828** |
 | screw | noise σ15 | 0.672 | 0.635 | **0.764** | 0.758 |
-| screw | blur σ0.8 | 0.769 | **0.773** | **0.773** | 0.772 |
+| screw | blur σ0.8 | 0.769 | **0.773** | 0.773 | 0.772 |
 | screw | blur σ1.6 | 0.727 | 0.725 | **0.797** | 0.764 |
 | screw | JPEG q90 | 0.770 | 0.725 | 0.813 | **0.828** |
 | screw | JPEG q50 | 0.737 | 0.713 | 0.769 | **0.781** |
@@ -48,7 +48,7 @@ Full metrics, including PSNR, SSIM, LPIPS, Image/Pixel AUROC, F1, thresholds and
 ## Observations (descriptive; one run, two categories, no confidence intervals)
 
 1. **No added degradation:** SwinIR has the highest AU-PRO in both categories.
-2. **With added degradation:** in 12 of 12 degraded condition×category cells, a Real-ESR* model (RealESRNet or RealESRGAN) has the highest AU-PRO. Screw blur σ0.8 is a tie with SwinIR.
+2. **With added degradation:** a Real-ESR* model ranks highest in 11 of 12 degraded condition×category cells. At full precision, Screw blur σ0.8 ranks SwinIR first (0.7726005601), followed by RealESRNet (0.7725502431), a difference of 0.0000503170. Both round to 0.773 in the table. This ordering has no pooled confidence interval.
 3. **SwinIR under noise:** on noise σ5, σ15, JPEG q90 and JPEG q50, SwinIR is at or below Bicubic in AU-PRO. On noise σ15 it has the lowest PSNR of all units (21.5 dB in both categories).
 4. **Paired per-anomaly-image AU-PRO vs Bicubic** (`derived/delta_vs_bicubic.csv`, `delta_distribution.png`):
    - RealESRGAN, noise σ15: better on 62/70 Hazelnut images and 93/119 Screw images.
@@ -62,11 +62,11 @@ Full metrics, including PSNR, SSIM, LPIPS, Image/Pixel AUROC, F1, thresholds and
    | SSIM | +0.86 | +0.63 | +0.71 |
    | LPIPS | −0.90 | −0.74 | −0.82 |
 
-   On Screw, RealESRGAN has the lowest PSNR (27.5–30.2 dB) but is among the highest in AU-PRO. Because units share images and conditions, these correlations are not evidence that one causes the other.
+   On Screw, RealESRGAN has PSNR 27.5–30.2 dB and is among the highest in AU-PRO. The minimum PSNR depends on the degradation condition, including the lower SwinIR value under strong noise. Because units share images and conditions, these correlations are not evidence that one causes the other.
 6. **Image-level classification on Screw is unusable in this run:**
    - Image AUROC is 0.39–0.67 across the 28 units.
    - At the q0.99 threshold, the anomaly miss rate is 0.87–1.00.
-   - Read Screw only through the pixel-level metrics: Pixel AUROC 0.88–0.97, AU-PRO 0.64–0.86.
+   - Report this image-level failure alongside the pixel-level metrics: Pixel AUROC 0.88–0.97, AU-PRO 0.64–0.86.
    - Hazelnut image AUROC ranges 0.77–1.00.
 7. **Per defect type** (`derived/per_defect_type.csv`):
    - The lowest-AU-PRO types are Hazelnut crack/cut and Screw manipulated_front.
@@ -74,7 +74,7 @@ Full metrics, including PSNR, SSIM, LPIPS, Image/Pixel AUROC, F1, thresholds and
    - On these types, RealESRNet and RealESRGAN are higher than Bicubic and SwinIR by about 0.07–0.15.
    - Each defect type has only 17–25 images.
 8. **Runtime** (`derived/runtime.csv`, `runtime_performance.png`):
-   - Each unit took 505–683 s, of which PatchCore predict took 427–635 s. Predict time varied with the session and machine temperature, not with the restorer.
+   - Each unit took 505–683 s, of which PatchCore predict took 427–635 s. Predict time varied across units and sessions. The current records do not isolate restorer, thermal and execution-order effects through a controlled timing comparison.
    - Restoration time per image was 0.03–0.08 s for Bicubic, 0.21–0.27 s for SwinIR, and 0.25–0.32 s for RealESRNet/RealESRGAN.
    - Restoration is under 15% of each unit's time.
 

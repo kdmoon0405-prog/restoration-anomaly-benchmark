@@ -49,7 +49,7 @@
    - On most boards, both are below clean.
 2. **SwinIR vs Bicubic:**
    - SwinIR has higher PSNR (+2.4 dB) and pooled AU-PRO (+0.005), and is better on 67/100 boards.
-   - Its Image F1 at the frozen threshold is lower (0.697 vs 0.816), while Image AUROC is close (0.954 vs 0.968). The gap is in the operating point more than in ranking.
+   - Its Image F1 at the frozen threshold is lower (0.697 vs 0.816). Saved scores reproduce Bicubic TP=71/FN=29/FP=3/TN=97 and SwinIR TP=54/FN=46/FP=1/TN=99. Image AUROC also changes (0.9544 vs 0.9680). The operating-point loss is observed, while the contributions of calibration and ranking require further diagnosis.
 3. **By defect size** (`derived/per_defect_size_tercile.csv`; PCB defect-type labels are not bound in this pipeline, so area terciles are used instead):
    - Large defects (area ratio > 0.0034) have the lowest per-board AU-PRO in every variant: clean 0.883, Bicubic 0.869, SwinIR 0.875.
    - The variant ordering is the same in all three terciles.

@@ -55,3 +55,6 @@ src/sr_anomaly/pcb_fit_bank.py text eol=lf
 scripts/run_pcb_fit_bank.py text eol=lf
 src/sr_anomaly/pcb_reuse_inference.py text eol=lf
 scripts/run_pcb_reuse_inference.py text eol=lf
+scripts/run_pcb_full_cohort.py text eol=lf
+scripts/run_realistic_degradation.py text eol=lf
+scripts/run_restoration_objective_pilot.py text eol=lf

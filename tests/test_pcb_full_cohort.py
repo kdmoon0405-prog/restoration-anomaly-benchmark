@@ -7,6 +7,7 @@ import pytest
 
 from sr_anomaly import pcb_full_cohort as full
 from sr_anomaly import pcb_board_analysis as board
+from sr_anomaly import pcb_tiled_runner as runner
 from sr_anomaly import bounded_bank as bank
 from tests.test_pcb_reuse_inference import prepared, read  # noqa: F401  (fixture reuse)
 
@@ -16,6 +17,8 @@ m = full.reuse
 @pytest.fixture
 def cohort(prepared, monkeypatch):
     x = prepared
+    # These tiny injected arrays test lifecycle behavior independently of host RAM.
+    monkeypatch.setattr(runner, 'available_ram', lambda: 32 * 1024**3)
     monkeypatch.setattr(full.fit.runner, 'load_inventory', lambda *a: (x.parents, [], {}))
     monkeypatch.setattr(full, '_sources', m._sources)
     monkeypatch.setattr(full, '_runtime', lambda: dict(torch_version='fake', cuda_runtime=None, gpu_name=None))
