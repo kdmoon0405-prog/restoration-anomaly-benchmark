@@ -1,0 +1,33 @@
+{
+  "kind": "stored_research_master_table",
+  "schema_version": 1,
+  "rows": 133,
+  "protocol_groups": 9,
+  "duplicates_removed": [],
+  "skipped": [],
+  "catalog_sha256": "458e94949753cd897f920135d9461df244b12a9276ad47c2e0fde6fe6de58e34",
+  "sources": [
+    {
+      "table": "analysis/thesis_synthesis/MASTER_RESULTS.csv",
+      "sha256": "2e7e4b7b929ecf288d5f68ef032914db5b170569fc92e5c6aa77eb1b707c9055"
+    },
+    {
+      "table": "analysis/cpu_research_20261108/hog_four_condition_summary.csv",
+      "sha256": "0b19a068f941efcd895594dfea82cc46936b43e18287f52bb8314b1ccd29a5df"
+    },
+    {
+      "table": "analysis/cpu_bank_domain_20261109/new_conditions_for_master.csv",
+      "sha256": "f9937942f81cb3bb60bb88a8cff60dc9c0b29590f867fbd3a4a072898216dd5f"
+    },
+    {
+      "table": "analysis/gpu_followup_20261110/new_master_conditions.csv",
+      "sha256": "db7130365f587239a35715cd89635096fb098f3f48ff5869bf9fc74f5172b441"
+    }
+  ],
+  "raw_prediction_arrays_checked": false,
+  "detection_metrics_recomputed": false,
+  "tables": {
+    "master_results.csv": "9dc496448a608cae52035e708c281dc38880446793465855b4858e1d985cedf3",
+    "claim_evidence_index.csv": "869c14e5af620de0845e3ff8fb607818bbfd3b857ba28ad69e007f66da672fc6"
+  }
+}

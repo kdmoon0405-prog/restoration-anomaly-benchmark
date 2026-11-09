@@ -1,0 +1,15 @@
+{
+  "status": "BLOCKED_MEMORY",
+  "required_maps": 27,
+  "supplied_maps": 27,
+  "real_maps_analyzed": 0,
+  "gt_bytes_verified": false,
+  "bank_payload_bytes_verified": false,
+  "frozen_selection_sha256": "075557e5629e93b33872620de4c258398599d98a901c366c926a4c8157c41763",
+  "selected_boards": 9,
+  "actual_spatial_results_created": false,
+  "missing_files": [],
+  "native_array_hash_shape_dtype_finite_verified": 27,
+  "actual_spatial_cases": 0,
+  "producer_status": "FAILED"
+}

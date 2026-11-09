@@ -1,0 +1,16 @@
+{
+  "status": "SUPPLIED_METADATA_VERIFIED",
+  "seed": 11,
+  "normal_fit_paths": 320,
+  "fit_performed": false,
+  "results_json_sha256": "f8b3113ecc900da7ecfbc6e4785c6a63ecf3063c3707a417e60884353a604ad5",
+  "bank_metadata_sha256": "9a39b30af3c2757bb5ba3fbc70cd6683d5741e21849c3a750f1b6fc4178868a3",
+  "reported_bank_artifact_sha256": {
+    "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+    "nnscorer_search_index.faiss": "d4910f28c4c74d9a1cb29ab5d4b07b58d8be711ecf66c2bfaaa3a278dac1cd12"
+  },
+  "bank_array_bytes_verified": false,
+  "enriched_rows": 4,
+  "stored_point_metrics_unchanged": true,
+  "source_commit": "54cf3c7ad5a1cb8eed6fce32e72e189eec1ea8b1"
+}

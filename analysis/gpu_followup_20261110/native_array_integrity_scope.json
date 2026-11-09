@@ -1,0 +1,8 @@
+{
+  "status": "27_ARRAYS_HASH_SHAPE_DTYPE_FINITE_VERIFIED",
+  "arrays": 27,
+  "method": "One read-only mmap at a time;65536-float integrity chunks;no GT or spatial descriptors",
+  "chunk_bytes": 262144,
+  "peak_rss_measured": false,
+  "spatial_execution": "BLOCKED_MEMORY_fixed_2GiB_reserve_unchanged"
+}

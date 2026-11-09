@@ -1,0 +1,7 @@
+{
+  "status": "SUPPLIED_CSV_REAGGREGATION_PASS",
+  "passes": 12,
+  "calls": 44,
+  "summary_rows": 3,
+  "raw_queries_distances_supplied": false
+}

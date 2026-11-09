@@ -1,0 +1,20 @@
+{
+  "archive_hashes": {
+    "diagnosis": "34c9f37318af640d24d1542127fc30830e92bfe1ef7bae3fdc0a9c3305e6dec2",
+    "native_maps": "e0bad0bef94092699b26c3a5c5dcbd354be9c2621babf720084bea7f0a5fad70"
+  },
+  "supplied_native_arrays_verified": 27,
+  "supplied_diagnosis_files": 27,
+  "supplied_native_top_manifest_files": 51,
+  "historical_bank_manifest_omitted_files": 10,
+  "batch_passes_reaggregated": 12,
+  "batch_calls_reaggregated": 44,
+  "raw_batch_queries_or_distances_supplied": false,
+  "native_spatial_analysis": "BLOCKED_MEMORY",
+  "native_gt_decoded": false,
+  "read_only_point_metrics_preserved": true,
+  "posthoc_threshold_plateau_analysis": true,
+  "threshold_selected": false,
+  "master_conditions": 133,
+  "master_protocol_groups": 9
+}

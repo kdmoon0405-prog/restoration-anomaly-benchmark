@@ -1,0 +1,30 @@
+{
+  "status": "600_SCORES_CROSSMATCHED",
+  "variants": [
+    {
+      "variant": "clean",
+      "score_rows_cross_matched": 200,
+      "raw_equivalent_threshold": 5.644409542083741,
+      "normalized_threshold": 2.1143701398463053,
+      "classification_mismatches": 0,
+      "rank_invariance": "positive_affine"
+    },
+    {
+      "variant": "bicubic_x4",
+      "score_rows_cross_matched": 200,
+      "raw_equivalent_threshold": 6.4350642967224125,
+      "normalized_threshold": 2.7207500362237633,
+      "classification_mismatches": 0,
+      "rank_invariance": "positive_affine"
+    },
+    {
+      "variant": "swinir_x4",
+      "score_rows_cross_matched": 200,
+      "raw_equivalent_threshold": 6.606885070800782,
+      "normalized_threshold": 2.264221115706282,
+      "classification_mismatches": 0,
+      "rank_invariance": "positive_affine"
+    }
+  ],
+  "threshold_changed": false
+}

@@ -1,0 +1,40 @@
+{
+  "status": "CPU_LOCAL_VERIFICATION_COMPLETE",
+  "whole_pytest": "674passed3skipped",
+  "skip_scopes": [
+    "2unchanged_RAM_prerequisites",
+    "1optional_MVTec_test_fixture"
+  ],
+  "focused_controller_spatial_receiver": "28passed",
+  "score_and_receiver": "5passed",
+  "isolated_peer_patch_portable_tests": "11passed",
+  "runtime_base_commit": "6472f6925b17fb80e09fdca10eb4409eb4b980eb",
+  "runtime_worktree_dirty": true,
+  "cpu_smoke": "2rows",
+  "hardware_executed": false,
+  "source_sha256": {
+    "src/sr_anomaly/inspection_station.py": "f79f0531b89628ecb9cecff6170949b8fe1d22d97cc05b21a7638d64f657212b",
+    "src/sr_anomaly/pcb_selected_spatial.py": "8c66940976ce0eb152f36e60deb77895c723cdfa7d03aca3e617dcec69cf51fd",
+    "scripts/analyze_pcb_selected_maps.py": "bae04d5dbb807535ddc40a3dc3f78c199560ad7d2770b2e8142cb2d51d5e59dd",
+    "scripts/simulate_inspection_station.py": "de19bf48a1d4aa832be59b132ed2c054e1bd9cc181bdf5c10991b5997ffcbcfe",
+    "scripts/receive_category_transfer.py": "f08d3cffdb7f6532b32835bed66ccc87562a1c1c63c2f0a4cab742852a8981f6",
+    "scripts/analyze_score_diagnosis.py": "7a53f69102ff8a6cda04556507daab400843a0d1745cc53d7a4dcb899df6da3a"
+  },
+  "native_spatial_status": "BLOCKED_MEMORY",
+  "public_file_sha256": {
+    "analysis/gpu_followup_20261110/batch_numeric_record.csv": "cfd9f0a00d7754ddc17a205e3723a6431f2011efc40fd0dc13a9371db5f9fd44",
+    "analysis/gpu_followup_20261110/batch_timing_summary.csv": "c27824a941e742c72956c6f875c4fd3a549ad376b4f45a463d9137e02611ffaf",
+    "analysis/gpu_followup_20261110/empirical_fpr_plateaus.csv": "166775762032ffbe75b702845cd60d8efbbc56f4c588d96e071b6502f29e22ec",
+    "analysis/gpu_followup_20261110/native_array_integrity.csv": "ddd26eacfe9f8abe43b97bf562a24aa21655043c88b7cad6cdba15717665b902",
+    "analysis/gpu_followup_20261110/new_master_conditions.csv": "db7130365f587239a35715cd89635096fb098f3f48ff5869bf9fc74f5172b441",
+    "analysis/gpu_followup_20261110/analysis_scope.json": "c5d4e42e4a5340a271711965d1e5aab42117cb00dee3c05f4ad8366915555175",
+    "analysis/gpu_followup_20261110/endpoint_provenance.json": "433362f1f107666bcf0356e83bce1ca9409d19c38fc275dcaccc08efa7b6f28a",
+    "analysis/gpu_followup_20261110/native_array_integrity_scope.json": "7e0ecb4621973aec64d651ab8bf92bac7011f906b3f67fb5837a8e1702cd1299",
+    "analysis/gpu_followup_20261110/score_crosscheck.json": "71eb02f85947347c1c44bf4b1b593d6183f587183c699da882b2b27afb9d640b",
+    "analysis/gpu_followup_20261110/timing_reaggregation.json": "ccc974b27c9dc4165e13f6290757d68de1956eae98bd2eecb6f0a8ea240f9229",
+    "analysis/cpu_control_spatial_20261109/controller_replay_summary.csv": "d350c9eac3d1a3ebe6e430bcf321e0fe81af9db22cd26146c2d7be7821bc818a",
+    "analysis/cpu_control_spatial_20261109/evidence_status.csv": "007d904a58ab47aad46bd6548458ac5760a75c33297420abf49919225c9907f7",
+    "analysis/cpu_control_spatial_20261109/native_map_readiness.json": "8002e252b965234ace80678e72fe4264020fab396357fba45003b2b77055f264"
+  },
+  "real_dataset_model_inference_executed": false
+}

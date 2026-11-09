@@ -3,6 +3,18 @@
 Date: 2026-09-20
 
 
+## CPU 제어 연결과 후속 GPU 반환 검토 (2026-11-10)
+
+별도 exp/inspection-controller-cpu에서 controller·software replay·native-map reader·category transfer receiver·FPR plateau 진단을 구현했다. Synthetic6cycle과 저장 PCB score600개 replay를 완료했다. 물리 장치와 실제 모델은 실행하지 않았다. 전체674pass/3skip, 관련28pass, 추가score/receiver5pass, CPU smoke2행이다. 기존 RAM 전제조건2개와 optional MVTec fixture1개 skip을 보존했다.
+
+새 진단27파일과 map ZIP 최상위51파일 hash를 확인했다. Native27array의 SHA/1070×1404/float32/finite를 bounded chunk로 확인했다. 실제9case spatial analysis는2GiB OS 여유를 포함한 약2.39GiB 기준에 미달해 BLOCKED_MEMORY다. Array/GT/그림은 비공개로 보존했다.
+
+Timing12pass/44call 재집계가 일치했고 small-sample batch4speedup은1.498988이다. 같은 empirical FP3/100에서도 TPR은 Bicubic0.62~0.82,SwinIR0.59~0.70 범위여서 단일 matched-FPR 지점으로 원인을 확정하지 않는다. Scalar600개와 affine-normalization 판정 일치를 확인했다. Screw endpoint 원본metadata에서seed11/train320/fit_performedfalse를 확인해 별도master에 반영했다. Point metrics와133조건/9groups는 유지했다.
+
+지혁patch는 격리해서 검토했다. Fake test의 실제weight/Git/RAM 의존성을 test fixture만 수정해11pass를 확인했다. CPU consumer와 동명인 실행 측 analyzer, source provenance와ROI gap/export 연결은 owner에게 전달한다. 필요한 두 category만 private813040630B ZIP으로 만들고 새directory의1177파일 수신 검증을 완료했다. Publisher archive 원본 checksum은 미확인으로 유지하며 private transfer checksum과 구분했다. 데이터/가중치/bank는 공개하지 않는다.
+
+보고서는 docs/GPU_FOLLOWUP_REVIEW_20261110.md, code는 scripts/의4개새CLI와src/sr_anomaly/의2개모듈, 수치는analysis/cpu_control_spatial_20261109/와analysis/gpu_followup_20261110/다. 원본checkout과private노트는 별도로 보존한다.
+
 ## 주형 GPU 전체 결과 반환 검토·통합 (2026-11-09)
 
 Incoming 4c2fc40의 PCB 전체 cohort, 실사형 56조건, Screw endpoint 결과를 별도 worktree에서 검토했다. ZIP의 213개 명시 파일 hash, PCB 1140unit/54720query, runtime source26개, image calibration59개와 저장 score 기반 Image AUROC/F1을 확인했다. 원본 map 배열은 원격에 보관돼 있으며 pooled 지표는 저장 수치를 사용한다.

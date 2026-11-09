@@ -124,3 +124,21 @@ scripts/plot_gpu_return.py text eol=lf
 configs/research_reporting_gpu_return_20261109.json text eol=lf
 analysis/gpu_return_20261109/** text eol=lf
 analysis/gpu_return_20261109/**/*.png -text
+src/sr_anomaly/inspection_station.py text eol=lf
+src/sr_anomaly/pcb_selected_spatial.py text eol=lf
+scripts/simulate_inspection_station.py text eol=lf
+scripts/analyze_pcb_selected_maps.py text eol=lf
+tests/test_inspection_station.py text eol=lf
+tests/test_pcb_selected_spatial.py text eol=lf
+docs/INSPECTION_STATION_PROTOCOL_V0.1.md text eol=lf
+docs/PCB_SELECTED_SPATIAL_ANALYSIS_V0.1.md text eol=lf
+docs/CPU_CONTROL_SPATIAL_HANDOFF.md text eol=lf
+analysis/cpu_control_spatial_20261109/** text eol=lf
+scripts/receive_category_transfer.py text eol=lf
+scripts/analyze_score_diagnosis.py text eol=lf
+tests/test_category_transfer.py text eol=lf
+tests/test_score_diagnosis.py text eol=lf
+configs/research_reporting_gpu_followup_20261110.json text eol=lf
+analysis/gpu_followup_20261110/** text eol=lf
+analysis/gpu_followup_20261110/**/*.png -text
+docs/GPU_FOLLOWUP_REVIEW_20261110.md text eol=lf

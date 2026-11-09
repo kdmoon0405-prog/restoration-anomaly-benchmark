@@ -1,0 +1,13 @@
+variant,false_positives,fpr,attainable,tpr_low,tpr_high
+clean,1,0.01,True,0.43,0.65
+clean,3,0.03,True,0.68,0.71
+clean,5,0.05,True,0.82,0.84
+clean,10,0.1,True,0.97,0.97
+bicubic_x4,1,0.01,True,0.55,0.57
+bicubic_x4,3,0.03,True,0.62,0.82
+bicubic_x4,5,0.05,True,0.84,0.86
+bicubic_x4,10,0.1,True,0.94,0.95
+swinir_x4,1,0.01,True,0.39,0.57
+swinir_x4,3,0.03,True,0.59,0.7
+swinir_x4,5,0.05,True,0.71,0.72
+swinir_x4,10,0.1,True,0.88,0.88
