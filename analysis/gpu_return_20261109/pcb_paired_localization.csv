@@ -1,0 +1,4 @@
+reference,candidate,anomaly_images,mean_delta,median_delta,ci95_low,ci95_high,improvement,tie,regression,suppression,geometry_candidate,ci_estimand,pooled_ci_computed
+bicubic_x4,swinir_x4,100,0.003729618624185422,0.0011344329331597347,0.0006002124211749796,0.006711058051866053,67,0,33,5,28,posthoc_mean_per_image_delta_conditional_on_fixed_fit,False
+clean,swinir_x4,100,-0.007042907372665181,-0.0028052364555058995,-0.009463824117008772,-0.004697490247803476,19,0,81,81,0,posthoc_mean_per_image_delta_conditional_on_fixed_fit,False
+clean,bicubic_x4,100,-0.010772525996850604,-0.0035558937180781847,-0.014776981074484965,-0.00709139530399984,14,0,86,86,0,posthoc_mean_per_image_delta_conditional_on_fixed_fit,False

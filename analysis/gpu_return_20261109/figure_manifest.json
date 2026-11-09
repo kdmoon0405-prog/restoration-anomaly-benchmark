@@ -1,0 +1,8 @@
+{
+  "analysis_sha256": "84449a4e0db9a59a3b7ec89d679dea53053eb83626ad6d21fdf99a2ad18a3b7e",
+  "plot_source_sha256": "f35dd25b90d1a35c9ae342d214d2c4202ee4995130eb5c342a6d033ab334d33b",
+  "files": {
+    "pcb_operating_points.png": "86682a2104139a244f77425820b24702daecaf039073f529336906840ce31731",
+    "degradation_localization_deltas.png": "bbad6c2ae5b16f8bd3a3b478dda24b77e8b87203ffa14ca38da4741eeaa3e997"
+  }
+}

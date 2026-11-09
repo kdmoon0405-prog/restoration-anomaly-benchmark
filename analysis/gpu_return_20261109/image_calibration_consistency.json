@@ -1,0 +1,360 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "variant": "clean",
+      "normal_boards": 180,
+      "threshold": 2.1143701398463053,
+      "exact_calibration_match": true
+    },
+    {
+      "variant": "bicubic_x4",
+      "normal_boards": 180,
+      "threshold": 2.7207500362237633,
+      "exact_calibration_match": true
+    },
+    {
+      "variant": "swinir_x4",
+      "normal_boards": 180,
+      "threshold": 2.264221115706282,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s0.8__bicubic_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s0.8__realesrgan_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s0.8__realesrnet_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s0.8__swinir_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s1.6__bicubic_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s1.6__realesrgan_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s1.6__realesrnet_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "blur_s1.6__swinir_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q50__bicubic_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q50__realesrgan_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q50__realesrnet_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q50__swinir_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q90__bicubic_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q90__realesrgan_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q90__realesrnet_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "jpeg_q90__swinir_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s15__bicubic_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s15__realesrgan_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s15__realesrnet_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s15__swinir_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s5__bicubic_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s5__realesrgan_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s5__realesrnet_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "noise_s5__swinir_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "none__bicubic_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "none__realesrgan_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "none__realesrnet_x4plus",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "hazelnut",
+      "unit": "none__swinir_x4",
+      "normal_images": 78,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s0.8__bicubic_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s0.8__realesrgan_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s0.8__realesrnet_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s0.8__swinir_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s1.6__bicubic_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s1.6__realesrgan_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s1.6__realesrnet_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "blur_s1.6__swinir_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q50__bicubic_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q50__realesrgan_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q50__realesrnet_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q50__swinir_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q90__bicubic_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q90__realesrgan_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q90__realesrnet_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "jpeg_q90__swinir_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s15__bicubic_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s15__realesrgan_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s15__realesrnet_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s15__swinir_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s5__bicubic_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s5__realesrgan_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s5__realesrnet_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "noise_s5__swinir_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "none__bicubic_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "none__realesrgan_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "none__realesrnet_x4plus",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    },
+    {
+      "category": "screw",
+      "unit": "none__swinir_x4",
+      "normal_images": 64,
+      "exact_calibration_match": true
+    }
+  ],
+  "scope": "image statistics/thresholds only;map statistics require missing arrays"
+}

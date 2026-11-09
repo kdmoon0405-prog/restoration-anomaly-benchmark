@@ -1,0 +1,21 @@
+{
+  "incoming_commit": "4c2fc408e520c57dd015d4ce7d1fb565741d2c00",
+  "archive_sha256": "c7c984157f6a7daf6e764c9bfe066578d8a6176aa4a4e3bec26b5ef7bfa8648d",
+  "manifest_files_verified": 213,
+  "unlisted_files": 0,
+  "raw_arrays_supplied": false,
+  "source_runtime_commits": [
+    "54cf3c7ad5a1cb8eed6fce32e72e189eec1ea8b1",
+    "afb36abbfbbf7fda8e1ce7d59e21f99af48368dc"
+  ],
+  "runtime_dirty_preserved": true,
+  "remote_execution_independently_observed": false,
+  "full_pooled_metrics_recomputed": false,
+  "posthoc_bootstrap_estimand": "mean per-image delta conditional on fixed fits;2000repeats,seed11",
+  "source_fix_commit": "5c4ddd8",
+  "tests": {
+    "peer": "89passed/1skip",
+    "analysis": "15passed",
+    "cpu_smoke_rows": 2
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "policy": "posthoc3suppression+3geometry+3success;deltaAU-PRO then sample lexical;not population estimate",
+  "table_sha256": "075557e5629e93b33872620de4c258398599d98a901c366c926a4c8157c41763",
+  "source_analysis_sha256": "84449a4e0db9a59a3b7ec89d679dea53053eb83626ad6d21fdf99a2ad18a3b7e"
+}

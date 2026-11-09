@@ -118,3 +118,9 @@ analysis/cpu_bank_domain_20261109/**/*.json text eol=lf
 analysis/cpu_bank_domain_20261109/**/*.md text eol=lf
 analysis/cpu_bank_domain_20261109/*.csv text eol=lf
 analysis/cpu_bank_domain_20261109/*.json text eol=lf
+src/sr_anomaly/gpu_return_analysis.py text eol=lf
+scripts/analyze_gpu_return.py text eol=lf
+scripts/plot_gpu_return.py text eol=lf
+configs/research_reporting_gpu_return_20261109.json text eol=lf
+analysis/gpu_return_20261109/** text eol=lf
+analysis/gpu_return_20261109/**/*.png -text

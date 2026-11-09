@@ -3,6 +3,18 @@
 Date: 2026-09-20
 
 
+## 주형 GPU 전체 결과 반환 검토·통합 (2026-11-09)
+
+Incoming 4c2fc40의 PCB 전체 cohort, 실사형 56조건, Screw endpoint 결과를 별도 worktree에서 검토했다. ZIP의 213개 명시 파일 hash, PCB 1140unit/54720query, runtime source26개, image calibration59개와 저장 score 기반 Image AUROC/F1을 확인했다. 원본 map 배열은 원격에 보관돼 있으며 pooled 지표는 저장 수치를 사용한다.
+
+PCB의 SwinIR−Bicubic pooled AU-PRO는+0.00483155, 사례 평균 차이는+0.00372962였다. Post-hoc conditional per-image CI는[+0.00060021,+0.00671106]이다. 고정 threshold에서 미검은 Bicubic29/100→SwinIR46/100, 오검은3/100→1/100이었다. Regression33개는 suppression5/geometry_candidate28로 분류됐다. 선택9개 사례의 원본map27개를 요청할 manifest를 준비했다.
+
+실사형의 Real-ESR 계열 최고는 전체 정밀도로11/12조건이다. 나머지 Screw blurσ0.8은 SwinIR이0.000050317 높아 세 자리 반올림 동률과 구분했다. LPIPS 상관은 조건 단위 기술통계로, Screw endpoint caseC와 함께 해석한다. Source CSV와 평가 정의를 보존했다.
+
+신규63조건을 기존70행과 분리된 protocol로 집계해 master133행/9groups와 수치PNG2개를 만들고 직접 확인했다. 신규 read-only 분석·보고 테스트15pass/CPU smoke2행, peer 수정 branch 관련89pass/1skip이다. Synthetic RAM fixture의 잘못된 mock 대상은 실제 getter로 정정했다. Production guard는 동일하다.
+
+별도 source fix branch는 exp/juhyung-return-review-fixes, CPU 분석 branch는 exp/juhyung-results-analysis다. 분석 보고서는 docs/GPU_RETURN_REVIEW_20261109.md, 수치는 analysis/gpu_return_20261109/다. 다음 임무는 주형의 저장map 부분 전달·score 진단·작은 exact 검색 benchmark, 지혁의 bank-domain 완료·matched Bicubic 대조군, CPU의 반환 통합·map 분석·장비 인터페이스 초안이다.
+
 ## CPU bank/query domain 추가 결과 (2026-11-09)
 
 Public base b247500 위의 exp/cpu-bank-domain-study에서 신규 36조건과 test prediction 4,860건을 완료했다. 기존 정상 HOG bank의 같은 patch ordinal 4,096개를 사용해 Bicubic/SwinIR 정상 bank 12개를 fit하고 24조건을 평가했다. 이후 50:50·동일 용량 규칙을 결과 계산 전에 고정한 혼합 bank 6개와 12조건을 추가했다. 비교표 48조건 중 clean-bank 12조건은 재사용이다. 앞선 CPU 24조건과 합친 고유 조건은 60개/prediction 8,100건이며 고유 test 영상 270장과 구분한다.
