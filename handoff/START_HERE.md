@@ -14,6 +14,7 @@ git fetch origin
 $delivery = Join-Path (Split-Path $gpuRoot -Parent) "jihyuk-handoff-$tag"
 git worktree add --detach $delivery origin/handoff/jihyuk
 git -C $delivery switch -c "return-jihyuk-$tag"
+git -C $delivery -c core.autocrlf=false submodule update --init -- third_party/patchcore-inspection third_party/SwinIR
 ```
 
 GitHub 443이 계속 막히면 해당 접속 문제를 기록하고 기존 offline bundle 경로로 코드만 받는다. 현재 GitHub 사용 가능 여부는 이 호스트에서 확인해야 한다.
