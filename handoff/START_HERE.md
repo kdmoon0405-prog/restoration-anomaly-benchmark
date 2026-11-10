@@ -14,8 +14,10 @@ git fetch origin
 $delivery = Join-Path (Split-Path $gpuRoot -Parent) "jihyuk-handoff-$tag"
 git worktree add --detach $delivery origin/handoff/jihyuk
 git -C $delivery switch -c "return-jihyuk-$tag"
-git -C $delivery -c core.autocrlf=false submodule update --init -- third_party/patchcore-inspection third_party/SwinIR
+git -C $delivery -c core.autocrlf=false -c filter.lfs.process= -c filter.lfs.smudge= -c filter.lfs.required=false submodule update --init -- third_party/patchcore-inspection third_party/SwinIR
 ```
+
+Submodule 명령은 고정 Python source를 초기화한다. Upstream의 사용하지 않는 .pkl/.faiss LFS bank는 자동 다운로드에서 제외한다. 실제 연구의 dataset/checkpoint/bank는 기존에 검증한 별도 경로를 그대로 사용한다.
 
 GitHub 443이 계속 막히면 해당 접속 문제를 기록하고 기존 offline bundle 경로로 코드만 받는다. 현재 GitHub 사용 가능 여부는 이 호스트에서 확인해야 한다.
 
