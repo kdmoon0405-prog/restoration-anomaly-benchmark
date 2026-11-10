@@ -14,6 +14,7 @@ git fetch origin
 $delivery = Join-Path (Split-Path $gpuRoot -Parent) "juhyung-handoff-$tag"
 git worktree add --detach $delivery origin/handoff/juhyung
 git -C $delivery switch -c "return-juhyung-$tag"
+git -C $delivery -c core.autocrlf=false submodule update --init -- third_party/patchcore-inspection third_party/SwinIR
 ```
 
 데이터·venv·가중치는 새 worktree에 포함되지 않으므로 아래 명시적 경로를 유지한다. handoff/INPUT_FILES.json의 해시는 Git에 있는 8개 원본 metadata의 bytes를 가리킨다.
