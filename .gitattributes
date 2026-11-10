@@ -146,4 +146,4 @@ scripts/prepare_team_return.py text eol=lf
 tests/test_team_return.py text eol=lf
 docs/TEAM_BRANCH_WORKFLOW.md text eol=lf
 # Keep transferred metadata and returned text byte-identical to its receipt.
-handoff/** -text
+handoff/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
