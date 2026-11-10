@@ -14,10 +14,10 @@ git fetch origin
 $delivery = Join-Path (Split-Path $gpuRoot -Parent) "juhyung-handoff-$tag"
 git worktree add --detach $delivery origin/handoff/juhyung
 git -C $delivery switch -c "return-juhyung-$tag"
-git -C $delivery -c core.autocrlf=false -c filter.lfs.process= -c filter.lfs.smudge= -c filter.lfs.required=false submodule update --init -- third_party/patchcore-inspection third_party/SwinIR
+git -C $delivery -c core.autocrlf=true -c filter.lfs.process= -c filter.lfs.smudge= -c filter.lfs.required=false submodule update --init -- third_party/patchcore-inspection third_party/SwinIR
 ```
 
-Submodule 명령은 고정 Python source를 초기화한다. Upstream의 사용하지 않는 .pkl/.faiss LFS bank는 자동 다운로드에서 제외한다. 실제 연구의 dataset/checkpoint/bank는 기존에 검증한 별도 경로를 그대로 사용한다.
+Submodule 명령은 고정 Python source를 초기화한다. 기존 frozen manifest의 PatchCore 두 Python 파일은 CRLF checkout bytes를 기준으로 하므로 같은 Git checkout 규칙을 사용한다. Upstream의 사용하지 않는 .pkl/.faiss LFS bank는 자동 다운로드에서 제외한다. 실제 연구의 dataset/checkpoint/bank는 기존에 검증한 별도 경로를 그대로 사용한다.
 
 데이터·venv·가중치는 새 worktree에 포함되지 않으므로 아래 명시적 경로를 유지한다. handoff/INPUT_FILES.json의 해시는 Git에 있는 8개 원본 metadata의 bytes를 가리킨다.
 
