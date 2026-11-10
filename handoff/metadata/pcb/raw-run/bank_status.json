@@ -1,0 +1,35 @@
+{
+  "status": "COMPLETE",
+  "implementation_id": "uniform_global_patch_preselection_stream_v0_3",
+  "total_vectors": 27132672,
+  "dimension": 1024,
+  "capacity": 262144,
+  "seed": 11,
+  "max_chunk_vectors": 8192,
+  "dtype": "float32",
+  "selected_count": 262144,
+  "selection_indices_sha256": "480f53ec4fbe355a3a5948e6a895dfdd63058eb903b8e108613a8e3a63afb402",
+  "algorithm": "sorted(random.Random(seed).sample(range(N), min(N,K))); CPython MT19937",
+  "index_hash_encoding": "contiguous little-endian int64 bytes, no NPY header",
+  "python": "3.11.2",
+  "numpy": "2.4.6",
+  "provenance": {
+    "input_kind": "fit_normal_feature_stream",
+    "artifact_kind": "actual_pcb_normal_fit_bank_only_not_full_pilot",
+    "fit_protocol_sha256": "5d3e71a20f13af241204aa4dcb0e7292c7938b85cf92fd29839644d80ea0e5b2",
+    "source_commit": "865f26aabf4598354e1b8fb4605dc9ff09a7e810",
+    "source_worktree_dirty": true,
+    "selection_indices_sha256": "480f53ec4fbe355a3a5948e6a895dfdd63058eb903b8e108613a8e3a63afb402",
+    "geometry_id": "pcb_native224_maxstride192_halfup_v0_2"
+  },
+  "progress": {
+    "observed_vectors": 27132672,
+    "validated_vectors": 27132672,
+    "stored_vectors": 262144,
+    "max_chunk_vectors_seen": 1568
+  },
+  "artifact_sha256": {
+    "bank.npy": "19c3bb03a6b84475bfdc36602d05b975c57c387da81f0713c5da86b8d2f1278e",
+    "selected_indices.npy": "691add22b7e57066214ab12f5e098b640c236d51e612ca077c9181b5c31b1335"
+  }
+}

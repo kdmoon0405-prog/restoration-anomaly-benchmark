@@ -1,0 +1,49 @@
+{
+  "owner": "juhyung",
+  "analysis_source_commit": "7d5c177b67f1476c4f6ad98937cc2bcac38a93af",
+  "files": [
+    {
+      "path": "handoff/metadata/pcb/raw-run/PROTOCOL.json",
+      "bytes": 236617,
+      "sha256": "ef7c10f12d2ffef615d021e0d13cde6299108cb9dc74f42a067030e19b8c961c"
+    },
+    {
+      "path": "handoff/metadata/pcb/raw-run/status.json",
+      "bytes": 3448309,
+      "sha256": "6117326d036fec862cb2003471b6d333852bc5bdfdfb6d92c9e32bdcd94e0fd6"
+    },
+    {
+      "path": "handoff/metadata/pcb/raw-run/units_manifest.csv",
+      "bytes": 183921,
+      "sha256": "6c9a1a53f52773a6f53b817c35c4f651ed169d51b0d166fbf28bf93cd994edf1"
+    },
+    {
+      "path": "handoff/metadata/pcb/raw-run/bank_status.json",
+      "bytes": 1467,
+      "sha256": "a169c09d2bf698d003abbfb9f557a656e9478f8b92c0a234fb4a5179846933cf"
+    },
+    {
+      "path": "handoff/metadata/pcb/postprocess/calibration/clean.json",
+      "bytes": 487,
+      "sha256": "542f81f4c15a2f6690e0b2db55f7d953332c47c988431b3f22b78d9e89888774"
+    },
+    {
+      "path": "handoff/metadata/pcb/postprocess/calibration/bicubic_x4.json",
+      "bytes": 485,
+      "sha256": "99c112b8e2aa76e57000061b61473d7d69f839f32b8e5666962d9985f18c6bb5"
+    },
+    {
+      "path": "handoff/metadata/pcb/postprocess/calibration/swinir_x4.json",
+      "bytes": 484,
+      "sha256": "7e1f55dec3304cc7b139d0f99081efa47d9c3ea695c995870b3b99e13afed0b4"
+    },
+    {
+      "path": "handoff/metadata/pcb/postprocess/calibration/status.json",
+      "bytes": 8135,
+      "sha256": "5e616c6a9d3eca1ca212554115818e093a2b707c0ce16e77362c91e498fab8df"
+    }
+  ],
+  "raw_arrays_in_git": false,
+  "native_cases": 9,
+  "native_variants": 3
+}
