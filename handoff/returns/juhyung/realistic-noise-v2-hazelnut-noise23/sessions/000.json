@@ -1,0 +1,45 @@
+{
+ "units_run": [
+  "noise_s15__realesrgan_x4plus"
+ ],
+ "units_skipped": [
+  "noise_s5__bicubic_x4",
+  "noise_s5__swinir_x4",
+  "noise_s5__realesrnet_x4plus",
+  "noise_s5__realesrgan_x4plus",
+  "noise_s15__bicubic_x4",
+  "noise_s15__swinir_x4",
+  "noise_s15__realesrnet_x4plus"
+ ],
+ "start": "2026-11-10T21:26:09+0900",
+ "wall_seconds": 535.0735504000331,
+ "end": "2026-11-10T21:35:04+0900",
+ "bank_load_seconds": 3.990813000011258,
+ "units_complete": 8,
+ "units_planned": 8,
+ "device": "cuda",
+ "gpu": "NVIDIA GeForce MX570 A",
+ "argv": [
+  "scripts/run_realistic_noise_v2.py",
+  "--category",
+  "hazelnut",
+  "--noise-seed",
+  "23",
+  "--device",
+  "cuda",
+  "--with-lpips",
+  "--resume"
+ ],
+ "source_commit": "40d57dd85f3e2d8600b8b2c5c00eb91aa00570eb",
+ "source_branch": "exp/realistic-noise-v2-juhyung",
+ "tracked_worktree_dirty": false,
+ "tracked_dirty_paths": [],
+ "source_worktree_dirty": true,
+ "untracked_paths": [
+  "?? analysis/pcb_model_resource_review/",
+  "?? analysis/pcb_tiled_preflight/pcb-tiled-cuda-preflight-20261017-140029/",
+  "?? analysis/pcb_tiled_preflight/pcb-tiled-cuda-preflight-20261017-140249/",
+  "?? analysis/pcb_tiled_preflight/pcb-tiled-cuda-raw-smoke-20261017-140311/",
+  "?? experiment.ipynb"
+ ]
+}

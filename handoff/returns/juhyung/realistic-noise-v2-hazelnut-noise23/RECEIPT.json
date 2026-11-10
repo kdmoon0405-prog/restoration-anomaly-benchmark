@@ -1,0 +1,110 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "realistic-noise-v2-hazelnut-noise23",
+  "prepared_utc": "2026-11-10T12:36:08.596146+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "PROTOCOL.json",
+      "bytes": 83893,
+      "sha256": "fc42a68ae86f1430980e25c5a5f77f27ff4242fbc1826eafb929607504c56c00"
+    },
+    {
+      "path": "RUN_RECORD.md",
+      "bytes": 4098,
+      "sha256": "69ba96e6149207d515661040a35ba6cb15c0194f082673d4d28cfda20e2cf808"
+    },
+    {
+      "path": "sessions/000.json",
+      "bytes": 1277,
+      "sha256": "9b3a9520aab4e2a7f63429d99b4010fe5f67f8c7f578d851abd556e3a6890907"
+    },
+    {
+      "path": "summary.csv",
+      "bytes": 2740,
+      "sha256": "e72a88e1bd4c6c107960aa9e5884f876af0026724ba389578cfa4426ba32b751"
+    },
+    {
+      "path": "units/noise_s15__bicubic_x4.csv",
+      "bytes": 47506,
+      "sha256": "c3b2c637604c244b45607e20d65c43c18a502c0d3938120d37f2ec647d07c5cf"
+    },
+    {
+      "path": "units/noise_s15__bicubic_x4.json",
+      "bytes": 20892,
+      "sha256": "4243f99944db033a4de610071ac6ac4f9758c1248126d160319df02c95a93ae8"
+    },
+    {
+      "path": "units/noise_s15__realesrgan_x4plus.csv",
+      "bytes": 48886,
+      "sha256": "fdbadd3a25cfdfae20f1752bc62cd70e513a4ef8a7fa4dd1c5c6ac77edbdda67"
+    },
+    {
+      "path": "units/noise_s15__realesrgan_x4plus.json",
+      "bytes": 20921,
+      "sha256": "74ea8da9b39e3012ee003dbc0aa8f8e6cebd736899dfb5ffe449e95419a58e52"
+    },
+    {
+      "path": "units/noise_s15__realesrnet_x4plus.csv",
+      "bytes": 48779,
+      "sha256": "0406cd042d9fe0e7ba5f67bbf5183712a0422b8e914620dfa346c6ef54db8438"
+    },
+    {
+      "path": "units/noise_s15__realesrnet_x4plus.json",
+      "bytes": 20918,
+      "sha256": "186981b1835d10e1b80193601b98c21d75308feb10ec212062c99573eff49d41"
+    },
+    {
+      "path": "units/noise_s15__swinir_x4.csv",
+      "bytes": 47351,
+      "sha256": "107e0c01ed83b765108f8e15a72526109ddcd516ef226f000eb36af392f074fa"
+    },
+    {
+      "path": "units/noise_s15__swinir_x4.json",
+      "bytes": 20871,
+      "sha256": "b9a0e5039ea1aab52ed08673cfeb51cf8e6448abee7b4fee9711d52b3015833c"
+    },
+    {
+      "path": "units/noise_s5__bicubic_x4.csv",
+      "bytes": 47252,
+      "sha256": "bb4f2fd162e1e494c41d02d328a47ce77ba68366f5b3892ea6b61a6a9aa34ff5"
+    },
+    {
+      "path": "units/noise_s5__bicubic_x4.json",
+      "bytes": 20888,
+      "sha256": "0ebe27b9a87dd8ba160faebd1f11e8d4978858d6f4a13e286bf328b56a4c2243"
+    },
+    {
+      "path": "units/noise_s5__realesrgan_x4plus.csv",
+      "bytes": 48693,
+      "sha256": "5d30a5f9173c47dd571d624ce4f47adb1fe228d59a2f8b9ecdb1cffb44c872fb"
+    },
+    {
+      "path": "units/noise_s5__realesrgan_x4plus.json",
+      "bytes": 20911,
+      "sha256": "92b403406daf6e36f0dc0a27b4234bf7016a88530a9e10b778c92da2407f16f0"
+    },
+    {
+      "path": "units/noise_s5__realesrnet_x4plus.csv",
+      "bytes": 48645,
+      "sha256": "a470a16471a0fed0e9a46c7ca4a1094eb1c19225f010acb12b91c3460e5c4029"
+    },
+    {
+      "path": "units/noise_s5__realesrnet_x4plus.json",
+      "bytes": 20917,
+      "sha256": "3c32988e8499bb4b9bd076fe12f9909db908bd699ddfaab1809eddd915c4722b"
+    },
+    {
+      "path": "units/noise_s5__swinir_x4.csv",
+      "bytes": 47138,
+      "sha256": "d69f967d6f958b8a0a4f1eabd553f7070d5616d87643335bc70dc5dc206137f5"
+    },
+    {
+      "path": "units/noise_s5__swinir_x4.json",
+      "bytes": 20883,
+      "sha256": "e1947d7c360cf8097eb2d55ce0a6d1b07d2cf3bebb849e4d80cfa87f56dd8150"
+    }
+  ]
+}
