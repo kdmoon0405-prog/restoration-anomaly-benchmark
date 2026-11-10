@@ -142,3 +142,8 @@ configs/research_reporting_gpu_followup_20261110.json text eol=lf
 analysis/gpu_followup_20261110/** text eol=lf
 analysis/gpu_followup_20261110/**/*.png -text
 docs/GPU_FOLLOWUP_REVIEW_20261110.md text eol=lf
+scripts/prepare_team_return.py text eol=lf
+tests/test_team_return.py text eol=lf
+docs/TEAM_BRANCH_WORKFLOW.md text eol=lf
+# Keep transferred metadata and returned text byte-identical to its receipt.
+handoff/** -text
