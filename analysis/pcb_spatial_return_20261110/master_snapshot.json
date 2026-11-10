@@ -1,0 +1,7 @@
+{
+  "source": "analysis/gpu_followup_20261110/master/master_results.csv",
+  "sha256": "9dc496448a608cae52035e708c281dc38880446793465855b4858e1d985cedf3",
+  "rows": 133,
+  "protocol_groups": 9,
+  "new_experimental_conditions_from_spatial_cases": 0
+}

@@ -3,6 +3,12 @@
 Date: 2026-09-20
 
 
+## 선택 PCB 공간 분석 반환 검토 (2026-11-10)
+
+주형 handoff/juhyung@52b4c23의 두 receipt와 공개6파일을 검증했다. 사전 선택9보드×3variant와4-connectivity36요소의 scalar CSV 정합성, source/GT/map/calibration 연결을 확인했다. 기존 raw 배열의 무결성 receipt를 연결했고 이번 로컬 native 재계산은 수행하지 않았다. RGB/GT case PNG9개는 미수신이다.
+
+단위를 나누어 재계산하면 SwinIR의 보정 seam gradient는 Bicubic보다9/9 높지만 raw gradient와 seam/non-seam 비율은9/9 낮다. 기존 geometry_candidate의2/3에서 raw gap 감소가 함께 관측돼 명칭만으로 공간 원인을 확정하지 않는다. Taxonomy와 master133조건/9groups는 유지했다. 관련17tests, CPU smoke2행, 새scalar그림 직접확인과 diff검사를 통과했다. 결과는 analysis/pcb_spatial_return_20261110/와 docs/PCB_SPATIAL_RETURN_REVIEW_20261110.md에 있다.
+
 ## CPU 제어 연결과 후속 GPU 반환 검토 (2026-11-10)
 
 별도 exp/inspection-controller-cpu에서 controller·software replay·native-map reader·category transfer receiver·FPR plateau 진단을 구현했다. Synthetic6cycle과 저장 PCB score600개 replay를 완료했다. 물리 장치와 실제 모델은 실행하지 않았다. 전체674pass/3skip, 관련28pass, 추가score/receiver5pass, CPU smoke2행이다. 기존 RAM 전제조건2개와 optional MVTec fixture1개 skip을 보존했다.

@@ -142,3 +142,9 @@ configs/research_reporting_gpu_followup_20261110.json text eol=lf
 analysis/gpu_followup_20261110/** text eol=lf
 analysis/gpu_followup_20261110/**/*.png -text
 docs/GPU_FOLLOWUP_REVIEW_20261110.md text eol=lf
+scripts/review_pcb_spatial_return.py text eol=lf
+tests/test_pcb_spatial_return_review.py text eol=lf
+docs/PCB_SPATIAL_RETURN_REVIEW_20261110.md text eol=lf
+analysis/pcb_spatial_return_20261110/** text eol=lf
+analysis/pcb_spatial_return_20261110/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+analysis/pcb_spatial_return_20261110/*.png -text
