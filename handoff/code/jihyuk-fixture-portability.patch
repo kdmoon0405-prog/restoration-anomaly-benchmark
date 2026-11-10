@@ -1,0 +1,41 @@
+--- a/tests/test_bank_domain_study.py
++++ b/tests/test_bank_domain_study.py
+@@ -422,6 +422,7 @@
+                 (count * 784, 1024), self.bank_mean, dtype=np.float32
+             )
+ 
++    monkeypatch.setattr(study, "available_ram_bytes", lambda: 32 * 1024**3)
+     monkeypatch.setattr(runner, "SwinIRLightweight", FakeRestorer)
+     monkeypatch.setattr(runner, "_new_patchcore", lambda *args, **kwargs: FakePatchCore())
+ 
+@@ -430,12 +431,28 @@
+         return float(values.mean() + model.bank_mean), values * (1.0 + model.bank_mean)
+ 
+     monkeypatch.setattr(runner.branch_b, "_predict", fake_predict)
+-    checkpoint = runner.ROOT / "checkpoints" / "swinir" / "002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth"
++    checkpoint = tmp_path / "synthetic-swinir.pth"
++    backbone_checkpoint = tmp_path / "synthetic-backbone.pth"
++    checkpoint.write_bytes(b"synthetic-swinir-not-a-model")
++    backbone_checkpoint.write_bytes(b"synthetic-backbone-not-a-model")
++    monkeypatch.setattr(runner, "EXPECTED_SWINIR_SHA256", study.sha256_file(checkpoint))
++    monkeypatch.setattr(runner, "EXPECTED_WIDERESNET_SHA256", study.sha256_file(backbone_checkpoint))
++
++    def fake_command(args, **kwargs):
++        if args[0] == "nvidia-smi":
++            return "synthetic GPU, synthetic driver, 0 MiB"
++        if "status" in args:
++            return "?? synthetic-test-fixture\n"
++        if any("patchcore-inspection" in str(arg) for arg in args):
++            return runner.EXPECTED_PATCHCORE_COMMIT
++        return "e" * 40
++
++    monkeypatch.setattr(runner.branch_b, "subprocess", SimpleNamespace(check_output=fake_command))
+     base_args = {
+         "category": "hazelnut", "seed": 11, "capsule_history_receipt": None,
+         "data_root": data_root, "output_root": tmp_path / "outputs",
+         "dataset_provenance": data_root / "dataset_provenance.json",
+-        "backbone_checkpoint": runner.ROOT / "checkpoints" / "wide_resnet50_2-95faca4d.pth",
++        "backbone_checkpoint": backbone_checkpoint,
+         "swinir_checkpoint": checkpoint, "device": "cuda",
+     }
+     args = SimpleNamespace(**base_args, run_id="fake-failed")

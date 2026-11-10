@@ -1,0 +1,30 @@
+{
+  "owner": "jihyuk",
+  "analysis_source_commit": "7d5c177b67f1476c4f6ad98937cc2bcac38a93af",
+  "owner_execution_commit": "ac931349ba0f3db795a5400534b3a79d2bdc4f44",
+  "files": [
+    {
+      "path": "handoff/inputs/dataset_provenance.json",
+      "bytes": 1048,
+      "sha256": "e1b76a1b97995bfc0c72cf74e16b3453f092fb939068160d3a4a90b12b1d1183"
+    },
+    {
+      "path": "handoff/code/jihyuk-fixture-portability.patch",
+      "bytes": 2134,
+      "sha256": "ea7f5f5806c20bd69777568f40c3699115c7cfee4cf0a97cf20397c1fb0d7585"
+    },
+    {
+      "path": "handoff/code/bank-domain-study-ac93134.patch",
+      "bytes": 108581,
+      "sha256": "b7da13d666709ffe300a879f48e64c8a87a9224545b9c44ae966503edfff92c7"
+    }
+  ],
+  "private_input": {
+    "name": "mvtec-hazelnut-screw-team-20261110.zip",
+    "bytes": 813040630,
+    "sha256": "635ced502743817e8ef8fe704b2bbd1634fe87f15edaef5e7d85e6d3b86a28b9",
+    "archive_role": "private_team_category_repack",
+    "original_publisher_archive_sha256": null,
+    "distributed_via_git": false
+  }
+}
