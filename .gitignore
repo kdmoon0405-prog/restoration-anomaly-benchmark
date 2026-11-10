@@ -12,6 +12,16 @@ __pycache__/
 .venv/
 .serena/
 .firecrawl/
+handoff-private/
+handoff/**/*.npy
+handoff/**/*.npz
+handoff/**/*.zip
+handoff/**/*.pt
+handoff/**/*.pth
+handoff/**/*.png
+handoff/**/*.jpg
+handoff/**/*.JPG
+handoff/**/*.jpeg
 # Browser/crop screenshots may contain licensed dataset RGB; keep them local.
 analysis/profiling_results_demo/review-*/screenshots/
 analysis/pcb_geometry/**/figures/
