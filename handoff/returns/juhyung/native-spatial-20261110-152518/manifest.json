@@ -1,0 +1,37 @@
+{
+  "kind": "exploratory_selected_native_map_analysis",
+  "status": "COMPLETE",
+  "research_metrics_recomputed": false,
+  "population_estimate": false,
+  "bank_payload_bytes_verified": false,
+  "native_gt_verified": true,
+  "raw_map_bytes_verified": 27,
+  "runtime_source_commit": "54cf3c7ad5a1cb8eed6fce32e72e189eec1ea8b1",
+  "runtime_source_worktree_dirty": true,
+  "selection_sha256": "075557e5629e93b33872620de4c258398599d98a901c366c926a4c8157c41763",
+  "gt_use": "posthoc_spatial_evaluation_only",
+  "source_sha256": {
+    "src/sr_anomaly/pcb_selected_spatial.py": "8c66940976ce0eb152f36e60deb77895c723cdfa7d03aca3e617dcec69cf51fd",
+    "scripts/analyze_pcb_selected_maps.py": "bae04d5dbb807535ddc40a3dc3f78c199560ad7d2770b2e8142cb2d51d5e59dd"
+  },
+  "boards_analyzed": 9,
+  "maps_analyzed": 27,
+  "connectivity": 4,
+  "files": {
+    "case-00.png": "ead46c262eb7ff46f8b4ea4caa7e0d9c9bc4da407ccb8475b8183af7cb699b08",
+    "case-01.png": "c11b2cde4e80d08c43a5493d38e653a7cfb7d840d7082fb2983d4fdd803f2d72",
+    "case-02.png": "f76fd72415f03a6f1f5fc4e262a414e16aa110633c035d3453123e31b05ef37f",
+    "case-03.png": "316ea11e4f6ff698b4592834b8db62d79f1bf284d71f850f6cc4fede0571d34d",
+    "case-04.png": "8b6f6263f91ab8e8bb9f35a0417eedff9245b1dcd7c80f59a142b6f46160d78a",
+    "case-05.png": "f42652def7700046be6f909f39a09b131bb1b5a7f339535cfa4769a3e9b22272",
+    "case-06.png": "e6902c3dc99b5a2034e1b283fd3b45dd458b659c6c587e26a565b75e90e5d0e8",
+    "case-07.png": "474ba86602e219cfd10f257876b2d5170cfb1d7f8e7a5519d59e0b6277e9c778",
+    "case-08.png": "9c2742774af9dbd3f429994182b89643e7fafc47b8750675acbeee8cad5abef3",
+    "component_descriptors.csv": "13c2ea4fc9a2e091caed7db86d5a48dc639314b6f4ed9223806d90dc938555b2",
+    "input_receipts.json": "653a0540814b45880814be1fed2c15187c74cfda9c5a1ba20cc1969aafed9310",
+    "spatial_descriptors.csv": "b8ef100eda67a8de6f5967dfbe8dfc632c04d0034316c60489fdb4b094ca8122"
+  },
+  "payload_plan_last_board_bytes": 422655488,
+  "payload_plan_is_measured_peak": false,
+  "original_arrays_rewritten": false
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "diagnosis-addendum-20261110",
+  "prepared_utc": "2026-11-10T06:32:38.286748+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "ADDENDUM_20261110.md",
+      "bytes": 7292,
+      "sha256": "f7ed4c5dbfe7947e3af87b346ce306bc391bc1770cfd3c848350d8e40c86178b"
+    }
+  ]
+}

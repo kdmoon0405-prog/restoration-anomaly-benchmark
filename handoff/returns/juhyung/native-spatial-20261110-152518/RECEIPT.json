@@ -1,0 +1,35 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "native-spatial-20261110-152518",
+  "prepared_utc": "2026-11-10T06:32:38.041897+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "RUN_RECORD.md",
+      "bytes": 3422,
+      "sha256": "f7ceb2f6905b25c6b43e6fd21cb7d44e1699772391def74ee3ed816c8cd52abc"
+    },
+    {
+      "path": "spatial_descriptors.csv",
+      "bytes": 10297,
+      "sha256": "b8ef100eda67a8de6f5967dfbe8dfc632c04d0034316c60489fdb4b094ca8122"
+    },
+    {
+      "path": "component_descriptors.csv",
+      "bytes": 7520,
+      "sha256": "13c2ea4fc9a2e091caed7db86d5a48dc639314b6f4ed9223806d90dc938555b2"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 2081,
+      "sha256": "7a86f6c50a054f416a7b2d1c4ce42ddae4617b5805a90804772e711b076fd0ff"
+    },
+    {
+      "path": "input_receipts.json",
+      "bytes": 16202,
+      "sha256": "653a0540814b45880814be1fed2c15187c74cfda9c5a1ba20cc1969aafed9310"
+    }
+  ]
+}
