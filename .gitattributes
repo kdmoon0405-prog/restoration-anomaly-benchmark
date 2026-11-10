@@ -60,3 +60,5 @@ scripts/run_realistic_degradation.py text eol=lf
 scripts/run_restoration_objective_pilot.py text eol=lf
 scripts/profile_pcb_exact_batch.py text eol=lf
 scripts/diagnose_image_score.py text eol=lf
+scripts/run_realistic_noise_v2.py text eol=lf
+src/sr_anomaly/realistic_noise_v2.py text eol=lf
