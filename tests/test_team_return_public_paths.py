@@ -46,6 +46,17 @@ def test_json_absolute_path_becomes_relative_with_original_sha(module, tmp_path,
     assert bank not in public.decode('utf-8')
 
 
+def test_argv_list_paths_including_the_root_itself(module, tmp_path):
+    source, local = tmp_path / 'source', tmp_path / 'local'
+    source.mkdir()
+    body = json.dumps({'argv': ['--data-root', str(local), '--output', str(local / 'outputs' / 'run-a')]}).encode()
+    (source / 's.json').write_bytes(body)
+    out = module.prepare(source, tmp_path / 'repo', 'juhyung', 'run-1', ['s.json'], [local])
+    assert json.loads((out / 's.json').read_bytes())['argv'] == ['--data-root', '.', '--output', 'outputs/run-a']
+    fields = json.loads((out / 'RECEIPT.json').read_text('utf-8'))['files'][0]['changed_fields']
+    assert [f['field'] for f in fields] == ['/argv/1', '/argv/3']
+
+
 def test_json_without_paths_is_copied_unchanged_without_extra_fields(module, tmp_path):
     source = tmp_path / 'source'
     source.mkdir()

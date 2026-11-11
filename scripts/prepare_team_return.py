@@ -30,8 +30,7 @@ def _relative_to_root(value, local_roots):
             relative = flavour(value).relative_to(flavour(root))
         except ValueError:
             continue
-        if relative.parts:
-            return PurePosixPath(*relative.parts).as_posix()
+        return PurePosixPath(*relative.parts).as_posix() if relative.parts else '.'
     return None
 
 
