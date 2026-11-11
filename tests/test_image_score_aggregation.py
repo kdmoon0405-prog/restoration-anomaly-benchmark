@@ -172,3 +172,17 @@ def test_missing_input_is_recorded(tmp_path):
     _make_unit(tmp_path / "data", plan[0], 0)
     s = run_agg.run(tmp_path / "data", tmp_path / "out", units=plan, guard=lambda r, b: None, log=lambda m: None)
     assert s["units"][plan[1]["unit_id"]].startswith("MISSING_INPUT") and s["units_complete"] == 1
+
+
+def test_summarize_keeps_all_units_and_contrasts(tmp_path):
+    spec = importlib.util.spec_from_file_location("summ", Path(__file__).resolve().parents[1] / "scripts/summarize_image_score_aggregation.py")
+    summ = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(summ)
+    data, out = tmp_path / "data", tmp_path / "out"
+    plan = _plan()
+    for i, u in enumerate(plan):
+        _make_unit(data, u, i)
+    run_agg.run(data, out, units=plan, guard=lambda r, b: None, log=lambda m: None)
+    by_rule, contrasts = summ.derive(summ.load(out / "summary.csv"))
+    assert len(by_rule) == 4 and len(contrasts) == 2 and all(c["primary"] == 1 for c in contrasts)
+    assert all(r["image_auroc_delta_vs_original__map_max"] == float(r["image_auroc__map_max"]) - float(r["image_auroc__original"]) for r in by_rule)

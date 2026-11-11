@@ -64,3 +64,4 @@ scripts/run_realistic_noise_v2.py text eol=lf
 src/sr_anomaly/realistic_noise_v2.py text eol=lf
 scripts/run_image_score_aggregation.py text eol=lf
 src/sr_anomaly/image_score_aggregation.py text eol=lf
+scripts/summarize_image_score_aggregation.py text eol=lf
