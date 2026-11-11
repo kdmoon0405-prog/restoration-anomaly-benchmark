@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "table": "analysis/thesis_synthesis/MASTER_RESULTS.csv",
+      "status": "COMPLETE",
+      "study_family_column": "study_family",
+      "protocol_id_column": "degradation_protocol",
+      "category_column": "dataset",
+      "dataset_id": "MVTecAD",
+      "evidence_kind": "stored_research_results",
+      "column_map": {
+        "pooled_aupro": "aupro"
+      }
+    },
+    {
+      "table": "analysis/cpu_research_20261108/hog_four_condition_summary.csv",
+      "status": "COMPLETE",
+      "identity": {
+        "study_family": "cpu_hog_knn_control_x4_v1",
+        "protocol_id": "ae20fe73aeea04d66a8f988f590dbebdde1901c579dfedd6d026c8327edf895d",
+        "dataset": "MVTecAD"
+      },
+      "category_column": "category",
+      "evidence_kind": "real_cpu_control_predictions",
+      "column_map": {
+        "psnr": "mean_psnr",
+        "ssim": "mean_ssim",
+        "pooled_aupro": "au_pro"
+      }
+    },
+    {
+      "table": "analysis/cpu_bank_domain_20261109/new_conditions_for_master.csv",
+      "status": "COMPLETE",
+      "study_family_column": "study_family",
+      "protocol_id_column": "protocol_sha256",
+      "category_column": "category",
+      "dataset_id": "MVTecAD",
+      "evidence_kind": "real_cpu_control_predictions",
+      "column_map": {
+        "test_count": "n_test",
+        "psnr": "mean_psnr",
+        "ssim": "mean_ssim"
+      }
+    },
+    {
+      "table": "analysis/gpu_followup_20261110/new_master_conditions.csv",
+      "status": "COMPLETE",
+      "study_family_column": "study_family",
+      "protocol_id_column": "protocol_id",
+      "category_column": "category",
+      "evidence_kind": "saved_gpu_results_metadata_reviewed",
+      "column_map": {
+        "pooled_aupro": "au_pro"
+      }
+    },
+    {
+      "table": "analysis/noise_repeatability_20261111/conditions.csv",
+      "status": "COMPLETE",
+      "study_family_column": "study_family",
+      "protocol_id_column": "protocol_id",
+      "category_column": "category",
+      "evidence_kind": "saved_noise_v2_scalar_review",
+      "column_map": {
+        "pooled_aupro": "au_pro",
+        "psnr": "mean_psnr",
+        "ssim": "mean_ssim",
+        "lpips": "mean_lpips"
+      }
+    }
+  ],
+  "portable_paths": true
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "file": "hazelnut-noise23.json",
+    "changed_fields": [
+      "v1_bank_dir"
+    ],
+    "supplied_protocol_sha256": "fc42a68ae86f1430980e25c5a5f77f27ff4242fbc1826eafb929607504c56c00",
+    "execution_protocol_sha256": "fc42a68ae86f1430980e25c5a5f77f27ff4242fbc1826eafb929607504c56c00",
+    "original_execution_protocol_bytes_supplied": true,
+    "public_copy_sha256": "971a4e1c83a50aae0c47251709468c19cef03a69b2a9f1241ad2a3466c880787"
+  },
+  {
+    "file": "hazelnut-noise37.json",
+    "changed_fields": [
+      "v1_bank_dir"
+    ],
+    "supplied_protocol_sha256": "287f1b213fcd7ee72f1b44097ea8626754e387821f268fec03ba3ca848467779",
+    "execution_protocol_sha256": "287f1b213fcd7ee72f1b44097ea8626754e387821f268fec03ba3ca848467779",
+    "original_execution_protocol_bytes_supplied": true,
+    "public_copy_sha256": "0530c2b2d9f952186845fdcf0bc5f369f52be82507f6c1ddd7845998909d917d"
+  },
+  {
+    "file": "screw-noise23.json",
+    "changed_fields": [],
+    "supplied_protocol_sha256": "61876962d8f43de5f7fd4ea0445a30689d4c590d8140a4df58d94be71770446f",
+    "execution_protocol_sha256": "0afcd71261c4d39739d94fc455e68cd352bd26163af44d737bd245adae18b0be",
+    "original_execution_protocol_bytes_supplied": false,
+    "public_copy_sha256": "53ae70c473b2b1e040b95d1d93432eb60a4f6b50525e0a987529e935ce5f55bb"
+  },
+  {
+    "file": "screw-noise37.json",
+    "changed_fields": [],
+    "supplied_protocol_sha256": "c407660a3b2f846416378468a77d67590a3d3effb602c031349819f0d9be8cab",
+    "execution_protocol_sha256": "ddce8df66c64e90fe0b8a007c88036e2e4540af86ad07c83dc40c57c8ae0a205",
+    "original_execution_protocol_bytes_supplied": false,
+    "public_copy_sha256": "04cdb1e276adf7a3e9aedbbed528945db682dfe59740633b728214afcbe977de"
+  }
+]

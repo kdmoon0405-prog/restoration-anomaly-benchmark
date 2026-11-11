@@ -1,0 +1,37 @@
+{
+  "kind": "stored_research_master_table",
+  "schema_version": 1,
+  "rows": 165,
+  "protocol_groups": 13,
+  "duplicates_removed": [],
+  "skipped": [],
+  "catalog_sha256": "c09f8af3f614e2bd49c35d4951532396d132876e866ce562e0efdaba96709556",
+  "sources": [
+    {
+      "table": "analysis/thesis_synthesis/MASTER_RESULTS.csv",
+      "sha256": "2e7e4b7b929ecf288d5f68ef032914db5b170569fc92e5c6aa77eb1b707c9055"
+    },
+    {
+      "table": "analysis/cpu_research_20261108/hog_four_condition_summary.csv",
+      "sha256": "0b19a068f941efcd895594dfea82cc46936b43e18287f52bb8314b1ccd29a5df"
+    },
+    {
+      "table": "analysis/cpu_bank_domain_20261109/new_conditions_for_master.csv",
+      "sha256": "f9937942f81cb3bb60bb88a8cff60dc9c0b29590f867fbd3a4a072898216dd5f"
+    },
+    {
+      "table": "analysis/gpu_followup_20261110/new_master_conditions.csv",
+      "sha256": "db7130365f587239a35715cd89635096fb098f3f48ff5869bf9fc74f5172b441"
+    },
+    {
+      "table": "analysis/noise_repeatability_20261111/conditions.csv",
+      "sha256": "c1a834a7c8a84da01cea28944fdf6ba1ed8b94c0dc1ffa252de77d5283d46d45"
+    }
+  ],
+  "raw_prediction_arrays_checked": false,
+  "detection_metrics_recomputed": false,
+  "tables": {
+    "master_results.csv": "f7e0cc9e652aecb3057f8687766d1ec3b0c7126b1da97ac86edda356996e000c",
+    "claim_evidence_index.csv": "8b01e012bfaa2f9e3cb39fd96634c93e83a47b39a0cf7d45d7277c5dd1f5e49a"
+  }
+}

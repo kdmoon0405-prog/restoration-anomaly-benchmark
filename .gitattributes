@@ -148,3 +148,13 @@ docs/PCB_SPATIAL_RETURN_REVIEW_20261110.md text eol=lf
 analysis/pcb_spatial_return_20261110/** text eol=lf
 analysis/pcb_spatial_return_20261110/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 analysis/pcb_spatial_return_20261110/*.png -text
+
+src/sr_anomaly/noise_repeatability.py text eol=lf
+scripts/analyze_noise_repeatability.py text eol=lf
+tests/test_noise_repeatability.py text eol=lf
+configs/noise_repeatability_analysis.json text eol=lf
+configs/research_reporting_noise_20261111.json text eol=lf
+docs/NOISE_REPEATABILITY_REVIEW_20261111.md text eol=lf
+docs/followup_20261111/** text eol=lf
+analysis/noise_repeatability_20261111/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+analysis/noise_repeatability_20261111/**/*.png -diff

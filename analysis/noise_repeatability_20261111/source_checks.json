@@ -1,0 +1,102 @@
+[
+  {
+    "run": "realistic-noise-v2-hazelnut-noise23",
+    "source_commit": "40d57dd85f3e2d8600b8b2c5c00eb91aa00570eb",
+    "source_worktree_dirty": true,
+    "tracked_worktree_dirty": false,
+    "source_byte_bindings": {
+      "scripts/run_realistic_noise_v2.py": "git_blob",
+      "src/sr_anomaly/realistic_noise_v2.py": "git_blob",
+      "scripts/run_realistic_degradation.py": "git_blob",
+      "src/sr_anomaly/realistic_degradation.py": "git_CRLF_checkout",
+      "src/sr_anomaly/evaluation.py": "git_blob",
+      "src/sr_anomaly/fusion.py": "git_CRLF_checkout",
+      "src/sr_anomaly/metrics.py": "git_blob",
+      "src/sr_anomaly/real_models.py": "git_CRLF_checkout",
+      "scripts/run_legacy_patchcore.py": "git_blob",
+      "scripts/run_restoration_objective_pilot.py": "git_blob"
+    },
+    "bank_artifact_sha256": {
+      "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+      "nnscorer_search_index.faiss": "8c82d4dca55dacf368d52b1b69b356b94d7e9ad06259f085828d53cc894148a2"
+    },
+    "fit": 313,
+    "calibration": 78,
+    "test": 110
+  },
+  {
+    "run": "realistic-noise-v2-hazelnut-noise37",
+    "source_commit": "40d57dd85f3e2d8600b8b2c5c00eb91aa00570eb",
+    "source_worktree_dirty": true,
+    "tracked_worktree_dirty": false,
+    "source_byte_bindings": {
+      "scripts/run_realistic_noise_v2.py": "git_blob",
+      "src/sr_anomaly/realistic_noise_v2.py": "git_blob",
+      "scripts/run_realistic_degradation.py": "git_blob",
+      "src/sr_anomaly/realistic_degradation.py": "git_CRLF_checkout",
+      "src/sr_anomaly/evaluation.py": "git_blob",
+      "src/sr_anomaly/fusion.py": "git_CRLF_checkout",
+      "src/sr_anomaly/metrics.py": "git_blob",
+      "src/sr_anomaly/real_models.py": "git_CRLF_checkout",
+      "scripts/run_legacy_patchcore.py": "git_blob",
+      "scripts/run_restoration_objective_pilot.py": "git_blob"
+    },
+    "bank_artifact_sha256": {
+      "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+      "nnscorer_search_index.faiss": "8c82d4dca55dacf368d52b1b69b356b94d7e9ad06259f085828d53cc894148a2"
+    },
+    "fit": 313,
+    "calibration": 78,
+    "test": 110
+  },
+  {
+    "run": "realistic-noise-v2-screw-noise23",
+    "source_commit": "40d57dd85f3e2d8600b8b2c5c00eb91aa00570eb",
+    "source_worktree_dirty": true,
+    "tracked_worktree_dirty": false,
+    "source_byte_bindings": {
+      "scripts/run_realistic_noise_v2.py": "git_blob",
+      "src/sr_anomaly/realistic_noise_v2.py": "git_blob",
+      "scripts/run_realistic_degradation.py": "git_blob",
+      "src/sr_anomaly/realistic_degradation.py": "git_CRLF_checkout",
+      "src/sr_anomaly/evaluation.py": "git_blob",
+      "src/sr_anomaly/fusion.py": "git_CRLF_checkout",
+      "src/sr_anomaly/metrics.py": "git_blob",
+      "src/sr_anomaly/real_models.py": "git_CRLF_checkout",
+      "scripts/run_legacy_patchcore.py": "git_blob",
+      "scripts/run_restoration_objective_pilot.py": "git_blob"
+    },
+    "bank_artifact_sha256": {
+      "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+      "nnscorer_search_index.faiss": "4bd450a0bfbd7f06108ce5cd6cd7bdc52ff57879d6990392b15b31db92155ab4"
+    },
+    "fit": 256,
+    "calibration": 64,
+    "test": 160
+  },
+  {
+    "run": "realistic-noise-v2-screw-noise37",
+    "source_commit": "40d57dd85f3e2d8600b8b2c5c00eb91aa00570eb",
+    "source_worktree_dirty": true,
+    "tracked_worktree_dirty": false,
+    "source_byte_bindings": {
+      "scripts/run_realistic_noise_v2.py": "git_blob",
+      "src/sr_anomaly/realistic_noise_v2.py": "git_blob",
+      "scripts/run_realistic_degradation.py": "git_blob",
+      "src/sr_anomaly/realistic_degradation.py": "git_CRLF_checkout",
+      "src/sr_anomaly/evaluation.py": "git_blob",
+      "src/sr_anomaly/fusion.py": "git_CRLF_checkout",
+      "src/sr_anomaly/metrics.py": "git_blob",
+      "src/sr_anomaly/real_models.py": "git_CRLF_checkout",
+      "scripts/run_legacy_patchcore.py": "git_blob",
+      "scripts/run_restoration_objective_pilot.py": "git_blob"
+    },
+    "bank_artifact_sha256": {
+      "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+      "nnscorer_search_index.faiss": "4bd450a0bfbd7f06108ce5cd6cd7bdc52ff57879d6990392b15b31db92155ab4"
+    },
+    "fit": 256,
+    "calibration": 64,
+    "test": 160
+  }
+]

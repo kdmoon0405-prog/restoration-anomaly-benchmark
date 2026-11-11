@@ -3,6 +3,14 @@
 Date: 2026-09-20
 
 
+## Noise v2 반복 분석과 지혁 오프라인 전달 (2026-11-11)
+
+주형 handoff/juhyung@ba4672d의4run32조건, 공개80파일을 검토했다. 기존 v1 split/checkpoint/vendor와 source40d57dd,calibration q0.99와 공유LR hash를 확인했다. 관련27tests와 CPU smoke2행이 통과했고 직접 확인한scalar그림·paired CI·per-image 표를 생성했다. Master165행/13groups이며 이전133개entry의ID와값을 유지했다. 상세 결과는 analysis/noise_repeatability_20261111/REVIEW.md다.
+
+Hazelnut 두 protocol의v1_bank_dir만 상대경로 사본으로 변환하고 source/execution/public hash를 연결했다. 새 source는code 내용 동일성에 더해 Gitblob/CRLF checkout 형식을 기록한다. Source 줄바꿈 및 Windows에서POSIX절대경로 판별 오류는 수정 후 재검증했다. Raw array는미수신이며 pooled metric은저장 point estimate를사용했다.
+
+지혁용incremental public bundle은83ef04e prerequisite,61c2170 tip이다. 새 수신 저장소에서17tests/CPU smoke2행을 확인했고 기존데이터ZIP을재사용하는1.9MB offline packet을 준비했다. docs/followup_20261111/에 담당자별프롬프트와private 결정반환 규칙을 작성했다. 실제 query는Bicubic/SwinIR이며 이전 자연어의clean/restored표현을 정정했다. 주형의다음유한queue는저장map image-score집계대조,지혁은bank-domain24+4다. 두사람private결정원본과 실제지혁GPU실행은추가반환을기다린다.
+
 ## 선택 PCB 공간 분석 반환 검토 (2026-11-10)
 
 주형 handoff/juhyung@52b4c23의 두 receipt와 공개6파일을 검증했다. 사전 선택9보드×3variant와4-connectivity36요소의 scalar CSV 정합성, source/GT/map/calibration 연결을 확인했다. 기존 raw 배열의 무결성 receipt를 연결했고 이번 로컬 native 재계산은 수행하지 않았다. RGB/GT case PNG9개는 미수신이다.

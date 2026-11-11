@@ -1,0 +1,5 @@
+claim,evidence,source,scope
+Fixed high-noise SwinIR contrast repeats,sigma15 primary pooled delta negative in all4 new category/noise-seed comparisons,contrasts.csv,fixed bank/split11 and same test cohort
+Screw sigma5 does not show a clear per-image advantage,"two-draw mean per-image delta0.003534;image-bootstrap95CI[-0.009651,0.017825]",repeatability.csv,per-image CI and pooled point estimates have different targets
+ESR restoration contrasts retain sign,all16 secondary pooled contrasts positive,contrasts.csv,"conditional noise-realization repetition,not multiple fit seeds"
+Noise-seed sensitivity differs by contrast,primary max range0.012309;all contrasts max range0.045570,repeatability.csv,two fixed v2 draws;v1 is historical anchor
