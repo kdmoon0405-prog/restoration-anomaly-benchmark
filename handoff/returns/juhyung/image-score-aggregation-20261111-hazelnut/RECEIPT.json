@@ -1,0 +1,253 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "image-score-aggregation-20261111-hazelnut",
+  "prepared_utc": "2026-11-11T05:32:59.541086+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "PROTOCOL.json",
+      "bytes": 3818,
+      "sha256": "1a26fbe0e63cb0b80e73c61ad6ae8131d66a255f6e94df020b3e81f1fd7bf84f"
+    },
+    {
+      "path": "RUN_RECORD-hazelnut.md",
+      "bytes": 4316,
+      "sha256": "8ed5e7956129c0716d69c35f1cb3b42cb86f2bdda6fc77d680add9cb9116a62a"
+    },
+    {
+      "path": "derived-hazelnut/auroc_by_rule.csv",
+      "bytes": 9448,
+      "sha256": "aa1ec083a5e0b5668ecf324f84f05d7ee3a8895644824ed648144ae69d7d42b7"
+    },
+    {
+      "path": "derived-hazelnut/restorer_contrasts_by_rule.csv",
+      "bytes": 2897,
+      "sha256": "f75b4a822b73cd0a57db9e89d552e4066e73d1e3ee3d0202e46521b216939428"
+    },
+    {
+      "path": "sessions/000.json",
+      "bytes": 2246,
+      "sha256": "17387e224866457677317fada7b8f71fd69adea4c4f88e4651789188c0092c49",
+      "public_path_view": true,
+      "original_bytes": 2462,
+      "original_sha256": "5f43f41fb6776b271893a158040002c44287ff377c35d1a4863ab7b2686f6419",
+      "changed_fields": [
+        {
+          "field": "/argv/1",
+          "public_value": "."
+        },
+        {
+          "field": "/argv/3",
+          "public_value": "outputs/image-score-aggregation-20261111-a"
+        }
+      ]
+    },
+    {
+      "path": "summary.csv",
+      "bytes": 58104,
+      "sha256": "df91472b8c16e9c23ed74a4906aa778c5c18e7da5c4fa45bdf462f4ccd9bd130"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__bicubic_x4.csv",
+      "bytes": 278723,
+      "sha256": "b48d93a3906aa111c6cc4852ace11992294548c9baa27ccec7a651c0b28e879a"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__bicubic_x4.json",
+      "bytes": 4503,
+      "sha256": "b4f502303d1cb9bd3f4338e2b9b8cef7e39d85eb0e4c29ad4ee9de030413d528"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__realesrgan_x4plus.csv",
+      "bytes": 291966,
+      "sha256": "ceb18530b4b6796a113cbb0966da5137e03600d2cbad97a8928338ba19c13948"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__realesrgan_x4plus.json",
+      "bytes": 4506,
+      "sha256": "7ce1d5742f849055c04130787b2b80cfafd3bf01d33e5067b8872b39d92dcc15"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__realesrnet_x4plus.csv",
+      "bytes": 291860,
+      "sha256": "692807b89f6dc4331c68b601db2d25737c152364fa7e7f43f5571a7e973022f1"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__realesrnet_x4plus.json",
+      "bytes": 4489,
+      "sha256": "13021171956d3ec082d90710fcc0f6d3b3e92937c57dd2aaa893eb1dd8430c8d"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__swinir_x4.csv",
+      "bytes": 276390,
+      "sha256": "a10f9c97a3e16fd1259a2554a2f55806e48cf5aee752bdaa7e51eaf741b8bdad"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s15__swinir_x4.json",
+      "bytes": 4436,
+      "sha256": "c5044a58be276f14c40a32cee743e7f5ca3ca167f906394bcfe0f76c56a59f50"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__bicubic_x4.csv",
+      "bytes": 276271,
+      "sha256": "f47cfd0bb21d727af4aaea1db25a004758400b1f69baf8c2cc977adcd874cfab"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__bicubic_x4.json",
+      "bytes": 4485,
+      "sha256": "fec636a64a956997b490a1697f235bc8296e4e477bb6002e66ea2a4be708c81f"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__realesrgan_x4plus.csv",
+      "bytes": 289631,
+      "sha256": "d6602bd758b4618e09582427c2ef43a931c30b1b8544ce8061c8d3edbb534b8d"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__realesrgan_x4plus.json",
+      "bytes": 4503,
+      "sha256": "dd236c8c5d3feebee965ceec28fb9345ce95ba41ba613f734ced708d595699ec"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__realesrnet_x4plus.csv",
+      "bytes": 289408,
+      "sha256": "fb4f676c209db8e1635f119983806bd5386b87dbcf476a262d5f420845a4edfe"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__realesrnet_x4plus.json",
+      "bytes": 4504,
+      "sha256": "5484ed2f1bca008fb3dc1136452e01dafe028e48dc305f1d2b7df897a74dfdbc"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__swinir_x4.csv",
+      "bytes": 273884,
+      "sha256": "d3ab197de58920020eb108614d0a4d05d5387f32288f238ac75b296e6f6d4447"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise23__noise_s5__swinir_x4.json",
+      "bytes": 4482,
+      "sha256": "ccb7206ad21f17cbab8dd429f1fb2d7fb774544341720623e2bebf95524788fc"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__bicubic_x4.csv",
+      "bytes": 278630,
+      "sha256": "cf7dbd886b5e55443b064ec41898a4461959d240bb98d2b1e8e003d9c9b3ae5a"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__bicubic_x4.json",
+      "bytes": 4433,
+      "sha256": "f099cf967ec70007987ba83c20022b2e8e179b90cac01c85c5d61d26cb2cee78"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__realesrgan_x4plus.csv",
+      "bytes": 291389,
+      "sha256": "37bd4ab12093b9f636c78d52508abe239e0820ee45b20bf0f01b92af3d98b6fb"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__realesrgan_x4plus.json",
+      "bytes": 4440,
+      "sha256": "31eebbc88841b1384c84d05a99b6b65208009a11d9f1854523807516e4b268a9"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__realesrnet_x4plus.csv",
+      "bytes": 291857,
+      "sha256": "ea78dc189296aefe77abfee7d5295aab71020acdf8d40bfe556bb9b03479ddd5"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__realesrnet_x4plus.json",
+      "bytes": 4521,
+      "sha256": "9df1da6083ff575809f6d44f8b3c09776a5a903d05a912b227d8714a96a1767f"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__swinir_x4.csv",
+      "bytes": 276439,
+      "sha256": "52e324f10485b63a7eeea03d1f8c2bc2cc510c0ab14b6905edf6fbe3e6a5b4a8"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s15__swinir_x4.json",
+      "bytes": 4498,
+      "sha256": "8f5b0020eeca5991c2d51b814a0c2a0804d785b9654b26aa433436866f34172b"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__bicubic_x4.csv",
+      "bytes": 276485,
+      "sha256": "357057822be1ee11b88dac13eb95433fe535887b382cc54f8c09455439885dde"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__bicubic_x4.json",
+      "bytes": 4501,
+      "sha256": "36062662407d85e3e8a0e26febbc6bf31cc28e6cdd5291836b67b9fc39396db0"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__realesrgan_x4plus.csv",
+      "bytes": 289956,
+      "sha256": "eaec2fc70d6dd105bbb68536f20ed572c1cd38020545ff4ae887df2f8811c9bf"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__realesrgan_x4plus.json",
+      "bytes": 4507,
+      "sha256": "ff7eb729a8003d0879f7fe021a2da81ae127769c2ef98e505edd5c9dfe21b9c3"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__realesrnet_x4plus.csv",
+      "bytes": 289491,
+      "sha256": "aa0ee218e2885f3ed75202eebf195253761ba0fae2172a03daaf2b3cef6b8cdc"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__realesrnet_x4plus.json",
+      "bytes": 4530,
+      "sha256": "059dbcdf4e0968e572ae42b41a7bf110e0e6f25b442628324f226d2f52d9ff6a"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__swinir_x4.csv",
+      "bytes": 274020,
+      "sha256": "87eedcfeb098d27f1064a3d128b927302cdf4527fb7cd66d4dcf479c29d371cd"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_noise_v2__noise37__noise_s5__swinir_x4.json",
+      "bytes": 4414,
+      "sha256": "2f396e8a77a4929543d04a8a576ae64b996c443749f551c3d37d663c4c7c7d21"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__bicubic_x4.csv",
+      "bytes": 251044,
+      "sha256": "b371a202395b7499f76288e0ecb1a8cfc3c88986ddc95a90c749b3161dcd8f5b"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__bicubic_x4.json",
+      "bytes": 4451,
+      "sha256": "20084de89187f7cb70b9a75107b920cdd2a387b7c6de77de9a6842578974da95"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__realesrgan_x4plus.csv",
+      "bytes": 264689,
+      "sha256": "80c1df313bc8c176e94612e82d78cc9d14825324c55c2e79144c867a7c36f43b"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__realesrgan_x4plus.json",
+      "bytes": 4490,
+      "sha256": "56d2cc1121dcf1840dfd261b61ab635ba5ed329c6c356039181e5ee4ad177b34"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__realesrnet_x4plus.csv",
+      "bytes": 264228,
+      "sha256": "eb9ec4d74cfc9d8f509bb06981513a2a4335756689ac1cfc71a64478a92a9434"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__realesrnet_x4plus.json",
+      "bytes": 4421,
+      "sha256": "a91cfb8b69c77b765c6dd33a1ca080355d86af7b544b5879890dffa7a0878fbb"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__swinir_x4.csv",
+      "bytes": 249576,
+      "sha256": "6c7122a64c336c27d998720ee044e28a9d05833dff8fbc075955daa62e311e67"
+    },
+    {
+      "path": "units/hazelnut__realistic_lr_v1__v1__none__swinir_x4.json",
+      "bytes": 4480,
+      "sha256": "92d26a4134e8e52a73cd777f4a6960ac7f693f50de388fd8cab371f7f7f2248a"
+    }
+  ]
+}
