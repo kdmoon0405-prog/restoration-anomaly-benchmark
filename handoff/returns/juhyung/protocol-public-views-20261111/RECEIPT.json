@@ -1,0 +1,30 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "protocol-public-views-20261111",
+  "prepared_utc": "2026-11-11T04:45:00.638559+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "hazelnut-noise23.json",
+      "bytes": 87527,
+      "sha256": "971a4e1c83a50aae0c47251709468c19cef03a69b2a9f1241ad2a3466c880787"
+    },
+    {
+      "path": "hazelnut-noise37.json",
+      "bytes": 87527,
+      "sha256": "0530c2b2d9f952186845fdcf0bc5f369f52be82507f6c1ddd7845998909d917d"
+    },
+    {
+      "path": "PROVENANCE.json",
+      "bytes": 1198,
+      "sha256": "a7d77f5f9f90afacdc98a0e303e3f9c160fc020828281a5b7c6797baf1146c24"
+    },
+    {
+      "path": "README.md",
+      "bytes": 480,
+      "sha256": "8d418953f2b5d536acb6a028ffece91ab997856a8a49ccaf6e40113ef7f7f576"
+    }
+  ]
+}

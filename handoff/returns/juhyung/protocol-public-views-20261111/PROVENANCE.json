@@ -1,0 +1,29 @@
+{
+  "kind": "public_protocol_views",
+  "prepared_by": "CPU review",
+  "source_cpu_commit": "615ae7d432c88ffb7e6f61b65df40be4b6907e2a",
+  "source_return_commit": "ba4672ddb29bf0a5252ae4ee05253db70048dba0",
+  "changed_value": "v1_bank_dir only",
+  "exports": [
+    {
+      "file": "hazelnut-noise23.json",
+      "changed_fields": [
+        "v1_bank_dir"
+      ],
+      "supplied_protocol_sha256": "fc42a68ae86f1430980e25c5a5f77f27ff4242fbc1826eafb929607504c56c00",
+      "execution_protocol_sha256": "fc42a68ae86f1430980e25c5a5f77f27ff4242fbc1826eafb929607504c56c00",
+      "original_execution_protocol_bytes_supplied": true,
+      "public_copy_sha256": "971a4e1c83a50aae0c47251709468c19cef03a69b2a9f1241ad2a3466c880787"
+    },
+    {
+      "file": "hazelnut-noise37.json",
+      "changed_fields": [
+        "v1_bank_dir"
+      ],
+      "supplied_protocol_sha256": "287f1b213fcd7ee72f1b44097ea8626754e387821f268fec03ba3ca848467779",
+      "execution_protocol_sha256": "287f1b213fcd7ee72f1b44097ea8626754e387821f268fec03ba3ca848467779",
+      "original_execution_protocol_bytes_supplied": true,
+      "public_copy_sha256": "0530c2b2d9f952186845fdcf0bc5f369f52be82507f6c1ddd7845998909d917d"
+    }
+  ]
+}
