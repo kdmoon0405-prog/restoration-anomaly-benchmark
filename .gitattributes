@@ -158,3 +158,6 @@ docs/NOISE_REPEATABILITY_REVIEW_20261111.md text eol=lf
 docs/followup_20261111/** text eol=lf
 analysis/noise_repeatability_20261111/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 analysis/noise_repeatability_20261111/**/*.png -diff
+
+# Preserve saved scalar analysis bytes.
+analysis/image_score_return_20261111/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

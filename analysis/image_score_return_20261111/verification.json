@@ -1,0 +1,35 @@
+{
+  "source_checks": {
+    "hazelnut": {
+      "execution_commit": "84d9c9a5d076e487710d967dab10b3de64ebd8da",
+      "source_byte_forms": {
+        "scripts/run_image_score_aggregation.py": "git_blob",
+        "src/sr_anomaly/image_score_aggregation.py": "git_blob",
+        "src/sr_anomaly/fusion.py": "git_CRLF_checkout",
+        "src/sr_anomaly/evaluation.py": "git_blob",
+        "src/sr_anomaly/pcb_board_analysis.py": "git_blob",
+        "docs/IMAGE_SCORE_AGGREGATION_V0.1.md": "git_blob"
+      },
+      "supplied_files_verified": 46,
+      "remote_payload_validation_observed": false
+    },
+    "screw": {
+      "execution_commit": "78ac166d69b0daa7debfb5c07803e5bd046441d0",
+      "source_byte_forms": {
+        "scripts/run_image_score_aggregation.py": "git_blob",
+        "src/sr_anomaly/image_score_aggregation.py": "git_blob",
+        "src/sr_anomaly/fusion.py": "git_CRLF_checkout",
+        "src/sr_anomaly/evaluation.py": "git_blob",
+        "src/sr_anomaly/pcb_board_analysis.py": "git_blob",
+        "docs/IMAGE_SCORE_AGGREGATION_V0.1.md": "git_blob"
+      },
+      "supplied_files_verified": 46,
+      "remote_payload_validation_observed": false
+    }
+  },
+  "units": 40,
+  "cells": 200,
+  "original_anchor_scalar_recomputed": 40,
+  "raw_npz_received": false,
+  "calibration_map_anchor": "reported by GPU;not recomputed from absent maps locally"
+}
