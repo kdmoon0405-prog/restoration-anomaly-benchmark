@@ -1,0 +1,15 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "protocol-public-views-check-20261111",
+  "prepared_utc": "2026-11-11T05:34:48.807483+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 2866,
+      "sha256": "a23456f9b8a6f40cbd65f67429c4f8c9e51d3519bdb728cb0ba957a32c68a0c9"
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+ "unit_id": "screw__realistic_lr_noise_v2__noise37__noise_s15__realesrgan_x4plus",
+ "category": "screw",
+ "family": "realistic_lr_noise_v2",
+ "noise_seed": 37,
+ "split_seed": 11,
+ "condition": "noise_s15",
+ "restorer": "realesrgan_x4plus",
+ "run_dir": "outputs/realistic-noise-v2/screw-noise37",
+ "unit": "noise_s15__realesrgan_x4plus",
+ "source_public_record": "handoff/juhyung:handoff/returns/juhyung/realistic-noise-v2-screw-noise37",
+ "source_sha256": {
+  "npz": "793a3c17a3327cd66a63bd00b3c723cbee1031746d1d8ae153d84c307125a3d4",
+  "per_image_csv": "6dbe43bc717b72ae4415174c97ac411a48bced53692668771e0d88d32d7d2ed1",
+  "receipt": "a7001b055638d84b15b197c30a8fab42d5529624c607e4d0685e356c8a11f779",
+  "run_protocol": "ddce8df66c64e90fe0b8a007c88036e2e4540af86ad07c83dc40c57c8ae0a205"
+ },
+ "npz_schema": {
+  "calibration_maps": {
+   "shape": [
+    64,
+    224,
+    224
+   ],
+   "dtype": "float32"
+  },
+  "test_maps": {
+   "shape": [
+    160,
+    224,
+    224
+   ],
+   "dtype": "float32"
+  },
+  "calibration_scores": {
+   "shape": [
+    64
+   ],
+   "dtype": "float64"
+  },
+  "test_scores": {
+   "shape": [
+    160
+   ],
+   "dtype": "float64"
+  }
+ },
+ "memory_plan_bytes": 163446784,
+ "counts": {
+  "calibration": 64,
+  "test_normal": 41,
+  "test_anomaly": 119
+ },
+ "k": {
+  "top0.1pct_mean": 51,
+  "top0.5pct_mean": 251,
+  "top1pct_mean": 502
+ },
+ "anchor_a_original": "EXACT",
+ "anchor_b_map_payload": {
+  "pixel_params_equal": true,
+  "pixel_threshold_equal": true,
+  "npz_sha256_equal": true
+ },
+ "original_vs_map_max": {
+  "images": 224,
+  "exactly_equal": 0,
+  "mean_original_minus_map_max": 0.3738270572253636,
+  "pearson": 0.9846078570574505
+ },
+ "reference_stored": {
+  "au_pro": 0.7767704477899521,
+  "pixel_auroc": 0.9437577999573861
+ },
+ "rules": {
+  "original": {
+   "calibration": {
+    "median": 5.999014854431152,
+    "scale": 1.0008931159973145,
+    "q25": 5.585585117340088,
+    "q75": 6.586478233337402,
+    "method": "iqr"
+   },
+   "threshold": 1.942697928800276,
+   "metrics": {
+    "image_auroc": 0.5128100020496004,
+    "image_f1": 0.032520325203252036,
+    "image_threshold": 1.942697928800276,
+    "image_false_alarm_rate_test_normal": 0.04878048780487805,
+    "image_miss_rate_test_anomaly": 0.9831932773109243
+   }
+  },
+  "map_max": {
+   "calibration": {
+    "median": 5.62873911857605,
+    "scale": 1.0229698419570923,
+    "q25": 5.136234521865845,
+    "q75": 6.159204363822937,
+    "method": "iqr"
+   },
+   "threshold": 1.9296905443037542,
+   "metrics": {
+    "image_auroc": 0.5164992826398852,
+    "image_f1": 0.032520325203252036,
+    "image_threshold": 1.9296905443037542,
+    "image_false_alarm_rate_test_normal": 0.04878048780487805,
+    "image_miss_rate_test_anomaly": 0.9831932773109243
+   }
+  },
+  "top0.1pct_mean": {
+   "calibration": {
+    "median": 5.600221278620701,
+    "scale": 1.0182655301748538,
+    "q25": 5.10796990815331,
+    "q75": 6.126235438328163,
+    "method": "iqr"
+   },
+   "threshold": 1.922652946204997,
+   "metrics": {
+    "image_auroc": 0.5144496823119492,
+    "image_f1": 0.032520325203252036,
+    "image_threshold": 1.922652946204997,
+    "image_false_alarm_rate_test_normal": 0.04878048780487805,
+    "image_miss_rate_test_anomaly": 0.9831932773109243
+   }
+  },
+  "top0.5pct_mean": {
+   "calibration": {
+    "median": 5.489372073891628,
+    "scale": 0.9662603762045325,
+    "q25": 5.032206347739079,
+    "q75": 5.998466723943611,
+    "method": "iqr"
+   },
+   "threshold": 1.9642281826370285,
+   "metrics": {
+    "image_auroc": 0.5126050420168067,
+    "image_f1": 0.03278688524590164,
+    "image_threshold": 1.9642281826370285,
+    "image_false_alarm_rate_test_normal": 0.024390243902439025,
+    "image_miss_rate_test_anomaly": 0.9831932773109243
+   }
+  },
+  "top1pct_mean": {
+   "calibration": {
+    "median": 5.388333576134001,
+    "scale": 0.8757130332677008,
+    "q25": 4.948940342878441,
+    "q75": 5.824653376146141,
+    "method": "iqr"
+   },
+   "threshold": 2.0841275925333504,
+   "metrics": {
+    "image_auroc": 0.5132199221151875,
+    "image_f1": 0.04878048780487805,
+    "image_threshold": 2.0841275925333504,
+    "image_false_alarm_rate_test_normal": 0.024390243902439025,
+    "image_miss_rate_test_anomaly": 0.9747899159663865
+   }
+  }
+ },
+ "seconds": 0.2449485000106506,
+ "protocol_sha256": "1a26fbe0e63cb0b80e73c61ad6ae8131d66a255f6e94df020b3e81f1fd7bf84f",
+ "per_image_csv_sha256": "0a1a23527a34025ccfd1b66980f4d27f32cf4babbd3c460cd25e90be4f44e8b9"
+}

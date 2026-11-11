@@ -1,0 +1,253 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "image-score-aggregation-20261111-screw",
+  "prepared_utc": "2026-11-11T05:34:48.602599+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "PROTOCOL.json",
+      "bytes": 3818,
+      "sha256": "1a26fbe0e63cb0b80e73c61ad6ae8131d66a255f6e94df020b3e81f1fd7bf84f"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 6406,
+      "sha256": "c99e9e8efeb741597cf439cb7b0f433f14a348a5299f0b9fa05efb4d2d3bbb5c"
+    },
+    {
+      "path": "derived/auroc_by_rule.csv",
+      "bytes": 18951,
+      "sha256": "19ac25514c7ef0fa1a766ed7a942279c4e02bef054a6e87b1b54b4d923a64fa5"
+    },
+    {
+      "path": "derived/restorer_contrasts_by_rule.csv",
+      "bytes": 5532,
+      "sha256": "642d518e0d511da5df9d1c572397b27968efe66e47d34950fdf7ad7e5d40a9b4"
+    },
+    {
+      "path": "sessions/001.json",
+      "bytes": 2183,
+      "sha256": "d83dad49373d7a561338aa6b733484c7ad4286f7d0a1d0eb65d9f935866cedb2",
+      "public_path_view": true,
+      "original_bytes": 2399,
+      "original_sha256": "5caeb9af9431fb029cfce11ff155d40aa43ce690b849e7f6aaef0e8073f335c8",
+      "changed_fields": [
+        {
+          "field": "/argv/1",
+          "public_value": "."
+        },
+        {
+          "field": "/argv/3",
+          "public_value": "outputs/image-score-aggregation-20261111-a"
+        }
+      ]
+    },
+    {
+      "path": "summary.csv",
+      "bytes": 115972,
+      "sha256": "69f72b3e089208e8dc4d7f7c5e8ea64c061afbd820222e997ddc6b6ea63eac58"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__bicubic_x4.csv",
+      "bytes": 331101,
+      "sha256": "dded4d7ff9b3d521324a5227db4f59f409c223c970259b8632733527538486f9"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__bicubic_x4.json",
+      "bytes": 4570,
+      "sha256": "fecf407ce48e9d38cd5a5dd5904ec7e063442f0e8a77af8e599cf14bc981149b"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__realesrgan_x4plus.csv",
+      "bytes": 346865,
+      "sha256": "0d6f4934584e85f193edcc2016a993f0ca23f8267084c82b3eb4541d869ef81d"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__realesrgan_x4plus.json",
+      "bytes": 4593,
+      "sha256": "a3b1f18de75c277b94936187fa68d0bb1b6fdc90b1485a64b5f290b6cab24b96"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__realesrnet_x4plus.csv",
+      "bytes": 347215,
+      "sha256": "cc590d03117ea42778537a65b056acb4a8ee84ff8eb342dce6ca37ad80ca53d0"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__realesrnet_x4plus.json",
+      "bytes": 4586,
+      "sha256": "398b00784264b1b6c6d36e5677a0e4cebe129e0aae24f5f5de2f996505011be1"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__swinir_x4.csv",
+      "bytes": 328545,
+      "sha256": "01b4dc7464342327b78c9d000b90d0554aff0fd27a5929fb1bf703ae2d96004b"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s15__swinir_x4.json",
+      "bytes": 4570,
+      "sha256": "ddb4421462d90c7c9d4f01de7f86c721a01e15dbfce9a1b9efd801f4cf349703"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__bicubic_x4.csv",
+      "bytes": 328644,
+      "sha256": "3f1221d58a03211304945728ed7064be56579092192439878c945c78e8a4aa12"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__bicubic_x4.json",
+      "bytes": 4383,
+      "sha256": "05e127e59a139440d62b17dc10e74e00985a07c520823beeabba5b66cc4857a1"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__realesrgan_x4plus.csv",
+      "bytes": 344810,
+      "sha256": "3cfe88ecb8d34d32ebfb97b96c9592f3209527cce396d7cca7cd8067377efc43"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__realesrgan_x4plus.json",
+      "bytes": 4508,
+      "sha256": "feb0054dc69e91c0bf03de73f5fe362a6fb187d55b99921326328ea50468d717"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__realesrnet_x4plus.csv",
+      "bytes": 344540,
+      "sha256": "4287df4c71154e531d99c96872756a1bc8b5c324b77986fa1f18d06dfc5b2490"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__realesrnet_x4plus.json",
+      "bytes": 4506,
+      "sha256": "46f47ebfdcf1003763d0e89a2d1d576ee5b7107b26187e42b4b366192959cd99"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__swinir_x4.csv",
+      "bytes": 326575,
+      "sha256": "c5cc85601f49f34788a4358b4c37c6656bdf08a185d2906dabd7b8c6a1e94a90"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise23__noise_s5__swinir_x4.json",
+      "bytes": 4503,
+      "sha256": "fd20709cf7c25a3902bc1f148e2af5ee8c37721d6613035be749a917339561a7"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__bicubic_x4.csv",
+      "bytes": 331354,
+      "sha256": "30377283190261a9ecc221fb80cde30a85e3a10063cde4a222b46f12d8424ebb"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__bicubic_x4.json",
+      "bytes": 4568,
+      "sha256": "4cd054da15c3d56428a03db94aa18b857de472f0615430ed71ea6c8653c317b8"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__realesrgan_x4plus.csv",
+      "bytes": 346744,
+      "sha256": "0a1a23527a34025ccfd1b66980f4d27f32cf4babbd3c460cd25e90be4f44e8b9"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__realesrgan_x4plus.json",
+      "bytes": 4593,
+      "sha256": "b555d46197ba5ef56d86fd8061c5913df425fa073485b8c3ce409cb0f008cc70"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__realesrnet_x4plus.csv",
+      "bytes": 347151,
+      "sha256": "cdb839d90a7d78e7e3ccb2bd600cf0fa8acf5de40bfc793892e78bce6a88a723"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__realesrnet_x4plus.json",
+      "bytes": 4516,
+      "sha256": "46c4b959e1cf02fd9017d2c0c7bebfe9553b3d2f1d2c1d5bad6fe857ac596916"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__swinir_x4.csv",
+      "bytes": 328296,
+      "sha256": "2686be9f7e9f2a76ccf2e56f25f8f8ec3635231af0053ddb0d8a6574728b644f"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s15__swinir_x4.json",
+      "bytes": 4450,
+      "sha256": "39061d2e8f3603f8be1452c6e434d738ec7d447272f43ddd43c2e4da1d959f0a"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__bicubic_x4.csv",
+      "bytes": 329058,
+      "sha256": "0359ee5d931b236110dc77a756cd2ade01a773f885567b1e0b1c81f625a79f0f"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__bicubic_x4.json",
+      "bytes": 4447,
+      "sha256": "c0d6277f7ad42493a1854a26d6d60420c7eb0b69aa86d339f9f53fc863d47221"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__realesrgan_x4plus.csv",
+      "bytes": 344972,
+      "sha256": "1ef33ec447d2adb7367fe7d8955f3823daea815f857139117779d6c9435e3b07"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__realesrgan_x4plus.json",
+      "bytes": 4491,
+      "sha256": "01e6cdfa3b7aaa2fca67b785c004ab52155766eeb02ef02c0557626f9d9b71d7"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__realesrnet_x4plus.csv",
+      "bytes": 344825,
+      "sha256": "772b029e2de4c639c7a8e4c9de78852ccbaaa4afaeae6d0ab4fcb10d6ba68dd1"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__realesrnet_x4plus.json",
+      "bytes": 4490,
+      "sha256": "e5793f17de6ba13d6f8e1e1d9e10932ac8508d0772e267c013cf4e3b89e5ee32"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__swinir_x4.csv",
+      "bytes": 326373,
+      "sha256": "3df63968b9a0af63452e66a56ab84c98d0e0155152a537b3a32f5ebd7a6fa210"
+    },
+    {
+      "path": "units/screw__realistic_lr_noise_v2__noise37__noise_s5__swinir_x4.json",
+      "bytes": 4536,
+      "sha256": "75ada8dc545fb8e3b9dfdcebc5533ec286160b2ba6dc4599b3269c7d0fda41bc"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__bicubic_x4.csv",
+      "bytes": 298860,
+      "sha256": "1b17056d6468778fb8362e868e335ba3fc2e27e3ed271e72ab18cd5e6c427e71"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__bicubic_x4.json",
+      "bytes": 4505,
+      "sha256": "b551c8adf8427cde6090c9d84c45edcc4b437422e8550ec4d9f79b857ca715a8"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__realesrgan_x4plus.csv",
+      "bytes": 314654,
+      "sha256": "9ffe33da0b1dadda36988fa3737d9c82cf02845cef0c4e30af1c1055d8df9719"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__realesrgan_x4plus.json",
+      "bytes": 4463,
+      "sha256": "b7287a4bc46de6928efa582daf791c4c8e1d0d660bfe49e1d725a6b21f7a895c"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__realesrnet_x4plus.csv",
+      "bytes": 314787,
+      "sha256": "6338a81a22c499463f92fa6fde58dd3666d39d825d1c97fbe1afd7f26205a35a"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__realesrnet_x4plus.json",
+      "bytes": 4499,
+      "sha256": "8255528008fc74c98b0057c8b4cba76b36470dffa697a931ad4bd878635107ed"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__swinir_x4.csv",
+      "bytes": 296372,
+      "sha256": "2cb1bd4982a7504890dceebc42285cc4d43d392f7d79a1ed1024fbe0fbf0e3ec"
+    },
+    {
+      "path": "units/screw__realistic_lr_v1__v1__none__swinir_x4.json",
+      "bytes": 4532,
+      "sha256": "107fec56fc6acb5467353cfe3324d7074b09363d3ed578e0e5dacf0fccb2953a"
+    }
+  ]
+}

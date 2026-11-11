@@ -1,0 +1,165 @@
+{
+ "unit_id": "screw__realistic_lr_v1__v1__none__realesrgan_x4plus",
+ "category": "screw",
+ "family": "realistic_lr_v1",
+ "noise_seed": null,
+ "split_seed": 11,
+ "condition": "none",
+ "restorer": "realesrgan_x4plus",
+ "run_dir": "outputs/realistic-degradation/screw-v1",
+ "unit": "none__realesrgan_x4plus",
+ "source_public_record": "exp/pcb-full-cohort-juhyung@4c2fc40:analysis/realistic_degradation",
+ "source_sha256": {
+  "npz": "fada95ebfaa1b0dd0699838d1f7e8a3a20af2646272c77292c2f4ea35d35f054",
+  "per_image_csv": "c06bd468faaf3bdf839a10efc52c1fd7586088024e9bcb8a9f9c3e8b2c29af5d",
+  "receipt": "dc56d051a3666028bb8d9ecb2f827dca27a95677006d5ee0c3e8d4d5472ce58f",
+  "run_protocol": "da8ede68cc3a0983973d4d8e1e00dcc39083c2720067fc549c81336f31788698"
+ },
+ "npz_schema": {
+  "calibration_maps": {
+   "shape": [
+    64,
+    224,
+    224
+   ],
+   "dtype": "float32"
+  },
+  "test_maps": {
+   "shape": [
+    160,
+    224,
+    224
+   ],
+   "dtype": "float32"
+  },
+  "calibration_scores": {
+   "shape": [
+    64
+   ],
+   "dtype": "float64"
+  },
+  "test_scores": {
+   "shape": [
+    160
+   ],
+   "dtype": "float64"
+  }
+ },
+ "memory_plan_bytes": 163446784,
+ "counts": {
+  "calibration": 64,
+  "test_normal": 41,
+  "test_anomaly": 119
+ },
+ "k": {
+  "top0.1pct_mean": 51,
+  "top0.5pct_mean": 251,
+  "top1pct_mean": 502
+ },
+ "anchor_a_original": "EXACT",
+ "anchor_b_map_payload": {
+  "pixel_params_equal": true,
+  "pixel_threshold_equal": true,
+  "npz_sha256_equal": true
+ },
+ "original_vs_map_max": {
+  "images": 224,
+  "exactly_equal": 0,
+  "mean_original_minus_map_max": 0.3528594598174095,
+  "pearson": 0.9868582940657007
+ },
+ "reference_stored": {
+  "au_pro": 0.8313642801334261,
+  "pixel_auroc": 0.9621674896560832
+ },
+ "rules": {
+  "original": {
+   "calibration": {
+    "median": 4.828551292419434,
+    "scale": 1.3588886260986328,
+    "q25": 4.247859954833984,
+    "q75": 5.606748580932617,
+    "method": "iqr"
+   },
+   "threshold": 1.4639963562304108,
+   "metrics": {
+    "image_auroc": 0.6456241032998565,
+    "image_f1": 0.096,
+    "image_threshold": 1.4639963562304108,
+    "image_false_alarm_rate_test_normal": 0.0,
+    "image_miss_rate_test_anomaly": 0.9495798319327731
+   }
+  },
+  "map_max": {
+   "calibration": {
+    "median": 4.585438013076782,
+    "scale": 1.2325950264930725,
+    "q25": 4.003903567790985,
+    "q75": 5.236498594284058,
+    "method": "iqr"
+   },
+   "threshold": 1.5442242493815013,
+   "metrics": {
+    "image_auroc": 0.6282025005124001,
+    "image_f1": 0.04918032786885246,
+    "image_threshold": 1.5442242493815013,
+    "image_false_alarm_rate_test_normal": 0.0,
+    "image_miss_rate_test_anomaly": 0.9747899159663865
+   }
+  },
+  "top0.1pct_mean": {
+   "calibration": {
+    "median": 4.56467053936977,
+    "scale": 1.2202031203344759,
+    "q25": 3.9736370911785204,
+    "q75": 5.193840211512996,
+    "method": "iqr"
+   },
+   "threshold": 1.548541670097011,
+   "metrics": {
+    "image_auroc": 0.6253330600532896,
+    "image_f1": 0.04918032786885246,
+    "image_threshold": 1.548541670097011,
+    "image_false_alarm_rate_test_normal": 0.0,
+    "image_miss_rate_test_anomaly": 0.9747899159663865
+   }
+  },
+  "top0.5pct_mean": {
+   "calibration": {
+    "median": 4.5060828719955985,
+    "scale": 1.1976343721032623,
+    "q25": 3.8703853362110032,
+    "q75": 5.0680197083142655,
+    "method": "iqr"
+   },
+   "threshold": 1.5149415777844464,
+   "metrics": {
+    "image_auroc": 0.6128304980528797,
+    "image_f1": 0.03305785123966942,
+    "image_threshold": 1.5149415777844464,
+    "image_false_alarm_rate_test_normal": 0.0,
+    "image_miss_rate_test_anomaly": 0.9831932773109243
+   }
+  },
+  "top1pct_mean": {
+   "calibration": {
+    "median": 4.422956645726208,
+    "scale": 1.2019804147372684,
+    "q25": 3.776174160232582,
+    "q75": 4.97815457496985,
+    "method": "iqr"
+   },
+   "threshold": 1.4527295643079736,
+   "metrics": {
+    "image_auroc": 0.6021725763476122,
+    "image_f1": 0.03305785123966942,
+    "image_threshold": 1.4527295643079736,
+    "image_false_alarm_rate_test_normal": 0.0,
+    "image_miss_rate_test_anomaly": 0.9831932773109243
+   }
+  }
+ },
+ "seconds": 0.24296409997623414,
+ "protocol_sha256": "1a26fbe0e63cb0b80e73c61ad6ae8131d66a255f6e94df020b3e81f1fd7bf84f",
+ "per_image_csv_sha256": "9ffe33da0b1dadda36988fa3737d9c82cf02845cef0c4e30af1c1055d8df9719"
+}
