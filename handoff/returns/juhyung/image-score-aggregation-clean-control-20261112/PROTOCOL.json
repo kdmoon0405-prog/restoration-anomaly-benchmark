@@ -1,0 +1,33 @@
+{
+ "protocol": "docs/IMAGE_SCORE_AGGREGATION_V0.2_CLEAN_CONTROL.md",
+ "rules": [
+  "original",
+  "map_max",
+  "top0.1pct_mean",
+  "top0.5pct_mean",
+  "top1pct_mean"
+ ],
+ "top_fractions": {
+  "top0.1pct_mean": "0.001",
+  "top0.5pct_mean": "0.005",
+  "top1pct_mean": "0.01"
+ },
+ "units": [
+  "clean",
+  "bicubic_x4",
+  "swinir_x4"
+ ],
+ "run_dir": "outputs/legacy-patchcore/screw-full320-test160",
+ "family": "historical_recovery",
+ "metric_primary": "image_auroc",
+ "calibration": null,
+ "reference_order_csv": "outputs/realistic-degradation/screw-v1/units/none__swinir_x4.csv",
+ "code_sha256": {
+  "scripts/run_image_score_aggregation_clean_control.py": "5ac249ed2cf96827a88afe079e4bc61c2b59f8131aa093f1d0e05fd96a0e5498",
+  "scripts/run_image_score_aggregation.py": "65287eddf57a35b8cc5263c02f066ac4139770aa3bf25a14edba3df3996b94ff",
+  "src/sr_anomaly/image_score_aggregation.py": "3f9d571b5e783e6bf952fb39e7c8a4be76a30f56a7c7ce9be007ab3faba53075",
+  "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+  "src/sr_anomaly/pcb_board_analysis.py": "4df7119cfac26a9bbdf3b5415b632337ae50fe37c261a3f80a4c102e607f1e30",
+  "docs/IMAGE_SCORE_AGGREGATION_V0.2_CLEAN_CONTROL.md": "6564c39ec0b9e0327afced4f69457731dc46f9054c8bc9438f4a7b1dac1d7818"
+ }
+}

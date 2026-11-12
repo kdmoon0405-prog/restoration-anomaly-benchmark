@@ -1,0 +1,65 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "image-score-aggregation-clean-control-20261112",
+  "prepared_utc": "2026-11-12T04:39:43.139817+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "PROGRESS.md",
+      "bytes": 2984,
+      "sha256": "4fc7ce4c59b4ff3dee8998c885c5cb5d85c1536bdcb871fd6912dc9820329e92"
+    },
+    {
+      "path": "PROTOCOL.json",
+      "bytes": 1319,
+      "sha256": "a43fac709ee972ef65b700bc3f77cdcb5de1f3da654c0dd319a234006f092b48"
+    },
+    {
+      "path": "RUN_RECORD.md",
+      "bytes": 2897,
+      "sha256": "98580f71531cdaf40cadfa5f35b4ec2d625acd1af62d2675643e8fed7aa1cc4c"
+    },
+    {
+      "path": "sessions/000.json",
+      "bytes": 483,
+      "sha256": "20f85640681e37448ab24fe72e9999f139dae78fac070f3ab2742f3631516ab4"
+    },
+    {
+      "path": "summary.csv",
+      "bytes": 3588,
+      "sha256": "ce633fc5619397dc930a8b4f26cf25964b56b35499992b6d68a534ae7f07efc1"
+    },
+    {
+      "path": "units/screw__historical_recovery__bicubic_x4.csv",
+      "bytes": 167506,
+      "sha256": "61a2426b42a3473a4ead03c7a8f60e7faf259a7ad3910aa142b573333ee996fa"
+    },
+    {
+      "path": "units/screw__historical_recovery__bicubic_x4.json",
+      "bytes": 2511,
+      "sha256": "10ef34e9bbc508f891f50c3800baed346cca2a9e8fce37fd4ff44d8b038b0753"
+    },
+    {
+      "path": "units/screw__historical_recovery__clean.csv",
+      "bytes": 160020,
+      "sha256": "18c2ca6524bd8327dfcbcd4b555602678d21d263d7a5ec1539aa683c0ddfdc80"
+    },
+    {
+      "path": "units/screw__historical_recovery__clean.json",
+      "bytes": 2502,
+      "sha256": "6faa4d3317177133ee29fd36712931a2bd4472c8161cc134d70dad7a38ae443c"
+    },
+    {
+      "path": "units/screw__historical_recovery__swinir_x4.csv",
+      "bytes": 166214,
+      "sha256": "5c38c732e54de8c3d53bdd53d9619aa79b792d0d1f5bf023c949f8c8b6b533dd"
+    },
+    {
+      "path": "units/screw__historical_recovery__swinir_x4.json",
+      "bytes": 2508,
+      "sha256": "8a32225690808c347ca41bdcad21ebbc23a90015e49ea354955c6e83b8a1b920"
+    }
+  ]
+}
