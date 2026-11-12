@@ -1,47 +1,37 @@
-# 주형 후속 작업 지시
+# Fable 설계·전체 근거 검토·실험을 이어가는 작업
 
-현재 저장소에서 설계 검토와 구현을 이어서 수행한다. 12월 초 최종 산출물을 목표로 하며, 새 장비 구매 없이 스마트폰과 책상 조명·사용 가능한 플래시로 촬영한다. 실제 part 수량과 결함 여부는 아직 확인 전이다. 본 지시는 촬영 전 소프트웨어 준비와 기존 저장 결과 대조를 승인한다. 새 사진을 가정한 성능 수치는 만들지 않는다.
+2026-11-12 지시. 포스터 발표일은12월1일로 확정됐다. 목표는 관련 실험을 무한히 늘리는 것이 아니라,검증된 연구 결과와 보유 스마트폰의 실물 촬영 도구를11월말까지 완성하는 것이다. 사용자 추가 구매 예산은0원이다. 기존 작업·bank·데이터·결과와 사용자 변경을 보존한다.
 
-## 먼저 확인할 완료 상태
+상위 연구 질문은 복원 화질과 이상 탐지의 관계,그리고 촬영 조건 관리가 검사 결과에 미치는 영향을 검증하는 것이다.
 
-기존 40unit×5집계 규칙은 200cell 완료됐고 CPU에서 scalar와 불확실성을 검토 중이다. 9사례 PNG3장과 private 결정 기록도 CPU에 도착했다. 해당 작업을 반복하지 않는다. 지혁은 bank-domain 실행을 맡고 CPU는 반환 분석·master 통합을 맡는다. 기존 연구 source·원본·bank·protocol·개인 변경은 보존한다.
+## 1. Fable5.2 독립 초안
 
-기준 문서는 docs/PHONE_LIGHTING_PILOT_DRAFT.md다. Source 위치가 handoff와 다르면 공개 feature branch의 정확한 commit을 기록하고, 실행·문서 전달 경로를 정리한다.
+실제 사용 모델명을 기록한다. 먼저 상위 연구 질문,12월1일 마감,스마트폰/책상 조명/플래시·추가구매0원 조건을 바탕으로 독립 설계 초안을 작성한다. 입력조건,필요한 실물,algorithm후보,최소baseline,측정할값,실패조건,최종화면과 마감까지의 범위를 정한다. 짧은 초안을 저장하고 다음 단계로 진행한다. 전체 연구의 과거 결론을 먼저 모방하는 방식으로 작성하지 않는다.
 
-## A. 독립 설계 검토와 범위 선택
+## 2. 기존 연구 전체를 근거와 대조
 
-현재 실행 환경에서 실제 사용할 모델명을 기록한다. Fable5.2를 사용할 수 있으면 설계 검토에 사용하되 기존 결과 CSV·source와 대조한다. 다음 후보를 필요한 입력, 개발량, 12월 초 시연 가능성, 검증 가능한 주장으로 비교한다.
+docs/FABLE_RESEARCH_EVIDENCE_REVIEW_20261112.md를 읽고 필요한 실제 CSV·JSON·code를 확인한다. Master165조건/8families/13protocol groups,고정taxonomy,PCB native/geometry·resource,실사형56+noise32,readout200cell,CPU/GPU controls를 검토한다. 기존negative gating/full110 B/B-uncertain과 공개 정정도 유지한다.
 
-- 단일 영상의 조명 보정과 입력 품질 관리
-- 여러 조명 영상의 정렬·반응 변화 분석과 고정 recipe 선택
-- Photometric stereo 확장
+선택사례의 인과해석,같은영상반복의 표본수,프로토콜 혼합,normalcalibration/testGT와 raw 미수신 범위를 점검한다. 독립 초안과 전체 근거 검토 후 설계의 수정 전후·이유를 기록한다. 핵심 주장2~3개,주력 구현 하나와 baseline을 고정한 뒤 실행한다. 이 승인된 범위 안의 구현 선택은 자율적으로 진행한다.
 
-주력 하나와 최소 baseline을 선택하고, 선택 근거·반례·성공 기준·남은 질문을 문서화한다. 사용자가 추가 구매를 원하지 않는 조건을 유지한다. 일정상 구현 가능한 범위에서 계속 진행한다. 다른 담당자의 bank-domain source와 CPU consumer를 동시에 재작성하지 않는다.
+## 3. 사진 없이 완료할 구현
 
-## B. 촬영 전 CPU 소프트웨어 구현
+기존 docs/PROMPT_JUHYUNG_PHONE_LIGHTING.md의 A/B와 최신 docs/PHONE_LIGHTING_POSTER_PLAN_20261112.md를 따른다. phone_* 별도영역에 manifest/EXIF/hash·part/session/recipe grouping,정렬·ROI·품질지표,리포트/CSV와 기존viewer 연결을 구현한다. 지표 수식·단위·threshold의 결정 데이터를 먼저 명시한다.
 
-phone_* 별도 모듈과 스크립트로 입력 manifest, EXIF/파일 hash, part/session/recipe/repeat 식별자와 동일 실물 grouping을 구현한다. 사소한 카메라 기울기와 조명 변화를 분리해 기록한다. 입력 누락·해상도 차이·잘못된 ID·동일 파일 중복을 검출한다.
+Synthetic 밝기/clipping/blur/shift와 누락입력·정렬실패·재촬영/REVIEW·중복 파일을 테스트한다. 폴더 입력부터 실제 실행 가능한 결과 화면을 만들고 브라우저에서 확인한다. Synthetic과 software replay를 실제 촬영·물리 latency와 구분한다. 사진 대기 중에도 이 단계와 포스터 근거 정리를 완료한다.
 
-기존 OpenCV/NumPy/이미지 입출력을 재사용해 고정 ROI의 품질 지표와 정렬 상태를 산출한다. 과노출·암부·gradient 선명도·정렬 잔차의 정의와 단위를 코드 작성 전에 명시한다. 합성 입력으로 밝기, clipping, blur, shift, 정상 종료와 실패 상태를 테스트한다. Synthetic 결과에는 그 출처를 표시한다.
+## 4. 저장 자료 대조와 사진 연결
 
-작은 로컬 결과 화면/리포트는 기존 viewer와 제어 계약을 먼저 검토해 확장한다. 원본/보정 영상, 품질 overlay, recipe, 판정/REVIEW, 재촬영 이력, CSV를 연결한다. RGB와 누락 map의 상태를 정확히 표시한다. 화면이 있으면 실제 브라우저에서 열어 스크린샷을 확인한다. 타이머의 software replay와 실물 지연을 구분한다.
+기존 source와 맞는 stored clean map control이 있으면 별도scope를 먼저 고정해 같은집계규칙을 적용할 수 있다. 기존40unit/200cell은 반복하지 않는다. 지혁은 bank-domain24+4와 producer를 맡고 CPU는 master/통계 consumer를 맡는다. 두 담당자의 같은 script를 재작성하지 않는다.
 
-실제 사진이 없어도 코드·synthetic E2E·촬영 안내·반환 schema까지 마친다. WAITING 하나만 남기며 종료하지 않는다.
+첫 사진은 기판 부위 또는 보유USB-A커넥터의3조명×3반복9장이다. 실제 수량·결함상태는 아직 미확인이다. 사진이 도착하면 품질/정렬 audit를 한 번 수행하고 고정된 방법으로 진행한다. 실제 정상/결함과 part/session 분리를 고려해 탐지평가 가능 범위를 정한다. 입력이 부족하면 동일물체의 조명변화·반복성까지 완성한다. Test결과로 방법·threshold·checkpoint를 재선택하지 않는다.
 
-## C. 기존 저장 자료로 가능한 대조
+## 5. Poster와 시연 묶음
 
-Clean(non-x4) Hazelnut/Screw 원본 score/map의 존재와 bank·split·geometry 연결을 한 번 확인한다. 일치하는 저장 자료가 있으면 기존 v0.1을 보존하고 clean aggregation control을 별도 v0.2 scope로 먼저 고정해 같은 다섯 규칙을 평가한다. 원래 결과와 family가 다르면 그 차이를 유지해 보고한다. 자료가 없으면 재추론을 자동 추가하지 않고 B의 독립 구현을 마친다.
+기존 결과의 핵심그림,효과크기·반복·한계 표,source연결,실물/소프트웨어 화면,짧은 재현 명령과 시연 영상을 준비한다. 확정된 poster template/규격이 없으면 편집 가능한 본문·그림 원고를 먼저 만든다. 새 연구 수치를 만들거나 미도착 실험을 완료로 집계하지 않는다. 11월23일까지 핵심실험을 정리하고11월27일poster초안을 완성한다.
 
-CPU가 제공하는 새 통계와 주형의 원인 가설을 대조한다. 점수 집계와 bank/query domain 차이, 조명 조건의 영향을 분리한 주장–근거 표 초안을 작성한다. Matched-bank 미회복만으로 정보 소실을 확정하지 않는다.
+## 6. 전달과 기록
 
-## D. 사진 도착 이후의 실행 계약
+계획만 남기지 말고 설계→검토→코드·테스트→실험 가능한 범위→그림·발표 원고까지 유한한 queue를 진행한다. 짧은 작업은 category/session 단위,긴 작업은 검증 가능한 완료단위로 반환한다. Source/환경/입력/protocol/결과·재현 명령을 연결한다. 기존 메모리 guard와 실제 측정·추정·미측정의 구분을 유지한다.
 
-첫 입력은 같은 기판 세 조명×세 반복의 9장이다. 고정 카메라/부품에서 조명을 변경한다. 기울기는 별도 축이다. 추가 자료가 오면 동일 part/session을 기준으로 development와 평가를 구분한다. 확인된 실제 결함과 모사 결함을 구별한다.
-
-실물용 bank/calibration과 알고리즘 비교 후보를 development에서 고정한다. 정상/결함 입력이 충분한 범위에서 오검·미검·재촬영·REVIEW를 모두 포함해 평가한다. 촬영이 부족한 경우 동일 물체 반복성 실험의 결과와 한계를 완성한다. 실측 전 성능·처리량·높이 계측값을 채우지 않는다.
-
-## E. 전달과 마무리
-
-작업을 기능 단위로 commit하고 targeted CPU 테스트·smoke·diff 검사를 수행한다. 공개 코드·schema·익명 수치/문서는 feature branch와 handoff/juhyung으로 전달한다. RGB/GT 그림·raw 배열·실제 private 결정 기록은 기존 비공개 경로를 유지한다. Protocol·source commit·완료 범위·재현 명령을 반환한다.
-
-Private 결정 기록에는 실제로 확인한 문제, 검토한 대안, 선택 이유, 측정 근거, 수정 전후와 남은 질문을 기록한다. 당시 기록과 사후 해석을 구분하고 ignored/untracked인지 확인한다. 이 파일은 사용자에게 비공개로 보내 중앙 notes/RESEARCH_EVOLUTION_LOCAL.md에 통합할 수 있게 한다.
+Code·공개 schema/수치·문서는 feature branch와 handoff/juhyung으로 전달한다. RGB/GT/raw array·실제 private 결정 기록은 기존 비공개 범위를 유지한다. Private 기록에는 근거가 있는 대안·선택 이유·수정 사항·남은 질문을 남기고 당시 기록과 사후 해석을 구분한다. Git ignored/untracked 확인 후 사용자에게 비공개로 반환한다.

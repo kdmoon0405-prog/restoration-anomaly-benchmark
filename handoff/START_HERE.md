@@ -1,7 +1,10 @@
-# 주형 다음 작업
+# 주형 전달 시작점
 
-기존40unit×5규칙 반환은 CPU에서 검토했다. 200cell scalar 검산과160 paired AUROC bootstrap 구간을 작성했고, 관련39tests와CPU smoke2행이 통과했다. 공개 CPU 분석은 exp/image-score-return-analysis@57235a2에 있다.
+2026-11-12 갱신. 포스터 발표는12월1일이다. Fable5.2 독립 설계→전체 연구 근거 검토→수정 설계 고정→구현·실험·발표 그림 순서로 진행한다.
 
-다음 작업은 handoff/NEXT_TASK.md와 docs/PHONE_LIGHTING_PILOT_DRAFT.md를 따른다. 스마트폰·책상 조명으로 추가 구매 없이 촬영할 파일럿의 독립 설계 검토와 소프트웨어 구현을 준비한다. 실제 사진은 아직 수신 전이다. 지혁의 bank-domain 실행과 CPU 분석 source는 각 담당자가 유지한다.
+- 실행 지시는 handoff/NEXT_TASK.md
+- 전체 근거 인계는 docs/FABLE_RESEARCH_EVIDENCE_REVIEW_20261112.md
+- 촬영 대상·최신 일정은 docs/PHONE_LIGHTING_POSTER_PLAN_20261112.md
+- 구현 세부계약은 docs/PROMPT_JUHYUNG_PHONE_LIGHTING.md를 보유한 CPU branch의 내용을 함께 확인한다.
 
-RGB/GT 사례 그림3장과 private 결정 기록은 CPU에 비공개 수신됐다. 실제 private 기록과 사례 PNG의 보관 범위는 기존과 같다.
+기존9사례/noise32/image-score200은 CPU검토까지 완료했다. 같은작업을 반복하지 않고 새로 정의한 후속queue를 진행한다. 실제 사진·실물결함 수량은 미확인이고 추가구매는 없다. RGB/GT/private원문은 기존 비공개 경로를 유지한다.
