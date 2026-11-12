@@ -26,3 +26,10 @@
 현재 가능한 실행을 실제로 진행하고 category/seed가 끝날 때마다 반환한다. 같은 누락 자료의 반복 보고로 종료하지 않는다.
 
 과거 결정은 당시 남긴 기록으로 확인 가능한 부분을 소급 정리한다. 당시 기록과 현재의 사후 해석을 구분하고 확인되지 않는 이유를 채워 넣지 않는다.
+
+
+## 2026-11-12 수행·결정 기록 반환 보완
+
+기존 고정 bank-domain24+4 실험을 설계담당자의 검토와 함께 계속 진행한다. Source·split·calibration·sampler 기준과 자원 guard는 기존 계약을 따른다. PROGRESS.md에 실제 수행·결과·실패·수정·검증을 기록하고,ignored/untracked private RESEARCH_EVOLUTION_LOCAL.md에 대안·근거·선택 이유·수정 전후·남은 질문을 기록한다.
+
+각 완료단위 결과와 함께 공개 PROGRESS 및 비공개 결정 노트 증분/전체본을 각각의 경로로 반환한다. 대응 run-id/commit과 마지막 결정 ID를 알려 CPU의 중앙 비공개 노트에 통합할 수 있게 한다. 상세 계약과 작성 항목은 handoff/RECORDING_AND_RETURN.md를 따른다. 포스터 발표는12월1일이다.
