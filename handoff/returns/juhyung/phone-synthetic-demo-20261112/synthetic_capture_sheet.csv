@@ -1,0 +1,17 @@
+file,part_id,session_id,recipe_id,repeat_id,attempt,label_status,light_position,reference,roi_x0,roi_y0,roi_x1,roi_y1
+front_r1.jpg,P1,S1,front,1,1,unknown,front,1,0.1,0.1,0.9,0.9
+front_r2.jpg,P1,S1,front,2,1,unknown,front,,,,,
+front_r3.jpg,P1,S1,front,3,1,unknown,front,,,,,
+left_r1.jpg,P1,S1,left,1,1,unknown,left,,,,,
+left_r2.jpg,P1,S1,left,2,1,unknown,left,,,,,
+left_r3.jpg,P1,S1,left,3,1,unknown,left,,,,,
+right_r1.jpg,P1,S1,right,1,1,unknown,right,,,,,
+right_r2.jpg,P1,S1,right,2,1,unknown,right,,,,,
+right_r2_retake.jpg,P1,S1,right,2,2,unknown,right,,,,,
+right_r3.jpg,P1,S1,right,3,1,unknown,right,,,,,
+front_r6_mildblur.jpg,P1,S1,front,6,1,unknown,front,,,,,
+dim_r1.jpg,P1,S1,dim,1,1,unknown,dim,,,,,
+flash_r1.jpg,P1,S1,flash,1,1,unknown,flash,,,,,
+front_r4.jpg,P1,S1,front,4,1,unknown,front,,,,,
+front_r5.jpg,P1,S1,front,5,1,unknown,front,,,,,
+bad_id.jpg,bad id!,S1,front,1,1,unknown,front,,,,,

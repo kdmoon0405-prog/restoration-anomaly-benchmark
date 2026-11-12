@@ -1,0 +1,15 @@
+cycle_id,part_id,recipe_id,image_ref,verdict,prediction_ref,started_at_seconds,completed_at_seconds,clock_kind
+S1-front-r1-a1,P1,front,933bf986f14a7282bd12204c27f9bc8b07ce65ac86b5c63a879115d5413e5bac,REVIEW,phone_quality:PASS,0.1,0.2,simulation_seconds
+S1-front-r2-a1,P1,front,be82cbb13caf75cc4b49a8267d8333820b594fc3196f0185fd217ede18d813ec,REVIEW,phone_quality:PASS,0.4,0.5,simulation_seconds
+S1-front-r3-a1,P1,front,cb757b27b9c68ec2e7b7d1f47d7372e163b1dc4edbfb67eb90253673cb16c991,REVIEW,phone_quality:RETAKE,0.7,0.8,simulation_seconds
+S1-left-r1-a1,P1,left,decda5b0aebeddcd0f71aeeb1282139dfbe574afb8221406443d3c423bbaeb06,REVIEW,phone_quality:PASS,1.0,1.1,simulation_seconds
+S1-left-r2-a1,P1,left,8ca6b0da6ec659460a9a5c10cc995760c6b31a2046288b7ae13c4ae8c055884a,REVIEW,phone_quality:PASS,1.3,1.4,simulation_seconds
+S1-left-r3-a1,P1,left,dc31a1135578f0ce54bd0cd1ce081f7404130d2fa7ee2a9b9047bddc2e10f47e,REVIEW,phone_quality:REVIEW,1.6,1.7,simulation_seconds
+S1-right-r1-a1,P1,right,a3e6fe6c2f79e7ea7e01473ff7b17b1c7a9713a1b25a0bf8f26b2ccd01db7102,REVIEW,phone_quality:PASS,1.9,2.0,simulation_seconds
+S1-right-r2-a1,P1,right,e09e4685d7ade9e7748ddbb3c807cebe8e214c4eef4aff52aaef74f9d4bf1e9c,REVIEW,phone_quality:RETAKE,2.2,2.3,simulation_seconds
+S1-right-r2-a2,P1,right,1e2e60a8ed2fa1535950a6a71c678e6a2c76d3b92d628cf800817030c043dd64,REVIEW,phone_quality:PASS,2.5,2.6,simulation_seconds
+S1-right-r3-a1,P1,right,424678ba0364b43b6eb9865cdde977c6f8afd9931569569722e7af7a2267c899,REVIEW,phone_quality:PASS,2.8,2.9,simulation_seconds
+S1-front-r6-a1,P1,front,9e289028da77ed931d2186bc69d2ace86525502ca680ac0870646e8ea30bd772,REVIEW,phone_quality:REVIEW,3.1,3.2,simulation_seconds
+S1-dim-r1-a1,P1,dim,83330f186261165132e982e37a2fbd928d9100f8aa2e51f0dca52dfa16702b2e,REVIEW,phone_quality:REVIEW,3.4,3.5,simulation_seconds
+S1-flash-r1-a1,P1,flash,6c7c764218806a62b15762f3e9141194b7194261525c6e5536ec476b61d40db1,REVIEW,phone_quality:RETAKE,3.7,3.8,simulation_seconds
+S1-front-r5-a1,P1,front,933bf986f14a7282bd12204c27f9bc8b07ce65ac86b5c63a879115d5413e5bac,REVIEW,phone_quality:REVIEW,4.0,4.1,simulation_seconds

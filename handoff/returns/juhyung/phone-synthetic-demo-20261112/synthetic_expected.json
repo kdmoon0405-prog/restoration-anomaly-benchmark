@@ -1,0 +1,95 @@
+{
+ "kind": "synthetic",
+ "generator": "scripts/make_phone_synthetic_set.py",
+ "seed": 11,
+ "size": [
+  1600,
+  1200
+ ],
+ "rows": {
+  "2": {
+   "file": "front_r1.jpg",
+   "state": "PASS",
+   "reason": null
+  },
+  "3": {
+   "file": "front_r2.jpg",
+   "state": "PASS",
+   "reason": null
+  },
+  "4": {
+   "file": "front_r3.jpg",
+   "state": "RETAKE",
+   "reason": "alignment_failed"
+  },
+  "5": {
+   "file": "left_r1.jpg",
+   "state": "PASS",
+   "reason": null
+  },
+  "6": {
+   "file": "left_r2.jpg",
+   "state": "PASS",
+   "reason": null
+  },
+  "7": {
+   "file": "left_r3.jpg",
+   "state": "REVIEW",
+   "reason": "setup_moved"
+  },
+  "8": {
+   "file": "right_r1.jpg",
+   "state": "PASS",
+   "reason": null
+  },
+  "9": {
+   "file": "right_r2.jpg",
+   "state": "RETAKE",
+   "reason": "clip_high"
+  },
+  "10": {
+   "file": "right_r2_retake.jpg",
+   "state": "PASS",
+   "reason": null
+  },
+  "11": {
+   "file": "right_r3.jpg",
+   "state": "PASS",
+   "reason": null
+  },
+  "12": {
+   "file": "front_r6_mildblur.jpg",
+   "state": "REVIEW",
+   "reason": "low_sharpness"
+  },
+  "13": {
+   "file": "dim_r1.jpg",
+   "state": "REVIEW",
+   "reason": "luma_out_of_range"
+  },
+  "14": {
+   "file": "flash_r1.jpg",
+   "state": "RETAKE",
+   "reason": "alignment_failed"
+  },
+  "15": {
+   "file": "front_r4.jpg",
+   "state": "RETAKE",
+   "reason": "missing_file"
+  },
+  "16": {
+   "file": "front_r5.jpg",
+   "state": "REVIEW",
+   "reason": "duplicate_of_row_2"
+  },
+  "17": {
+   "file": "bad_id.jpg",
+   "state": "REVIEW",
+   "reason": "invalid_row"
+  }
+ },
+ "unlisted": [
+  "extra_unlisted.jpg"
+ ],
+ "note": "Synthetic board-like texture; lighting is a multiplicative gradient, not a physical light model."
+}
