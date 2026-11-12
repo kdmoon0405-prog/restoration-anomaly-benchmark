@@ -323,7 +323,8 @@ def render(captures, unlisted, slots, rep, recipe, manifest) -> str:
 <title>Phone capture audit</title><style>
 :root{{--bg:#f6f7f9;--fg:#17202b;--card:#fff;--muted:#526174;--line:#dde1e6}}
 @media (prefers-color-scheme:dark){{:root{{--bg:#14181d;--fg:#e6e9ed;--card:#1d232a;--muted:#9aa6b3;--line:#323a44}}}}
-body{{font:15px system-ui,sans-serif;background:var(--bg);color:var(--fg);margin:16px;max-width:1500px}}
+body{{font:15px system-ui,sans-serif;background:var(--bg);color:var(--fg);margin:16px;max-width:1500px;overflow-wrap:anywhere}}
+h1,h2,p{{max-width:100%}}
 .note{{background:#fff4d7;color:#3b2a00;padding:12px;border-left:4px solid #a57910}}.card{{background:var(--card);padding:12px;margin:12px 0}}
 .imgs{{display:flex;flex-wrap:wrap;gap:10px}}figure{{margin:0;max-width:320px}}img{{max-width:100%;display:block}}figcaption,.muted{{color:var(--muted);font-size:13px}}
 .badge{{padding:2px 8px;border-radius:4px;font-weight:600}}.pass{{background:#d9f2df;color:#0c4a1d}}.review{{background:#fff1c2;color:#5c4100}}.retake{{background:#ffd9d6;color:#6b0f08}}
@@ -336,7 +337,9 @@ not physical latency. Luma is code-value Y (0–255), not lux.</p>
 unlisted files {s['unlisted_files']} · slots {s['slots']} (resolved {s['slots_resolved']}, unresolved {s['slots_unresolved']}) ·
 station verdicts {', '.join(s['station_verdicts']) or '—'} (detector not connected)</p>
 <h2>Slots and retake history</h2>{_table(slots, ['part_id', 'session_id', 'recipe_id', 'repeat_id', 'attempts', 'history', 'final_state'])}
-<h2>Repeatability: no-policy baseline vs PASS-only</h2>{_table(rep, ['scope', 'part_id', 'session_id', 'recipe_id', 'slots', 'used', 'pairs', 'pairwise_mae_mean', 'pairwise_mae_max', 'luma_mean_mean', 'luma_mean_range', 'clip_high_fraction_mean', 'sharpness_tenengrad_mean', 'sharpness_tenengrad_range'])}
+<h2>Repeatability: no-policy baseline vs PASS-only</h2>
+<p class="muted">Latest attempt per slot. Pairwise MAE = mean |ΔY| on the aligned ROI; only captures that aligned to the reference can
+enter pairs, so 'used' ≤ 'slots' even without a policy. Repeats of one object are not independent parts.</p>{_table(rep, ['scope', 'part_id', 'session_id', 'recipe_id', 'slots', 'used', 'pairs', 'pairwise_mae_mean', 'pairwise_mae_max', 'luma_mean_mean', 'luma_mean_range', 'clip_high_fraction_mean', 'sharpness_tenengrad_mean', 'sharpness_tenengrad_range'])}
 <h2>Between-recipe vs within-recipe spread</h2>{_table(recipe, ['scope', 'part_id', 'session_id', 'metric', 'recipes', 'between_recipe_range', 'mean_within_recipe_range'])}
 <h2>Captures</h2>{''.join(cards)}
 {('<h2>Unlisted files</h2>' + _table(unlisted, ['file', 'sha256'])) if unlisted else ''}
