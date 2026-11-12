@@ -43,3 +43,12 @@ Synthetic 밝기/clipping/blur/shift와 누락입력·정렬실패·재촬영/RE
 Code·공개 schema/수치·문서는 feature branch와 handoff/juhyung으로 전달한다. RGB/GT/raw array·실제 private 결정 기록은 기존 비공개 범위를 유지한다. Private 기록에는 근거가 있는 대안·선택 이유·수정 사항·남은 질문을 남기고 당시 기록과 사후 해석을 구분한다. Git ignored/untracked 확인 후 사용자에게 비공개로 반환한다.
 
 각 완료단위의 반환에 공개 PROGRESS와 비공개 결정 노트의 갱신도 포함한다. 세부 작성·반환 계약은 handoff/RECORDING_AND_RETURN.md다.
+
+
+## CPU 후속 검토 완료 (2026-11-12)
+
+5794b2d까지4반환/34파일과clean-control15cell을CPU에서검산했다. Phone source aa2f7fa의24tests가로컬에서도통과했고synthetic E2E 보고서를브라우저에서열어데스크톱/모바일PNG로확인했다. 세부범위·한계는 handoff/cpu_reviews/20261112/REVIEW.md를따른다. 기존작업을반복하지않는다.
+
+다음작은UI수정은본문이모바일viewport에맞도록하고긴표에만가로scroll을두는것이다. 현재390px화면은안내문/표가잘린다. 대표원본/품질overlay와짧은요약을첫화면에서볼수있는구성도검토한다. Desktop시연/실사진수신과병행할수있으며CPU가phone실행source를수정하지않았다. 실제사진은최신JPEG가이드로받는다.
+
+Fable재검토초안은기존문맥을본상태였다는원격기록을그대로유지한다. 새private결정원문은아직CPU에미수신이다. 다음완료단위에서공개PROGRESS와비공개결정노트의갱신도반환한다.

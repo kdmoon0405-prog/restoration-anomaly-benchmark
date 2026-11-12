@@ -1,0 +1,21 @@
+{
+  "source_commit": "5794b2d5b3a72a4be9058161d015dd3e230009bb",
+  "runs": {
+    "design-review-20261112": {
+      "receipt_sha256": "ff02d11210ab66f0e8123a34b218e8126112eb886972fb095abcf159c630597a",
+      "files_verified": 3
+    },
+    "fable52-rereview-20261112": {
+      "receipt_sha256": "e4eba27e934c43250245ba93cb381de08537ba41eb8dfba44e72fdc0c587ad8d",
+      "files_verified": 10
+    },
+    "image-score-aggregation-clean-control-20261112": {
+      "receipt_sha256": "fe157b2368a03fb7fd39f2803f6f0b832e6c401eaff99b6f5747d6306c2ca8a8",
+      "files_verified": 11
+    },
+    "phone-synthetic-demo-20261112": {
+      "receipt_sha256": "a5eb3165539e9033c308fd3058b3516df97de2be1f7d6ee6951b404044c140e4",
+      "files_verified": 10
+    }
+  }
+}

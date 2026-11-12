@@ -1,0 +1,96 @@
+{
+  "units": 3,
+  "cells": 15,
+  "classification_only": true,
+  "results": [
+    {
+      "variant": "bicubic_x4",
+      "rule": "original",
+      "image_auroc": 0.4800163968026235
+    },
+    {
+      "variant": "bicubic_x4",
+      "rule": "map_max",
+      "image_auroc": 0.4529616724738676
+    },
+    {
+      "variant": "bicubic_x4",
+      "rule": "top0.1pct_mean",
+      "image_auroc": 0.4496823119491699
+    },
+    {
+      "variant": "bicubic_x4",
+      "rule": "top0.5pct_mean",
+      "image_auroc": 0.43984423037507686
+    },
+    {
+      "variant": "bicubic_x4",
+      "rule": "top1pct_mean",
+      "image_auroc": 0.4347202295552367
+    },
+    {
+      "variant": "clean",
+      "rule": "original",
+      "image_auroc": 0.9842180774748924
+    },
+    {
+      "variant": "clean",
+      "rule": "map_max",
+      "image_auroc": 0.9831932773109243
+    },
+    {
+      "variant": "clean",
+      "rule": "top0.1pct_mean",
+      "image_auroc": 0.9840131174420987
+    },
+    {
+      "variant": "clean",
+      "rule": "top0.5pct_mean",
+      "image_auroc": 0.9842180774748924
+    },
+    {
+      "variant": "clean",
+      "rule": "top1pct_mean",
+      "image_auroc": 0.9825783972125436
+    },
+    {
+      "variant": "swinir_x4",
+      "rule": "original",
+      "image_auroc": 0.6786226685796269
+    },
+    {
+      "variant": "swinir_x4",
+      "rule": "map_max",
+      "image_auroc": 0.6343513014962082
+    },
+    {
+      "variant": "swinir_x4",
+      "rule": "top0.1pct_mean",
+      "image_auroc": 0.626152900184464
+    },
+    {
+      "variant": "swinir_x4",
+      "rule": "top0.5pct_mean",
+      "image_auroc": 0.6027874564459931
+    },
+    {
+      "variant": "swinir_x4",
+      "rule": "top1pct_mean",
+      "image_auroc": 0.5827013732322197
+    }
+  ],
+  "source_checks": {
+    "phone-synthetic-demo-20261112": {
+      "scripts/run_phone_capture_audit.py": "git_blob",
+      "src/sr_anomaly/phone_capture.py": "git_blob",
+      "src/sr_anomaly/inspection_station.py": "git_blob",
+      "docs/PHONE_QUALITY_PROTOCOL_V0.1.md": "git_blob"
+    },
+    "fable52-rereview-20261112": {
+      "scripts/run_phone_capture_audit.py": "git_CRLF_checkout",
+      "src/sr_anomaly/phone_capture.py": "git_CRLF_checkout",
+      "src/sr_anomaly/inspection_station.py": "git_blob",
+      "docs/PHONE_QUALITY_PROTOCOL_V0.1.md": "git_CRLF_checkout"
+    }
+  }
+}

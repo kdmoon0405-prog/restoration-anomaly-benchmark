@@ -1,0 +1,37 @@
+{
+  "return_commit": "5794b2d",
+  "receipts": 4,
+  "supplied_files_verified": 34,
+  "clean_control_units": 3,
+  "clean_control_cells": 15,
+  "raw_arrays_locally_received": false,
+  "phone_expected_listed_states": 16,
+  "phone_discovered_rows": 17,
+  "slots": 14,
+  "resolved_slots": 7,
+  "station_verdicts": [
+    "REVIEW"
+  ],
+  "local_source": "aa2f7fa278c73682413075d9ca619319d6d487c8",
+  "local_pytest": {
+    "passed": 24,
+    "seconds": 97.7,
+    "scope": "test_phone_capture.py plus test_inspection_station.py",
+    "ancillary_resource_query_failed": "psutil unavailable after pytest;existing _budget passed in separate check"
+  },
+  "local_browser": "headless Edge;desktop1440x1100,mobile390x844 PNGs viewed",
+  "browser_limit": "mobile text/table clipping;clicks and console not checked",
+  "input_kind": "synthetic",
+  "detector": "not_connected",
+  "real_photos_received": false,
+  "fable_independent_draft": false,
+  "fable_attribution": "reported Fable5.2 re-review after Opus5.5 initial work",
+  "clean_source_forms": {
+    "scripts/run_image_score_aggregation_clean_control.py": "git_blob",
+    "scripts/run_image_score_aggregation.py": "git_blob",
+    "src/sr_anomaly/image_score_aggregation.py": "git_blob",
+    "src/sr_anomaly/evaluation.py": "git_blob",
+    "src/sr_anomaly/pcb_board_analysis.py": "git_blob",
+    "docs/IMAGE_SCORE_AGGREGATION_V0.2_CLEAN_CONTROL.md": "git_blob"
+  }
+}
