@@ -4,6 +4,12 @@
 
 상위 연구 질문은 복원 화질과 이상 탐지의 관계,그리고 촬영 조건 관리가 검사 결과에 미치는 영향을 검증하는 것이다.
 
+## 진행 원칙과 기록
+
+기준이 고정된 실험·구현은 Fable 설계 검토와 함께 계속 진행한다. 설계 전체가 끝날 때까지 기존 queue를 대기시키지 않는다. 새로운 방법의 첫 test 비교 전에는 그 실험의 질문·대조군·분할·지표·선택 기준을 짧게 고정한다. 자원 guard 안에서 승인된 범위의 선택과 실행을 자율적으로 이어간다.
+
+handoff/RECORDING_AND_RETURN.md를 따른다. PROGRESS.md에는 수행 사실·결과·실패·검증·다음 작업을,비공개 RESEARCH_EVOLUTION_LOCAL.md에는 대안·근거·선택 이유·수정 전후·남은 질문을 기록한다. 완료단위 결과와 함께 두 기록도 각각 공개/비공개 경로로 반환한다.
+
 ## 1. Fable5.2 독립 초안
 
 실제 사용 모델명을 기록한다. 먼저 상위 연구 질문,12월1일 마감,스마트폰/책상 조명/플래시·추가구매0원 조건을 바탕으로 독립 설계 초안을 작성한다. 입력조건,필요한 실물,algorithm후보,최소baseline,측정할값,실패조건,최종화면과 마감까지의 범위를 정한다. 짧은 초안을 저장하고 다음 단계로 진행한다. 전체 연구의 과거 결론을 먼저 모방하는 방식으로 작성하지 않는다.
@@ -12,7 +18,7 @@
 
 docs/FABLE_RESEARCH_EVIDENCE_REVIEW_20261112.md를 읽고 필요한 실제 CSV·JSON·code를 확인한다. Master165조건/8families/13protocol groups,고정taxonomy,PCB native/geometry·resource,실사형56+noise32,readout200cell,CPU/GPU controls를 검토한다. 기존negative gating/full110 B/B-uncertain과 공개 정정도 유지한다.
 
-선택사례의 인과해석,같은영상반복의 표본수,프로토콜 혼합,normalcalibration/testGT와 raw 미수신 범위를 점검한다. 독립 초안과 전체 근거 검토 후 설계의 수정 전후·이유를 기록한다. 핵심 주장2~3개,주력 구현 하나와 baseline을 고정한 뒤 실행한다. 이 승인된 범위 안의 구현 선택은 자율적으로 진행한다.
+선택사례의 인과해석,같은영상반복의 표본수,프로토콜 혼합,normalcalibration/testGT와 raw 미수신 범위를 점검한다. 독립 초안과 전체 근거 검토 후 설계의 수정 전후·이유를 기록한다. 핵심 주장2~3개,주력 구현 하나와 baseline을 고정해 새 방법의 평가를 시작한다. 기존 기준의 실험과 독립 구현은 검토 중에도 계속한다. 이 승인된 범위 안의 구현 선택은 자율적으로 진행한다.
 
 ## 3. 사진 없이 완료할 구현
 
@@ -32,6 +38,8 @@ Synthetic 밝기/clipping/blur/shift와 누락입력·정렬실패·재촬영/RE
 
 ## 6. 전달과 기록
 
-계획만 남기지 말고 설계→검토→코드·테스트→실험 가능한 범위→그림·발표 원고까지 유한한 queue를 진행한다. 짧은 작업은 category/session 단위,긴 작업은 검증 가능한 완료단위로 반환한다. Source/환경/입력/protocol/결과·재현 명령을 연결한다. 기존 메모리 guard와 실제 측정·추정·미측정의 구분을 유지한다.
+설계·근거 검토와 함께 기준이 고정된 실험·코드·테스트·그림·발표 원고의 유한한 queue를 계속 진행한다. 짧은 작업은 category/session 단위,긴 작업은 검증 가능한 완료단위로 반환한다. Source/환경/입력/protocol/결과·재현 명령을 연결한다. 기존 메모리 guard와 실제 측정·추정·미측정의 구분을 유지한다.
 
 Code·공개 schema/수치·문서는 feature branch와 handoff/juhyung으로 전달한다. RGB/GT/raw array·실제 private 결정 기록은 기존 비공개 범위를 유지한다. Private 기록에는 근거가 있는 대안·선택 이유·수정 사항·남은 질문을 남기고 당시 기록과 사후 해석을 구분한다. Git ignored/untracked 확인 후 사용자에게 비공개로 반환한다.
+
+각 완료단위의 반환에 공개 PROGRESS와 비공개 결정 노트의 갱신도 포함한다. 세부 작성·반환 계약은 handoff/RECORDING_AND_RETURN.md다.
