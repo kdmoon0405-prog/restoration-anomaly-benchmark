@@ -34,7 +34,9 @@ A capture folder holds the image files plus `capture_sheet.csv` (UTF-8). It has 
 
 ## 3. Quality metrics
 
-All metrics are computed inside the ROI on the **aligned** working image, i.e. warped into the reference frame. If alignment fails, they use the unaligned ROI and say so. Y is code-value luma, 0–255, without linearization; it is not photometric luminance.
+All metrics are computed on the **unwarped** working image, inside the ROI projected from the reference frame through the estimated homography (nearest-neighbour mask, no pixel resampling). If alignment fails, they use the reference box on the unaligned image and say so (`quality_basis`). The warped image is used only for the pairwise difference in §4.
+
+Pre-data amendment 2 (2026-11-12, Fable 5.2 review, before any real photo): v0.1 first computed the metrics on the bilinear-warped image. A measured check on synthetic input showed that a 0.25–0.5 px shift alone lowers `sharpness_tenengrad` to 0.79–0.73× and `noise_sigma` to 0.45–0.29×, while the unwarped reference is unaffected. That biases every reference-vs-other and recipe comparison, so the metrics now use unwarped pixels. No threshold changed. Y is code-value luma, 0–255, without linearization; it is not photometric luminance.
 
 | metric | formula | unit |
 | --- | --- | --- |
@@ -60,7 +62,7 @@ Sharpness and noise also depend on texture, so they are compared only within a p
   - inliers, ratio and median error, in working px and in full-res px
   - homography decomposed into translation (fraction of working width), rotation (degrees) and scale deviation (|s − 1|)
 - **Camera moved** (`setup_moved`): translation > 0.02, or rotation > 1.0°, or scale deviation > 0.02. This keeps a camera or tilt change separate from a lighting change.
-- **Repeatability:** pairwise mean absolute Y difference (0–255) on the aligned ROI between repeats of the same recipe. Pixels outside the warped frame are excluded.
+- **Repeatability:** pairwise mean absolute Y difference (0–255) on the aligned ROI between repeats of the same recipe. Pixels outside the warped frame are excluded. Both images are bilinearly resampled, which smooths noise by a shift-dependent amount, so small MAE differences between pairs are not interpreted.
 
 ## 5. Capture policy (fixed)
 

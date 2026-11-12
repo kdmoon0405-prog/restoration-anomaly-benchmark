@@ -155,24 +155,25 @@ def audit(folder: Path, output: Path, *, kind: str, guard=_budget, root=ROOT) ->
                 c["align_reproj_median_fullres_px"] = a["reproj_median_px"] / c["work_scale"]
             c["setup_moved"] = pc.setup_moved(a)
             x0, y0, x1, y1 = box
-            if a["success"]:
-                warped, valid = pc.warp_to_reference(work[c["row"]], a["matrix"], ref_rgb.shape)
-                roi, vroi = warped[y0:y1, x0:x1], valid[y0:y1, x0:x1]
-                c["quality_basis"] = "aligned_roi"
-            else:
-                m = work[c["row"]]
-                roi = m[y0:min(y1, m.shape[0]), x0:min(x1, m.shape[1])]
-                vroi = np.ones(roi.shape[:2], bool)
-                c["quality_basis"] = "unaligned_roi"
+            m = work[c["row"]]
             try:
-                c.update(pc.quality(roi, vroi))
+                if a["success"]:
+                    # Quality on the UNWARPED pixels inside the projected ROI (interpolation would bias sharpness/noise).
+                    q_rgb, q_mask = pc.crop_to_mask(m, pc.project_roi_mask(a["matrix"], box, ref_rgb.shape, m.shape))
+                    c["quality_basis"] = "projected_roi_unwarped"
+                else:
+                    q_rgb = m[y0:min(y1, m.shape[0]), x0:min(x1, m.shape[1])]
+                    q_mask = np.ones(q_rgb.shape[:2], bool)
+                    c["quality_basis"] = "reference_box_unaligned"
+                c.update(pc.quality(q_rgb, q_mask))
             except ValueError as e:
                 c["alignment_success"], c["alignment_failure"] = False, str(e)
                 continue
-            c["_thumb"] = _png_uri(work[c["row"]])
-            c["_clip"] = _png_uri(_clip_overlay(roi))
-            if a["success"]:
-                aligned[c["row"]] = (roi, vroi)
+            c["_thumb"] = _png_uri(m)
+            c["_clip"] = _png_uri(_clip_overlay(q_rgb))
+            if a["success"]:  # warped copy only for pairwise differences and the difference image
+                warped, valid = pc.warp_to_reference(m, a["matrix"], ref_rgb.shape)
+                aligned[c["row"]] = (warped[y0:y1, x0:x1], valid[y0:y1, x0:x1])
         ref_roi = aligned.get(reference["row"])
         for c in members:
             if ref_roi is not None and c["row"] in aligned and c is not reference:

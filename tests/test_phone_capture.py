@@ -113,3 +113,20 @@ def test_memory_block_marks_unreadable(tmp_path, monkeypatch):
     rows = list(csv.DictReader(open(tmp_path / "out/captures.csv", encoding="utf-8")))
     assert m["summary"]["states"]["PASS"] == 0
     assert any("BLOCKED_MEMORY" in r["error"] for r in rows)
+
+
+def test_quality_uses_unwarped_pixels_so_subpixel_shift_does_not_bias(monkeypatch):
+    monkeypatch.setattr(synth, "W", 800)
+    monkeypatch.setattr(synth, "H", 600)
+    img = synth.lit(synth.board(11), "front", noise_seed=1)
+    box = pc.roi_box(img.shape, (0.1, 0.1, 0.9, 0.9))
+    base = pc.quality(img[box[1]:box[3], box[0]:box[2]])
+    shift = np.array([[1, 0, 0.5], [0, 1, 0.5], [0, 0, 1.0]])  # reference -> moving, half-pixel
+    q = pc.quality(*pc.crop_to_mask(img, pc.project_roi_mask(shift, box, img.shape, img.shape)))
+    assert q["sharpness_tenengrad"] == pytest.approx(base["sharpness_tenengrad"], rel=0.02)
+    assert q["noise_sigma"] == pytest.approx(base["noise_sigma"], rel=0.02)
+    warped, valid = pc.warp_to_reference(img, shift, img.shape)
+    biased = pc.quality(warped[box[1]:box[3], box[0]:box[2]], valid[box[1]:box[3], box[0]:box[2]])
+    assert biased["sharpness_tenengrad"] < 0.85 * base["sharpness_tenengrad"]  # the bias the amendment removes
+    with pytest.raises(ValueError):
+        pc.crop_to_mask(img, np.zeros(img.shape[:2], bool))

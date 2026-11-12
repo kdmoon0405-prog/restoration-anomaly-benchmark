@@ -220,6 +220,23 @@ def warp_to_reference(moving_rgb: np.ndarray, matrix, shape) -> tuple[np.ndarray
     return np.clip(np.rint(np.where(out < 0, 0, out)), 0, 255).astype(np.uint8), valid
 
 
+def project_roi_mask(matrix, box, reference_shape, moving_shape) -> np.ndarray:
+    """ROI (reference-frame box) as a boolean mask in the unwarped moving frame (nearest neighbour, no pixel resampling)."""
+    from skimage.transform import ProjectiveTransform, warp
+    x0, y0, x1, y1 = box
+    ref_mask = np.zeros(reference_shape[:2], np.float64)
+    ref_mask[y0:y1, x0:x1] = 1.0
+    inverse = ProjectiveTransform(np.linalg.inv(np.asarray(matrix, dtype=np.float64)))  # moving coords -> reference coords
+    return warp(ref_mask, inverse, output_shape=moving_shape[:2], order=0, mode="constant", cval=0) > 0.5
+
+
+def crop_to_mask(rgb: np.ndarray, mask: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    rows, cols = np.flatnonzero(mask.any(1)), np.flatnonzero(mask.any(0))
+    if rows.size == 0:
+        raise ValueError("ROI falls outside the image")
+    return rgb[rows[0]:rows[-1] + 1, cols[0]:cols[-1] + 1], mask[rows[0]:rows[-1] + 1, cols[0]:cols[-1] + 1]
+
+
 def setup_moved(a: dict) -> bool:
     return bool(a["success"] and (a["translation_fraction"] > T["moved_translation"]
                                   or abs(a["rotation_deg"]) > T["moved_rotation_deg"]
