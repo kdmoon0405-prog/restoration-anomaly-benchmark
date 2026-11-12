@@ -42,8 +42,10 @@ All metrics are computed inside the ROI on the **aligned** working image, i.e. w
 | `clip_high_fraction` | fraction of ROI pixels where any channel ≥ 250 | 0–1 |
 | `clip_low_fraction` | fraction of ROI pixels where all channels ≤ 5 | 0–1 |
 | `sharpness_tenengrad` | mean(gx² + gy²), gx and gy from `scipy.ndimage.sobel` on Y/255 | (Y/255)² per px, relative |
-| `noise_sigma` | `skimage.restoration.estimate_sigma` on Y | code value; reported only |
+| `noise_sigma` | Immerkær (1996): √(π/2)/6 · mean\|Y ∗ M\|, M = [[1,−2,1],[−2,4,−2],[1,−2,1]], over valid interior pixels | code value; reported only |
 | `rg_ratio`, `bg_ratio` | mean R / mean G, mean B / mean G | ratio; reported only |
+
+Pre-data amendment (2026-11-12, before any real photo; recorded in Git history): the noise estimator was `skimage.restoration.estimate_sigma` (fixed at `e6462ef`). It needs PyWavelets, which is not installed, and nothing is installed for this tool. The amendment replaces it with Immerkær. It is report-only and has no threshold, and no other value changed.
 
 Sharpness and noise also depend on texture, so they are compared only within a part/session, never across objects.
 

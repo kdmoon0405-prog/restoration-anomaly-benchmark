@@ -148,3 +148,6 @@ docs/TEAM_BRANCH_WORKFLOW.md text eol=lf
 # Keep transferred metadata and returned text byte-identical to its receipt.
 handoff/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/INDEPENDENT_DRAFT_JUHYUNG_20261112_v0.md -text
+src/sr_anomaly/phone_capture.py text eol=lf
+scripts/run_phone_capture_audit.py text eol=lf
+scripts/make_phone_synthetic_set.py text eol=lf
