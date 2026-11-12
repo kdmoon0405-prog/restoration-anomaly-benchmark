@@ -1,5 +1,7 @@
 # Fable 재검토·clean control·phone 도구의 CPU 검토
 
+2026-11-12 후속정정. 좁은창 screenshot 해석은 VIEWPORT_CORRECTION_20261112.md를 따른다. 실제390 CSS-pixel iframe에서본문wrap과표scroll이정상동작했다. 실기기검증은미완료다.
+
 2026-11-12 검토. handoff/juhyung@5794b2d까지4receipt/34공급파일을 SHA·크기와 대조했다. 같은 ZIP·구조건의 반복 검토는 수행하지 않았다. 지혁 branch는 d8dcceb로 새실험 반환이 없었다.
 
 ## 설계 검토의 출처
@@ -28,9 +30,9 @@ Clean은집계에따른차이가작고×4조건의낮은image AUROC는모든규�
 
 ## 실제 브라우저 화면
 
-자체합성E2E가생성한report.html을분리된headless Edge profile에서열고1440×1100,390×844 PNG를저장해직접확인했다. Desktop의상태·재촬영이력과합성/미연결표기는읽을수있다. Mobile에서는긴표때문에페이지가가로로늘어나안내문과열이잘린다. Screenshot은ignored local outputs에보관한다. 클릭·console검사는이번범위에포함되지않는다.
+자체합성E2E가생성한report.html을분리된headless Edge profile에서열고1440×1100,390×844 PNG를저장해직접확인했다. Desktop의상태·재촬영이력과합성/미연결표기는읽을수있다. 당시좁은창 screenshot은일부잘림이보였으나후속viewport측정에서실제레이아웃폭은492~504px였다. 실제390 CSS-pixel iframe에서는본문wrap과표scroll을확인했다. Screenshot은ignored local outputs에보관한다. 클릭·console검사는이번범위에포함되지않는다.
 
-주형의다음소규모수정은모바일에서본문을viewport에맞추고표만가로scroll되게하는것이다. 포스터용첫화면에는대표원본/품질overlay와해석가능한짧은요약을위에배치할수있다. Source소유권을유지하기위해CPU가phone실행코드를병행재작성하지않았다. Desktop시연과실사진수신을진행하면서수정할수있다.
+앞선모바일본문wrap/표scroll필수수정요청은후속측정에따라철회한다. 기존구현에이미표wrapper의overflow-x:auto가있으며390 CSS-pixel iframe에서본문넘침이없었다. 포스터용첫화면에는대표원본/품질overlay와해석가능한짧은요약을위에배치할수있다. Source소유권을유지하기위해CPU가phone실행코드를병행재작성하지않았다. Desktop시연과실사진수신을진행하면서수정할수있다.
 
 ## 다음 실행
 

@@ -20,7 +20,7 @@
     "ancillary_resource_query_failed": "psutil unavailable after pytest;existing _budget passed in separate check"
   },
   "local_browser": "headless Edge;desktop1440x1100,mobile390x844 PNGs viewed",
-  "browser_limit": "mobile text/table clipping;clicks and console not checked",
+  "browser_limit": "Earlier narrow-window screenshot used actual492-504px viewport;390CSSiframe now checked;real mobile device/clicks/console remain unchecked",
   "input_kind": "synthetic",
   "detector": "not_connected",
   "real_photos_received": false,
@@ -33,5 +33,7 @@
     "src/sr_anomaly/evaluation.py": "git_blob",
     "src/sr_anomaly/pcb_board_analysis.py": "git_blob",
     "docs/IMAGE_SCORE_AGGREGATION_V0.2_CLEAN_CONTROL.md": "git_blob"
-  }
+  },
+  "viewport_followup": "responsive_390_measurements.json",
+  "previous_layout_root_cause_withdrawn": true
 }

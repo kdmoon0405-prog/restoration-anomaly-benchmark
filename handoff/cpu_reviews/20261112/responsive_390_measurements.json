@@ -1,0 +1,33 @@
+{
+  "kind": "390_css_pixel_iframe_responsive_check",
+  "real_mobile_device": false,
+  "metrics": {
+    "innerWidth": 390,
+    "clientWidth": 375,
+    "scrollWidth": 375,
+    "bodyClient": 343,
+    "bodyScroll": 343,
+    "wrappers": [
+      {
+        "client": 343,
+        "scroll": 641,
+        "overflow": "auto"
+      },
+      {
+        "client": 343,
+        "scroll": 1727,
+        "overflow": "auto"
+      },
+      {
+        "client": 343,
+        "scroll": 896,
+        "overflow": "auto"
+      },
+      {
+        "client": 343,
+        "scroll": 674,
+        "overflow": "auto"
+      }
+    ]
+  }
+}

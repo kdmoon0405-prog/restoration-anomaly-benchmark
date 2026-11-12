@@ -49,6 +49,13 @@ Code·공개 schema/수치·문서는 feature branch와 handoff/juhyung으로 �
 
 5794b2d까지4반환/34파일과clean-control15cell을CPU에서검산했다. Phone source aa2f7fa의24tests가로컬에서도통과했고synthetic E2E 보고서를브라우저에서열어데스크톱/모바일PNG로확인했다. 세부범위·한계는 handoff/cpu_reviews/20261112/REVIEW.md를따른다. 기존작업을반복하지않는다.
 
-다음작은UI수정은본문이모바일viewport에맞도록하고긴표에만가로scroll을두는것이다. 현재390px화면은안내문/표가잘린다. 대표원본/품질overlay와짧은요약을첫화면에서볼수있는구성도검토한다. Desktop시연/실사진수신과병행할수있으며CPU가phone실행source를수정하지않았다. 실제사진은최신JPEG가이드로받는다.
+CPU후속측정으로앞선모바일필수수정요청을철회한다. Headless창390요청은실제492~504px였고,정확한390 CSS-pixel iframe에서는기존본문wrap/표scroll이정상동작했다. handoff/cpu_reviews/20261112/VIEWPORT_CORRECTION_20261112.md를따른다. 실기기검증은미완료다. 대표원본/품질overlay와짧은요약을첫화면에서볼수있는구성도검토한다. Desktop시연/실사진수신과병행할수있으며CPU가phone실행source를수정하지않았다. 실제사진은최신JPEG가이드로받는다.
 
 Fable재검토초안은기존문맥을본상태였다는원격기록을그대로유지한다. 새private결정원문은아직CPU에미수신이다. 다음완료단위에서공개PROGRESS와비공개결정노트의갱신도반환한다.
+
+
+## 첫 촬영과 결정 기록 수신 보완 (2026-11-12)
+
+주형private결정원문은사용자첨부로수신됐고 SHA26e0173f…6d0fa1,D-20261112-01~13을확인해중앙비공개Stage59에통합했다. 같은원문을다시반환할필요는없다. 다음완료단위는새결정ID부터증분을연결한다.
+
+첫9장은development세션으로명시해정렬·ROI·후보선택의입력으로사용한다. 자기기준차이map은확장후보로유지하고수식/기준/대조군초안과synthetic검증을먼저준비할수있다. 실제채택은development입력범위에서판단하고방법을고정한뒤별도촬영세션에서평가한다. 같은사진의선택과최종성능평가를혼합하지않는다. 실제사진·검사대상은아직미수신이다.
