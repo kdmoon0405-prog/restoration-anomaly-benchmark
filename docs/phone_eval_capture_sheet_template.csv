@@ -1,0 +1,33 @@
+file,part_id,session_id,recipe_id,repeat_id,attempt,label_status,station_role,cycle_id,cycle_kind,light,light_position,flash,ae_af_locked,hdr,capture_seconds,notes
+,gpuBack01,E1,REF_L0,1,1,unknown,reference,,,L0,baseline (taped position),off,,,,"reference, no object"
+,gpuBack01,E1,REF_L1,1,1,unknown,reference,,,L1,left low side (taped position),off,,,,"reference, no object"
+,gpuBack01,E1,CAL_L0,1,1,unknown,calibration,,,L0,baseline (taped position),off,,,,"normal calibration, no object"
+,gpuBack01,E1,CAL_L1,1,1,unknown,calibration,,,L1,left low side (taped position),off,,,,"normal calibration, no object"
+,gpuBack01,E1,N_L0,1,1,unknown,first,normal-1,normal,L0,baseline (taped position),off,,,,
+,gpuBack01,E1,N_L1,1,1,unknown,alternate,normal-1,normal,L1,left low side (taped position),off,,,,
+,gpuBack01,E1,N_L0,2,1,unknown,first,normal-2,normal,L0,baseline (taped position),off,,,,
+,gpuBack01,E1,N_L1,2,1,unknown,alternate,normal-2,normal,L1,left low side (taped position),off,,,,
+,gpuBack01,E1,N_L0,3,1,unknown,first,normal-3,normal,L0,baseline (taped position),off,,,,
+,gpuBack01,E1,N_L1,3,1,unknown,alternate,normal-3,normal,L1,left low side (taped position),off,,,,
+,gpuBack01,E1,N_L0,4,1,unknown,first,normal-4,normal,L0,baseline (taped position),off,,,,
+,gpuBack01,E1,N_L1,4,1,unknown,alternate,normal-4,normal,L1,left low side (taped position),off,,,,
+,gpuBack01,E1,F_P1_L0,1,1,simulated_defect,first,foreign-P1-1,foreign,L0,baseline (taped position),off,,,,surface_foreign_object_simulation at P1
+,gpuBack01,E1,F_P1_L1,1,1,simulated_defect,alternate,foreign-P1-1,foreign,L1,left low side (taped position),off,,,,same object state as the first photo
+,gpuBack01,E1,F_P1_L0,2,1,simulated_defect,first,foreign-P1-2,foreign,L0,baseline (taped position),off,,,,surface_foreign_object_simulation at P1
+,gpuBack01,E1,F_P1_L1,2,1,simulated_defect,alternate,foreign-P1-2,foreign,L1,left low side (taped position),off,,,,same object state as the first photo
+,gpuBack01,E1,F_P2_L0,1,1,simulated_defect,first,foreign-P2-1,foreign,L0,baseline (taped position),off,,,,surface_foreign_object_simulation at P2
+,gpuBack01,E1,F_P2_L1,1,1,simulated_defect,alternate,foreign-P2-1,foreign,L1,left low side (taped position),off,,,,same object state as the first photo
+,gpuBack01,E1,F_P2_L0,2,1,simulated_defect,first,foreign-P2-2,foreign,L0,baseline (taped position),off,,,,surface_foreign_object_simulation at P2
+,gpuBack01,E1,F_P2_L1,2,1,simulated_defect,alternate,foreign-P2-2,foreign,L1,left low side (taped position),off,,,,same object state as the first photo
+,gpuBack01,E1,F_P3_L0,1,1,simulated_defect,first,foreign-P3-1,foreign,L0,baseline (taped position),off,,,,surface_foreign_object_simulation at P3
+,gpuBack01,E1,F_P3_L1,1,1,simulated_defect,alternate,foreign-P3-1,foreign,L1,left low side (taped position),off,,,,same object state as the first photo
+,gpuBack01,E1,F_P3_L0,2,1,simulated_defect,first,foreign-P3-2,foreign,L0,baseline (taped position),off,,,,surface_foreign_object_simulation at P3
+,gpuBack01,E1,F_P3_L1,2,1,simulated_defect,alternate,foreign-P3-2,foreign,L1,left low side (taped position),off,,,,same object state as the first photo
+,gpuBack01,E1,LOW,1,1,unknown,first,lowlight-1,lowlight,other,room light off,off,,,,room light off
+,gpuBack01,E1,LOW_ALT_L1,1,1,unknown,alternate,lowlight-1,lowlight,L1,left low side (taped position),off,,,,
+,gpuBack01,E1,LOW,2,1,unknown,first,lowlight-2,lowlight,other,room light off,off,,,,room light off
+,gpuBack01,E1,LOW_ALT_L1,2,1,unknown,alternate,lowlight-2,lowlight,L1,left low side (taped position),off,,,,
+,gpuBack01,E1,BLUR_L0,1,1,unknown,first,blur-1,blur,L0,baseline (taped position),off,,,,manual focus off
+,gpuBack01,E1,BLUR_ALT_L1,1,1,unknown,alternate,blur-1,blur,L1,left low side (taped position),off,,,,refocused
+,gpuBack01,E1,BLUR_L0,2,1,unknown,first,blur-2,blur,L0,baseline (taped position),off,,,,manual focus off
+,gpuBack01,E1,BLUR_ALT_L1,2,1,unknown,alternate,blur-2,blur,L1,left low side (taped position),off,,,,refocused

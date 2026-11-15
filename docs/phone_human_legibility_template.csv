@@ -1,0 +1,2 @@
+file,roi,legibility,reader,recorded_at,saw_algorithm_output_before,notes
+<photo file name>,board green area (recipe ROI),well_visible | hard_to_read | uncertain,<name or initials>,<YYYY-MM-DD HH:MM>,no,one row per photo; fill before opening report.html
