@@ -1,0 +1,17 @@
+cycle_id,all_planned,paired_available,paired_without_reference_calibration
+normal-3,True,True,True
+foreign-1,True,True,True
+foreign-2,True,True,True
+foreign-3,True,True,True
+lowlight-1,True,True,False
+lowlight-2,True,True,False
+lowlight-3,True,True,True
+blur-1,True,False,False
+blur-2,True,False,False
+blur-3,True,False,False
+background-1,True,False,False
+background-2,True,False,False
+background-3,True,False,False
+tilt-1,True,False,False
+tilt-2,True,False,False
+tilt-3,True,False,False

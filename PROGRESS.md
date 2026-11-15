@@ -3,6 +3,12 @@
 Date: 2026-09-20
 
 
+## 11월 15일 촬영 스테이션 반환의 CPU 재집계 (2026-11-15)
+
+주형 handoff 7b2c894와 실행 source5839caa를 검토했다. 실제 JPEG24장과 metadata17개를 해시 대조했고 source6개·이전 예시6개도 일치했다. 저장96cell을 전체16건·두조명공통7건·참조/보정재사용제외5건으로 재집계했다. 공통7건 C2v0.2/C3 사진 사용은10/14회,5건은6/10회다. 개발 세션의 오프라인 사진 접근 횟수이며 공통 대체 사진과 같은 보드 반복이 남는다. C3 NA9건, Bicubic/SwinIR16건 판정 일치를 확인했다.
+
+소스·split·보정 변경 없이 독립 consumer와 회귀검사를 추가했다. consumer9개(0.40초), source CPU7개(137.68초, fake복원기) 통과했다. 전체pytest와 GPU추론은 이번 검토에서 실행하지 않았다. 산출물은 analysis/phone_station_return_20261115/REVIEW.md와 docs/PHONE_STATION_REVIEW_NEXT_20261115.md다. 실제 사진/GPS/private노트는 공개 대상에서 제외했다.
+
 ## CPU 제어 연결과 후속 GPU 반환 검토 (2026-11-10)
 
 별도 exp/inspection-controller-cpu에서 controller·software replay·native-map reader·category transfer receiver·FPR plateau 진단을 구현했다. Synthetic6cycle과 저장 PCB score600개 replay를 완료했다. 물리 장치와 실제 모델은 실행하지 않았다. 전체674pass/3skip, 관련28pass, 추가score/receiver5pass, CPU smoke2행이다. 기존 RAM 전제조건2개와 optional MVTec fixture1개 skip을 보존했다.
