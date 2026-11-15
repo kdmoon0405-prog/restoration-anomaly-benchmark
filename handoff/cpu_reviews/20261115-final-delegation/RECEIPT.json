@@ -1,0 +1,32 @@
+{
+  "kind": "private_input_receipt_and_final_task_handoff",
+  "source_return": "7b2c8940ff1852da8ca1dd4f642bcfe12b49c4c1",
+  "source_code": "5839caae0150073eb2738a50cc1cc2a999d832e7",
+  "received_private_note": {
+    "bytes": 15035,
+    "sha256": "e63678677c8953545f0c743c35ab7de6d7276cd809eda4a6f1771d5ed63061aa",
+    "last_decision_id": "D-20261115-09",
+    "new_decisions_imported": 9
+  },
+  "received_private_html": {
+    "bytes": 962865,
+    "sha256": "37438851f65bfb78fe67edb96532b12a13148186b8f2e84f320c4fdd70ffb065",
+    "embedded_images": 46,
+    "first_viewport_reviewed": true,
+    "raw_arrays_received": false
+  },
+  "cpu_smoke": {
+    "status": "teammate_reported_pass",
+    "result_rows": 2,
+    "original_log_received": false
+  },
+  "official_template_sha256": "dd8a794fbec99345872a68ae903e394663dcb8451a7e37c15129b1deb0ed27ed",
+  "private_packet": {
+    "entries": 7,
+    "bytes": 2995950,
+    "sha256": "e2b9ca0fb9dd0d399e4e48ba0e239a23e5f7b4d02e5a2c3fc10aefc81e234e87",
+    "publicly_uploaded": false
+  },
+  "prompt": "docs/PROMPT_FABLE_FINAL_DELIVERABLES_20261115.md",
+  "requested_model": "Claude Fable5.2, actual provider/model recorded by executing owner"
+}
