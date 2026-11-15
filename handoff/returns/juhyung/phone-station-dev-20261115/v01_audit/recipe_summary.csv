@@ -1,0 +1,7 @@
+scope,part_id,session_id,metric,recipes,between_recipe_range,mean_within_recipe_range
+baseline_no_policy,gpuBack01,S1,luma_mean,8,170.29247944345929,3.5187860978518053
+baseline_no_policy,gpuBack01,S1,clip_high_fraction,8,0.48829601044119286,0.04492523366513045
+baseline_no_policy,gpuBack01,S1,sharpness_tenengrad,8,0.11966580179915795,0.0011959613317773137
+policy_pass_only,gpuBack01,S1,luma_mean,1,,1.2112267362923177
+policy_pass_only,gpuBack01,S1,clip_high_fraction,1,,4.04835315381772e-05
+policy_pass_only,gpuBack01,S1,sharpness_tenengrad,1,,0.0005521029294723312

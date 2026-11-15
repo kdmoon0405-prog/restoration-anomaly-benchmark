@@ -1,0 +1,90 @@
+{
+  "kind": "real",
+  "protocol": "docs/PHONE_QUALITY_PROTOCOL_V0.1.md",
+  "protocol_sha256": "7ea07967c97e4c8d454b2c27a878e691aed240f2e6577ad56da4f06e36af117f",
+  "created": "2026-11-15T16:06:42+09:00",
+  "source_commit": "aa2f7fa278c73682413075d9ca619319d6d487c8",
+  "source_branch": "exp/phone-lighting-juhyung",
+  "tracked_worktree_dirty": false,
+  "source_worktree_dirty": false,
+  "code_sha256": {
+    "scripts/run_phone_capture_audit.py": "9b29965d916b3654a522165ca92b60dc90a8317398b10ecbbc37f534f4e5a57a",
+    "src/sr_anomaly/phone_capture.py": "99c9cd0aef6d82d3747a0e73a9ce29a17948391a918f0cdbfcc6e864d479f8a2",
+    "src/sr_anomaly/inspection_station.py": "f79f0531b89628ecb9cecff6170949b8fe1d22d97cc05b21a7638d64f657212b",
+    "docs/PHONE_QUALITY_PROTOCOL_V0.1.md": "7ea07967c97e4c8d454b2c27a878e691aed240f2e6577ad56da4f06e36af117f"
+  },
+  "thresholds": {
+    "clip_high_retake": 0.01,
+    "clip_low_retake": 0.01,
+    "luma_min": 40.0,
+    "luma_max": 215.0,
+    "sharpness_ratio": 0.5,
+    "sharpness_min_set": 3,
+    "inliers_min": 30,
+    "inlier_ratio_min": 0.25,
+    "reproj_median_max": 1.5,
+    "moved_translation": 0.02,
+    "moved_rotation_deg": 1.0,
+    "moved_scale": 0.02
+  },
+  "orb": {
+    "n_keypoints": 1000,
+    "fast_threshold": 0.05
+  },
+  "ransac": {
+    "min_samples": 4,
+    "residual_threshold": 2.0,
+    "max_trials": 2000
+  },
+  "work_long_side": 1024,
+  "input": {
+    "capture_sheet_sha256": "58bab974efdb5ea1dc3bc4ef9648686c1969425928ba6f20f7afd90b51712de0",
+    "image_files": 24,
+    "files": {
+      "20261115_151550.jpg": "8baabc0d2234df16421bafc0ac40f3f31b96dda006b9e78bb7bc40a30f834806",
+      "20261115_151557.jpg": "2b18ff599be14f287f8f5490cfc3039f62f6e36ef1dbf0753ab8f5ac3ac681b1",
+      "20261115_151607.jpg": "4cd21d5546bf2bfb50dd8f552cc81728cd3aff99a95e8432c04933844500f3bb",
+      "20261115_151614.jpg": "2af24406a1d929d02fe48ddc2fe93d1f4f0287e48d6f22a46687e07b8d4f8d86",
+      "20261115_151618.jpg": "db57106d9f4136a90f2fed1aec461d3ebb1d3f8bd16ea5cfd9cc406c9ce5ef80",
+      "20261115_151626.jpg": "c957e66e58c2cf08b6c748c136a65042076460e6caa67144403f7685d5e4007c",
+      "20261115_151635.jpg": "d0740ea19033c2ea51f22caec1c01914404c1af238548292f835e66aca62066a",
+      "20261115_151645.jpg": "883d23586ce25c9e4e1092dacdb2c79174ac0365b85c5b6ca893a9c9865235ce",
+      "20261115_151653.jpg": "d13778c19045d288aa2f5203f1e67b2fc458211ceeb92b648fa72367913ece29",
+      "20261115_151827.jpg": "8e9d9a17c63035ff13fb8f998f453e62713e607f40c3abd966bc9e8cd59be5a6",
+      "20261115_151828.jpg": "fe1f0603dd440fbc2808fe89fbb1f24657735500c99acbdb5da7fc8ab555a27f",
+      "20261115_151829.jpg": "cf0798a6537d29d0dcbd7ce822f1748e97ae624d4af9bbeac7ed0ab80c5cebb0",
+      "20261115_152031.jpg": "4361b2d210bbc97ec6fee0c5790ac141e0e570ec27b2b4c74f3d392783f7a2f1",
+      "20261115_152032.jpg": "60bf66751761b545bc32f5b9382a4932757222f09aab59026427f2d084548716",
+      "20261115_152032(0).jpg": "a9a4d004fea44b354a50ea6338fec2c782af58da19f8e2e5212a2ed09ebedc07",
+      "20261115_152047.jpg": "b83ad68a7a7f6b1b7e8407aeb119ae6d00041d9cde92e0cfdc6cfdefbf13b39a",
+      "20261115_152048.jpg": "497c22529a0fedc09eb6119d969500b8df75f799c5399d8100764150f2c08cb8",
+      "20261115_152049.jpg": "aee5ba288f802747d3788a68f9bda423f54c9e24ca7b60c71c1f1194b0382112",
+      "20261115_152339.jpg": "01ebc4132423189a4abfe25faa6f1cdab93b2bf41626fd23104f92e961a3f6b5",
+      "20261115_152340.jpg": "457424d8b4099b894227592c41148dcef7286681270da2d1c325165157e6a984",
+      "20261115_152342.jpg": "f45e36f9bec14926b783d1a7029bb9f8f8b8ae67338b4ff44b16c4456beb74f0",
+      "20261115_152513.jpg": "a0e2b184b059622e3282ad32127c7cb3c15f6591afb48b84ba469a230cd36d7d",
+      "20261115_152514.jpg": "f960efd1dbb9ab167d1cf7f182915731c2e53321a51368f85a24fcb128f07b8b",
+      "20261115_152515.jpg": "223e924634e1a0b6cc9de5952a2530b7036018698bd68c5d33958bb2bb1371d0"
+    }
+  },
+  "summary": {
+    "attempts": 24,
+    "unlisted_files": 0,
+    "states": {
+      "PASS": 3,
+      "REVIEW": 3,
+      "RETAKE": 18
+    },
+    "slots": 24,
+    "slots_resolved": 3,
+    "slots_unresolved": 21,
+    "station_cycles": 24,
+    "station_verdicts": [
+      "REVIEW"
+    ]
+  },
+  "detector": "not_connected",
+  "research_metrics": null,
+  "station_replay": "software_replay_of_capture_audit; simulation_seconds, not physical latency",
+  "report_contains_pixels": true
+}
