@@ -151,3 +151,5 @@ docs/INDEPENDENT_DRAFT_JUHYUNG_20261112_v0.md -text
 src/sr_anomaly/phone_capture.py text eol=lf
 scripts/run_phone_capture_audit.py text eol=lf
 scripts/make_phone_synthetic_set.py text eol=lf
+src/sr_anomaly/phone_station.py text eol=lf
+scripts/run_phone_station_compare.py text eol=lf

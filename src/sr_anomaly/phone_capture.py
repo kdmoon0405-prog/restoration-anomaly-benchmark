@@ -199,6 +199,7 @@ def align(reference_y: np.ndarray, moving_y: np.ndarray) -> dict:
     a = m[:2, :2]
     rotation = math.degrees(math.atan2(a[1, 0] - a[0, 1], a[0, 0] + a[1, 1]))
     scale = math.sqrt(abs(np.linalg.det(a)))
+    result["inlier_reference_xy"] = src[inliers]  # reference-frame (x, y) of inlier matches; not serialized
     result.update(inliers=int(inliers.sum()), inlier_ratio=float(inliers.mean()),
                   reproj_median_px=float(np.median(err)) if err.size else math.nan, matrix=m.tolist(),
                   translation_fraction=float(np.hypot(*moved) / w), rotation_deg=float(rotation),
