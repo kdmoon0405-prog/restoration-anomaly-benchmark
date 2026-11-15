@@ -14,6 +14,8 @@ from . import phone_capture as pc
 
 DECISION = "docs/DESIGN_DECISION_PHONE_V0.2.md"
 POLICY_VERSION = "ref_roi_v0.2"
+POLICY_V3 = "ref_roi_same_light_v0.3"  # docs/DESIGN_DECISION_PHONE_V0.3.md
+STATION_ROLES = ("reference", "calibration", "first", "alternate")
 GR_VERSION = "golden_reference_v0.1"
 V2 = dict(roi_inliers_min=20, roi_inlier_bbox_min=0.25, coverage_min=0.98, new_clip_high=0.01, new_clip_low=0.01,
           luma_min=40.0, sharpness_ratio=0.5)
@@ -76,6 +78,16 @@ def roi_alignment_check(alignment: dict, box, moving_shape) -> dict:
     return out
 
 
+def perspective_term(matrix, shape) -> float:
+    """Size of the projective part of a homography: |h31| + |h32| scaled by the image width (0 for an affine map).
+    It is the relative change of scale across the frame; reported for information."""
+    if matrix is None:
+        return math.nan
+    m = np.asarray(matrix, dtype=np.float64)
+    m = m / m[2, 2]
+    return float((abs(m[2, 0]) + abs(m[2, 1])) * shape[1])
+
+
 def identity_alignment(shape, box) -> dict:
     """Alignment record for the anchor itself (not an inter-image registration result)."""
     x0, y0, x1, y1 = box
@@ -104,21 +116,32 @@ def sharpness_norm(quality: dict) -> float:
     return float(quality["sharpness_tenengrad"] / (mean * mean)) if mean > 0 else math.nan
 
 
-def reference_relative_metrics(moving_rgb, matrix, reference_rgb, box, valid) -> dict:
-    """New clipping inside the ROI: clipped in the capture but not in the (dilated) reference at the same place."""
+def new_clip_fractions(moving_rgb, matrix, ref_high, ref_low, box, valid) -> dict:
+    """New clipping inside the ROI: clipped in the capture but not in the (dilated) reference masks, which are
+    boolean masks in the anchor frame."""
     x0, y0, x1, y1 = box
     high, low = clip_masks(moving_rgb)
-    ref_high, ref_low = clip_masks(reference_rgb)
-    roi = np.zeros(reference_rgb.shape[:2], bool)
+    roi = np.zeros(ref_high.shape, bool)
     roi[y0:y1, x0:x1] = True
     roi &= valid
-    n = int(roi.sum())
-    if n < 16:
+    if int(roi.sum()) < 16:
         raise ValueError("ROI not visible")
-    new_high = warp_mask(high, matrix, reference_rgb.shape) & ~ndimage.binary_dilation(ref_high, structure=np.ones((3, 3), bool))
-    new_low = warp_mask(low, matrix, reference_rgb.shape) & ~ndimage.binary_dilation(ref_low, structure=np.ones((3, 3), bool))
+    new_high = warp_mask(high, matrix, ref_high.shape) & ~ndimage.binary_dilation(ref_high, structure=np.ones((3, 3), bool))
+    new_low = warp_mask(low, matrix, ref_high.shape) & ~ndimage.binary_dilation(ref_low, structure=np.ones((3, 3), bool))
     return dict(new_clip_high=float(new_high[roi].mean()), new_clip_low=float(new_low[roi].mean()),
                 reference_clip_high=float(ref_high[roi].mean()), reference_clip_low=float(ref_low[roi].mean()))
+
+
+def reference_relative_metrics(moving_rgb, matrix, reference_rgb, box, valid) -> dict:
+    """v0.2: new clipping against the anchor image (reference_rgb is in the anchor frame, unwarped)."""
+    ref_high, ref_low = clip_masks(reference_rgb)
+    return new_clip_fractions(moving_rgb, matrix, ref_high, ref_low, box, valid)
+
+
+def reference_clip_in_anchor(reference_work_rgb, reference_matrix, anchor_shape) -> tuple[np.ndarray, np.ndarray]:
+    """Clip masks of a same-light reference photo, taken on its unwarped pixels and moved to the anchor frame."""
+    high, low = clip_masks(reference_work_rgb)
+    return warp_mask(high, reference_matrix, anchor_shape), warp_mask(low, reference_matrix, anchor_shape)
 
 
 def policy_v02(capture: dict, recipe: dict) -> tuple[str, list[str]]:
@@ -150,6 +173,72 @@ def policy_v02(capture: dict, recipe: dict) -> tuple[str, list[str]]:
     if retake:
         return "RETAKE", retake + review
     return ("REVIEW", review) if review else ("PASS", [])
+
+
+def policy_v03(capture: dict, recipe: dict) -> tuple[str, list[str]]:
+    """v0.3 = v0.2 rules with same-light reference inputs: capture carries new_clip_*_v03 and sharpness_ratio_v03
+    (raw Tenengrad ratio to the reference of the light the capture is expected to have)."""
+    if capture.get("missing") or capture.get("unreadable") or not (capture.get("roi_check") or {}).get("verified"):
+        return policy_v02(capture, recipe)
+    if capture.get("reference_unavailable"):
+        return "RETAKE", ["reference_unavailable"]
+    state, reasons = policy_v02(dict(capture, new_clip_high=capture["new_clip_high_v03"], new_clip_low=capture["new_clip_low_v03"],
+                                     sharpness_ratio=capture["sharpness_ratio_v03"]), recipe)
+    return state, ["low_sharpness_vs_same_light_reference" if r == "low_sharpness_vs_reference" else r for r in reasons]
+
+
+def plan_from_sheet(rows: list[dict], first_light: str = "L0", alternate_light: str = "L1") -> dict:
+    """Build the run plan from capture-sheet columns station_role / cycle_id / light (see PHONE_EVAL_SESSION_PLAN_V1)."""
+    plan = dict(first_light=first_light, alternate_light=alternate_light, references={}, calibration={}, cycles=[],
+                plan_source="capture_sheet.csv station_role/cycle_id/light")
+    cycles: dict[str, dict] = {}
+    for r in rows:
+        role = (r.get("station_role") or "").strip()
+        if not role:
+            continue
+        if role not in STATION_ROLES:
+            raise ValueError(f"unknown station_role {role!r} for {r.get('file')!r}")
+        if int(r.get("attempt") or 1) != max(int(x.get("attempt") or 1) for x in rows
+                                               if (x.get("station_role"), x.get("cycle_id"), x.get("light"), x.get("repeat_id"))
+                                               == (r.get("station_role"), r.get("cycle_id"), r.get("light"), r.get("repeat_id"))):
+            continue  # an earlier attempt of the same slot; the latest attempt is used
+        name, light = (r.get("file") or "").strip(), (r.get("light") or "").strip()
+        if role in ("reference", "calibration"):
+            group = plan["references" if role == "reference" else "calibration"]
+            if light not in (first_light, alternate_light) or light in group:
+                raise ValueError(f"need exactly one {role} photo per light; problem at {name!r} ({light!r})")
+            group[light] = name
+            continue
+        cid = (r.get("cycle_id") or "").strip()
+        if not cid:
+            raise ValueError(f"{role} photo {name!r} has no cycle_id")
+        c = cycles.setdefault(cid, dict(cycle_id=cid, kind=(r.get("cycle_kind") or "").strip(), label=None, first=None, alternate=None,
+                                        note="", capture_seconds=""))
+        if c[role] is not None:
+            raise ValueError(f"cycle {cid!r} has two {role} photos")
+        if role == "alternate" and light != alternate_light:
+            raise ValueError(f"alternate photo of {cid!r} must be taken under {alternate_light}")
+        c[role] = name
+        if role == "first":
+            c["label"] = "simulated_defect" if (r.get("label_status") or "").strip() == "simulated_defect" else "normal"
+            c["note"] = (r.get("notes") or "").strip()
+            c["capture_seconds"] = (r.get("capture_seconds") or "").strip()
+    for cid, c in cycles.items():
+        if c["first"] is None:
+            raise ValueError(f"cycle {cid!r} has no first photo")
+    for group in ("references", "calibration"):
+        if set(plan[group]) != {first_light, alternate_light}:
+            raise ValueError(f"capture sheet must mark one {group[:-1] if group == 'references' else group} photo for each of "
+                             f"{first_light} and {alternate_light}")
+    used = list(plan["references"].values()) + list(plan["calibration"].values())
+    for c in cycles.values():
+        used += [c["first"]] + ([c["alternate"]] if c["alternate"] else [])
+    if len(used) != len(set(used)):
+        raise ValueError("a photo is used in more than one role; references, calibration and cycle photos must be separate")
+    plan["cycles"] = list(cycles.values())
+    if not plan["cycles"]:
+        raise ValueError("capture sheet marks no cycle (station_role first)")
+    return plan
 
 
 # ---------------------------------------------------------------- golden-reference inspection v0.1

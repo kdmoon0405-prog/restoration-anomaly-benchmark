@@ -153,3 +153,6 @@ scripts/run_phone_capture_audit.py text eol=lf
 scripts/make_phone_synthetic_set.py text eol=lf
 src/sr_anomaly/phone_station.py text eol=lf
 scripts/run_phone_station_compare.py text eol=lf
+src/sr_anomaly/phone_uno.py text eol=lf
+scripts/replay_phone_station_uno.py text eol=lf
+scripts/characterize_phone_registration.py text eol=lf

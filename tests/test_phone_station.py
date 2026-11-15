@@ -239,3 +239,135 @@ def test_plan_validation(tmp_path, base):
         (tmp_path / "p.json").write_text(json.dumps(bad), encoding="utf-8")
         with pytest.raises(ValueError):
             runner.load_plan(tmp_path / "p.json", files)
+
+
+# ---------------------------------------------------------------- final design additions (v0.3, plan from sheet, range, UNO)
+reg = _load("phone_reg_range", "scripts/characterize_phone_registration.py")
+
+
+def test_registration_range_including_perspective(base):
+    ref = synth.lit(base, "front", noise_seed=1)
+    box = pc.roi_box(ref.shape, reg.ROI)
+    h, w = ref.shape[:2]
+
+    def outcome(kind, value, seed):
+        return reg.classify(ref, reg.apply(synth.lit(base, "left", noise_seed=seed), reg.homography(kind, value, w, h)), box)
+    small = outcome("tilt_recentred_deg", 5, 31)
+    assert small["outcome"] == "ACCEPT" and 0.03 < small["perspective_term"] < 0.15       # mild perspective is corrected
+    mid = outcome("tilt_recentred_deg", 20, 32)
+    assert mid["alignment_success"] and mid["outcome"] == "REVIEW" and mid["reason"] == "outside_recipe_pose"
+    assert mid["perspective_term"] > 0.25 and mid["projected_coverage"] == 1.0
+    far = outcome("tilt_recentred_deg", 50, 33)
+    assert far["outcome"] == "RETAKE" and not far["roi_verified"]                           # not treated as corrected
+    lost = outcome("tilt_deg", 15, 34)                                                      # tilt without re-aiming: view shifts
+    assert lost["outcome"] == "RETAKE" and lost["reason"] == "roi_outside_frame"
+    # 0.9 and 1.1 sit exactly on the 10 % tolerance, so the accepted side is tested at 0.95.
+    assert outcome("scale", 0.95, 35)["outcome"] == "ACCEPT" and outcome("scale", 1.5, 36)["outcome"] == "REVIEW"
+    assert outcome("scale", 2.0, 37)["outcome"] == "RETAKE" and outcome("rotation_deg", 90, 38)["outcome"] == "REVIEW"
+    assert ps.perspective_term(np.eye(3), ref.shape) == 0 and np.isnan(ps.perspective_term(None, ref.shape))
+
+
+def test_policy_v03_uses_same_light_inputs_and_keeps_v02_rules():
+    ok = dict(roi_check=dict(verified=True), new_clip_high=0.5, new_clip_low=0.5, sharpness_ratio=0.1, luma_mean=100,
+              rotation_deg=0.0, scale_deviation=0.0, new_clip_high_v03=0.0, new_clip_low_v03=0.0, sharpness_ratio_v03=1.0)
+    assert ps.policy_v02(ok, RECIPE)[0] == "RETAKE" and ps.policy_v03(ok, RECIPE) == ("PASS", [])   # v0.3 ignores anchor-based values
+    assert ps.policy_v03(dict(ok, sharpness_ratio_v03=0.3), RECIPE) == ("REVIEW", ["low_sharpness_vs_same_light_reference"])
+    assert ps.policy_v03(dict(ok, new_clip_high_v03=0.02), RECIPE) == ("RETAKE", ["new_clip_high"])
+    assert ps.policy_v03(dict(ok, reference_unavailable=True), RECIPE) == ("RETAKE", ["reference_unavailable"])
+    assert ps.policy_v03(dict(missing=True), RECIPE) == ("RETAKE", ["missing_file"])
+    assert ps.policy_v03(dict(roi_check=dict(verified=False, failure="roi_outside_frame")), RECIPE) == ("RETAKE", ["roi_outside_frame"])
+    assert ps.policy_v03(dict(ok, luma_mean=10), RECIPE) == ("REVIEW", ["roi_too_dark"])
+
+
+def _sheet_rows():
+    def row(file, role, cycle="", light="L0", label="unknown", attempt=1, repeat=1):
+        return dict(file=file, station_role=role, cycle_id=cycle, light=light, label_status=label, attempt=str(attempt),
+                    repeat_id=str(repeat), cycle_kind=cycle.split("-")[0] if cycle else "", notes="", capture_seconds="12")
+    return [row("r0.jpg", "reference"), row("r1.jpg", "reference", light="L1"), row("c0.jpg", "calibration"),
+            row("c1.jpg", "calibration", light="L1"), row("n0.jpg", "first", "normal-1"), row("n1.jpg", "alternate", "normal-1", "L1"),
+            row("f0.jpg", "first", "foreign-1", label="simulated_defect"), row("x.jpg", "", "")]
+
+
+def test_plan_from_sheet_and_its_refusals():
+    plan = ps.plan_from_sheet(_sheet_rows())
+    assert plan["references"] == {"L0": "r0.jpg", "L1": "r1.jpg"} and plan["calibration"] == {"L0": "c0.jpg", "L1": "c1.jpg"}
+    cyc = {c["cycle_id"]: c for c in plan["cycles"]}
+    assert cyc["normal-1"]["alternate"] == "n1.jpg" and cyc["normal-1"]["label"] == "normal" and cyc["normal-1"]["capture_seconds"] == "12"
+    assert cyc["foreign-1"]["label"] == "simulated_defect" and cyc["foreign-1"]["alternate"] is None
+    rows = _sheet_rows()
+    for bad in (rows[1:],                                                         # a reference light is missing
+                rows + [dict(rows[0], file="r0b.jpg")],                           # two references for one light
+                rows + [dict(rows[4], file="n0b.jpg")],                           # two first photos in one cycle
+                rows + [dict(rows[5], cycle_id="foreign-1", file="r0.jpg")],      # a reference reused as an alternate
+                rows + [dict(rows[5], cycle_id="foreign-1", file="a.jpg", light="L0")],   # alternate under the wrong light
+                rows + [dict(rows[4], station_role="second")],                    # unknown role
+                rows + [dict(rows[5], cycle_id="orphan-1", file="o.jpg")],        # cycle without a first photo
+                rows[:4]):                                                        # no cycle at all
+        with pytest.raises(ValueError):
+            ps.plan_from_sheet(bad)
+    later = rows + [dict(rows[4], file="n0_retake.jpg", attempt="2")]
+    assert {c["cycle_id"]: c for c in ps.plan_from_sheet(later)["cycles"]}["normal-1"]["first"] == "n0_retake.jpg"
+
+
+def test_sheet_driven_run_cli_errors_and_uno_fake_replay(tmp_path, base, capsys):
+    folder = tmp_path / "in"
+    folder.mkdir()
+    imgs = {"REF_L0.png": ("front", 1, "reference", "", "L0", "unknown"), "REF_L1.png": ("left", 2, "reference", "", "L1", "unknown"),
+            "CAL_L0.png": ("front", 3, "calibration", "", "L0", "unknown"), "CAL_L1.png": ("left", 4, "calibration", "", "L1", "unknown"),
+            "N_L0.png": ("front", 5, "first", "normal-1", "L0", "unknown"), "N_L1.png": ("left", 6, "alternate", "normal-1", "L1", "unknown"),
+            "F_L0.png": ("front", 7, "first", "foreign-1", "L0", "simulated_defect"), "F_L1.png": ("left", 8, "alternate", "foreign-1", "L1", "simulated_defect"),
+            "G_L0.png": ("front", 9, "first", "glare-1", "L0", "unknown"), "G_L1.png": ("left", 10, "alternate", "glare-1", "L1", "unknown")}
+    rows = []
+    for name, (pos, seed, role, cycle, light, label) in imgs.items():
+        img = synth.lit(base, pos, noise_seed=seed)
+        if name.startswith("F_"):
+            img = _blob(img)
+        if name == "G_L0.png":
+            img[150:260, 150:330] = 255
+        Image.fromarray(img).save(folder / name)
+        rows.append(dict(file=name, part_id="P1", session_id="S1", recipe_id=name[:-4], repeat_id=1, attempt=1, label_status=label,
+                         station_role=role, cycle_id=cycle, cycle_kind=cycle.split("-")[0] if cycle else "", light=light,
+                         capture_seconds="8" if role == "first" else "", notes=""))
+    with open(folder / "capture_sheet.csv", "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+    recipe = tmp_path / "recipe.json"
+    recipe.write_text(json.dumps({**RECIPE, "anchor": "REF_L0.png"}), encoding="utf-8")
+    before = {p.name: p.read_bytes() for p in folder.iterdir()}
+    assert runner.main(["--input", str(folder), "--recipe", str(recipe), "--output", str(tmp_path / "out"), "--kind", "synthetic"]) == 0
+    assert {p.name: p.read_bytes() for p in folder.iterdir()} == before                         # inputs untouched
+    station = {r["cycle_id"]: r for r in csv.DictReader(open(tmp_path / "out/station_result.csv", encoding="utf-8"))}
+    assert station["normal-1"]["final_state"] == "OK" and station["normal-1"]["photos_used"] == "1"
+    assert station["foreign-1"]["final_state"] == "NG" and "largest difference blob" in station["foreign-1"]["reason"]
+    assert station["glare-1"]["photos_used"] == "2" and "new_clip_high" in station["glare-1"]["reason"] and station["glare-1"]["final_state"] == "OK"
+    assert station["glare-1"]["capture_seconds_measured"] == "8" and station["glare-1"]["policy"] == ps.POLICY_V3
+    m = json.loads((tmp_path / "out/manifest.json").read_text(encoding="utf-8"))
+    assert m["plan_source"] == "capture_sheet.csv" and m["operating_condition"] == "C2_policy_v0.3" and (tmp_path / "out/plan.from_sheet.json").is_file()
+    assert {"decode", "register_and_quality", "inspect", "report_html", "total"} <= set(m["software_seconds"])
+    assert "from capture_sheet" in m["physical_capture_time"]
+    assert "Station result (operating path C2_policy_v0.3" in (tmp_path / "out/report.html").read_text(encoding="utf-8")
+    capsys.readouterr()
+    # Failures stop the run with exit code 2 and write nothing.
+    assert runner.main(["--input", str(folder), "--recipe", str(recipe), "--output", str(tmp_path / "out"), "--kind", "synthetic"]) == 2
+    bad = tmp_path / "bad.json"
+    bad.write_text(json.dumps({**RECIPE, "anchor": "nope.png"}), encoding="utf-8")
+    assert runner.main(["--input", str(folder), "--recipe", str(bad), "--output", str(tmp_path / "o2"), "--kind", "synthetic"]) == 2
+    bad.write_text(json.dumps({**RECIPE, "roi": [0.9, 0, 0.1, 1]}), encoding="utf-8")
+    assert runner.main(["--input", str(folder), "--recipe", str(bad), "--output", str(tmp_path / "o3"), "--kind", "synthetic"]) == 2
+    assert runner.main(["--input", str(tmp_path), "--recipe", str(recipe), "--output", str(tmp_path / "o4"), "--kind", "synthetic"]) == 2
+    out = capsys.readouterr().out
+    assert out.count("STATION RUN STOPPED") == 4 and not any((tmp_path / n).exists() for n in ("o2", "o3", "o4"))
+    # UNO status frames through the fake serial path (no hardware).
+    from sr_anomaly import phone_uno
+    port = phone_uno.FakeSerial()
+    sequence = phone_uno.replay(tmp_path / "out/station_events.jsonl", port)
+    assert bytes(port.written) == b"".join(phone_uno.FRAMES[s] for _, s in sequence)
+    states = [s for c, s in sequence if c == "glare-1"]
+    assert states == ["BUSY", "RETAKE_REQUEST", "OK", "READY"] and [s for c, s in sequence if c == "foreign-1"] == ["BUSY", "NG", "READY"]
+    uno = _load("uno_cli", "scripts/replay_phone_station_uno.py")
+    assert uno.main(["--events", str(tmp_path / "out/station_events.jsonl"), "--fake"]) == 0
+    assert '"physical_hardware_tested": false' in capsys.readouterr().out
+    with pytest.raises(ValueError):
+        phone_uno.frames_from_events([dict(kind="controller", command=dict(command="complete", cycle_id="x"),
+                                           response=dict(accepted=True, state="UNKNOWN"))])

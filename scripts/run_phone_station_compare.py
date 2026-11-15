@@ -32,9 +32,12 @@ from sr_anomaly.analysis_io import csv_rows, new_output, read_json, write_csv, w
 from sr_anomaly.inspection_station import InspectionStation  # noqa: E402
 from sr_anomaly.pcb_board_analysis import _budget  # noqa: E402
 
+DECISION_V3 = "docs/DESIGN_DECISION_PHONE_V0.3.md"
 CODE = ("scripts/run_phone_station_compare.py", "src/sr_anomaly/phone_station.py", "src/sr_anomaly/phone_capture.py",
-        "src/sr_anomaly/inspection_station.py", ps.DECISION, pc.PROTOCOL)
-CONDITIONS = ("C0_direct", "C1_bicubic_x4", "C1_swinir_x4", "C2_policy_v0.1_roi", "C2_policy_v0.2", "C3_two_lights")
+        "src/sr_anomaly/inspection_station.py", ps.DECISION, DECISION_V3, pc.PROTOCOL)
+CONDITIONS = ("C0_direct", "C1_bicubic_x4", "C1_swinir_x4", "C2_policy_v0.1_roi", "C2_policy_v0.2", "C2_policy_v0.3",
+              "C3_two_lights")
+OPERATING = "C2_policy_v0.3"  # the station's operating path; the other conditions are comparisons on the same cycles
 MAX_CAPTURES = 2
 
 
@@ -154,7 +157,40 @@ def prepare(folder: Path, recipe: dict, *, guard=_budget) -> dict:
             c["state_v02"], c["reasons_v02"] = ps.policy_v02(c, recipe)
         else:
             c["state_v02"], c["reasons_v02"] = "RETAKE", [c.get("roi_check", {}).get("failure") or "alignment_failed"]
-    return dict(captures=captures, unlisted=unlisted, by_file=by_file, work=work, aligned=aligned, anchor=anchor, box=box)
+    return dict(captures=captures, unlisted=unlisted, by_file=by_file, work=work, aligned=aligned, anchor=anchor, box=box,
+                recipe=recipe, sheet_rows=rows, v03={}, v03_refs={})
+
+
+def quality_v03(ctx, plan, file, light) -> tuple[str, list[str], dict]:
+    """Policy v0.3 for a capture expected under `light`: same-light reference for sharpness and new clipping."""
+    key = (file, light)
+    if key in ctx["v03"]:
+        return ctx["v03"][key]
+    c = ctx["by_file"].get(file)
+    if c is None:
+        listed = next((x for x in ctx["captures"] if x.get("file") == file), {})
+        out = ("RETAKE", ["unreadable" if listed.get("unreadable") else "missing_file"], {})
+        ctx["v03"][key] = out
+        return out
+    metrics = {}
+    extra = dict(c)
+    ref_file = plan["references"][light]
+    ref = ctx["by_file"].get(ref_file)
+    if not (c.get("roi_check") or {}).get("verified") or file not in ctx["aligned"]:
+        pass  # policy_v03 reports the registration reason
+    elif ref is None or ref_file not in ctx["aligned"] or not ref.get("sharpness_tenengrad"):
+        extra["reference_unavailable"] = True
+    else:
+        if light not in ctx["v03_refs"]:
+            ctx["v03_refs"][light] = ps.reference_clip_in_anchor(ctx["work"][ref_file], ref["alignment"]["matrix"], ctx["anchor"].shape)
+        ref_high, ref_low = ctx["v03_refs"][light]
+        clip = ps.new_clip_fractions(ctx["work"][file], c["alignment"]["matrix"], ref_high, ref_low, ctx["box"], ctx["aligned"][file][1])
+        metrics = dict(new_clip_high_v03=clip["new_clip_high"], new_clip_low_v03=clip["new_clip_low"],
+                       sharpness_ratio_v03=c["sharpness_tenengrad"] / ref["sharpness_tenengrad"], reference_file_v03=ref_file)
+        extra.update(metrics)
+    state, reasons = ps.policy_v03(extra, ctx["recipe"])
+    ctx["v03"][key] = (state, reasons, metrics)
+    return ctx["v03"][key]
 
 
 class Inspector:
@@ -236,9 +272,15 @@ def run_cycle(cycle, condition, ctx, inspector, plan) -> dict:
             return finish([], "NA")
         row["captures_used"] = 2
         return finish([inspector.inspect("original", first, L0), inspector.inspect("original", alt, L1)])
-    key = "v01" if condition == "C2_policy_v0.1_roi" else "v02"
-    c1 = ctx["by_file"].get(first, {})
-    row["first_quality_state"], row["first_quality_reasons"] = c1.get(f"state_{key}", "RETAKE"), ";".join(c1.get(f"reasons_{key}", ["missing_file"]))
+    key = {"C2_policy_v0.1_roi": "v01", "C2_policy_v0.2": "v02", "C2_policy_v0.3": "v03"}[condition]
+
+    def quality(file, light):
+        if key == "v03":
+            state, reasons, _ = quality_v03(ctx, plan, file, light)
+            return state, ";".join(reasons)
+        c = ctx["by_file"].get(file, {})
+        return c.get(f"state_{key}", "RETAKE"), ";".join(c.get(f"reasons_{key}", ["missing_file"]))
+    row["first_quality_state"], row["first_quality_reasons"] = quality(first, L0)
     if row["first_quality_state"] == "PASS":
         return finish([inspector.inspect("original", first, L0)])
     row["retake_requested"] = True
@@ -246,8 +288,7 @@ def run_cycle(cycle, condition, ctx, inspector, plan) -> dict:
         row["note"] = (row["note"] + "; retake_unavailable").strip("; ")
         return finish([], "REVIEW")
     row["captures_used"] = 2
-    c2 = ctx["by_file"].get(alt, {})
-    row["second_quality_state"], row["second_quality_reasons"] = c2.get(f"state_{key}", "RETAKE"), ";".join(c2.get(f"reasons_{key}", ["missing_file"]))
+    row["second_quality_state"], row["second_quality_reasons"] = quality(alt, L1)
     if row["second_quality_state"] == "PASS":
         return finish([inspector.inspect("original", alt, L1)])
     return finish([], "REVIEW")
@@ -276,8 +317,21 @@ def summarize(rows) -> list[dict]:
     return out
 
 
+def final_reason(row) -> str:
+    """One readable reason for the final state of a cycle row."""
+    if row["final_state"] == "REVIEW":
+        tail = "retake_unavailable" if "retake_unavailable" in row["note"] else f"second capture {row['second_quality_state']}: {row['second_quality_reasons']}"
+        return f"first capture {row['first_quality_state']}: {row['first_quality_reasons']}; {tail}"
+    if row["final_state"] in ("OK", "NG"):
+        parts = [f"{i.get('light')} reference: largest difference blob {i.get('score')} px vs limit {int(i.get('limit'))}" for i in row["inspected"]]
+        lead = f"first capture {row['first_quality_state']} ({row['first_quality_reasons']}), alternate light used; " if row["retake_requested"] else ""
+        return lead + "; ".join(parts)
+    notes = "; ".join(i.get("note", "") for i in row["inspected"] if i.get("note"))
+    return notes or row["note"] or row["final_state"]
+
+
 def station_replay(cycle_rows, output: Path) -> dict:
-    """Replay the C2 v0.2 cycles through the existing controller: one cycle, quality alert, at most one retake."""
+    """Replay the operating-path cycles through the existing controller: one cycle, quality alert, at most one retake."""
     clock = iter(float(i) / 10 for i in range(10 ** 6))
     station = InspectionStation(timeout_seconds=5.0, clock=lambda: next(clock), clock_kind="simulation_seconds")
     log = []
@@ -300,7 +354,7 @@ def station_replay(cycle_rows, output: Path) -> dict:
                                 reasons=r["second_quality_reasons"], capture=2))
         verdict = r["final_state"] if r["final_state"] in ("OK", "NG", "REVIEW") else "ERROR"
         msg = dict(request_id=f"{cid}-complete", command="complete", cycle_id=cid, verdict=verdict,
-                   result_source=f"{ps.GR_VERSION}; {ps.POLICY_VERSION}; captures={r['captures_used']}")
+                   result_source=f"{ps.GR_VERSION}; {ps.POLICY_V3}; captures={r['captures_used']}")
         if verdict == "ERROR":
             msg["error"] = r["final_state"]
         else:
@@ -359,7 +413,7 @@ def _table(rows, cols):
     return f'<div class="wrap"><table><tr>{head}</tr>{body}</table></div>'
 
 
-def render(manifest, summary, cycle_table, cards) -> str:
+def render(manifest, summary, cycle_table, cards, station_rows) -> str:
     banner = ("SYNTHETIC test input — not a real capture and not a research result" if manifest["kind"] == "synthetic"
               else "Real photos, DEVELOPMENT session — one object, repeats are not independent parts; not a detection benchmark")
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -374,6 +428,10 @@ body{{font:15px system-ui,sans-serif;background:var(--bg);color:var(--fg);margin
 <p class="note">{html.escape(banner)}. Decision {html.escape(manifest['decision'])} · source {html.escape(manifest['source_commit'][:10])}.
 Golden-reference difference only; no learned detector. Simulated surface object, not an electrical defect. Times are software
 seconds on this PC, not capture or equipment time. Yellow box = observation ROI, red box = largest difference blob when NG.</p>
+<h2>Station result (operating path {html.escape(OPERATING)}: quality policy, at most one alternate-light input)</h2>
+{_table(station_rows, ['cycle_id', 'kind', 'label', 'final_state', 'photos_used', 'reason'])}
+<p class="muted">photos_used counts logical uses of stored photos in this offline run; capture time was not measured here.
+Quality PASS means the input can be inspected; it is not the final OK.</p>
 <h2>Summary by condition (all initial cycles in the denominator)</h2>
 {_table(summary, ['condition', 'cycles', 'OK', 'NG', 'REVIEW', 'ERROR', 'NA', 'PENDING', 'captures_total', 'retakes_requested', 'simulated_cycles', 'simulated_final_NG', 'simulated_NG_at_annotation', 'simulated_final_OK', 'heldout_normal_cycles', 'heldout_normal_final_NG', 'all_normal_cycles', 'all_normal_final_NG', 'all_normal_final_NG_or_REVIEW'])}
 <h2>Cycles</h2>{''.join(cards)}
@@ -382,15 +440,28 @@ seconds on this PC, not capture or equipment time. Yellow box = observation ROI,
 </body></html>"""
 
 
-def compare(folder: Path, recipe_path: Path, plan_path: Path, output: Path, *, kind: str, restorers=None, guard=_budget,
+def compare(folder: Path, recipe_path: Path, plan_path: Path | None, output: Path, *, kind: str, restorers=None, guard=_budget,
             root=ROOT) -> dict:
     folder = Path(folder).resolve()
-    output = new_output(output, inputs=[folder])
-    recipe = ps.load_recipe(recipe_path)
+    if not (folder / "capture_sheet.csv").is_file():
+        raise FileNotFoundError("capture_sheet.csv missing in the input folder")
+    recipe = ps.load_recipe(recipe_path)          # recipe/plan problems stop the run before anything is written
+    sheet = csv_rows(folder / "capture_sheet.csv", ("file", "part_id", "session_id", "recipe_id", "repeat_id"))
+    listed = {r["file"].strip() for r in sheet if r.get("file")}
+    if recipe["anchor"] not in listed:
+        raise ValueError(f"recipe anchor {recipe['anchor']!r} is not in the capture sheet")
+    if plan_path is None:
+        plan = ps.plan_from_sheet(sheet, "L0", recipe["retake_light"])
+    else:
+        plan, plan_file = load_plan(plan_path, listed), Path(plan_path)
     restorers = restorers or {}
+    output = new_output(output, inputs=[folder])  # refuses an existing directory: earlier results are never overwritten
+    if plan_path is None:
+        plan_file = output / "plan.from_sheet.json"
+        write_json(plan_file, plan)
+        plan = load_plan(plan_file, listed)
     t_all = time.perf_counter()
     ctx = prepare(folder, recipe, guard=guard)
-    plan = load_plan(plan_path, {c["file"] for c in ctx["captures"] if c.get("file")})
     inspector = Inspector(ctx, plan, restorers)
     rows = [run_cycle(cycle, cond, ctx, inspector, plan) for cycle in plan["cycles"] for cond in CONDITIONS]
     summary = summarize(rows)
@@ -408,7 +479,7 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path, output: Path, *, k
                       "limits": "/".join(_fmt(i.get("limit")) for i in r["inspected"])})
     qfields = ["row", "file", "part_id", "session_id", "recipe_id", "repeat_id", "attempt", "label_status", "sha256", "width", "height",
                "work_scale", "quality_basis", "alignment_success", "align_inliers", "align_inlier_ratio", "align_reproj_median_px",
-               "rotation_deg", "scale_deviation", "align_translation_fraction", "roi_inliers", "roi_inlier_bbox_fraction",
+               "rotation_deg", "scale_deviation", "perspective_term", "align_translation_fraction", "roi_inliers", "roi_inlier_bbox_fraction",
                "projected_coverage", "roi_verified", "roi_failure", "luma_mean", "clip_high_fraction", "clip_low_fraction",
                "reference_clip_high", "reference_clip_low", "new_clip_high", "new_clip_low", "sharpness_tenengrad", "sharpness_norm",
                "sharpness_ratio", "setup_moved", "state_v01", "reasons_v01", "state_v02", "reasons_v02", "seconds_decode",
@@ -418,6 +489,7 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path, output: Path, *, k
         a, k = c.get("alignment") or {}, c.get("roi_check") or {}
         qrows.append({**{f: c.get(f) for f in qfields}, "align_inliers": a.get("inliers"), "align_inlier_ratio": a.get("inlier_ratio"),
                       "align_reproj_median_px": a.get("reproj_median_px"), "align_translation_fraction": a.get("translation_fraction"),
+                      "perspective_term": ps.perspective_term(a.get("matrix"), ctx["anchor"].shape) if a.get("success") else None,
                       "roi_inliers": k.get("roi_inliers"), "roi_inlier_bbox_fraction": k.get("roi_inlier_bbox_fraction"),
                       "projected_coverage": k.get("projected_coverage"), "roi_verified": k.get("verified"), "roi_failure": k.get("failure"),
                       "reasons_v01": ";".join(c.get("reasons_v01", [])), "reasons_v02": ";".join(c.get("reasons_v02", []))})
@@ -428,11 +500,29 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path, output: Path, *, k
     calib = [{k: v for k, v in c.items()} for c in inspector.calibration.values() if c]
     write_csv(output / "gr_calibration.csv", calib)
 
-    c2 = [r for r in rows if r["condition"] == "C2_policy_v0.2"]
+    c2 = [r for r in rows if r["condition"] == OPERATING]
     first = next(iter(ctx["by_file"].values()))
     replay_rows = [dict(r, part_id=first["part_id"], recipe_id=recipe["recipe_id"], retake_light=recipe["retake_light"],
                         first_sha256=ctx["by_file"].get(r["first_file"], {}).get("sha256")) for r in c2]
     station = station_replay(replay_rows, output)
+    seconds_by_cycle = {c["cycle_id"]: c.get("capture_seconds", "") for c in plan["cycles"]}
+    station_rows = [dict(cycle_id=r["cycle_id"], kind=r["kind"], label=r["label"], final_state=r["final_state"],
+                         photos_used=r["captures_used"], retake_requested=r["retake_requested"], reason=final_reason(r),
+                         first_file=r["first_file"], alternate_file=r["alternate_file"],
+                         first_quality_state=r["first_quality_state"], second_quality_state=r["second_quality_state"],
+                         capture_seconds_measured=seconds_by_cycle.get(r["cycle_id"], ""), policy=ps.POLICY_V3,
+                         inspection=ps.GR_VERSION) for r in c2]
+    write_csv(output / "station_result.csv", station_rows)
+    v03_rows = []
+    for c in ctx["captures"]:
+        if c.get("file") in ctx["by_file"] and ctx["by_file"][c["file"]] is c:
+            for light in (plan["first_light"], plan["alternate_light"]):
+                state, reasons, m = quality_v03(ctx, plan, c["file"], light)
+                v03_rows.append(dict(file=c["file"], recipe_id=c["recipe_id"], repeat_id=c["repeat_id"], expected_light=light,
+                                     state_v03=state, reasons_v03=";".join(reasons), sharpness_ratio_v03=m.get("sharpness_ratio_v03"),
+                                     new_clip_high_v03=m.get("new_clip_high_v03"), new_clip_low_v03=m.get("new_clip_low_v03"),
+                                     reference_file=m.get("reference_file_v03")))
+    write_csv(output / "captures_quality_v03.csv", v03_rows)
 
     cards = []
     for cycle in plan["cycles"]:
@@ -460,17 +550,27 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path, output: Path, *, k
     manifest = dict(kind=kind, decision=ps.DECISION, policy_version=ps.POLICY_VERSION, gr_version=ps.GR_VERSION,
                     created=datetime.now().astimezone().isoformat(timespec="seconds"), **source_state(root),
                     code_sha256={p: pc.sha256_file(root / p) for p in CODE}, recipe=recipe,
-                    recipe_sha256=pc.sha256_file(recipe_path), plan_sha256=pc.sha256_file(plan_path), plan=plan,
+                    recipe_sha256=pc.sha256_file(recipe_path), plan_sha256=pc.sha256_file(plan_file), plan=plan,
+                    plan_source="capture_sheet.csv" if plan_path is None else "plan file", operating_condition=OPERATING,
+                    policy_v3=ps.POLICY_V3, decision_v3=DECISION_V3,
                     thresholds=dict(v01=pc.T, v02=ps.V2, golden_reference=ps.GR), conditions=list(CONDITIONS),
                     restorers=sorted(restorers), restoration_family="phone_x4_roundtrip (x0.25 then x4; not the benchmark x4 family)",
                     input=dict(capture_sheet_sha256=pc.sha256_file(folder / "capture_sheet.csv"),
                                files={c["file"]: c["sha256"] for c in ctx["captures"] if c.get("sha256")}),
                     session_role="development (methods fixed after a v0.1 audit of the same session; not an independent evaluation)",
-                    software_seconds=dict(total=time.perf_counter() - t_all, **{k: float(v) for k, v in inspector.seconds.items()}),
-                    physical_capture_time="not measured", station_replay=dict(station, kind="software_replay; simulation_seconds"),
+                    software_seconds=dict(total_before_report=time.perf_counter() - t_all,
+                                          decode=float(sum(c.get("seconds_decode") or 0 for c in ctx["captures"])),
+                                          register_and_quality=float(sum(c.get("seconds_register_quality") or 0 for c in ctx["captures"])),
+                                          **{k: float(v) for k, v in inspector.seconds.items()}),
+                    physical_capture_time=("from capture_sheet capture_seconds where filled" if any(seconds_by_cycle.values())
+                                           else "not measured"),
+                    station_replay=dict(station, kind="software_replay; simulation_seconds"),
                     summary=summary, research_metrics=None, report_contains_pixels=True)
+    t_report = time.perf_counter()
+    (output / "report.html").write_text(render(manifest, summary, table, cards, station_rows), encoding="utf-8")
+    manifest["software_seconds"]["report_html"] = time.perf_counter() - t_report
+    manifest["software_seconds"]["total"] = time.perf_counter() - t_all
     write_json(output / "manifest.json", manifest)
-    (output / "report.html").write_text(render(manifest, summary, table, cards), encoding="utf-8")
     return manifest
 
 
@@ -490,15 +590,20 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--input", type=Path, required=True)
     p.add_argument("--recipe", type=Path, required=True)
-    p.add_argument("--plan", type=Path, required=True)
+    p.add_argument("--plan", type=Path, help="run plan JSON; omit to build it from capture_sheet station_role/cycle_id/light")
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--kind", choices=("real", "synthetic"), required=True)
     p.add_argument("--assets-root", type=Path, help="checkout holding third_party/BasicSR, third_party/SwinIR and checkpoints/swinir")
     p.add_argument("--device", default="cuda")
     a = p.parse_args(argv)
-    restorers = real_restorers(a.assets_root, a.device) if a.assets_root else {}
-    m = compare(a.input, a.recipe, a.plan, a.output, kind=a.kind, restorers=restorers)
-    print(json.dumps(m["summary"]))
+    try:
+        restorers = real_restorers(a.assets_root, a.device) if a.assets_root else {}
+        m = compare(a.input, a.recipe, a.plan, a.output, kind=a.kind, restorers=restorers)
+    except (ValueError, FileNotFoundError, FileExistsError) as e:
+        print(f"STATION RUN STOPPED: {type(e).__name__}: {e}")  # nothing was overwritten
+        return 2
+    print(json.dumps({"operating_condition": OPERATING, "station_result": str(Path(a.output) / "station_result.csv"),
+                      "report": str(Path(a.output) / "report.html"), "summary": m["summary"]}))
     return 0
 
 
