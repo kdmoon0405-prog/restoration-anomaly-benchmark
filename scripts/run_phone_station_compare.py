@@ -524,6 +524,8 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path | None, output: Pat
                                      reference_file=m.get("reference_file_v03")))
     write_csv(output / "captures_quality_v03.csv", v03_rows)
 
+    seconds_before_panels = {k: float(v) for k, v in inspector.seconds.items()}  # comparison work only
+    t_panels = time.perf_counter()
     cards = []
     for cycle in plan["cycles"]:
         mine = {r["condition"]: r for r in rows if r["cycle_id"] == cycle["cycle_id"]}
@@ -547,6 +549,7 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path | None, output: Pat
                      f'{html.escape(cycle["label"])} <span class="muted">{html.escape(cycle.get("note", ""))}</span></p>'
                      f'<div class="imgs">{"".join(figs)}</div>{_table(states, ["condition", "final_state", "captures_used", "quality", "reasons"])}</section>')
 
+    seconds_panels = time.perf_counter() - t_panels
     manifest = dict(kind=kind, decision=ps.DECISION, policy_version=ps.POLICY_VERSION, gr_version=ps.GR_VERSION,
                     created=datetime.now().astimezone().isoformat(timespec="seconds"), **source_state(root),
                     code_sha256={p: pc.sha256_file(root / p) for p in CODE}, recipe=recipe,
@@ -561,14 +564,14 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path | None, output: Pat
                     software_seconds=dict(total_before_report=time.perf_counter() - t_all,
                                           decode=float(sum(c.get("seconds_decode") or 0 for c in ctx["captures"])),
                                           register_and_quality=float(sum(c.get("seconds_register_quality") or 0 for c in ctx["captures"])),
-                                          **{k: float(v) for k, v in inspector.seconds.items()}),
+                                          **seconds_before_panels, report_panels=seconds_panels),
                     physical_capture_time=("from capture_sheet capture_seconds where filled" if any(seconds_by_cycle.values())
                                            else "not measured"),
                     station_replay=dict(station, kind="software_replay; simulation_seconds"),
                     summary=summary, research_metrics=None, report_contains_pixels=True)
     t_report = time.perf_counter()
     (output / "report.html").write_text(render(manifest, summary, table, cards, station_rows), encoding="utf-8")
-    manifest["software_seconds"]["report_html"] = time.perf_counter() - t_report
+    manifest["software_seconds"]["report_html_write"] = time.perf_counter() - t_report
     manifest["software_seconds"]["total"] = time.perf_counter() - t_all
     write_json(output / "manifest.json", manifest)
     return manifest

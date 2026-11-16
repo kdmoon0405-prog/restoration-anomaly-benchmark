@@ -344,7 +344,7 @@ def test_sheet_driven_run_cli_errors_and_uno_fake_replay(tmp_path, base, capsys)
     assert station["glare-1"]["capture_seconds_measured"] == "8" and station["glare-1"]["policy"] == ps.POLICY_V3
     m = json.loads((tmp_path / "out/manifest.json").read_text(encoding="utf-8"))
     assert m["plan_source"] == "capture_sheet.csv" and m["operating_condition"] == "C2_policy_v0.3" and (tmp_path / "out/plan.from_sheet.json").is_file()
-    assert {"decode", "register_and_quality", "inspect", "report_html", "total"} <= set(m["software_seconds"])
+    assert {"decode", "register_and_quality", "inspect", "report_panels", "report_html_write", "total"} <= set(m["software_seconds"])
     assert "from capture_sheet" in m["physical_capture_time"]
     assert "Station result (operating path C2_policy_v0.3" in (tmp_path / "out/report.html").read_text(encoding="utf-8")
     capsys.readouterr()
