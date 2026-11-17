@@ -1,3 +1,7 @@
+# 2026-11-17 담당 변경
+
+사용자 승인으로 미완료 bank-domain 24+4 실행 담당이 주형으로 변경됐다. 먼저 [현재 지시](NEXT_TASK.md)를 읽고 기존 실행과 결과를 보존한 상태에서 인계한다. 아래 문서는 이전 전달 경로와 이력이다.
+
 # jihyuk 최신 전달
 
 현재 지시는 handoff/NEXT_TASK.md를 읽는다. CPU 분석 source는 exp/noise-repeatability-analysis@615ae7d432c88ffb7e6f61b65df40be4b6907e2a다. 기존 입력·source·사용자 변경을 보존한다.
