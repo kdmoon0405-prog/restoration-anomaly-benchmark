@@ -14,13 +14,15 @@ CONDITIONS = (
     "C0_direct", "C1_bicubic_x4", "C1_swinir_x4", "C2_policy_v0.1_roi",
     "C2_policy_v0.2", "C3_two_lights",
 )
+CONDITIONS_V03 = (*CONDITIONS[:-1], "C2_policy_v0.3", CONDITIONS[-1])
 STATES = ("OK", "NG", "REVIEW", "ERROR", "NA", "PENDING")
 
 
 def load_return(folder):
     plan = read_json(folder / "plan.json")
     manifest = read_json(folder / "manifest.json")
-    if (manifest["conditions"] != list(CONDITIONS)
+    conditions = manifest["conditions"]
+    if (conditions not in (list(CONDITIONS), list(CONDITIONS_V03))
             or manifest["plan_sha256"] != digest(folder / "plan.json")):
         raise ValueError("Condition contract or plan hash differs")
     known_files = manifest["input"]["files"]
@@ -38,7 +40,7 @@ def load_return(folder):
         "final_state", "captures_used", "retake_requested",
     ))
     cells = {(r["cycle_id"], r["condition"]): r for r in rows}
-    expected = {(cycle, condition) for cycle in cycles for condition in CONDITIONS}
+    expected = {(cycle, condition) for cycle in cycles for condition in conditions}
     if len(cells) != len(rows) or set(cells) != expected:
         raise ValueError("Duplicate or missing cycle-condition cell")
     for row in rows:
@@ -65,7 +67,7 @@ def load_return(folder):
     summary = csv_rows(folder / "summary.csv", required=(
         "condition", "cycles", "captures_total", "retakes_requested", *STATES,
     ))
-    if len(summary) != len(CONDITIONS) or {r["condition"] for r in summary} != set(CONDITIONS):
+    if len(summary) != len(conditions) or {r["condition"] for r in summary} != set(conditions):
         raise ValueError("Missing or duplicated source summary condition")
     for source in summary:
         group = [r for r in rows if r["condition"] == source["condition"]]
@@ -78,9 +80,9 @@ def load_return(folder):
     return plan, manifest, rows, reserved
 
 
-def recount(rows, ids, cohort):
+def recount(rows, ids, cohort, conditions=CONDITIONS):
     result = []
-    for condition in CONDITIONS:
+    for condition in conditions:
         group = [r for r in rows if r["cycle_id"] in ids and r["condition"] == condition]
         counts = Counter(r["final_state"] for r in group)
         normal = [r for r in group if r["label"] == "normal"]
@@ -117,7 +119,8 @@ def analyze(folder, output):
             and not {c["first"], c["alternate"]} & reserved
         },
     }
-    summaries = [r for name, ids in cohorts.items() for r in recount(rows, ids, name)]
+    conditions = manifest["conditions"]
+    summaries = [r for name, ids in cohorts.items() for r in recount(rows, ids, name, conditions)]
     roles = defaultdict(list)
     for role in ("references", "calibration"):
         for light, filename in plan[role].items():
@@ -133,7 +136,7 @@ def analyze(folder, output):
                      if cells[c["cycle_id"], "C1_bicubic_x4"]["final_state"]
                      != cells[c["cycle_id"], "C1_swinir_x4"]["final_state"]]
     report = dict(
-        schema_version=1, source_commit=manifest["source_commit"],
+        schema_version=1, source_commit=manifest["source_commit"], conditions=conditions,
         source_sha256={name: digest(folder / name) for name in
                        ("plan.json", "manifest.json", "cycles.csv", "summary.csv")},
         analysis_script_sha256=digest(Path(__file__)),
@@ -163,7 +166,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     result = analyze(args.input, args.output)
-    print(f"Recounted {len(result['cohort_cycle_ids']['all_planned'])} cycles across {len(CONDITIONS)} conditions")
+    print(f"Recounted {len(result['cohort_cycle_ids']['all_planned'])} cycles across {len(result['conditions'])} conditions")
 
 
 if __name__ == "__main__":

@@ -90,3 +90,36 @@ def test_rejects_inconsistent_return(packet, tmp_path, mutation):
     with pytest.raises(ValueError):
         analysis.analyze(packet, tmp_path / "invalid")
     assert not (tmp_path / "invalid").exists()
+
+
+
+def test_seven_condition_v03_return(packet, tmp_path):
+    manifest = analysis.read_json(packet / "manifest.json")
+    manifest["conditions"] = list(analysis.CONDITIONS_V03)
+    (packet / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    rows = analysis.csv_rows(packet / "cycles.csv")
+    added = [dict(r, condition="C2_policy_v0.3") for r in rows if r["condition"] == "C2_policy_v0.2"]
+    added[0]["final_state"] = "REVIEW"
+    rows += added
+    write_csv(packet / "cycles.csv", rows)
+    summaries = analysis.recount(rows, {r["cycle_id"] for r in rows}, "all", analysis.CONDITIONS_V03)
+    summary = [dict(condition=r["condition"], cycles=r["cycles"],
+                    captures_total=r["logical_image_accesses"], retakes_requested=r["retakes_requested"],
+                    **{state: r[state] for state in analysis.STATES}) for r in summaries]
+    write_csv(packet / "summary.csv", summary)
+    report = analysis.analyze(packet, tmp_path / "v03")
+    assert report["conditions"] == list(analysis.CONDITIONS_V03) and len(report["summaries"]) == 21
+    v03 = next(r for r in report["summaries"] if r["cohort"] == "all_planned" and r["condition"] == "C2_policy_v0.3")
+    assert (v03["cycles"], v03["OK"], v03["REVIEW"], v03["logical_image_accesses"]) == (4, 3, 1, 4)
+    write_csv(packet / "cycles.csv", rows[:-1])
+    with pytest.raises(ValueError, match="missing"):
+        analysis.analyze(packet, tmp_path / "incomplete-v03")
+
+
+def test_unknown_condition_contract_rejected(packet, tmp_path):
+    path = packet / "manifest.json"
+    manifest = analysis.read_json(path)
+    manifest["conditions"] += ["C4_unknown"]
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(ValueError, match="Condition contract"):
+        analysis.analyze(packet, tmp_path / "unknown")

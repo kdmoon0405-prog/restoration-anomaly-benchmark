@@ -1,0 +1,53 @@
+{
+  "review_date_kst": "2026-11-17",
+  "created_at_utc": "2026-11-17T02:54:53.498755+00:00",
+  "return_commit": "59bc262a2381de5e7edd9ca2dddf377185fc26d8",
+  "executed_source": "7b868a34e9ed6c423e2a127bde12eae8687dfb21",
+  "poster_source": "59db971",
+  "metadata_payload_hashes_verified": 22,
+  "receipt_sha256": "76066aa65a4df6b08a79608cd7f5389b74525f01b613bf8a87dcd7f445eab43a",
+  "local_consumer_tests": {
+    "passed": 11,
+    "seconds": 0.84
+  },
+  "local_new_producer_tests": {
+    "passed": 4,
+    "deselected": 7,
+    "seconds": 105.5,
+    "kind": "CPU synthetic/fake paths"
+  },
+  "received_producer_logs": {
+    "full_pytest": {
+      "source": "6748c9553ff8db139d10eeb1bb16e826117a2704",
+      "passed": 696,
+      "skipped": 4,
+      "seconds": 793.82
+    },
+    "phone_related": {
+      "source": "7b868a34e9ed6c423e2a127bde12eae8687dfb21",
+      "passed": 49,
+      "seconds": 339.14
+    },
+    "cpu_smoke": {
+      "source": "7b868a34e9ed6c423e2a127bde12eae8687dfb21",
+      "result_rows": 2,
+      "exit_code": 0
+    }
+  },
+  "new_local_gpu_inference": false,
+  "new_local_full_pytest": false,
+  "private_final_poster_and_figures_received": false,
+  "latest_private_decision_original_received": false,
+  "figure_visual_review": "PNG opened and inspected",
+  "prose_audit": {
+    "files": 3,
+    "flagged_count": 0,
+    "density_tier": "low"
+  },
+  "git_diff_check": "passed",
+  "graph_ast": {
+    "nodes": 3488,
+    "edges": 6446,
+    "parsed": true
+  }
+}

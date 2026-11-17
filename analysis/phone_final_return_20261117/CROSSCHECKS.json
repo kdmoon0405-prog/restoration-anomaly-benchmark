@@ -1,0 +1,70 @@
+{
+  "source_commit": "7b868a34e9ed6c423e2a127bde12eae8687dfb21",
+  "return_commit": "59bc262a2381de5e7edd9ca2dddf377185fc26d8",
+  "source_hash_checks": {
+    "scripts/run_phone_station_compare.py": {
+      "sha256": "8bf224933345730b442d847f1b8dfa39072debd2e33a259780e4dec656424f4a",
+      "matching_representation": "git_blob"
+    },
+    "src/sr_anomaly/phone_station.py": {
+      "sha256": "ba113f03b7e4d0988bfe96a86bddd7ec87c8b3073933ad5df95f80c35070c133",
+      "matching_representation": "git_blob"
+    },
+    "src/sr_anomaly/phone_capture.py": {
+      "sha256": "6033d8bc622350412906d450542b108e8367a865917c23d59c9c2fbfd0beeeef",
+      "matching_representation": "git_blob"
+    },
+    "src/sr_anomaly/inspection_station.py": {
+      "sha256": "f79f0531b89628ecb9cecff6170949b8fe1d22d97cc05b21a7638d64f657212b",
+      "matching_representation": "git_blob"
+    },
+    "docs/DESIGN_DECISION_PHONE_V0.2.md": {
+      "sha256": "b636bf46bf40d87a09722be2a519a118c25fc4c44b473b5a3d447795c93bfe81",
+      "matching_representation": "checkout"
+    },
+    "docs/DESIGN_DECISION_PHONE_V0.3.md": {
+      "sha256": "de513aa09d324195886b5fe165eb2bc42ee7491e2f7bbde070bb9b5c975999e3",
+      "matching_representation": "git_blob"
+    },
+    "docs/PHONE_QUALITY_PROTOCOL_V0.1.md": {
+      "sha256": "7ea07967c97e4c8d454b2c27a878e691aed240f2e6577ad56da4f06e36af117f",
+      "matching_representation": "checkout"
+    }
+  },
+  "prior_24_photo_hashes_reused": true,
+  "same_plan_references_calibration": true,
+  "same_gr_calibration_rows": true,
+  "legacy96_selected_output_columns_equal": [
+    "final_state",
+    "captures_used",
+    "retake_requested",
+    "first_quality_state",
+    "second_quality_state",
+    "scores",
+    "limits"
+  ],
+  "v02_v03_16cycles_equal_columns": [
+    "final_state",
+    "captures_used",
+    "retake_requested",
+    "first_quality_state",
+    "second_quality_state",
+    "scores",
+    "limits"
+  ],
+  "operating_result16_equal_to_v03": true,
+  "v03_rows": 48,
+  "v03_actual_light_24_quality_counts": {
+    "PASS": 15,
+    "REVIEW": 9
+  },
+  "registration32_counts": {
+    "ACCEPT": 10,
+    "REVIEW": 12,
+    "RETAKE": 10
+  },
+  "human_legibility_records": 0,
+  "physical_capture_time": "not measured",
+  "poster_binary_received": false,
+  "new_private_decision_original_received": false
+}

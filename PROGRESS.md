@@ -3,6 +3,14 @@
 Date: 2026-09-20
 
 
+## 주형 최종 반환의 CPU 검토 (2026-11-17)
+
+반환59bc262의metadata22개를receipt bytes/SHA256과대조했다. 실행source7b868a3와포스터source59db971을연결했다. 기존24사진해시·참조·보정·96cell은이전cache와일치했다. 신규7조건112cell과운영표16행을재집계했고v0.3의현재24장/16cycle결과는v0.2와같았다. 품질CSV48행은24사진×가정조명2개이며실제recipe조명선택시PASS15/REVIEW9다.
+
+기존consumer에7조건을추가하고6조건회귀검사를유지했다. Consumer11개0.84초,source신규4개105.50초CPU테스트가통과했다. 담당자전체696passed/4skipped(6748c95),관련49passed와smoke2행/exit0(7b868a3)로그를수신했다. 새GPU추론이나전체pytest를CPU에서반복하지않았다.
+
+원근의중심보정/화면이동결과가다름,147/423초의코드·조건수·전원차이,pooled AU-PRO와평균표현,미기록historical seed의공통11표기를확인해수정문서를작성했다. 포스터PPTX/PDF·그림7개·최신HTML·capture_sheet·새private원문은미수신이며추가수신을요청했다. 공개검토는analysis/phone_final_return_20261117/REVIEW.md,후속은docs/PHONE_FINAL_CPU_FEEDBACK_20261117.md다.
+
 ## 실제 private 수신과 Fable 최종 실행 일괄 위임 (2026-11-15)
 
 사용자가 전달한 실제 private 노트15035bytes/SHA256e63678677c8953545f0c743c35ab7de6d7276cd809eda4a6f1771d5ed63061aa와 시연 HTML962865bytes/SHA25637438851f65bfb78fe67edb96532b12a13148186b8f2e84f320c4fdd70ffb065가 안내 값과 일치했다. 기존13개와 겹치는 부분을 보존하고 신규 D-20261115-01~09를 중앙 ignored private Stage67에 통합했다. 원본 바이트 사본과 import receipt를 비공개 보관했다.
