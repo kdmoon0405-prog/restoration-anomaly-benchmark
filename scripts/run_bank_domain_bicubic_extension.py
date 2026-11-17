@@ -96,7 +96,10 @@ def run(args) -> Path:
                  fit_paths=fit_paths, calibration_paths=cal_paths, test_samples=base["test_samples"], resource_plan=plan,
                  source_commit=branch_b.subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                  git_dirty=bool(branch_b.subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip()),
-                 command=[sys.executable, *sys.argv], bank_fit_rule="PIL bicubic 224->56->224 of each canonical clean fit image")
+                 command=[sys.executable, *sys.argv],
+                 model_configuration=dict(base.get("model_configuration", {}), swinir_checkpoint_sha256=runner.EXPECTED_SWINIR_SHA256,
+                                          backbone_checkpoint_sha256=runner.EXPECTED_WIDERESNET_SHA256),
+                 bank_fit_rule="PIL bicubic 224->56->224 of each canonical clean fit image")
     study.write_status(run_dir, state)
     try:
         restorer = runner.SwinIRLightweight(ROOT / "third_party" / "SwinIR", checkpoint, device="cuda", scale=4, tile=56, tile_overlap=0)
@@ -106,12 +109,17 @@ def run(args) -> Path:
             _, bicubic, restored, _ = runner._query_variants(sample.path, restorer, resize, crop)
             cache[sid] = {"bicubic_x4": bicubic, "swinir_x4": restored}
             query_hashes[sid] = {"bicubic_x4": runner._rgb_sha(bicubic), "swinir_x4": runner._rgb_sha(restored)}
-        mismatch = [s for s in query_hashes if s in base["query_rgb_sha256"] and query_hashes[s] != base["query_rgb_sha256"][s]]
+        if set(query_hashes) != set(base["query_rgb_sha256"]):
+            raise ValueError("query image set differs from the base run")
+        mismatch = [s for s in query_hashes if query_hashes[s] != base["query_rgb_sha256"][s]]
         if mismatch:
             raise ValueError(f"query RGB differs from the base run for {len(mismatch)} images")
         del restorer
         gc.collect()
         torch.cuda.empty_cache()
+        torch.manual_seed(SEED)  # same re-seed as the base runner before each bank
+        torch.cuda.manual_seed_all(SEED)
+        torch.cuda.reset_peak_memory_stats(device)
         model = runner._new_patchcore(torch, backbones, common, patchcore, sampler, device, backbone_checkpoint)
         loader = torch.utils.data.DataLoader(_BicubicBankDataset(train_set, fit_indices, BANK, None, resize, crop, tensor, torch),
                                              batch_size=8, shuffle=False, num_workers=0, pin_memory=False)
