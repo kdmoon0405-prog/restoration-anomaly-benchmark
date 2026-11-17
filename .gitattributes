@@ -157,3 +157,4 @@ src/sr_anomaly/phone_uno.py text eol=lf
 scripts/replay_phone_station_uno.py text eol=lf
 scripts/characterize_phone_registration.py text eol=lf
 scripts/make_defect_zoom_gallery.py text eol=lf
+scripts/make_phone_zoom_figures.py text eol=lf

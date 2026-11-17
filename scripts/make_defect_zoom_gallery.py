@@ -19,13 +19,14 @@ import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+plt.rcParams.update({"font.family": "Malgun Gothic", "axes.unicode_minus": False})
 import numpy as np
 from PIL import Image
 from scipy import ndimage
 
 CLASSES = ("improvement", "suppression", "geometry_candidate", "small_change")
-CROP = 64          # canonical 224-frame pixels
-ZOOM = 4           # display magnification (nearest)
+CROP_MIN = 48      # canonical 224-frame pixels: GT bounding box + 25 % margin, at least this, square
+DISPLAY = 288      # every crop is shown at this size with nearest-neighbour upscaling (zoom = DISPLAY / crop side)
 
 
 def rows(path):
@@ -83,11 +84,21 @@ def gt_mask(data_root: Path, sample: str, resize_mask, crop, canonical) -> np.nd
 
 
 def crop_box(mask: np.ndarray) -> tuple[int, int, int, int]:
+    """Square box around the GT bounding box with a 25 % margin (min CROP_MIN px), clamped to the 224 frame."""
     ys, xs = np.nonzero(mask)
-    cy, cx = (int(round(ys.mean())), int(round(xs.mean()))) if ys.size else (112, 112)
-    x0 = min(max(cx - CROP // 2, 0), 224 - CROP)
-    y0 = min(max(cy - CROP // 2, 0), 224 - CROP)
-    return x0, y0, x0 + CROP, y0 + CROP
+    if not ys.size:
+        return 88, 88, 136, 136
+    side = int(min(224, max(CROP_MIN, round(1.25 * max(ys.max() - ys.min() + 1, xs.max() - xs.min() + 1)))))
+    cy, cx = (ys.min() + ys.max() + 1) / 2, (xs.min() + xs.max() + 1) / 2
+    x0 = int(min(max(round(cx - side / 2), 0), 224 - side))
+    y0 = int(min(max(round(cy - side / 2), 0), 224 - side))
+    return x0, y0, x0 + side, y0 + side
+
+
+def zoom_to(arr: np.ndarray, size: int) -> np.ndarray:
+    """Nearest-neighbour resize to size x size (keeps pixel blocks visible)."""
+    idx = (np.arange(size) * arr.shape[0] / size).astype(int)
+    return arr[idx][:, idx]
 
 
 def panel(ax, img, title, contour=None, cmap=None, vmin=None, vmax=None):
@@ -105,6 +116,7 @@ def main(argv=None) -> int:
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--conditions", nargs="+", default=["none", "blur_s1.6", "noise_s15"])
     p.add_argument("--categories", nargs="+", default=["hazelnut", "screw"])
+    p.add_argument("--clean-maps-from", type=Path, help="reuse clean_maps_<cat>.npz from an earlier output of this script")
     a = p.parse_args(argv)
     repo = a.repo.resolve()
     out = a.output.resolve()
@@ -125,7 +137,7 @@ def main(argv=None) -> int:
     basicsr = repo / "third_party" / "BasicSR"
     data = repo / "data" / "external" / "MVTecAD"
     index, manifest = [], dict(kind="post-hoc illustration of stored predictions", selection_rule=select_cases.__doc__,
-                               taxonomy_rule=classify.__doc__, crop_px=CROP, zoom=ZOOM, canonical="resize 256 bilinear + center crop 224",
+                               taxonomy_rule=classify.__doc__, crop_rule=crop_box.__doc__, display_px=DISPLAY, canonical="resize 256 bilinear + center crop 224",
                                sources={}, clean_map="CPU predict with the stored v1 bank (load-only), selected samples only",
                                class_counts={}, lr_check={})
     for cat in a.categories:
@@ -133,13 +145,21 @@ def main(argv=None) -> int:
         selected = {cond: select_cases(run, cond) for cond in a.conditions}
         samples = sorted({c["sample"] for cond in selected for c in selected[cond][0] if c["available"]})
         # clean maps for the selected samples (stored v1 bank, CPU, load-only)
-        model, meta = rrd._bank(run, torch.device("cpu"), torch, common, patchcore, sampler, backbones, None, to_tensor)
+        meta = json.loads((run / "bank/metadata.json").read_text(encoding="utf-8"))
         clean_maps = {}
-        for s in samples:
-            with Image.open(data / s) as src:
-                img = _canonical(src.convert("RGB"), resize_image, crop)
-            scores, maps = model.predict(to_tensor(img).unsqueeze(0))
-            clean_maps[s] = np.asarray(maps[0], np.float32)
+        reuse = a.clean_maps_from / f"clean_maps_{cat}.npz" if a.clean_maps_from else None
+        if reuse is not None and reuse.is_file():
+            z = np.load(reuse)
+            clean_maps = {str(s): m for s, m in zip(z["samples"], z["maps"])}
+            manifest.setdefault("clean_maps_reused", {})[cat] = dict(file=str(reuse.name), sha256=digest(reuse))
+        missing = [s for s in samples if s not in clean_maps]
+        if missing:
+            model, meta = rrd._bank(run, torch.device("cpu"), torch, common, patchcore, sampler, backbones, None, to_tensor)
+            for s in missing:
+                with Image.open(data / s) as src:
+                    img = _canonical(src.convert("RGB"), resize_image, crop)
+                scores, maps = model.predict(to_tensor(img).unsqueeze(0))
+                clean_maps[s] = np.asarray(maps[0], np.float32)
         np.savez_compressed(out / f"clean_maps_{cat}.npz", samples=np.asarray(samples), maps=np.stack([clean_maps[s] for s in samples]))
         manifest["sources"][cat] = dict(run=f"outputs/realistic-degradation/{cat}-v1", bank_sha256=meta["artifact_sha256"])
         for cond in a.conditions:
@@ -171,30 +191,32 @@ def main(argv=None) -> int:
                 sl = (slice(y0, y1), slice(x0, x1))
                 vmax = float(max(m[sl].max() for m in maps.values()))
                 vmin = float(min(m[sl].min() for m in maps.values()))
-                up = lambda arr: np.kron(arr, np.ones((ZOOM, ZOOM) + ((1,) if arr.ndim == 3 else ()), dtype=arr.dtype))  # noqa: E731
+                side = x1 - x0
+                zoom = DISPLAY / side
+                up = lambda arr: zoom_to(arr, DISPLAY)  # noqa: E731
                 lr_disp = np.kron(degraded, np.ones((4, 4, 1), np.uint8))  # 56 -> 224 nearest, same frame
-                fig, axes = plt.subplots(2, 4, figsize=(15.5, 8.6))
+                fig, axes = plt.subplots(2, 4, figsize=(15.5, 9.4), gridspec_kw={"hspace": 0.28, "wspace": 0.06})
                 panel(axes[0, 0], up(np.asarray(clean)[sl]), "원본 (canonical 224)")
                 panel(axes[0, 1], up(lr_disp[sl]), f"열화 입력 56px ({cond}), 최근접 표시")
                 panel(axes[0, 2], up(bic[sl]), "Bicubic ×4")
                 panel(axes[0, 3], up(swi[sl]), "SwinIR ×4")
-                gtc = np.kron(gt[sl], np.ones((ZOOM, ZOOM), bool))
+                gtc = up(gt[sl])
                 panel(axes[1, 0], up(np.asarray(clean)[sl]), "GT (빨간 윤곽)", contour=gtc)
                 for k, (name, label) in enumerate((("clean", "검사 지도: 원본 입력"), ("bicubic_x4", "검사 지도: Bicubic"),
                                                     ("swinir_x4", "검사 지도: SwinIR"))):
-                    panel(axes[1, 1 + k], np.kron(maps[name][sl], np.ones((ZOOM, ZOOM))), label, contour=gtc, cmap="viridis",
+                    panel(axes[1, 1 + k], up(maps[name][sl]), label, contour=gtc, cmap="viridis",
                           vmin=vmin, vmax=vmax)
                 fig.suptitle(f"{cat} · {s} · {cond} · {c['selection_class']} (사후 선정) · per-image AU-PRO Bicubic "
                              f"{c['aupro_bicubic']:.3f} → SwinIR {c['aupro_swinir']:.3f} (Δ {c['delta_aupro']:+.3f})", fontsize=12, x=0.01, ha="left")
-                fig.text(0.01, 0.005, f"crop x{x0}-{x1} y{y0}-{y1} of 224 (원본 {original_size[0]}×{original_size[1]}에서 resize 256 + center crop), "
-                         f"표시 {ZOOM}배 최근접 · 지도 색 범위 {vmin:.2f}–{vmax:.2f} (세 지도 공통, PatchCore 거리) · v1 bank seed 11",
+                fig.text(0.01, 0.005, f"crop x{x0}-{x1} y{y0}-{y1} ({side}×{side}) of 224 (원본 {original_size[0]}×{original_size[1]}에서 resize 256 + center crop), "
+                         f"표시 {zoom:.1f}배 최근접 · 지도 색 범위 {vmin:.2f}–{vmax:.2f} (세 지도 공통, PatchCore 거리) · v1 bank seed 11",
                          fontsize=9, color="#555")
-                fig.tight_layout(rect=(0, 0.02, 1, 0.95))
+                fig.subplots_adjust(left=0.01, right=0.99, top=0.9, bottom=0.04)
                 name = f"{cat}__{cond}__{c['selection_class']}__{Path(s).parent.name}_{Path(s).stem}.png"
                 fig.savefig(out / "png" / name, dpi=150)
                 plt.close(fig)
                 rec.update(sample=s, defect_type=c["defect_type"], png=f"png/{name}", crop_x0=x0, crop_y0=y0, crop_x1=x1, crop_y1=y1,
-                           crop_frame="canonical_224", original_size=f"{original_size[0]}x{original_size[1]}", display_zoom=ZOOM,
+                           crop_frame="canonical_224", crop_side=side, original_size=f"{original_size[0]}x{original_size[1]}", display_zoom=round(zoom, 3),
                            degraded_lr_size="56x56", map_range_min=vmin, map_range_max=vmax, lr_regenerated_matches_stored_bicubic=lr_ok,
                            aupro_bicubic=c["aupro_bicubic"], aupro_swinir=c["aupro_swinir"], delta_aupro=c["delta_aupro"],
                            delta_roi_bg_gap=c["delta_gap"], taxonomy=c["taxonomy"], defect_area_ratio=c["defect_area_ratio"],
