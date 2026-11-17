@@ -1,13 +1,16 @@
 # 주형의 다음 작업
 
-2026-11-17 사용자가 최종 목적을 다시 확인하고 전체 과정의 설계·실행·검토를 주형에게 일괄 이관했다. 지혁의 미완료 실제PatchCore24+4도 포함한다.
+2026-11-17 지혁추가반환을수신했다. 기존24/24와확장4/4는수행완료보고이며,CPU는이번확장4의receipt/CSV/image AUROC를확인했다. 기존24의원래6개반환물과미푸시코드/CPU분석기는수신대기다.
 
-먼저 [통합 실행 프롬프트](../docs/PROMPT_JUHYUNG_END_TO_END_20261117.md)를 읽고 현재과정을 실제기록과대조한뒤 끝까지 진행한다. [bank 상세 계약](../docs/BANK_DOMAIN_TAKEOVER_JUHYUNG_20261117.md)과 [사진 목표 대조](../docs/PHOTO_RESULT_GOAL_REVIEW_20261117.md)는 함께 사용한다.
+먼저 [추가 수신 후 지시](../docs/JIHYUK_EXTENSION_RECEIVED_FOLLOWUP_20261117.md)와 [CPU 검토](../analysis/jihyuk_bicubic_bank_return_20261117/REVIEW.md)를읽는다. 이전‘24+4전체신규실행’지시는완료결과회수·통합·사진반환으로바꿨다.
 
-같은 결함 위치의 원본/열화/Bicubic/SwinIR RGB와 GT/검사 지도부터 기존 저장 결과로 완성한다. phone 기준사진 검사와 benchmark SR/PatchCore의 경로 차이를 설계·보고서에서 연결하고 필요한 구현을 마친다. bank24+4, 실제사진, 실행화면, 최종보고서·A0를 이어서 완료한다.
+1. 지혁에게기존6run metadata/집계와source-only8af5aa코드묶음을받는다. HTTPS쓰기인증복구를기다릴필요는없다.
+2. 현재받은확장4와기존24를family별로통합하고소스/query/split을대조한다. 실제빈부분을확인하기전에기존조건전체를다시실행하지않는다.
+3. [선정6사례](../analysis/jihyuk_bicubic_bank_return_20261117/selected_visual_cases.csv)의RGB/GT/각bank-query지도를지혁의저장raw결과에서내보낸다. Screw의화질상승·검사하락사례를포함한다.
+4. [통합 프롬프트](../docs/PROMPT_JUHYUNG_END_TO_END_20261117.md)의필요구현·실물사진·촬영전50장제안·사람판독·보고서/A0·검토수정을이어간다.
 
-기존32장평가계획에는 결함이있는저조도·흐림이빠져있다. [촬영 요청](../docs/PHOTO_CAPTURE_REQUEST_20261117.md)의기본32장v2+보조18장제안은실제촬영전에고정한다. 기록표는비공개패킷에있다. 보유사진으로가능한작업을먼저완료하고 사람에게필요한입력을구체적으로요청한다.
+확장metadata는handoff/returns/jihyuk의두bicubic-bank run,실행측4파일patch는handoff/patches/jihyuk-bicubic-bank-extension.patch에있다. 원래기본24와CPU분석기코드가이patch에포함됐다고가정하지않는다.
 
-최종비공개ZIP과새private D-20261115-10~17은CPU가수신·통합했다. CPU캐시a350b07과실행source7b868a3,포스터source59db971을보존한다. worker/기존source/자원guard/GT선택분리를유지하고사진포함자료와실제private노트는비공개로직접반환한다.
+기존phone24장/16cycle은개발결과이고정상13은OK6/NG1/REVIEW6이다. 실제최종private와D-20261115-17은수신됐다. 새촬영/사람판독/실제취득시간/팀정보는별도입력이다. 공개자료와비공개사진/private반환을구분하고기존source·worker·자원guard를유지한다.
 
-현재24장/16cycle은개발결과다. 정상13은OK6/NG1/REVIEW6이다. 신규사진·독립사람판독·실제취득시간·팀정보는도착한범위에서연결한다. A0 PDF마감은2026-12-01 23:59KST이고실제발표일은미확인이다.
+A0 PDF마감은2026-12-01 23:59KST이고실제발표일은미확인이다.

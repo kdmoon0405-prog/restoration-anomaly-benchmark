@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "study_family": "patchcore_full_patch_bicubic_bank_extension",
+  "category": "screw",
+  "seed": 11,
+  "protocol": {
+    "dataset": "MVTec AD",
+    "geometry_id": "pil-resize256-center-crop224-mask-nearest-v1",
+    "degradation_id": "pil-bicubic-224-to-56-upsample224-v1",
+    "detector_id": "PatchCore-fcaa92f124fb1ad74a7acf56726decd4b27cbcad-WideResNet50-2-layer2-layer3",
+    "restorer_id": "SwinIR-S-x4-lightweight",
+    "bank_spec": {
+      "bank_domains": [
+        "bicubic_x4"
+      ],
+      "fit_count": 256,
+      "vector_count": 200704,
+      "dimension": 1024,
+      "dtype": "float32",
+      "layers": [
+        "layer2",
+        "layer3"
+      ],
+      "sampler": "IdentitySampler",
+      "patches_per_fit_image": 784,
+      "patch_selection": "all patch rows in deterministic fit loader order",
+      "coreset_or_ordinal_subsampling": false,
+      "faiss": "CPU IndexFlatL2 exact 1-NN",
+      "patchcore_source_commit": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad",
+      "fit_transform": "clean RGB -> bicubic 56x56 -> bicubic 224x224"
+    },
+    "checkpoints_sha256": {
+      "backbone": "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8",
+      "swinir": "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e"
+    },
+    "calibration_source": "normal_calibration_only",
+    "metric_definition": {
+      "primary": "pooled_aupro",
+      "max_fpr": 0.3,
+      "num_thresholds": 200,
+      "connectivity": 4
+    }
+  },
+  "protocol_sha256": "4c8426062b80c58fa37f7ff5851c96f8cbb814f970ff0775a9015b7bb5ac9b3c",
+  "baseline_run_id": "jihyuk-bankdomain-screw-seed11-20261117-1510"
+}

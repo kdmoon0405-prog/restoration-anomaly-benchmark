@@ -1,0 +1,47 @@
+{
+  "source_commit": "ac931349ba0f3db795a5400534b3a79d2bdc4f44",
+  "source_worktree_dirty": true,
+  "source_branch": "codex/bank-domain-study",
+  "code_sha256": {
+    "scripts/run_bank_domain_study.py": "564384ce954339ad52351a5ea8bf3f33423fe9e0d9c1641c8301b4d1b11232e5",
+    "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+    "src/sr_anomaly/bank_domain_study.py": "6a262c753f386250dbeff7f5d0162fc4380b5e97f4947e8c22e3e56d3b6cb79c",
+    "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d",
+    "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+    "scripts/run_bicubic_bank_extension.py": "224dbed7b3d381c4050644b01b386982fc8aaa4213e59616485b60e67cba8d97",
+    "src/sr_anomaly/bicubic_bank_extension.py": "bd93bfa4f8b983a0b947d70dc4a910bf2c616df8353d845fc567f888ab69990f"
+  },
+  "protocol_sha256": "4c8426062b80c58fa37f7ff5851c96f8cbb814f970ff0775a9015b7bb5ac9b3c",
+  "normal_fit_calibration_disjoint": true,
+  "test_gt_used_for_selection": false,
+  "test_predictions_saved_before_gt_read": true,
+  "input_manifest_sha256": "d66baebee2534f1844ef2a7efbf36fd543baa50038f79a90f9eed5efc868f340",
+  "split_manifest_sha256": "b0bd6a8c4788e7313fb902cc47b178ebb70d24d70db95178072adec2c831850f",
+  "test_manifest_sha256": "a6194f2f0634a2b83a2e6821f5ebb9bf7c254a6a71e69626a9f268c2bbe361ab",
+  "query_manifest_sha256": "35e17008e9e9b98ebfddf44aa60d711df1a813d11ac07e7f8f6e9ca329e77f7c",
+  "bank_manifest_sha256": {
+    "bicubic_x4": "f6de59b690a7501932a7552c096ab3a89db862b8b7f047a27a2de4f16fc47d25"
+  },
+  "bank_vector_counts": {
+    "bicubic_x4": 200704
+  },
+  "baseline_run_id": "jihyuk-bankdomain-screw-seed11-20261117-1510",
+  "baseline_query_manifest_sha256": "35e17008e9e9b98ebfddf44aa60d711df1a813d11ac07e7f8f6e9ca329e77f7c",
+  "baseline_config_sha256": "59af6755601346775056c8ffd1f2d09cd1a9a125a997d5872a2ec070ca889bbb",
+  "dataset_receipt": {
+    "source_url": "https://www.mvtec.com/research-teaching/datasets/mvtec-ad",
+    "archive_sha256": "635ced502743817e8ef8fe704b2bbd1634fe87f15edaef5e7d85e6d3b86a28b9",
+    "archive_sha256_role": "private_team_category_repack",
+    "original_publisher_archive_sha256": null,
+    "license_file": "license.txt",
+    "license_sha256": "a355a57937552790ebd751f8a8026b23882160ab73f1c38f8030456dfcf1a330",
+    "input_inventory_sha256": "d66baebee2534f1844ef2a7efbf36fd543baa50038f79a90f9eed5efc868f340"
+  },
+  "submodule_revisions": {
+    "SwinIR": "6545850fbf8df298df73d81f3e8cba638787c8bd",
+    "patchcore-inspection": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+  },
+  "run_id": "jihyuk-bicubic-bank-screw-seed11-20261117-181942"
+}

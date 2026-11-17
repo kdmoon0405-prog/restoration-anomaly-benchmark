@@ -1,6 +1,6 @@
 # 주형의 최종 목표 달성을 위한 통합 실행 프롬프트
 
-2026-11-17 사용자 지시. 지혁의 미완료 bank-domain 실행을 주형이 이어받는다. 현재 Claude 환경에서 설계 판단, 남은 구현, 실행, 사진 결과, 검토와 수정, 보고서·포스터 반환까지 맡는다. 기존 Fable 5.2 환경을 이어가고 실제 사용 모델을 실행 기록에 남긴다.
+2026-11-17 사용자 지시. 지혁의 완료 bank-domain 자료를 주형이 받아 통합하고 실제로 남은 작업을 이어간다. 현재 Claude 환경에서 설계 판단, 남은 구현, 실행, 사진 결과, 검토와 수정, 보고서·포스터 반환까지 맡는다. 기존 Fable 5.2 환경을 이어가고 실제 사용 모델을 실행 기록에 남긴다.
 
 ## 최종 목적과 완료할 결과
 
@@ -36,7 +36,7 @@ UNO·실시간 시연은 준비된 범위에서 연결한다. 먼저 위 사진�
 
 - 그래픽카드1개·개발 세션 사진24장과 예시6장. 같은24사진/16cycle에서 품질v0.3의 운영 결과는v0.2와 같다.
 - 정상 라벨13cycle은OK6/NG1/REVIEW6, 모사 이물3cycle은NG3이다. 같은7cycle에서 C2/C3의 논리 사진 사용은10/14회이고 C3 NA9건과 공유 대체 사진이 있다.
-- 실제 그림은 모사 이물의 차이 지도와 저조도 대체 조명을 보여준다. 복원RGB의 같은 미세 결함 확대 비교와 실제 PatchCore24+4 반환은 남아 있다.
+- 실제 그림은 모사 이물의 차이 지도와 저조도 대체 조명을 보여준다. 복원RGB의 같은 미세 결함 확대 비교와 기존24조건 원본수신·새확장4조건 통합이 남아 있다.
 - phone의 기준 사진 차이 검사와 기존 benchmark의 SR/PatchCore는 서로 다른 실험 경로다. 두 결과의 대상·모델·해상도·GT·판정 기준을 연결해 설명해야 한다.
 - 현재 phone C1은 artificial x4 비교를 포함한다. 실제 저조도·흐림 복원과 같은 실험으로 합치지 않는다.
 - 전체696passed/4skip 로그는6748c95, 관련49passed/CPU smoke2행 로그는7b868a3에 묶여 있다. CPU가 consumer11개와 source 신규4개를 추가 확인했다.
@@ -64,15 +64,15 @@ SwinIR x4가 저조도나 실제 흐림을 복원할 수 있다고 가정하지 
 
 실제 스마트폰 사진의 작은 소자·모사 이물을 확대하고, 촬영 원본·인위적 x4 입력·복원 결과·차이 검사 경로를 표시한다. 고해상도 PNG와 실제 열리는 HTML 갤러리, 조건별 인덱스를 먼저 반환하고 다음 단위를 이어간다.
 
-## 4. 지혁의 bank-domain 실행을 완료한다
+## 4. 지혁의 완료 bank-domain 결과를 회수·통합한다
 
-docs/BANK_DOMAIN_TAKEOVER_JUHYUNG_20261117.md의 계약을 그대로 따른다. 기본은 hazelnut/screw × seed11/23/37 × clean/swinir_restored normal bank × bicubic_x4/swinir_x4 query의24조건이다. 확장은 두 category의seed11 bicubic-bank × 두 query인4조건이다. 같은 protocol로 완료된 기준 cell을 재사용한다.
+2026-11-17 추가반환을반영한다. 지혁은기존24/24와별도Bicubic-bank4/4수행완료를보고했다. CPU는확장2run/4조건을실제수신해receipt·CSV·image AUROC를대조했다. 기존24의6개원래반환물과source-only8af5aa코드는수신대기다. docs/JIHYUK_EXTENSION_RECEIVED_FOLLOWUP_20261117.md를먼저따른다.
 
-먼저 두 category의seed11 8cell부터 완료·반환하고 나머지seed와확장을 이어간다. CPU HOG 대조와 실제 PatchCore를 구분한다. 기존 패치2개, vendor, dataset/checkpoint·부분 결과를 재사용한다.
+기존조건전체를새로실행하기전에완료metadata·CPU분석기와테스트·실행시점source사본을받는다. 확장patch의현재runner와Hazelnut최초runner해시는다르고resume은저장예측을재사용했다. 기존raw map에서선정6개RGB/GT/검사지도를먼저반환한다. 수신/손상으로확인된빈조건만후속실행필요성을판단한다.
 
-producer/CPU consumer의 scripts/analyze_bank_domain_study.py 이름 충돌을 읽고 별도 실행 checkout에서 연결한다. 다섯 파일 export와 source provenance, ROI-background gap, 기존 consumer 호환성을 확인한다. 메모리·디스크 guard, fit/cal 분리, 동일 query·split·bank count, pinned source/checkpoint를 유지한다.
+기본24는hazelnut/screw×seed11/23/37×clean/swinir_restored bank×bicubic_x4/swinir_x4 query,확장4는두categoryseed11 bicubic-bank×두query다. 기존CPU HOG대조·다른protocol의master165와구분하고query/split/checkpoint/source를대조한다. pooled AU-PRO@0.3과per-image결과/CI를구분한다.
 
-동일 query RGB를 고정하고 bank만 바꾼 지도와 숫자를 만든다. primary pooled AU-PRO@0.3, per-image 결과와 paired CI를 서로 구분하고, 같은 test 이미지의seed반복을 독립 사진 수로 더하지 않는다.
+Bicubic bank고정시query복원의변화는Hazelnut+0.016908/Screw−0.037334다. Screw의화질상승과검사지표하락을사진으로확인한다. 같은query의bank변경대조도별도로표시한다. 보존된실패이력·dirty소스·RAMpeak미측정·raw미수신범위를유지하고source/guard/test-GT분리를지킨다.
 
 ## 5. 필요한 촬영을 구체적으로 요청하고 독립 작업을 계속한다
 

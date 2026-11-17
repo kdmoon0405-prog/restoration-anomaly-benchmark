@@ -1,0 +1,184 @@
+{
+  "kind": "received_scalar_internal_consistency_review",
+  "status": "RECEIPT_AND_SCALAR_CONSISTENCY_PASS",
+  "base24_status": "reported_complete_in_attached_progress; six original result receipts/files not supplied or on fetched remote",
+  "new_extension_conditions": 4,
+  "categories": [
+    {
+      "category": "hazelnut",
+      "seed": 11,
+      "test_images": 110,
+      "anomalies": 70,
+      "fit_images": 313,
+      "calibration_images_reported": 78,
+      "per_image_rows": 220,
+      "matched_delta_rows": 140,
+      "query_manifest_consistent_with_embedded_baseline_digest": true,
+      "baseline_original_files_received": false,
+      "image_auroc_recomputed_from_supplied_scores": true,
+      "pooled_aupro_recomputed": false,
+      "pixel_auroc_recomputed": false,
+      "pooled_ci_computed": false,
+      "bank_comparisons": [
+        {
+          "query_domain": "bicubic_x4",
+          "clean_bank_pooled": 0.8175193282587578,
+          "bicubic_bank_pooled": 0.837984961961041,
+          "delta_pooled": 0.02046563370228316,
+          "mean_per_image_delta": 0.003458576289342302,
+          "regressions": 36,
+          "anomalies": 70
+        },
+        {
+          "query_domain": "swinir_x4",
+          "clean_bank_pooled": 0.8412522083939893,
+          "bicubic_bank_pooled": 0.854892796008306,
+          "delta_pooled": 0.013640587614316746,
+          "mean_per_image_delta": -0.0002474178963517434,
+          "regressions": 31,
+          "anomalies": 70
+        }
+      ],
+      "within_bicubic_bank_query_effect": {
+        "study_family": "patchcore_full_patch_bicubic_bank_extension",
+        "category": "hazelnut",
+        "seed": "11",
+        "evidence_kind": "model_predictions",
+        "baseline_run": "jihyuk-bankdomain-hazelnut-seed11-20261117-1432",
+        "extension_run": "jihyuk-bicubic-bank-hazelnut-seed11-20261117-175015",
+        "query_manifest_sha256": "413ca5e3a1a026584c81533f538ec667c909c4341d9859fcbde20961f9747beb",
+        "bank_domain": "bicubic_x4",
+        "reference_query": "bicubic_x4",
+        "candidate_query": "swinir_x4",
+        "delta_pooled_aupro": "0.016907834047265036",
+        "delta_pixel_auroc": "-0.001658675926008213",
+        "delta_image_auroc": "-0.0007142857142856673",
+        "delta_mean_psnr": "2.313490348851957",
+        "delta_mean_ssim": "0.022491661967666055",
+        "pooled_aupro_ci_computed": "False"
+      },
+      "model_prediction_or_bank_arrays_received": false
+    },
+    {
+      "category": "screw",
+      "seed": 11,
+      "test_images": 160,
+      "anomalies": 119,
+      "fit_images": 256,
+      "calibration_images_reported": 64,
+      "per_image_rows": 320,
+      "matched_delta_rows": 238,
+      "query_manifest_consistent_with_embedded_baseline_digest": true,
+      "baseline_original_files_received": false,
+      "image_auroc_recomputed_from_supplied_scores": true,
+      "pooled_aupro_recomputed": false,
+      "pixel_auroc_recomputed": false,
+      "pooled_ci_computed": false,
+      "bank_comparisons": [
+        {
+          "query_domain": "bicubic_x4",
+          "clean_bank_pooled": 0.7990657469298349,
+          "bicubic_bank_pooled": 0.8988871108988724,
+          "delta_pooled": 0.09982136396903751,
+          "mean_per_image_delta": 0.1385199755793249,
+          "regressions": 13,
+          "anomalies": 119
+        },
+        {
+          "query_domain": "swinir_x4",
+          "clean_bank_pooled": 0.8531818393683102,
+          "bicubic_bank_pooled": 0.8615534070258278,
+          "delta_pooled": 0.008371567657517676,
+          "mean_per_image_delta": -0.010677882250563988,
+          "regressions": 64,
+          "anomalies": 119
+        }
+      ],
+      "within_bicubic_bank_query_effect": {
+        "study_family": "patchcore_full_patch_bicubic_bank_extension",
+        "category": "screw",
+        "seed": "11",
+        "evidence_kind": "model_predictions",
+        "baseline_run": "jihyuk-bankdomain-screw-seed11-20261117-1510",
+        "extension_run": "jihyuk-bicubic-bank-screw-seed11-20261117-181942",
+        "query_manifest_sha256": "35e17008e9e9b98ebfddf44aa60d711df1a813d11ac07e7f8f6e9ca329e77f7c",
+        "bank_domain": "bicubic_x4",
+        "reference_query": "bicubic_x4",
+        "candidate_query": "swinir_x4",
+        "delta_pooled_aupro": "-0.03733370387304458",
+        "delta_pixel_auroc": "-0.016593658966756797",
+        "delta_image_auroc": "-0.20844435335109657",
+        "delta_mean_psnr": "2.437521635297067",
+        "delta_mean_ssim": "0.01642614271592069",
+        "pooled_aupro_ci_computed": "False"
+      },
+      "model_prediction_or_bank_arrays_received": false
+    }
+  ],
+  "source_patch_added_files": [
+    {
+      "path": "scripts/run_bicubic_bank_extension.py",
+      "digests": {
+        "LF": "224dbed7b3d381c4050644b01b386982fc8aaa4213e59616485b60e67cba8d97",
+        "CRLF": "89bdec4050763847911511e862664122f9b5f19116694a9bbc44b8287a6384cb"
+      },
+      "run_binding": [
+        {
+          "category": "hazelnut",
+          "matches": false,
+          "recorded_sha256": "ebc196febcab0a36083f330b5787b0417f61f85c311633da79be3f8a3d35d4ac"
+        },
+        {
+          "category": "screw",
+          "matches": true,
+          "recorded_sha256": "224dbed7b3d381c4050644b01b386982fc8aaa4213e59616485b60e67cba8d97"
+        }
+      ]
+    },
+    {
+      "path": "src/sr_anomaly/bicubic_bank_extension.py",
+      "digests": {
+        "LF": "bd93bfa4f8b983a0b947d70dc4a910bf2c616df8353d845fc567f888ab69990f",
+        "CRLF": "1558fcf13822c095f7b0699d9cfaf3b5c6b5e457f874e99823a5f801d2f348c3"
+      },
+      "run_binding": [
+        {
+          "category": "hazelnut",
+          "matches": true,
+          "recorded_sha256": "bd93bfa4f8b983a0b947d70dc4a910bf2c616df8353d845fc567f888ab69990f"
+        },
+        {
+          "category": "screw",
+          "matches": true,
+          "recorded_sha256": "bd93bfa4f8b983a0b947d70dc4a910bf2c616df8353d845fc567f888ab69990f"
+        }
+      ]
+    },
+    {
+      "path": "scripts/resume_bicubic_bank_extension_evaluation.py",
+      "digests": {
+        "LF": "fbf3114232ddcbd044bc6b09448ff2b7f2969c404081a1f555418f4a77373608",
+        "CRLF": "5e6518487321e6d22b270a963f5cb08d08f5e699667366a2d0acfae3d8bbb869"
+      },
+      "run_binding": [
+        {
+          "category": "hazelnut",
+          "recovery_matches": true
+        }
+      ]
+    },
+    {
+      "path": "tests/test_bicubic_bank_extension.py",
+      "digests": {
+        "LF": "c2a6f5d7e46e8692eaf0fe6c35970920874c004f2dadc5ba7055f05ff5777d08",
+        "CRLF": "ba08e34a2b81b5c498d6941146993fdc27da841c91b170924fdaa75b01b11aa8"
+      },
+      "run_binding": []
+    }
+  ],
+  "local_model_execution": false,
+  "execution_tests_reported": 5,
+  "consumer_tests_reported": 5,
+  "producer_tests_locally_rerun": false,
+  "source_only_consumer_code_received": false
+}

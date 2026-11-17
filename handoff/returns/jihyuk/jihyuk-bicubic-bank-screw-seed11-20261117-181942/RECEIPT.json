@@ -1,0 +1,70 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "jihyuk",
+  "run_id": "jihyuk-bicubic-bank-screw-seed11-20261117-181942",
+  "prepared_utc": "2026-11-17T09:43:09.107548+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "extension_summary.csv",
+      "bytes": 899,
+      "sha256": "23251d9b756ad88950b2b69447cb6fcf512e4b414bd09f866db60946e0ab6e57"
+    },
+    {
+      "path": "extension_per_image.csv",
+      "bytes": 51135,
+      "sha256": "c58b7033e3fd884706a0c00a4312b7674627a2fa6d408aaaf2fcd479bb996da7"
+    },
+    {
+      "path": "extension_query_quality.csv",
+      "bytes": 20165,
+      "sha256": "73a1a58dce0594abeba19cc1356782847efe14084501ee27bb0b39efab19518d"
+    },
+    {
+      "path": "config.json",
+      "bytes": 1691,
+      "sha256": "b6ccb4f1f09d51dce9feaa8ff1e95f6928036c27aaa553aed2040f0e865706b8"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 2968,
+      "sha256": "bc9963838ae7b365222839a942aef7e6decff95c8f206f48122208f893028ad4"
+    },
+    {
+      "path": "SUMMARY.md",
+      "bytes": 585,
+      "sha256": "0a4121743de96f32d9cfeafebfad1dc5eabf91a94b81781fed18cf47e2b9a5d1"
+    },
+    {
+      "path": "extension_analysis_manifest.json",
+      "bytes": 1340,
+      "sha256": "32c2cf49dde76d2cfc8ed0f9d8da3f8af4703065dddcef37846bce3904dd31c4"
+    },
+    {
+      "path": "matched_bank_effects.csv",
+      "bytes": 1060,
+      "sha256": "8ca23b7327479ee39927a5e6564b6beae943dd7caf8b651c86a6b65911e1e830"
+    },
+    {
+      "path": "extension_query_effects.csv",
+      "bytes": 618,
+      "sha256": "10845e12f91850bcee33d8531512ca25afdf70a4a11825eb134048894b8a3a35"
+    },
+    {
+      "path": "per_image_matched_deltas.csv",
+      "bytes": 101757,
+      "sha256": "68f662177ee68c310bd0ae7b92df4c4d7bfc1af9d3281112f76dba19fa9d2539"
+    },
+    {
+      "path": "extension_quality_by_query.csv",
+      "bytes": 98954,
+      "sha256": "ca0f50bba3b3d2e347138bbae8cf352e33a24f1251680acf4f4762925374c708"
+    },
+    {
+      "path": "RUN_RECORD.json",
+      "bytes": 4906,
+      "sha256": "ea8d92ae7dc0602fc95ac80ccf245b09f53856e045fdfad10cdf43c9218f42ae"
+    }
+  ]
+}

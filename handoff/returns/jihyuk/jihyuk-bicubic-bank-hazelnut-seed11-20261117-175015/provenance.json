@@ -1,0 +1,52 @@
+{
+  "source_commit": "ac931349ba0f3db795a5400534b3a79d2bdc4f44",
+  "source_worktree_dirty": true,
+  "source_branch": "codex/bank-domain-study",
+  "code_sha256": {
+    "scripts/run_bank_domain_study.py": "564384ce954339ad52351a5ea8bf3f33423fe9e0d9c1641c8301b4d1b11232e5",
+    "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+    "src/sr_anomaly/bank_domain_study.py": "6a262c753f386250dbeff7f5d0162fc4380b5e97f4947e8c22e3e56d3b6cb79c",
+    "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d",
+    "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+    "scripts/run_bicubic_bank_extension.py": "ebc196febcab0a36083f330b5787b0417f61f85c311633da79be3f8a3d35d4ac",
+    "src/sr_anomaly/bicubic_bank_extension.py": "bd93bfa4f8b983a0b947d70dc4a910bf2c616df8353d845fc567f888ab69990f"
+  },
+  "protocol_sha256": "44b661c17422cfcfdff0ad48a92e4b10f06b5bd2d412a3f657ce1ca53f993005",
+  "normal_fit_calibration_disjoint": true,
+  "test_gt_used_for_selection": false,
+  "test_predictions_saved_before_gt_read": true,
+  "input_manifest_sha256": "d66baebee2534f1844ef2a7efbf36fd543baa50038f79a90f9eed5efc868f340",
+  "input_inventory_sha256": "d66baebee2534f1844ef2a7efbf36fd543baa50038f79a90f9eed5efc868f340",
+  "split_manifest_sha256": "53f7fe68fe2fa32f1afc21a6fafbd7ef53fb95d086fb86139243b80f6f0af9f4",
+  "test_manifest_sha256": "ab736b69c069f8d1fec807f79420ddcb937cfb7ddf8eeab8d42f60d1dbbde2e3",
+  "query_manifest_sha256": "413ca5e3a1a026584c81533f538ec667c909c4341d9859fcbde20961f9747beb",
+  "bank_manifest_sha256": {
+    "bicubic_x4": "a3fbec75ee5bfb1c7d8fefd65254eaaa60115c38a9d17e4e0277d3ea66dfc8f0"
+  },
+  "bank_vector_counts": {
+    "bicubic_x4": 245392
+  },
+  "baseline_run_id": "jihyuk-bankdomain-hazelnut-seed11-20261117-1432",
+  "baseline_query_manifest_sha256": "413ca5e3a1a026584c81533f538ec667c909c4341d9859fcbde20961f9747beb",
+  "baseline_config_sha256": "75b16b26e5f223b72ed45154050a3f55f3bac75f0177afc9124b9828cf14c8d3",
+  "dataset_receipt": {
+    "source_url": "https://www.mvtec.com/research-teaching/datasets/mvtec-ad",
+    "archive_sha256": "635ced502743817e8ef8fe704b2bbd1634fe87f15edaef5e7d85e6d3b86a28b9",
+    "archive_sha256_role": "private_team_category_repack",
+    "original_publisher_archive_sha256": null,
+    "license_file": "license.txt",
+    "license_sha256": "a355a57937552790ebd751f8a8026b23882160ab73f1c38f8030456dfcf1a330",
+    "input_inventory_sha256": "d66baebee2534f1844ef2a7efbf36fd543baa50038f79a90f9eed5efc868f340"
+  },
+  "submodule_revisions": {
+    "SwinIR": "6545850fbf8df298df73d81f3e8cba638787c8bd",
+    "patchcore-inspection": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+  },
+  "run_id": "jihyuk-bicubic-bank-hazelnut-seed11-20261117-175015",
+  "resumed_evaluation_without_model_rerun": true,
+  "initial_failed_status_sha256": "d3efd406b8ca1aba892af89ccb234a8e2330251988bfd59d80c1d891a82379f8",
+  "quality_source": "exact same-query values reused from complete baseline; query/input manifest SHA matched",
+  "recovery_script_sha256": "fbf3114232ddcbd044bc6b09448ff2b7f2969c404081a1f555418f4a77373608"
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "read_only_bicubic_bank_extension_analysis",
+  "schema_version": 1,
+  "family": "patchcore_full_patch_bicubic_bank_extension",
+  "status": "COMPLETE",
+  "evidence_kind": "model_predictions",
+  "baseline_run": "jihyuk-bankdomain-hazelnut-seed11-20261117-1432",
+  "extension_run": "jihyuk-bicubic-bank-hazelnut-seed11-20261117-175015",
+  "source_commit": "ac931349ba0f3db795a5400534b3a79d2bdc4f44",
+  "source_worktree_dirty": true,
+  "query_manifest_sha256": "413ca5e3a1a026584c81533f538ec667c909c4341d9859fcbde20961f9747beb",
+  "same_query_clean_bank_baseline": true,
+  "raw_prediction_arrays_opened": false,
+  "detection_metrics_recomputed": false,
+  "ground_truth_or_images_opened": false,
+  "pooled_aupro_ci_computed": false,
+  "per_image_deltas_are_supplementary": true,
+  "table_sha256": {
+    "extension_summary.csv": "a6f3b0ce97ffce7726a1646405cdb8d633e906de1a7e3b6a1f36d408f34a0280",
+    "matched_bank_effects.csv": "ba21b1ecd4755bf3f30441762efd8588055b1cb89abc7c83ddfdb956a84d8c6f",
+    "extension_query_effects.csv": "e91d8e9124614c48355ba1cec7249bc3e2eb9c7f68585944a9a40dcb512414f6",
+    "per_image_matched_deltas.csv": "eaa9026261b8d7551a246a8272a4758efb46652a8a7493ad919a4828ee21d74d",
+    "extension_quality_by_query.csv": "91a3fccf5882c91c7ef4cfa942c22748c3924787b220311642a602d22fe05ca5"
+  }
+}

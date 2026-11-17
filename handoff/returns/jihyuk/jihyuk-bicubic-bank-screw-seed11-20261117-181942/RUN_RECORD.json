@@ -1,0 +1,91 @@
+{
+  "run_id": "jihyuk-bicubic-bank-screw-seed11-20261117-181942",
+  "category": "screw",
+  "seed": 11,
+  "family": "patchcore_full_patch_bicubic_bank_extension",
+  "status": "COMPLETE",
+  "evidence_kind": "model_predictions",
+  "command_exit_code": 0,
+  "source_commit": "ac931349ba0f3db795a5400534b3a79d2bdc4f44",
+  "source_branch": "codex/bank-domain-study",
+  "source_worktree_dirty": true,
+  "execution_source_sha256": {
+    "scripts/run_bank_domain_study.py": "564384ce954339ad52351a5ea8bf3f33423fe9e0d9c1641c8301b4d1b11232e5",
+    "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+    "src/sr_anomaly/bank_domain_study.py": "6a262c753f386250dbeff7f5d0162fc4380b5e97f4947e8c22e3e56d3b6cb79c",
+    "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d",
+    "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+    "scripts/run_bicubic_bank_extension.py": "224dbed7b3d381c4050644b01b386982fc8aaa4213e59616485b60e67cba8d97",
+    "src/sr_anomaly/bicubic_bank_extension.py": "bd93bfa4f8b983a0b947d70dc4a910bf2c616df8353d845fc567f888ab69990f"
+  },
+  "baseline_run_id": "jihyuk-bankdomain-screw-seed11-20261117-1510",
+  "query_manifest_sha256": "35e17008e9e9b98ebfddf44aa60d711df1a813d11ac07e7f8f6e9ca329e77f7c",
+  "split_manifest_sha256": "b0bd6a8c4788e7313fb902cc47b178ebb70d24d70db95178072adec2c831850f",
+  "test_manifest_sha256": "a6194f2f0634a2b83a2e6821f5ebb9bf7c254a6a71e69626a9f268c2bbe361ab",
+  "bank_sha256": "8e30cab1847207be147a96fa9719db69469ae805838e01af1eb098230d9910e6",
+  "bank_vector_count": 200704,
+  "bank_vector_dimension": 1024,
+  "raw_prediction_archive": {
+    "path": "raw_bicubic_x4.npz",
+    "sha256": "2f741f381af63e5c633976e13e77bee40b566053e897d195c178a2ef40505678",
+    "bytes": 78891694,
+    "included_in_return": false
+  },
+  "checkpoints_sha256": {
+    "backbone": "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8",
+    "swinir": "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e"
+  },
+  "patchcore_source_commit": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad",
+  "submodule_revisions": {
+    "SwinIR": "6545850fbf8df298df73d81f3e8cba638787c8bd",
+    "patchcore-inspection": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+  },
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce GTX 1660 SUPER",
+  "runtime_seconds": {
+    "fit_seconds": 16.762660700002016,
+    "query_inference_seconds": 576.3930080999853,
+    "torch_cuda_peak_allocated_bytes": 1021221376,
+    "torch_cuda_peak_reserved_bytes": 1264582656,
+    "bank_bytes": 822083584,
+    "bank_sha256": "8e30cab1847207be147a96fa9719db69469ae805838e01af1eb098230d9910e6"
+  },
+  "resource_snapshot_before_fit": {
+    "available_ram_bytes": 8979808256,
+    "plan": {
+      "fit_vectors": 200704,
+      "bank_bytes": 822083584,
+      "query_chunk_bytes": 25690112,
+      "visible_fit_payload_scenario_bytes": 2491940864,
+      "reserve_bytes": 2147483648,
+      "required_available_ram_bytes": 4639424512,
+      "estimated_not_measured": true
+    },
+    "disk_free_bytes": 16910475264,
+    "gpu_name": "NVIDIA GeForce GTX 1660 SUPER",
+    "gpu_free_bytes_before_fit": 5307891712
+  },
+  "resource_snapshot_after": {
+    "available_ram_bytes": 9150791680,
+    "disk_free_bytes": 16036585472
+  },
+  "ram_peak_measured": false,
+  "torch_cuda_peak_bytes_measured": true,
+  "test_gt_used_for_selection": false,
+  "normal_calibration_only": true,
+  "calibration_quantile": 0.99,
+  "result_analysis": {
+    "raw_prediction_arrays_opened": false,
+    "detection_metrics_recomputed": false,
+    "pooled_aupro_ci_computed": false
+  },
+  "archive_sha256": "635ced502743817e8ef8fe704b2bbd1634fe87f15edaef5e7d85e6d3b86a28b9",
+  "archive_sha256_role": "private_team_category_repack",
+  "original_publisher_archive_sha256": null,
+  "private_arrays_not_included": true,
+  "command": "python scripts/run_bicubic_bank_extension.py --data-root data/external/MVTecAD-jihyuk-20261117 --dataset-provenance data/external/MVTecAD-jihyuk-20261117/dataset_provenance.json --category screw --seed 11 --baseline-run <existing-screw-seed11-run> --device cuda --output-root outputs/bank-domain-extension-runs --run-id jihyuk-bicubic-bank-screw-seed11-20261117-181942",
+  "analysis_command": "python scripts/analyze_bicubic_bank_extension.py --extension-run <completed-extension-run> --baseline-run <existing-screw-seed11-run> --output <analysis-output> --source-root <feature-checkout>",
+  "quality_source": "query RGB quality measured in this run; matching input/query manifest SHA confirmed."
+}

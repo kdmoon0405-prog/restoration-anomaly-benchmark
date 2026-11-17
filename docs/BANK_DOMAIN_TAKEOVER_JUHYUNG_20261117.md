@@ -1,6 +1,6 @@
 # 주형에게 넘기는 bank-domain 실행과 사진 결과물 작업
 
-2026-11-17 사용자 승인. 지혁이 담당하던 미완료 bank-domain 24+4 실행을 주형에게 넘긴다. 최종 목적은 열화된 입력에서 복원이 결함과 검사에 미치는 영향을 사진과 수치로 확인하는 것이다. 실시간 시연과 UNO 실물의 준비 상태에 관계없이 아래 소프트웨어·사진 결과물을 끝까지 완성한다. 기존 Fable 5.2 환경과 현재 작업을 이어가고 실제 사용 모델을 기록한다.
+2026-11-17 사용자 승인. 지혁의 bank-domain 24+4 작업을 주형이 이어받는다. 추가수신으로수행완료보고가도착해현재작업은결과회수·통합·사진반환으로갱신됐다. 최종 목적은 열화된 입력에서 복원이 결함과 검사에 미치는 영향을 사진과 수치로 확인하는 것이다. 실시간 시연과 UNO 실물의 준비 상태에 관계없이 아래 소프트웨어·사진 결과물을 끝까지 완성한다. 기존 Fable 5.2 환경과 현재 작업을 이어가고 실제 사용 모델을 기록한다.
 
 ## 시작과 소스 보존
 
@@ -30,15 +30,15 @@
 - 실제 스마트폰 사진은 기준/L0/L1, 저조도와 대체 조명, 모사 이물의 확대 그림을 만든다. artificial x4 복원 비교와 실제 촬영 조건을 각각 명시한다. 사람이 붙인 위치 상자를 검증된 결함 GT로 표기하지 않는다.
 - bank 비교 그림에서는 동일 query RGB와 같은 좌표를 유지하고 bank만 바꾼다. query 복원을 함께 바꾼 표는 별도 대조로 표시한다.
 
-사진 묶음은 image ID·crop·조건을 담은 인덱스와 열리는 HTML 갤러리, 고해상도 PNG로 반환한다. 보고서의 그림 번호와 연결하고 실제 브라우저·포스터 확대 상태를 열어 확인한다. 첫 사진 묶음을 만든 뒤 아래 bank 실행을 이어간다.
+사진 묶음은 image ID·crop·조건 인덱스, HTML 갤러리와 고해상도 PNG로 반환한다. 보고서 그림 번호와 연결해 실제 화면을 확인한다. bank 작업은 아래의 완료 결과 회수·통합으로 갱신됐다.
 
-## 실제 PatchCore bank-domain 실험
+## 완료 보고된 PatchCore bank-domain 결과의 통합
 
-기존 CPU HOG/kNN 실험은 별도 대조 결과다. 실제 PatchCore GPU 반환 24개 기본 조건과 4개 확장 조건을 완성한다.
+2026-11-17 지혁은기본24조건과확장4조건수행완료를보고했다. CPU는이번확장4조건을수신·대조했고기존24의원래6개반환물과미푸시source-only코드는아직받지못했다. 현재우선작업은 [추가 수신 지시](JIHYUK_EXTENSION_RECEIVED_FOLLOWUP_20261117.md)에따른자료회수·검증·통합·저장사진반환이다.
 
-기본 조건은 category 2개(hazelnut/screw), seed 3개(11/23/37), normal bank 2종(clean/swinir_restored), query 2종(bicubic_x4/swinir_x4)의 곱이다. 먼저 두 category의 seed 11에서 4조건씩 완성하고, seed 23/37, 확장 조건 순서로 진행한다.
+기존24+4전체를반복하기전에완료파일을받고정확한빈부분을확인한다. 기본은category2개(hazelnut/screw)×seed3개(11/23/37)×normal bank2종(clean/swinir_restored)×query2종(bicubic_x4/swinir_x4)의24조건,확장은두categoryseed11 bicubic normal bank×query2종의4조건이다. CPU HOG대조와구분한다.
 
-확장은 category 2개 × seed 11 × bicubic normal bank × query 2종의 4조건이다. 같은 protocol의 기존 seed 11 clean-bank/bicubic-query 기준은 재사용한다. query-clean arm을 추가하지 않는다.
+기존seed11 query/기준cell을재사용하고새query-clean arm을추가하지않는다. 소스·split·query·checkpoint를대조한뒤수신누락과실행누락을구분한다.
 
 고정 계약을 유지한다.
 
@@ -72,7 +72,7 @@ pooled/평균 AU-PRO, family별 seed, 중심 보정/화면 이동 원근 결과,
 
 A0 PDF는 2026-12-01 23:59 KST까지 제출한다. 실제 발표일은 미확인이다. 핵심 실험 11월23일, 포스터 초안 27일, 최종 검토 29일을 목표로 한다.
 
-먼저 사진 결과와 bank 실험을 마무리한다. 가이드의 ANN 검색 변경, 자동 drift calibration, 조명 피드백 보드, XY scanner는 별도 채택 시 구현할 확장안으로 남긴다. 실물 장비의 부재로 현재 사진·보고서 작업을 중단하지 않는다.
+먼저 사진 결과와 bank 완료자료 통합을 마무리한다. 가이드의 ANN 검색 변경, 자동 drift calibration, 조명 피드백 보드, XY scanner는 별도 채택 시 구현할 확장안으로 남긴다. 실물 장비의 부재로 현재 사진·보고서 작업을 중단하지 않는다.
 
 각 완료 단위에서 source/모델·입력·실행 범위·숫자·그림·한계를 PROGRESS에 기록하고, 근거가 있는 결정·수정·남은 질문을 실제 private 노트에 추가한다. 공개 진행 사본만으로 private 노트 반환을 완료 처리하지 않는다. 자체 검토는 사용 모델과 검토 범위를 적고 실제로 고친 뒤 마지막 diff와 산출물을 다시 확인한다.
 

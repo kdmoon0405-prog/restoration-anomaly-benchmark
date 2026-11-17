@@ -1,0 +1,98 @@
+{
+  "run_id": "jihyuk-bicubic-bank-hazelnut-seed11-20261117-175015",
+  "category": "hazelnut",
+  "seed": 11,
+  "family": "patchcore_full_patch_bicubic_bank_extension",
+  "status": "COMPLETE",
+  "evidence_kind": "model_predictions",
+  "source_commit": "ac931349ba0f3db795a5400534b3a79d2bdc4f44",
+  "source_branch": "codex/bank-domain-study",
+  "source_worktree_dirty": true,
+  "execution_source_sha256": {
+    "scripts/run_bank_domain_study.py": "564384ce954339ad52351a5ea8bf3f33423fe9e0d9c1641c8301b4d1b11232e5",
+    "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+    "src/sr_anomaly/bank_domain_study.py": "6a262c753f386250dbeff7f5d0162fc4380b5e97f4947e8c22e3e56d3b6cb79c",
+    "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d",
+    "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+    "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+    "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+    "scripts/run_bicubic_bank_extension.py": "ebc196febcab0a36083f330b5787b0417f61f85c311633da79be3f8a3d35d4ac",
+    "src/sr_anomaly/bicubic_bank_extension.py": "bd93bfa4f8b983a0b947d70dc4a910bf2c616df8353d845fc567f888ab69990f"
+  },
+  "baseline_run_id": "jihyuk-bankdomain-hazelnut-seed11-20261117-1432",
+  "query_manifest_sha256": "413ca5e3a1a026584c81533f538ec667c909c4341d9859fcbde20961f9747beb",
+  "split_manifest_sha256": "53f7fe68fe2fa32f1afc21a6fafbd7ef53fb95d086fb86139243b80f6f0af9f4",
+  "test_manifest_sha256": "ab736b69c069f8d1fec807f79420ddcb937cfb7ddf8eeab8d42f60d1dbbde2e3",
+  "bank_sha256": "d04ea63a56fd8530352ae94ccac9aff0651349e69c471606a3ca32129b4814bd",
+  "bank_vector_count": 245392,
+  "bank_vector_dimension": 1024,
+  "raw_prediction_archive": {
+    "path": "raw_bicubic_x4.npz",
+    "sha256": "675a099f70a7d0f4ebb9b6b9e548ebbe8e5633a42d8150d3d662e0eb536eb9c8",
+    "bytes": 66758287,
+    "included_in_return": false
+  },
+  "checkpoints_sha256": {
+    "backbone": "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8",
+    "swinir": "09fad24e32ae62722e1a055efde9921328f4137981bab0a42a4a3a806306c58e"
+  },
+  "patchcore_source_commit": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad",
+  "submodule_revisions": {
+    "SwinIR": "6545850fbf8df298df73d81f3e8cba638787c8bd",
+    "patchcore-inspection": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+  },
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce GTX 1660 SUPER",
+  "runtime_seconds": {
+    "fit_seconds": 26.356100400000287,
+    "query_inference_seconds": 632.2291615999857,
+    "torch_cuda_peak_allocated_bytes": 1021221376,
+    "torch_cuda_peak_reserved_bytes": 1264582656,
+    "bank_bytes": 1005125632,
+    "bank_sha256": "d04ea63a56fd8530352ae94ccac9aff0651349e69c471606a3ca32129b4814bd"
+  },
+  "resource_snapshot_before_fit": {
+    "available_ram_bytes": 7943634944,
+    "plan": {
+      "fit_vectors": 245392,
+      "bank_bytes": 1005125632,
+      "query_chunk_bytes": 25690112,
+      "visible_fit_payload_scenario_bytes": 3041067008,
+      "reserve_bytes": 2147483648,
+      "required_available_ram_bytes": 5188550656,
+      "estimated_not_measured": true
+    },
+    "disk_free_bytes": 17019781120,
+    "gpu_name": "NVIDIA GeForce GTX 1660 SUPER",
+    "gpu_free_bytes_before_fit": 5307891712
+  },
+  "resource_snapshot_after_resume": {
+    "available_ram_bytes": 10183442432,
+    "disk_free_bytes": 16913240064
+  },
+  "ram_peak_measured": false,
+  "torch_cuda_peak_bytes_measured": true,
+  "original_model_command_exit_code": 1,
+  "original_failure": "GT metadata stage attempted to hash mask_path=None for a normal test sample; all raw prediction arrays had already been saved and hash-verified.",
+  "initial_failed_status_sha256": "d3efd406b8ca1aba892af89ccb234a8e2330251988bfd59d80c1d891a82379f8",
+  "resume_command_exit_code": 0,
+  "resumed_model_or_query_execution": false,
+  "resume_rule": "reused the saved raw prediction archive; reused same-query quality values from the complete clean-bank baseline after query/input manifest hashes matched.",
+  "test_gt_used_for_selection": false,
+  "normal_calibration_only": true,
+  "calibration_quantile": 0.99,
+  "result_analysis": {
+    "raw_prediction_arrays_opened": false,
+    "detection_metrics_recomputed": false,
+    "pooled_aupro_ci_computed": false
+  },
+  "archive_sha256": "635ced502743817e8ef8fe704b2bbd1634fe87f15edaef5e7d85e6d3b86a28b9",
+  "archive_sha256_role": "private_team_category_repack",
+  "original_publisher_archive_sha256": null,
+  "private_arrays_not_included": true,
+  "commands": [
+    "python scripts/run_bicubic_bank_extension.py --data-root data/external/MVTecAD-jihyuk-20261117 --dataset-provenance data/external/MVTecAD-jihyuk-20261117/dataset_provenance.json --category hazelnut --seed 11 --baseline-run <existing-hazelnut-seed11-run> --device cuda --output-root outputs/bank-domain-extension-runs --run-id jihyuk-bicubic-bank-hazelnut-seed11-20261117-175015",
+    "python scripts/resume_bicubic_bank_extension_evaluation.py --run-dir <same-extension-run> --baseline-run <existing-hazelnut-seed11-run> --data-root data/external/MVTecAD-jihyuk-20261117",
+    "python scripts/analyze_bicubic_bank_extension.py --extension-run <completed-extension-run> --baseline-run <existing-hazelnut-seed11-run> --output <analysis-output> --source-root <run-time-source-snapshot>"
+  ]
+}

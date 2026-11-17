@@ -1,0 +1,25 @@
+{
+  "kind": "read_only_bicubic_bank_extension_analysis",
+  "schema_version": 1,
+  "family": "patchcore_full_patch_bicubic_bank_extension",
+  "status": "COMPLETE",
+  "evidence_kind": "model_predictions",
+  "baseline_run": "jihyuk-bankdomain-screw-seed11-20261117-1510",
+  "extension_run": "jihyuk-bicubic-bank-screw-seed11-20261117-181942",
+  "source_commit": "ac931349ba0f3db795a5400534b3a79d2bdc4f44",
+  "source_worktree_dirty": true,
+  "query_manifest_sha256": "35e17008e9e9b98ebfddf44aa60d711df1a813d11ac07e7f8f6e9ca329e77f7c",
+  "same_query_clean_bank_baseline": true,
+  "raw_prediction_arrays_opened": false,
+  "detection_metrics_recomputed": false,
+  "ground_truth_or_images_opened": false,
+  "pooled_aupro_ci_computed": false,
+  "per_image_deltas_are_supplementary": true,
+  "table_sha256": {
+    "extension_summary.csv": "23251d9b756ad88950b2b69447cb6fcf512e4b414bd09f866db60946e0ab6e57",
+    "matched_bank_effects.csv": "8ca23b7327479ee39927a5e6564b6beae943dd7caf8b651c86a6b65911e1e830",
+    "extension_query_effects.csv": "10845e12f91850bcee33d8531512ca25afdf70a4a11825eb134048894b8a3a35",
+    "per_image_matched_deltas.csv": "68f662177ee68c310bd0ae7b92df4c4d7bfc1af9d3281112f76dba19fa9d2539",
+    "extension_quality_by_query.csv": "ca0f50bba3b3d2e347138bbae8cf352e33a24f1251680acf4f4762925374c708"
+  }
+}
