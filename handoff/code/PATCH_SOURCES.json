@@ -1,0 +1,16 @@
+{
+  "copied_public_blobs": [
+    {
+      "path": "handoff/code/bank-domain-study-ac93134.patch",
+      "source_ref": "d8dcceb2e17c18ce43ab4ae2a90bca41a037ae6c",
+      "bytes": 108581,
+      "sha256": "b7da13d666709ffe300a879f48e64c8a87a9224545b9c44ae966503edfff92c7"
+    },
+    {
+      "path": "handoff/code/jihyuk-fixture-portability.patch",
+      "source_ref": "d8dcceb2e17c18ce43ab4ae2a90bca41a037ae6c",
+      "bytes": 2134,
+      "sha256": "ea7f5f5806c20bd69777568f40c3699115c7cfee4cf0a97cf20397c1fb0d7585"
+    }
+  ]
+}

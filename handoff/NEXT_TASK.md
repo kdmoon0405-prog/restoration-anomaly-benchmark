@@ -1,24 +1,22 @@
-# 주형 최종 반환 검토 후 진행할 작업
+# 주형의 다음 작업
 
-2026-11-17 CPU 검토. 새 반환은 handoff/juhyung@59bc262, 실행source7b868a3, 포스터source59db971다. [CPU 검토](../analysis/phone_final_return_20261117/REVIEW.md)와 [수정·반환 항목](../docs/PHONE_FINAL_CPU_FEEDBACK_20261117.md)을 반영한다. 전체 목적과 산출물 지시는 [Fable 최종 실행 프롬프트](../docs/PROMPT_FABLE_FINAL_DELIVERABLES_20261115.md)를 따른다.
+2026-11-17 사용자 지시를 반영했다. 지혁의 미완료 bank-domain 24+4 실행을 주형에게 이관한다. 현재 최우선 산출물은 같은 결함 위치에서 원본·열화·Bicubic·SwinIR을 확인할 수 있는 확대 사진과 대응 검사 지도다.
 
-## 이번 수신에서 확인한 것
+[실행 프롬프트](../docs/BANK_DOMAIN_TAKEOVER_JUHYUNG_20261117.md)를 읽고 기존 Fable 환경과 실행 checkout을 이어간다. [사진 목표 대조](../docs/PHOTO_RESULT_GOAL_REVIEW_20261117.md), [기존 CPU 수정](../docs/PHONE_FINAL_CPU_FEEDBACK_20261117.md)을 함께 반영한다.
 
-- 22개metadata의bytes/SHA256,112cell과운영표16행을대조했다. 기존96cell의판정·점수·사진사용과참조·보정은이전cache와일치한다.
-- 같은조명참조v0.3,입력표기반계획생성,원근범위,CLI/UNO fake경로를검토했다. Consumer11개와source신규4개CPU테스트가통과했다.
-- 최종source의smoke2행/exit0로그를받았다. 전체696passed/4skipped는6748c95,관련49passed/smoke는7b868a3로그다. 설계·구현·자체검토는Fable5.2,후반기록·반환은사용자전환에따른Opus5.5라는실행기록을보존한다.
+## 실행 순서
 
-## 새 실험 없이 마칠 작업
+1. 기존 worker·소스·완료 condition·RGB/map 캐시를 확인하고 보존한다.
+2. 기존 선정 사례를 같은 좌표로 확대한 원본/열화/Bicubic/SwinIR/GT/검사 지도 사진 묶음을 만든다. 실제 스마트폰 사진의 저조도·조명 변경·모사 이물도 확대해서 반환한다.
+3. 별도 bank 실행 checkout에서 지혁 producer를 통합하고 실제 PatchCore 기본 24조건과 확장 4조건을 완성한다. 먼저 두 category의 seed 11 완료 단위부터 반환한다.
+4. bank만 바꾼 동일 query의 그림을 추가하고 보고서·A0 포스터를 수정한다. 새 사진 평가·사람 판독·물리 시간은 실제 입력이 도착한 뒤 연결한다.
 
-1. 원근설명에중심보정/화면이동을명시하고,147/423초의차이를전원효과로단정한문구를고친다.
-2. 포스터의‘평균AU-PRO’를‘pooled AU-PRO’로고치고seed는family별근거를적는다. Historical_recovery는seed미기록이다.
-3. 실제팀번호·저자·소속·제목을확정하고HTML운영기준표기를v0.3에맞춘다.
-4. 비공개최종PPTX/PDF·그림7개·최신HTML·capture_sheet·새private결정원문을receipt와마지막결정ID를붙여직접반환한다. CPU는이시각파일과새원문을아직받지못했다. 수신뒤A0배치·화면·원문을검토한다.
+producer 패치는 handoff/code/에 있다. scripts/analyze_bank_domain_study.py는 CPU consumer와 producer의 이름이 같으므로 읽고 통합한다. 기존 phone/CPU 분석 경로를 덮어쓰지 않는다. source 전용 worktree의 vendor·checkpoint·자산 준비 상태를 확인한다.
 
-## 입력을 받으면 이어갈 작업
+최종 비공개 ZIP은 CPU가 수신했다. 실제 PDF/PPTX와 사진 그림, 새 private 결정 D-20261115-10~17도 확인·통합했다. 이전의 ‘최종 비공개 파일 미수신’ 상태는 해소됐다. ZIP의 누락 template_copy는 이전 동일 SHA 공식 양식으로 별도 보충했고 원본 ZIP은 보존했다.
 
-새32장평가·사람판독·물리촬영시간·UNO실물·지혁24+4는실제확보상태에따라진행한다. 현재24장/1보드/1세션은development다. 새방법기준을평가전에고정하고참조·보정·평가사진분리를유지한다. 전체16건C3NA9,사후공통7건C2v0.3/C3논리사진10/14회,제외진단5건6/10회와공유대체사진을함께보고한다.
+현재 24장/16 cycle은 개발 결과다. 정상 13 cycle은 OK 6/NG 1/REVIEW 6, 모사 이물 3 cycle은 NG 3이다. 기존 완료 165조건·9사례·noise32·image-score200/160paired·phone a350b07 캐시를 재사용한다.
 
-완료165조건·9사례·noise32·image-score200/160paired와CPU8ddde87cache를재사용한다. 같은source의완료검사를반복할필요는없다. 자원guard·source소유권·공개PROGRESS/비공개원문반환계약을유지한다.
+새 모델 실행 없이 HTML의 v0.2 문구를 수정할 수 있다. 원근 결과 구분·시간 원인 해석·pooled AU-PRO·seed 표기·팀 정보를 수정한다. 실제 사용 모델과 검토 범위를 기록한다.
 
-A0 PDF마감은2026-12-01화요일23:59KST다. 실제발표일은미확인이고핵심실험11월23일,초안27일,최종점검29일을목표로한다.
+A0 PDF 마감은 2026-12-01 23:59 KST다. 실제 발표일은 미확인이다. 사진 포함 산출물과 실제 private 노트는 비공개 파일로 직접 반환한다.
