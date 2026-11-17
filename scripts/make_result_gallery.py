@@ -53,6 +53,7 @@ def main(argv=None) -> int:
     p.add_argument("--phone-zoom", type=Path, required=True, help="output of make_phone_zoom_figures.py")
     p.add_argument("--mvtec-zoom", type=Path, required=True, help="output of make_defect_zoom_gallery.py")
     p.add_argument("--bank-figures", type=Path, nargs="*", default=[], help="outputs of make_bank_domain_figures.py")
+    p.add_argument("--selected-cases", type=Path, help="output of make_selected_bank_cases.py")
     p.add_argument("--bank-table", type=Path, help="CSV of bank-domain pooled results to show as a table")
     p.add_argument("--output", type=Path, required=True)
     a = p.parse_args(argv)
@@ -155,6 +156,15 @@ def main(argv=None) -> int:
         for r in t:
             body.append("<tr>" + "".join(f"<td>{html.escape(r[c])}</td>" for c in cols) + "</tr>")
         body.append("</table>")
+    if a.selected_cases:
+        copy(a.selected_cases / "index.csv", "bank/selected/index.csv")
+        body.append("<h3>수신 후 선정 6사례: 같은 입력에서 bank를 바꾼 지도와 같은 bank에서 입력 복원을 바꾼 지도</h3>"
+                    "<p class=muted>선정: 지혁 Bicubic-bank 표에서 category별 SwinIR - Bicubic 입력의 최대 감소·최대 증가·0 근접(CPU 검토의 사후 설명용 선정). "
+                    "지도는 주형 재실행(seed 11)의 원본/SwinIR 복원 bank이며, Bicubic bank 지도는 수신 자료에 없어 값만 인용한다.</p><div class=wide>")
+        for r in rows(a.selected_cases / "index.csv"):
+            rel = copy(a.selected_cases / r["png"], "bank/selected/" + r["png"])
+            body.append(f'<figure><img loading=lazy src="{rel}" alt="{html.escape(r["sample"])}"><figcaption>{html.escape(r["sample"])} · {html.escape(r["selection_reason"])}</figcaption></figure>')
+        body.append("</div>")
     if not a.bank_figures:
         body.append("<p class=muted>아직 완료된 실행이 없다.</p>")
     for d in a.bank_figures:

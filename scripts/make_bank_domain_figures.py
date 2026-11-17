@@ -3,7 +3,7 @@
 Reads one completed bank-domain producer run (status.json, raw_clean.npz, raw_swinir_restored.npz,
 test_masks_for_local_analysis.npz, per_image.csv). Maps are shown after each cell's own normal-calibration
 normalization (median/IQR), so the two banks share one colour range. The query RGB (Bicubic x4 or SwinIR x4 of the
-56 px input) is regenerated on CPU with the producer's own function and accepted only if its SHA-256 equals the hash the
+56 px input) is regenerated (on the producer's device) with the producer's own function and accepted only if its SHA-256 equals the hash the
 producer recorded. Case selection uses the fixed taxonomy on delta = (restored bank - clean bank) per-image AU-PRO for
 the same query; it is a post-hoc illustration, not a performance estimate. GT is used only after inference.
 """
@@ -48,6 +48,7 @@ def main(argv=None) -> int:
     p.add_argument("--swinir-checkpoint", type=Path, required=True)
     p.add_argument("--queries", nargs="+", default=["swinir_x4", "bicubic_x4"])
     p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--device", default="cuda", help="SwinIR device; must match the producer device for the RGB hash check")
     a = p.parse_args(argv)
     out = a.output
     out.mkdir(parents=True, exist_ok=False)
@@ -71,7 +72,7 @@ def main(argv=None) -> int:
     import torchvision.transforms as T
     resize, crop = T.Resize(256, interpolation=T.InterpolationMode.BILINEAR), T.CenterCrop(224)
     restorer = runner.SwinIRLightweight(a.bank_repo / "third_party" / "SwinIR", a.swinir_checkpoint.resolve(),
-                                        device="cpu", scale=4, tile=56, tile_overlap=0)
+                                        device=a.device, scale=4, tile=56, tile_overlap=0)
     index, counts = [], {}
     for query in a.queries:
         qi = qidx[query]
@@ -117,7 +118,7 @@ def main(argv=None) -> int:
                 gal.panel(ax[3 + k], up(norm[b][i][sl]), f"{BANK_LABEL[b]}\n영상별 AU-PRO {c['aupro_clean_bank' if b == 'clean' else 'aupro_restored_bank']:.3f}",
                           contour=gtc, cmap="viridis", vmin=vmin, vmax=vmax)
             name = f"{category}_seed{seed}_{query}_{c['case_class']}.png"
-            fig.suptitle(f"{category} · {s.split('/', 2)[-1]} · 분류 {c['case_class']} · ΔAU-PRO(복원 bank − 원본 bank) {c['delta_aupro']:+.3f} · Δgap {c['delta_gap']:+.2f}",
+            fig.suptitle(f"{category} · {s.split('/', 2)[-1]} · 분류 {c['case_class']} · ΔAU-PRO(복원 bank - 원본 bank) {c['delta_aupro']:+.3f} · Δgap {c['delta_gap']:+.2f}",
                          fontsize=13, x=0.01, ha="left")
             fig.text(0.01, 0.01, f"crop x{x0}-{x1} y{y0}-{y1} of 224 · 지도는 각 cell의 정상 보정 median/IQR로 정규화, 색 범위 {vmin:.1f}–{vmax:.1f} 공통 · "
                      f"seed {seed} · 사후 선택 예시이며 성능 추정이 아니다", fontsize=10, color="#555")
