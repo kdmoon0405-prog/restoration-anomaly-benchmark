@@ -68,3 +68,4 @@ src/sr_anomaly/bank_domain_study.py -text
 tests/test_bank_domain_study.py -text
 docs/BANK_DOMAIN_STUDY.md -text
 scripts/export_bank_domain_contract.py text eol=lf
+scripts/run_bank_domain_bicubic_extension.py text eol=lf

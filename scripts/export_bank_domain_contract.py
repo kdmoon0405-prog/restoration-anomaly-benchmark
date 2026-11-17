@@ -71,7 +71,13 @@ def export(run_dir: Path, output: Path, source_commit: str, family: str = "patch
         raise FileExistsError(f"{output} exists; exports are never overwritten")
     state = json.loads((run_dir / "status.json").read_text(encoding="utf-8"))
     status = state.get("status")
+    recorded = state.get("source_commit")
+    source_commit = source_commit or recorded
+    if not source_commit:
+        raise ValueError("no source commit recorded by the producer and none given")
     full = subprocess.run(["git", "-C", str(ROOT), "rev-parse", source_commit], capture_output=True, text=True, check=True).stdout.strip()
+    if recorded and recorded != full:
+        raise ValueError(f"given commit {full} differs from the producer's recorded {recorded}")
     output.mkdir(parents=True)
     if status != "COMPLETE":
         manifest = dict(schema_version=1, kind="bank_domain_study_results", status="FAILED" if status == "FAILED" else "PARTIAL",
@@ -157,7 +163,7 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
-    p.add_argument("--source-commit", required=True)
+    p.add_argument("--source-commit", help="defaults to the commit recorded in the producer status.json")
     a = p.parse_args(argv)
     print(json.dumps(export(a.run, a.output, a.source_commit), indent=1))
     return 0
