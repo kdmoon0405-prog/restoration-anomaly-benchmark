@@ -120,6 +120,11 @@ def main(argv=None) -> int:
         fig.subplots_adjust(left=0.01, right=0.99, top=0.9, bottom=0.05)
         fig.savefig(out / "png" / name, dpi=110)
         plt.close(fig)
+        (out / "arrays").mkdir(exist_ok=True)
+        np.savez_compressed(out / "arrays" / name.replace(".png", ".npz"), original=np.asarray(clean)[sl], lr56=lr_disp[sl],
+                            bicubic_x4=np.asarray(bic)[sl], swinir_x4=np.asarray(swi)[sl], gt=mask[sl],
+                            **{f"map__{b}__{q}": maps[b, q][sl].astype(np.float32) for (b, q) in maps},
+                            vmin=np.float32(vmin), vmax=np.float32(vmax))
         index.append(dict(category=cat, seed=seed, sample=s, selection_reason=case["selection_reason"], png=f"png/{name}",
                           crop=f"{x0},{y0},{x1},{y1}", map_vmin=round(vmin, 4), map_vmax=round(vmax, 4),
                           **{f"aupro_{b}_bank_{q}": round(float(per[b, q, s]["per_image_aupro"]), 6) for b in raw for q in qd},
@@ -131,7 +136,8 @@ def main(argv=None) -> int:
         w.writeheader()
         w.writerows(index)
     manifest = dict(kind="selected_bank_cases", cases_csv_sha256=sha256(a.cases.read_bytes()).hexdigest(),
-                    files={r["png"]: sha256((out / r["png"]).read_bytes()).hexdigest() for r in index},
+                    files={**{r["png"]: sha256((out / r["png"]).read_bytes()).hexdigest() for r in index},
+                           **{f"arrays/{f.name}": sha256(f.read_bytes()).hexdigest() for f in sorted((out / "arrays").glob("*.npz"))}},
                     note="maps from Juhyung's re-run (clean/swinir_restored banks); bicubic-bank values quoted from Jihyuk's received table")
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(dict(cases=len(index)), ensure_ascii=False))
