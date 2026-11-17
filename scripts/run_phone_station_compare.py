@@ -425,7 +425,7 @@ body{{font:15px system-ui,sans-serif;background:var(--bg);color:var(--fg);margin
 .imgs{{display:flex;flex-wrap:wrap;gap:10px}}figure{{margin:0;max-width:420px}}img{{max-width:100%;display:block}}figcaption,.muted{{color:var(--muted);font-size:13px}}
 .wrap{{max-width:100%;overflow-x:auto}}table{{border-collapse:collapse;background:var(--card);margin:8px 0}}td,th{{padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:left}}
 </style></head><body><h1>Phone station comparison (C0–C3)</h1>
-<p class="note">{html.escape(banner)}. Decision {html.escape(manifest['decision'])} · source {html.escape(manifest['source_commit'][:10])}.
+<p class="note">{html.escape(banner)}. Decision {html.escape(manifest.get('decision_v3') or manifest['decision'])} (operating path v0.3; v0.1/v0.2 are comparison conditions; v0.2 design {html.escape(manifest['decision'])}) · source {html.escape(manifest['source_commit'][:10])}.
 Golden-reference difference only; no learned detector. Simulated surface object, not an electrical defect. Times are software
 seconds on this PC, not capture or equipment time. Yellow box = observation ROI, red box = largest difference blob when NG.</p>
 <h2>Station result (operating path {html.escape(OPERATING)}: quality policy, at most one alternate-light input)</h2>
