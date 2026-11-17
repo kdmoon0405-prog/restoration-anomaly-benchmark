@@ -213,7 +213,11 @@ def plan_from_sheet(rows: list[dict], first_light: str = "L0", alternate_light: 
         if not cid:
             raise ValueError(f"{role} photo {name!r} has no cycle_id")
         c = cycles.setdefault(cid, dict(cycle_id=cid, kind=(r.get("cycle_kind") or "").strip(), label=None, first=None, alternate=None,
-                                        note="", capture_seconds=""))
+                                        note="", capture_seconds="", capture_group=(r.get("capture_group") or "").strip(),
+                                        case_id=(r.get("case_id") or "").strip()))
+        group = (r.get("capture_group") or "").strip()
+        if group and c["capture_group"] and group != c["capture_group"]:
+            raise ValueError(f"cycle {cid!r} mixes capture groups {c['capture_group']!r} and {group!r}")
         if c[role] is not None:
             raise ValueError(f"cycle {cid!r} has two {role} photos")
         if role == "alternate" and light != alternate_light:

@@ -371,3 +371,21 @@ def test_sheet_driven_run_cli_errors_and_uno_fake_replay(tmp_path, base, capsys)
     with pytest.raises(ValueError):
         phone_uno.frames_from_events([dict(kind="controller", command=dict(command="complete", cycle_id="x"),
                                            response=dict(accepted=True, state="UNKNOWN"))])
+
+
+def test_v2_capture_sheet_builds_23_cycles_in_two_groups():
+    rows = list(csv.DictReader(open(ROOT / "docs/phone_eval_capture_sheet_v2.csv", encoding="utf-8-sig")))
+    assert len(rows) == 50 and all(not r["file"] for r in rows) and {r["plan_version"] for r in rows} == {"eval_v2_frozen_20261117"}
+    plan = ps.plan_from_sheet([dict(r, file=f"IMG_{i:03d}.jpg") for i, r in enumerate(rows)])
+    groups = {}
+    for c in plan["cycles"]:
+        groups.setdefault(c["capture_group"], []).append(c)
+    assert len(groups["base32_v2"]) == 14 and len(groups["micro18_challenge"]) == 9
+    assert sum(c["label"] == "simulated_defect" for c in groups["base32_v2"]) == 6
+    assert all(c["label"] == "simulated_defect" and c["alternate"] for c in groups["micro18_challenge"])
+    with pytest.raises(ValueError):
+        ps.plan_from_sheet([dict(r, file="") for r in rows])                          # unfilled sheet is not a run
+    mixed = [dict(r, file=f"IMG_{i:03d}.jpg") for i, r in enumerate(rows)]
+    mixed[-1] = dict(mixed[-1], capture_group="base32_v2")
+    with pytest.raises(ValueError, match="mixes capture groups"):
+        ps.plan_from_sheet(mixed)

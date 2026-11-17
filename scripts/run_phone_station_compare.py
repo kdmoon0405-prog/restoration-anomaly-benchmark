@@ -496,6 +496,12 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path | None, output: Pat
     write_csv(output / "captures_quality.csv", qrows, fields=qfields)
     write_csv(output / "cycles.csv", table)
     write_csv(output / "summary.csv", summary)
+    group_of = {c["cycle_id"]: c.get("capture_group") or "" for c in plan["cycles"]}
+    if any(group_of.values()):  # e.g. base32_v2 / micro18_challenge are analysed separately, never pooled
+        by_group = []
+        for g in dict.fromkeys(group_of.values()):
+            by_group += [dict(capture_group=g, **s) for s in summarize([r for r in rows if group_of[r["cycle_id"]] == g])]
+        write_csv(output / "summary_by_group.csv", by_group)
     write_csv(output / "inspections.csv", inspections)
     calib = [{k: v for k, v in c.items()} for c in inspector.calibration.values() if c]
     write_csv(output / "gr_calibration.csv", calib)
@@ -506,7 +512,8 @@ def compare(folder: Path, recipe_path: Path, plan_path: Path | None, output: Pat
                         first_sha256=ctx["by_file"].get(r["first_file"], {}).get("sha256")) for r in c2]
     station = station_replay(replay_rows, output)
     seconds_by_cycle = {c["cycle_id"]: c.get("capture_seconds", "") for c in plan["cycles"]}
-    station_rows = [dict(cycle_id=r["cycle_id"], kind=r["kind"], label=r["label"], final_state=r["final_state"],
+    station_rows = [dict(cycle_id=r["cycle_id"], capture_group=group_of.get(r["cycle_id"], ""), kind=r["kind"], label=r["label"],
+                         final_state=r["final_state"],
                          photos_used=r["captures_used"], retake_requested=r["retake_requested"], reason=final_reason(r),
                          first_file=r["first_file"], alternate_file=r["alternate_file"],
                          first_quality_state=r["first_quality_state"], second_quality_state=r["second_quality_state"],
