@@ -1,0 +1,15 @@
+capture_group,condition,cycles,OK,NG,REVIEW,ERROR,NA,PENDING,captures_total,retakes_requested,simulated_cycles,simulated_final_OK,simulated_final_NG,simulated_NG_at_annotation,simulated_REVIEW_or_other,heldout_normal_cycles,heldout_normal_final_NG,all_normal_cycles,all_normal_final_NG,all_normal_final_NG_or_REVIEW,human_legibility_records
+base32_v2,C0_direct,14,4,8,0,2,0,0,14,0,6,0,6,0,0,4,0,8,2,2,0
+base32_v2,C1_bicubic_x4,14,4,8,0,2,0,0,14,0,6,0,6,0,0,4,0,8,2,2,0
+base32_v2,C1_swinir_x4,14,4,8,0,2,0,0,14,0,6,0,6,0,0,4,0,8,2,2,0
+base32_v2,C2_policy_v0.1_roi,14,7,6,1,0,0,0,28,14,6,0,6,0,0,4,0,8,0,1,0
+base32_v2,C2_policy_v0.2,14,7,7,0,0,0,0,18,4,6,0,6,0,0,4,0,8,1,1,0
+base32_v2,C2_policy_v0.3,14,7,6,1,0,0,0,18,4,6,0,6,0,0,4,0,8,0,1,0
+base32_v2,C3_two_lights,14,4,8,0,2,0,0,28,0,6,0,6,0,0,4,0,8,2,2,0
+micro18_challenge,C0_direct,9,0,3,0,6,0,0,9,0,9,0,3,0,6,0,0,0,0,0,0
+micro18_challenge,C1_bicubic_x4,9,0,3,0,6,0,0,9,0,9,0,3,0,6,0,0,0,0,0,0
+micro18_challenge,C1_swinir_x4,9,0,3,0,6,0,0,9,0,9,0,3,0,6,0,0,0,0,0,0
+micro18_challenge,C2_policy_v0.1_roi,9,0,0,9,0,0,0,18,9,9,0,0,0,9,0,0,0,0,0,0
+micro18_challenge,C2_policy_v0.2,9,0,9,0,0,0,0,16,7,9,0,9,0,0,0,0,0,0,0,0
+micro18_challenge,C2_policy_v0.3,9,0,9,0,0,0,0,16,7,9,0,9,0,0,0,0,0,0,0,0
+micro18_challenge,C3_two_lights,9,0,3,0,6,0,0,18,0,9,0,3,0,6,0,0,0,0,0,0
