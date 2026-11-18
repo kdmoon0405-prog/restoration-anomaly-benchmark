@@ -56,6 +56,12 @@ def main(argv=None) -> int:
     p.add_argument("--selected-cases", type=Path, help="output of make_selected_bank_cases.py")
     p.add_argument("--bank-table", type=Path, help="CSV of bank-domain pooled results to show as a table")
     p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--eval-run", type=Path, help="fixed-method station run of a new evaluation session")
+    p.add_argument("--eval-dev-run", type=Path, help="development-variant station run of the same session")
+    p.add_argument("--eval-photos", type=Path, help="photo folder of the evaluation session")
+    p.add_argument("--eval-cases", type=Path, nargs="*", default=[], help="outputs of make_phone_eval_cases.py (fixed, then same-light)")
+    p.add_argument("--pcb-cases", type=Path, help="output of make_pcb_operating_point_cases.py")
+    p.add_argument("--missing", nargs="*", default=[], help="evidence panels that are not available, shown as a list")
     a = p.parse_args(argv)
     out = a.output
     out.mkdir(parents=True, exist_ok=False)
@@ -89,7 +95,7 @@ def main(argv=None) -> int:
     body.append('<p class="note">비공개 검토용. 실제 사진은 그래픽카드 뒷면 1개, development 세션 1회(2026-11-15, 24장)이다. 같은 물체의 반복이므로 독립 부품 표본이 아니다. '
                 "MVTec AD 사례는 정해 둔 분류 규칙으로 사후 선택한 예시이며 전체 성능을 대표하지 않는다. 수치는 각 그림의 index.csv에 있다.</p>")
     body.append('<nav><a href="#photos">실제 기판 사진</a><a href="#phonezoom">같은 위치 확대(기판)</a><a href="#mvtec">MVTec 같은 결함 위치 확대</a>'
-                '<a href="#bank">정상 bank 비교</a></nav>')
+                '<a href="#bank">정상 bank 비교</a><a href="#eval">새 촬영 세션</a><a href="#pcb">PCB 운영점</a><a href="#missing">없는 근거</a></nav>')
     # 1. photos
     body.append('<h2 id="photos">1. 실제 기판 사진 (정상 · 모사 이물 · 저조도 · 흐림 · 대체 조명)</h2>')
     body.append('<p class="muted">판정은 운영 경로 C2(품질 정책 v0.3 + 기준 사진 차이 검사)의 저장 결과다. 대체 조명 L1 사진은 첫 사진이 PASS가 아닐 때만 쓰인다.</p>')
@@ -181,6 +187,71 @@ def main(argv=None) -> int:
             body.append(f'<figure><img loading=lazy src="{rel}" alt="{html.escape(r["sample"])}"><figcaption>{html.escape(r["query"])} 입력 · '
                         f'{CLASS_KO.get(r["case_class"], r["case_class"])} · {html.escape(r["sample"])} · AU-PRO 원본 bank {float(r["aupro_clean_bank"]):.3f} → 복원 bank {float(r["aupro_restored_bank"]):.3f}</figcaption></figure>')
         body.append("</div>")
+    # 5. evaluation session
+    if a.eval_run:
+        body.append('<h2 id="eval">5. 새 촬영 세션 (2026-11-18, 사진 50장, 계획 v2)</h2>')
+        body.append('<p class="note">고정 방법(품질 v0.3 + golden-reference v0.1, 이 세션의 참조·정상 보정으로 임계값)의 결과가 평가 결과다. '
+                    '개발 변형(같은 조명 참조에 정렬)은 이 세션의 결과를 본 뒤 정한 것이라 개발 근거이며, 다음 세션에서 다시 평가해야 한다. '
+                    '사진-행 대응은 촬영 순서로 넣었고 소유자 확인이 남았다. 물체 위치 +는 방법 실행 뒤 표시한 사후 위치이며 GT가 아니다. 사람 판독은 아직 없다.</p>')
+        for run, label in ((a.eval_run, "고정 방법 v0.3"), (a.eval_dev_run, "개발 변형: 같은 조명 정렬")):
+            if not run:
+                continue
+            t_rows = [r for r in rows(run / "summary_by_group.csv") if r["condition"] in ("C0_direct", "C2_policy_v0.3", "C3_two_lights", "C1_swinir_x4")]
+            copy(run / "summary_by_group.csv", f"eval/{run.name}/summary_by_group.csv")
+            copy(run / "station_result.csv", f"eval/{run.name}/station_result.csv")
+            body.append(f"<h3>{label} — 묶음별 최종 판정</h3><table><tr><th>묶음</th><th>조건</th><th>cycle</th><th>OK</th><th>NG</th><th>REVIEW</th><th>ERROR</th><th>사진 사용</th></tr>")
+            for r in t_rows:
+                body.append(f"<tr><td>{r['capture_group']}</td><td>{r['condition']}</td><td>{r['cycles']}</td><td>{r['OK']}</td><td>{r['NG']}</td><td>{r['REVIEW']}</td><td>{r['ERROR']}</td><td>{r['captures_total']}</td></tr>")
+            body.append("</table>")
+        if a.eval_photos:
+            em = json.loads((a.eval_run / "plan.from_sheet.json").read_text(encoding="utf-8"))
+            fixed = {r["cycle_id"]: r for r in rows(a.eval_run / "station_result.csv")}
+            dev = {r["cycle_id"]: r for r in rows(a.eval_dev_run / "station_result.csv")} if a.eval_dev_run else {}
+            body.append("<h3>사진 50장 (첫 사진 / 대체 조명 L1)</h3><div class=grid>")
+            for title, f in (("기준 L0", em["references"]["L0"]), ("기준 L1", em["references"]["L1"]),
+                             ("정상 보정 L0", em["calibration"]["L0"]), ("정상 보정 L1", em["calibration"]["L1"])):
+                rel = thumb(a.eval_photos / f, f"eval/photos/{f}")
+                body.append(f'<figure><img loading=lazy src="{rel}" alt="{html.escape(title)}"><figcaption>{html.escape(title)} · {html.escape(f)}</figcaption></figure>')
+            for c in em["cycles"]:
+                for role, f in (("첫 사진", c["first"]), ("대체 L1", c.get("alternate"))):
+                    if not f:
+                        continue
+                    rel = thumb(a.eval_photos / f, f"eval/photos/{f}")
+                    cap = f'<span class=tag>{html.escape(c["cycle_id"])}</span>{role} · {html.escape(f)}'
+                    if role == "첫 사진":
+                        cap += (f'<br>고정: {html.escape(fixed.get(c["cycle_id"], {}).get("final_state", "-"))} '
+                                f'({html.escape(fixed.get(c["cycle_id"], {}).get("first_quality_state", ""))})'
+                                f'<br>개발: {html.escape(dev.get(c["cycle_id"], {}).get("final_state", "-"))}')
+                    body.append(f'<figure><img loading=lazy src="{rel}" alt="{html.escape(f)}"><figcaption>{cap}</figcaption></figure>')
+            body.append("</div>")
+        for d in a.eval_cases:
+            mm = json.loads((d / "manifest.json").read_text(encoding="utf-8"))
+            mode = "개발 변형: 같은 조명 참조로 정렬·비교" if mm.get("same_light") else "고정 방법: L0 anchor 정렬, L0 참조와 비교"
+            copy(d / "object_cases.csv", f"eval/{d.name}/object_cases.csv")
+            body.append(f"<h3>같은 물체 위치 확대 — {mode}</h3><p class=muted>열: 원본 해상도, 검사 해상도, ×0.25 입력, Bicubic ×4, SwinIR ×4, 차이 지도(원본), 차이 지도(SwinIR ×4). "
+                        "빨강 = 이 세션 정상 보정으로 정한 τ 초과. 수치는 object_cases.csv.</p><div class=wide>")
+            for png in sorted((d / "png").glob("*.png")):
+                rel = copy(png, f"eval/{d.name}/{png.name}")
+                body.append(f'<figure><img loading=lazy src="{rel}" alt="{html.escape(png.stem)}"><figcaption>{html.escape(png.stem)}</figcaption></figure>')
+            body.append("</div>")
+    # 6. PCB operating points
+    if a.pcb_cases:
+        pm = json.loads((a.pcb_cases / "manifest.json").read_text(encoding="utf-8"))
+        copy(a.pcb_cases / "decision_changes_bicubic_to_swinir.csv", "pcb/decision_changes_bicubic_to_swinir.csv")
+        copy(a.pcb_cases / "index.csv", "pcb/index.csv")
+        body.append('<h2 id="pcb">6. PCB 전체 기판: 운영점 판정의 전환 (VisA pcb2, test 정상 100 / 이상 100)</h2>')
+        body.append("<p class=muted>임계값은 변형별 정상 보정 q0.99: " + ", ".join(f"{k} {v:.3f}" for k, v in pm["thresholds"].items()) +
+                    ". Bicubic → SwinIR에서 이상 영상 검출→미검 " + str(pm["counts"]["TP_to_FN"]) + "장, 미검→검출 " + str(pm["counts"]["FN_to_TP"]) +
+                    "장, 정상 오검→정상 " + str(pm["counts"]["FP_to_TN"]) + "장. 사례는 사후 설명용 선택이다. 전체 기판의 복원 RGB는 저장되지 않아 사진은 원본 기판이다.</p>")
+        tbl = rows(a.pcb_cases / "decision_changes_bicubic_to_swinir.csv")
+        body.append("<table><tr><th>라벨</th><th>Bicubic 이상 판정</th><th>SwinIR 이상 판정</th><th>영상 수</th></tr>" +
+                    "".join(f"<tr><td>{r['label']}</td><td>{r['bicubic_positive']}</td><td>{r['swinir_positive']}</td><td>{r['images']}</td></tr>" for r in tbl) + "</table><div class=wide>")
+        for r in rows(a.pcb_cases / "index.csv"):
+            rel = copy(a.pcb_cases / r["png"], "pcb/" + r["png"])
+            body.append(f'<figure><img loading=lazy src="{rel}" alt="{html.escape(r["sample"])}"><figcaption>{html.escape(r["case"])} · {html.escape(r["sample"])}</figcaption></figure>')
+        body.append("</div>")
+    if a.missing:
+        body.append('<h2 id="missing">7. 아직 없는 근거</h2><ul>' + "".join(f"<li>{html.escape(m)}</li>" for m in a.missing) + "</ul>")
     page = f'<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>사진 결과 모음</title><style>{CSS}</style></head><body><main>{"".join(body)}</main></body></html>'
     (out / "index.html").write_text(page, encoding="utf-8")
     manifest = dict(kind="private_result_gallery", contains_photos=True, station_manifest_sha256=digest(a.station_run / "manifest.json"),
