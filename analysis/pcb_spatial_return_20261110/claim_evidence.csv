@@ -1,0 +1,5 @@
+claim,observation,scope,source,limit
+SwinIR seam gradient compared with Bicubic,normalized higher9/9;raw lower9/9;seam/nonseam ratio lower9/9,9 selected boards,gradient_units.csv,variant calibration units;no cohort or causal inference
+geometry candidate interpretation,2/3 candidates have decreasing raw ROI-background gap with increasing normalized gap,3 selected geometry candidates,per_case_review.csv,frozen taxonomy retained;mechanism not isolated
+centroid displacement interpretation,geometry006=0.853px;success068=17.192px,global positive-excess map centroid,per_case_review.csv,not defect-to-GT position error
+prediction versus analysis provenance,runtime_source_commit field refers to raw prediction54cf3c7;two analysis source hashes match1e6c6bc,supplied metadata and Git blobs,review.json,remote execution Git state independently unobserved;case PNGs not supplied

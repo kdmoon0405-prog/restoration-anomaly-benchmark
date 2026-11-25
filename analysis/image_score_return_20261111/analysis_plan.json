@@ -1,0 +1,10 @@
+{
+  "kind": "posthoc_uncertainty_for_frozen_aggregation_rules",
+  "repeats": 2000,
+  "seed": 11,
+  "sampling": "paired stratified image IDs;fixed class counts;identical indices for every rule",
+  "estimand": "per-unit image-AUROC difference vs original;conditional on observed bank/noise draw",
+  "multiple_comparison": "exploratory pointwise intervals;no test-based rule selection",
+  "repeated_conditions": "shared image cohorts;no independent200-condition count",
+  "pixel_metrics": "stored reference only;no new AU-PRO or pooled CI"
+}

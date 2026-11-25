@@ -1,0 +1,47 @@
+{
+  "status": "COMPLETE_SCALAR_REVIEW",
+  "source_receipts": {
+    "realistic-noise-v2-hazelnut-noise23": "07ccbdeeee53a2d9efd1b80a0d4189580eff8170195c7fa48eac5ac72b93f944",
+    "realistic-noise-v2-hazelnut-noise37": "bf206d28142570a11fd48ba2d49c3c6889a0313862c77ffc2359e3a5ae4c2743",
+    "realistic-noise-v2-screw-noise23": "74f322c72d0607cb5649bb33d33f41d979a64e3225fbe3e5a607d00ac1b178b0",
+    "realistic-noise-v2-screw-noise37": "ae08f5e1406050e1c992f306d3cbb16324d23f57b6a46311376afaa24999a850"
+  },
+  "arrays_supplied": 0,
+  "raw_array_values_verified": false,
+  "detection_metrics_recomputed": false,
+  "ci_unit": "unique anomalous image,noise-draw mean computed before resampling",
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 11,
+  "script_sha256": "4428e87eaca5e9b0dc18589fd4e250f7abbd2a8af03e109b1b37f094c81da8c3",
+  "module_sha256": "26815b4691d377c3cac7205fad3424f73fe255b89109c03a9f13ac2c64a15c2b",
+  "runs": 4,
+  "conditions": 32,
+  "per_seed_contrasts": 24,
+  "source_commit": "40d57dd85f3e2d8600b8b2c5c00eb91aa00570eb",
+  "source_worktree_dirty": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "tracked_worktree_dirty": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "public_files": {
+    "analysis_plan.json": "a4d38b0c49ccc6d2fa6c0875ffcfbbb4b4bcb1c9f09fbfe7000027abc7e4484a",
+    "conditions.csv": "c1a834a7c8a84da01cea28944fdf6ba1ed8b94c0dc1ffa252de77d5283d46d45",
+    "contrasts.csv": "c415ef0ad2469fb56ef03ada40f460841124ae8fcdeb1f53f661f3296383dc2c",
+    "cross_seed_controls.json": "1c4fa668cb1ceca12d47e84fd8916a5d29f2c8beeec06667909296b290efffa9",
+    "noise_repeatability.png": "f087494982a45a7e70f84342382dbd78b587b8d39ddccae248395a4f7f9bd7c4",
+    "per_image_deltas.csv": "a081a868759dab03a45efa667b51148d426235322f31263235603a14c3b449c0",
+    "protocol_exports.json": "dc035b332a840d559921d7014fed8cf81a230e9f76ee7cb63fe91a364ef16f4d",
+    "repeatability.csv": "5399abbbadaf13b506e0e9cf235e0ba684b247e5e2ae0a76dec1df4869073660",
+    "public_protocols/hazelnut-noise23.json": "971a4e1c83a50aae0c47251709468c19cef03a69b2a9f1241ad2a3466c880787",
+    "public_protocols/hazelnut-noise37.json": "0530c2b2d9f952186845fdcf0bc5f369f52be82507f6c1ddd7845998909d917d",
+    "public_protocols/screw-noise23.json": "53ae70c473b2b1e040b95d1d93432eb60a4f6b50525e0a987529e935ce5f55bb",
+    "public_protocols/screw-noise37.json": "04cdb1e276adf7a3e9aedbbed528945db682dfe59740633b728214afcbe977de"
+  }
+}

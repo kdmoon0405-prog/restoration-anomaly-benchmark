@@ -1,0 +1,21 @@
+{
+  "status": "SUPPLIED_SCALAR_CONSISTENCY_VERIFIED",
+  "selected_boards": 9,
+  "components": 36,
+  "source_commit_file_hashes_match": "1e6c6bcd0e59ed91c6c3e6eb0e078f8d75b8bf39",
+  "actual_analysis_git_head_independently_observed": false,
+  "raw_prediction_source_commit": "54cf3c7ad5a1cb8eed6fce32e72e189eec1ea8b1",
+  "raw_prediction_source_worktree_dirty": true,
+  "legacy_runtime_field_role": "raw prediction provenance, not the analysis checkout",
+  "maps_matching_previously_verified_receipts": 27,
+  "raw_arrays_recomputed_locally": false,
+  "gt_decoded_locally": false,
+  "remote_pngs_supplied": 0,
+  "remote_pngs_viewed_locally": 0,
+  "population_estimate": false,
+  "dataset_metrics_recomputed": false,
+  "source_sha256": {
+    "spatial_receipt": "0ca7e27f43199fb781142aa7eea452860fdda0cd8a96cbe26e0d504a5299c013",
+    "addendum_receipt": "d7fd9efaa5ebd257c2c268afe43fbc85c87cdaa174d8f6f663c0234043f9c5c0"
+  }
+}

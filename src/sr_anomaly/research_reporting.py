@@ -9,12 +9,12 @@ from pathlib import Path
 
 from .analysis_io import csv_rows, digest, new_output, read_json, relative_source, write_csv, write_json
 
-FIELDS = ("entry_id", "study_family", "protocol_id", "dataset", "category", "seed",
+FIELDS = ("entry_id", "study_family", "protocol_id", "dataset", "category", "seed", "noise_seed",
           "bank_domain", "query_domain", "variant", "train_count", "test_count", "n_anomaly",
           "psnr", "ssim", "lpips", "image_auroc", "pixel_auroc", "pooled_aupro",
           "evidence_kind", "source_table", "source_sha256", "source_run", "reported_source_artifact")
 NUMERIC = ("psnr", "ssim", "lpips", "image_auroc", "pixel_auroc", "pooled_aupro")
-COUNT = ("train_count", "test_count", "n_anomaly", "seed")
+COUNT = ("train_count", "test_count", "n_anomaly", "seed", "noise_seed")
 KEY = ("study_family", "protocol_id", "dataset", "category", "seed",
        "bank_domain", "query_domain", "variant")
 
@@ -99,7 +99,7 @@ def build_master(catalog, root, output, *, bank_analyses=(), allow_synthetic=Fal
                 raise ValueError("Synthetic data cannot enter a real master table without explicit opt-in")
             key = tuple(row[k] for k in KEY)
             if key in rows:
-                compare = (*NUMERIC, "train_count", "test_count", "n_anomaly", "evidence_kind")
+                compare = (*NUMERIC, "train_count", "test_count", "n_anomaly", "evidence_kind", "noise_seed")
                 if any(rows[key][k] != row[k] for k in compare):
                     raise ValueError("Conflicting duplicate master-table condition")
                 duplicates.append(dict(entry_id=row["entry_id"], duplicate_source=display(path)))
@@ -124,10 +124,10 @@ def build_master(catalog, root, output, *, bank_analyses=(), allow_synthetic=Fal
         "Each table retains one protocol family. No metric is averaged across families or seeds.", ""]
     for (family, protocol), group in sorted(groups.items()):
         lines += [f"## {family}", "", f"Protocol: {protocol}", "",
-            "| category | seed | condition | pooled AU-PRO | Pixel AUROC | PSNR | SSIM |",
-            "|---|---:|---|---:|---:|---:|---:|"]
+            "| category | bank/split seed | noise seed | condition | pooled AU-PRO | Pixel AUROC | PSNR | SSIM |",
+            "|---|---:|---:|---|---:|---:|---:|---:|"]
         for r in group:
-            values = [r["category"], r["seed"], r["variant"] or r["bank_domain"] + "/" + r["query_domain"],
+            values = [r["category"], r["seed"], r["noise_seed"], r["variant"] or r["bank_domain"] + "/" + r["query_domain"],
                       r["pooled_aupro"], r["pixel_auroc"], r["psnr"], r["ssim"]]
             lines.append("| " + " | ".join(str(v) if v != "" else "N/A" for v in values) + " |")
         lines.append("")

@@ -1,0 +1,16 @@
+{
+  "return_commit": "ba4672ddb29bf0a5252ae4ee05253db70048dba0",
+  "verified_receipt_runs": 4,
+  "verified_supplied_files": 80,
+  "related_tests_passed": 27,
+  "cpu_smoke_rows": 2,
+  "master_rows": 165,
+  "protocol_groups": 13,
+  "previous_entries_checked": 133,
+  "new_condition_rows": 32,
+  "pooled_metrics_recomputed": false,
+  "native_arrays_received": 0,
+  "scalar_figure_visually_reviewed": true,
+  "ci_scope": "image-cluster mean per-image AU-PRO;not dataset-pooled AU-PRO",
+  "private_decision_returns_received": false
+}

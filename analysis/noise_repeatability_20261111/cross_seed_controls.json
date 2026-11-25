@@ -1,0 +1,14 @@
+[
+  {
+    "category": "hazelnut",
+    "changed_lr_hashes": 376,
+    "compared_lr_samples": 376,
+    "bank_hashes_match": true
+  },
+  {
+    "category": "screw",
+    "changed_lr_hashes": 448,
+    "compared_lr_samples": 448,
+    "bank_hashes_match": true
+  }
+]

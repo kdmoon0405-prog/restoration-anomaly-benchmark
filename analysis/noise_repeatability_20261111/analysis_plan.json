@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "primary_contrast": [
+    "swinir_x4",
+    "bicubic_x4"
+  ],
+  "secondary_contrasts": [
+    [
+      "realesrnet_x4plus",
+      "swinir_x4"
+    ],
+    [
+      "realesrgan_x4plus",
+      "swinir_x4"
+    ]
+  ],
+  "categories": [
+    "hazelnut",
+    "screw"
+  ],
+  "conditions": [
+    "noise_s5",
+    "noise_s15"
+  ],
+  "noise_seeds": [
+    23,
+    37
+  ],
+  "split_bank_seed": 11,
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 11,
+  "resampling_unit": "unique anomalous image; average paired delta over the two noise seeds before resampling images",
+  "ci_scope": "mean per-image AU-PRO delta conditional on fixed bank,split and observed noise draws",
+  "pooled_aupro_ci": false,
+  "v1_role": "historical point anchor;excluded from v2 bootstrap",
+  "selection_or_threshold_search": false
+}
