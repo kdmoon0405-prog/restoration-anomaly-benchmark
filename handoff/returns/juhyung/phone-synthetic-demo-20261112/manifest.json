@@ -1,0 +1,80 @@
+{
+  "kind": "synthetic",
+  "protocol": "docs/PHONE_QUALITY_PROTOCOL_V0.1.md",
+  "protocol_sha256": "a44d500ffd7acbf32599169ecf8b8227ffe8bb24ca377f30bc56885aeba6178e",
+  "created": "2026-11-12T14:08:02+09:00",
+  "source_commit": "b756110c070c8f02ccdb0fb95e039a412adf0fb3",
+  "source_branch": "exp/phone-lighting-juhyung",
+  "tracked_worktree_dirty": false,
+  "source_worktree_dirty": false,
+  "code_sha256": {
+    "scripts/run_phone_capture_audit.py": "ca792d5f5ed5cbd21d3737c6f72ba7b972baf00a1a7b4ba85b5cc01c6ec3d141",
+    "src/sr_anomaly/phone_capture.py": "e111e6f631fe1186cbf7925260083f2941b14c75473e3ba4f8792e0ccd6ea400",
+    "src/sr_anomaly/inspection_station.py": "f79f0531b89628ecb9cecff6170949b8fe1d22d97cc05b21a7638d64f657212b",
+    "docs/PHONE_QUALITY_PROTOCOL_V0.1.md": "a44d500ffd7acbf32599169ecf8b8227ffe8bb24ca377f30bc56885aeba6178e"
+  },
+  "thresholds": {
+    "clip_high_retake": 0.01,
+    "clip_low_retake": 0.01,
+    "luma_min": 40.0,
+    "luma_max": 215.0,
+    "sharpness_ratio": 0.5,
+    "sharpness_min_set": 3,
+    "inliers_min": 30,
+    "inlier_ratio_min": 0.25,
+    "reproj_median_max": 1.5,
+    "moved_translation": 0.02,
+    "moved_rotation_deg": 1.0,
+    "moved_scale": 0.02
+  },
+  "orb": {
+    "n_keypoints": 1000,
+    "fast_threshold": 0.05
+  },
+  "ransac": {
+    "min_samples": 4,
+    "residual_threshold": 2.0,
+    "max_trials": 2000
+  },
+  "work_long_side": 1024,
+  "input": {
+    "capture_sheet_sha256": "d7e6faaa6a32703170767831508669e2f5c7dc822f46200e145954934822a756",
+    "image_files": 16,
+    "files": {
+      "front_r1.jpg": "933bf986f14a7282bd12204c27f9bc8b07ce65ac86b5c63a879115d5413e5bac",
+      "front_r2.jpg": "be82cbb13caf75cc4b49a8267d8333820b594fc3196f0185fd217ede18d813ec",
+      "front_r3.jpg": "cb757b27b9c68ec2e7b7d1f47d7372e163b1dc4edbfb67eb90253673cb16c991",
+      "left_r1.jpg": "decda5b0aebeddcd0f71aeeb1282139dfbe574afb8221406443d3c423bbaeb06",
+      "left_r2.jpg": "8ca6b0da6ec659460a9a5c10cc995760c6b31a2046288b7ae13c4ae8c055884a",
+      "left_r3.jpg": "dc31a1135578f0ce54bd0cd1ce081f7404130d2fa7ee2a9b9047bddc2e10f47e",
+      "right_r1.jpg": "a3e6fe6c2f79e7ea7e01473ff7b17b1c7a9713a1b25a0bf8f26b2ccd01db7102",
+      "right_r2.jpg": "e09e4685d7ade9e7748ddbb3c807cebe8e214c4eef4aff52aaef74f9d4bf1e9c",
+      "right_r2_retake.jpg": "1e2e60a8ed2fa1535950a6a71c678e6a2c76d3b92d628cf800817030c043dd64",
+      "right_r3.jpg": "424678ba0364b43b6eb9865cdde977c6f8afd9931569569722e7af7a2267c899",
+      "front_r6_mildblur.jpg": "9e289028da77ed931d2186bc69d2ace86525502ca680ac0870646e8ea30bd772",
+      "dim_r1.jpg": "83330f186261165132e982e37a2fbd928d9100f8aa2e51f0dca52dfa16702b2e",
+      "flash_r1.jpg": "6c7c764218806a62b15762f3e9141194b7194261525c6e5536ec476b61d40db1",
+      "front_r5.jpg": "933bf986f14a7282bd12204c27f9bc8b07ce65ac86b5c63a879115d5413e5bac"
+    }
+  },
+  "summary": {
+    "attempts": 16,
+    "unlisted_files": 1,
+    "states": {
+      "PASS": 7,
+      "REVIEW": 6,
+      "RETAKE": 4
+    },
+    "slots": 14,
+    "slots_resolved": 7,
+    "slots_unresolved": 7,
+    "station_cycles": 14,
+    "station_verdicts": [
+      "REVIEW"
+    ]
+  },
+  "detector": "not_connected",
+  "research_metrics": null,
+  "station_replay": "software_replay_of_capture_audit; simulation_seconds, not physical latency",
+  "report_contains_pixels": true
+}

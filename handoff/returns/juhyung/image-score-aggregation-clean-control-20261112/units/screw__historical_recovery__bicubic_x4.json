@@ -1,0 +1,100 @@
+{
+ "unit_id": "screw__historical_recovery__bicubic_x4",
+ "category": "screw",
+ "family": "historical_recovery",
+ "variant": "bicubic_x4",
+ "run_dir": "outputs/legacy-patchcore/screw-full320-test160",
+ "source_public_record": "master historical_recovery (analysis/thesis_synthesis/MASTER_RESULTS.csv)",
+ "source_sha256": {
+  "npz": "00eab7cf8f3119d7691fe958252666f7067c4281bc18bcebf566b726933ab68b",
+  "results_json": "7991107a71863244379a832802edd677faa90b0d2833a2ec49bee3e469803464",
+  "per_image_csv": "ee0c18322c76eff528f90817fd3fd624ebecc21b084e4f33295bfc08dbedc612"
+ },
+ "npz_schema": {
+  "labels": {
+   "shape": [
+    160
+   ],
+   "dtype": "int64"
+  },
+  "scores": {
+   "shape": [
+    160
+   ],
+   "dtype": "float64"
+  },
+  "masks": {
+   "shape": [
+    160,
+    224,
+    224
+   ],
+   "dtype": "bool"
+  },
+  "maps": {
+   "shape": [
+    160,
+    224,
+    224
+   ],
+   "dtype": "float32"
+  }
+ },
+ "memory_plan_bytes": 299925504,
+ "counts": {
+  "calibration": 0,
+  "test_normal": 41,
+  "test_anomaly": 119
+ },
+ "k": {
+  "top0.1pct_mean": 51,
+  "top0.5pct_mean": 251,
+  "top1pct_mean": 502
+ },
+ "anchor_a_original_auroc": "EXACT",
+ "anchor_b_pixel_auroc": "EXACT",
+ "original_vs_map_max": {
+  "images": 160,
+  "exactly_equal": 0,
+  "pearson": 0.9783189124418207
+ },
+ "reference_stored": {
+  "au_pro": 0.8013972577776528,
+  "pixel_auroc": 0.9511120578865331
+ },
+ "calibration": "none in source run; F1/FPR/miss undefined",
+ "rules": {
+  "original": {
+   "image_auroc": 0.4800163968026235,
+   "image_f1": null,
+   "image_false_alarm_rate_test_normal": null,
+   "image_miss_rate_test_anomaly": null
+  },
+  "map_max": {
+   "image_auroc": 0.4529616724738676,
+   "image_f1": null,
+   "image_false_alarm_rate_test_normal": null,
+   "image_miss_rate_test_anomaly": null
+  },
+  "top0.1pct_mean": {
+   "image_auroc": 0.4496823119491699,
+   "image_f1": null,
+   "image_false_alarm_rate_test_normal": null,
+   "image_miss_rate_test_anomaly": null
+  },
+  "top0.5pct_mean": {
+   "image_auroc": 0.43984423037507686,
+   "image_f1": null,
+   "image_false_alarm_rate_test_normal": null,
+   "image_miss_rate_test_anomaly": null
+  },
+  "top1pct_mean": {
+   "image_auroc": 0.4347202295552367,
+   "image_f1": null,
+   "image_false_alarm_rate_test_normal": null,
+   "image_miss_rate_test_anomaly": null
+  }
+ },
+ "seconds": 19.8155325000007,
+ "per_image_csv_sha256": "61a2426b42a3473a4ead03c7a8f60e7faf259a7ad3910aa142b573333ee996fa"
+}

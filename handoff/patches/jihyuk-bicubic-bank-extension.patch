@@ -1,0 +1,1210 @@
+diff --git a/scripts/run_bicubic_bank_extension.py b/scripts/run_bicubic_bank_extension.py
+new file mode 100644
+--- /dev/null
++++ b/scripts/run_bicubic_bank_extension.py
+@@ -0,0 +1,588 @@
++"""Run one seed-11 normal Bicubic-bank extension on a full MVTec category."""
++from __future__ import annotations
++
++import argparse
++import gc
++import json
++import platform
++from pathlib import Path
++import shutil
++import sys
++import time
++import traceback
++
++import numpy as np
++from PIL import Image
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++sys.path.insert(0, str(ROOT / "src"))
++
++from sr_anomaly.dataset import ImageSample, MVTecADFolder, safe_component
++from sr_anomaly.fusion import split_train_calibration
++from sr_anomaly.metrics import compute_quality_metrics
++from sr_anomaly.real_models import SwinIRLightweight
++from sr_anomaly import bank_domain_study as study
++from sr_anomaly import bicubic_bank_extension as extension
++from scripts import run_bank_domain_study as base
++from scripts import run_fusion_patchcore as branch_b
++
++IMAGE_SIZE = base.IMAGE_SIZE
++PATCHES_PER_IMAGE = base.PATCHES_PER_IMAGE
++EXECUTION_CODE_FILES = tuple(dict.fromkeys((
++    *base.EXECUTION_CODE_FILES,
++    "scripts/run_bicubic_bank_extension.py",
++    "src/sr_anomaly/bicubic_bank_extension.py",
++)))
++
++
++class _BicubicBankDataset:
++    """Normal fit images transformed by the already frozen x4 Bicubic query."""
++
++    def __init__(self, base_dataset, indices, resize, crop, transforms, torch):
++        self.base_dataset = base_dataset
++        self.indices = tuple(indices)
++        self.resize = resize
++        self.crop = crop
++        self.transforms = transforms
++        self.torch = torch
++
++    def __len__(self):
++        return len(self.indices)
++
++    def __getitem__(self, local_index):
++        source_index = self.indices[local_index]
++        classname, anomaly, image_path, _ = self.base_dataset.data_to_iterate[source_index]
++        with Image.open(image_path) as source:
++            clean = branch_b._canonical(source.convert("RGB"), self.resize, self.crop)
++        bicubic = extension.make_bicubic_x4_fit_image(clean, image_size=IMAGE_SIZE)
++        return {
++            "image": self.transforms(bicubic),
++            "mask": self.torch.zeros((1, IMAGE_SIZE, IMAGE_SIZE)),
++            "classname": classname,
++            "anomaly": anomaly,
++            "is_anomaly": 0,
++            "image_name": Path(image_path).as_posix(),
++            "image_path": str(image_path),
++        }
++
++
++def _query_manifest_sha(samples, input_hashes, query_hashes):
++    return base._canonical_sha256([
++        {
++            "sample": sample.relative_path.as_posix(),
++            "input_sha256": input_hashes[sample.relative_path.as_posix()],
++            "bicubic_x4_rgb_sha256": query_hashes[sample.relative_path.as_posix()]["bicubic_x4"],
++            "swinir_x4_rgb_sha256": query_hashes[sample.relative_path.as_posix()]["swinir_x4"],
++        }
++        for sample in samples
++    ])
++
++
++def _write_extension_manifest(run_dir: Path, *, status: str, evidence_kind: str,
++                              files: dict[str, str] | None = None) -> None:
++    study.write_json_atomic(run_dir / "bank_domain_extension_manifest.json", {
++        "schema_version": extension.SCHEMA_VERSION,
++        "kind": "bicubic_bank_extension_results",
++        "family": extension.EXTENSION_FAMILY,
++        "status": status,
++        "evidence_kind": evidence_kind,
++        "bank_domain": extension.BANK_DOMAIN,
++        "query_domains": list(extension.QUERY_DOMAINS),
++        "files": files or {},
++    })
++
++
++def _baseline_provenance(path: Path, category: str) -> tuple[dict, dict, dict]:
++    manifest = study.verify_result_contract(path)
++    config = json.loads((path / "config.json").read_text(encoding="utf-8"))
++    provenance = json.loads((path / "provenance.json").read_text(encoding="utf-8"))
++    status = json.loads((path / "status.json").read_text(encoding="utf-8"))
++    if (config.get("study_family") != "patchcore_full_patch_bank_domain_2x2"
++            or config.get("category") != category or config.get("seed") != 11
++            or status.get("status") != "COMPLETE"
++            or manifest.get("evidence_kind") != "model_predictions"):
++        raise ValueError("--baseline-run must be the complete model-prediction seed-11 2x2 run")
++    samples = status["test_samples"]
++    study.verify_complete_run(path, study.expected_condition_order(samples))
++    return config, provenance, status
++
++
++def run(args: argparse.Namespace) -> Path:
++    category = safe_component(args.category, "category").lower()
++    run_id = safe_component(args.run_id, "run id")
++    if category not in {"hazelnut", "screw"} or args.seed != 11:
++        raise ValueError("The frozen Bicubic-bank extension is limited to Hazelnut/Screw seed 11")
++    evidence_kind = "model_predictions"
++    data_root = args.data_root.resolve()
++    dataset_provenance = base._load_dataset_provenance(
++        args.dataset_provenance.resolve(), data_root, category
++    )
++    category_root = data_root / category
++    if not category_root.is_dir():
++        raise FileNotFoundError(f"Required MVTec category is missing: {category_root}")
++    baseline_path = args.baseline_run.resolve()
++    baseline_config, baseline_provenance, baseline_status = _baseline_provenance(
++        baseline_path, category
++    )
++
++    torch, transforms, InterpolationMode, backbones, common, patchcore, sampler, mvtec = branch_b._official_imports()
++    cuda_available = torch.cuda.is_available()
++    device = torch.device(branch_b.resolve_device(args.device, cuda_available))
++    if device.type != "cuda":
++        raise RuntimeError("This extension requires the existing CUDA device; CPU is only for fake tests")
++    checkpoint = args.swinir_checkpoint.resolve()
++    checkpoint_sha = branch_b._checksum(checkpoint)
++    if checkpoint_sha != base.EXPECTED_SWINIR_SHA256:
++        raise ValueError(f"SwinIR checkpoint SHA mismatch: {checkpoint_sha}")
++    backbone_checkpoint = args.backbone_checkpoint.resolve()
++    backbone_sha = branch_b._checksum(backbone_checkpoint)
++    if backbone_sha != base.EXPECTED_WIDERESNET_SHA256:
++        raise ValueError(f"WideResNet checkpoint SHA mismatch: {backbone_sha}")
++    actual_patchcore_commit = branch_b.subprocess.check_output(
++        ["git", "-C", str(branch_b.PATCHCORE_SOURCE.parent), "rev-parse", "HEAD"], text=True
++    ).strip()
++    if actual_patchcore_commit != base.EXPECTED_PATCHCORE_COMMIT:
++        raise RuntimeError("PatchCore vendored revision differs from the frozen study pin")
++
++    train_set = mvtec.MVTecDataset(
++        str(data_root), category, resize=256, imagesize=IMAGE_SIZE, split=mvtec.DatasetSplit.TRAIN
++    )
++    train_total = len(train_set)
++    fit_indices, calibration_indices = split_train_calibration(train_total, 0.8, args.seed)
++    if not fit_indices or not calibration_indices:
++        raise ValueError("Fit and normal calibration splits must both be nonempty")
++    if any(row[1] != "good" for row in train_set.data_to_iterate):
++        raise ValueError("Fit/calibration inputs must be normal train/good images only")
++    fit_paths = [Path(train_set.data_to_iterate[i][2]).relative_to(data_root).as_posix()
++                 for i in fit_indices]
++    calibration_paths = [Path(train_set.data_to_iterate[i][2]).relative_to(data_root).as_posix()
++                         for i in calibration_indices]
++    if set(fit_paths).intersection(calibration_paths):
++        raise ValueError("Fit and normal calibration parent images overlap")
++    calibration_samples = []
++    for index in calibration_indices:
++        image_path = Path(train_set.data_to_iterate[index][2])
++        relative = image_path.relative_to(data_root)
++        calibration_samples.append(ImageSample(
++            sample_id=relative.as_posix(), path=image_path, relative_path=relative,
++            mask_path=None,
++            metadata={"category": category, "split": "train", "label": 0, "defect_type": "good"},
++        ))
++    test_samples = MVTecADFolder(data_root, category, split="test", require_masks=True).samples()
++    if (not test_samples or any(s.mask_path and not s.mask_path.is_file() for s in test_samples)
++            or [s.relative_path.as_posix() for s in test_samples] != baseline_status["test_samples"]):
++        raise ValueError("Test parent inventory differs from the complete seed-11 baseline")
++
++    fit_plan = study.bank_fit_plan(len(fit_indices), batch_size=8)
++    available_ram = study.available_ram_bytes()
++    study.check_fit_ram(fit_plan, available_bytes=available_ram)
++    output_root = args.output_root.resolve()
++    output_root.mkdir(parents=True, exist_ok=True)
++    # Retain the existing 2x2 disk guard unchanged (conservative for this one-bank extension).
++    disk_plan = study.output_disk_plan(len(calibration_indices), len(test_samples), image_size=IMAGE_SIZE)
++    disk_free = shutil.disk_usage(output_root).free
++    study.check_output_disk(disk_plan, free_bytes=disk_free)
++    run_dir = output_root / run_id / category / f"seed{args.seed}"
++    if run_dir.exists():
++        raise FileExistsError(f"Extension output exists and will not be overwritten: {run_dir}")
++    run_dir.mkdir(parents=True, exist_ok=False)
++    state = {
++        "schema_version": extension.SCHEMA_VERSION,
++        "study_family": extension.EXTENSION_FAMILY,
++        "status": "BUILDING",
++        "scope": "seed-11-one-bank-two-query-extension",
++        "run_id": run_id,
++        "category": category,
++        "seed": args.seed,
++        "bank_domain": extension.BANK_DOMAIN,
++        "query_domains": list(extension.QUERY_DOMAINS),
++        "fit_paths": fit_paths,
++        "calibration_paths": calibration_paths,
++        "test_samples": [s.relative_path.as_posix() for s in test_samples],
++        "fit_count": len(fit_indices),
++        "calibration_count": len(calibration_indices),
++        "test_count": len(test_samples),
++        "evidence_kind": evidence_kind,
++        "baseline_run_id": baseline_config["protocol"].get("run_id") or baseline_provenance.get("run_id"),
++        "baseline_query_manifest_sha256": baseline_provenance["query_manifest_sha256"],
++        "dataset_provenance": dataset_provenance,
++        "resource_plan": {"fit_ram": fit_plan, "available_ram_before_run_bytes": available_ram,
++                          "prediction_disk": disk_plan, "free_disk_before_run_bytes": disk_free},
++        "artifacts": [],
++        "prediction_rows": [],
++    }
++    state["execution_source_sha256_snapshot"] = {
++        name: study.sha256_file(ROOT / name) for name in EXECUTION_CODE_FILES
++    }
++    state["source_commit"] = branch_b.subprocess.check_output(
++        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
++    ).strip()
++    state["git_branch"] = branch_b.subprocess.check_output(
++        ["git", "branch", "--show-current"], cwd=ROOT, text=True
++    ).strip()
++    state["git_dirty"] = bool(branch_b.subprocess.check_output(
++        ["git", "status", "--porcelain"], cwd=ROOT, text=True
++    ).strip())
++    # The main-study config intentionally has no run ID; use provenance's canonical ID.
++    state["baseline_run_id"] = baseline_provenance["run_id"]
++    study.write_status(run_dir, state)
++    _write_extension_manifest(run_dir, status="PARTIAL", evidence_kind=evidence_kind)
++    resize = transforms.Resize(256, interpolation=InterpolationMode.BILINEAR)
++    crop = transforms.CenterCrop(IMAGE_SIZE)
++    tensor = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mvtec.IMAGENET_MEAN, mvtec.IMAGENET_STD)])
++    restorer = None
++    completed = False
++    try:
++        restorer = SwinIRLightweight(
++            ROOT / "third_party" / "SwinIR", checkpoint,
++            device=str(device), scale=4, tile=56, tile_overlap=0,
++        )
++        cache: dict[str, dict[str, Image.Image]] = {}
++        input_hashes: dict[str, str] = {}
++        query_hashes: dict[str, dict[str, str]] = {}
++        quality_rows: list[dict] = []
++        test_ids = {s.relative_path.as_posix() for s in test_samples}
++        for sample in calibration_samples + test_samples:
++            sample_id = sample.relative_path.as_posix()
++            clean, bicubic, restored, restoration_seconds = base._query_variants(
++                sample.path, restorer, resize, crop
++            )
++            expected_bicubic = extension.make_bicubic_x4_fit_image(clean, image_size=IMAGE_SIZE)
++            if base._rgb_sha(bicubic) != base._rgb_sha(expected_bicubic):
++                raise ValueError("Fit Bicubic transform differs from the frozen Bicubic query bytes")
++            cache[sample_id] = {"bicubic_x4": bicubic, "swinir_x4": restored}
++            input_hashes[sample_id] = branch_b._checksum(sample.path)
++            query_hashes[sample_id] = {"bicubic_x4": base._rgb_sha(bicubic), "swinir_x4": base._rgb_sha(restored)}
++            if sample_id in test_ids:
++                q_b = compute_quality_metrics(clean, bicubic, ("psnr", "ssim"))
++                q_s = compute_quality_metrics(clean, restored, ("psnr", "ssim"))
++                quality_rows.append({"sample": sample_id, "psnr_bicubic": q_b["psnr"],
++                    "ssim_bicubic": q_b["ssim"], "psnr_swinir": q_s["psnr"],
++                    "ssim_swinir": q_s["ssim"], "swinir_seconds": restoration_seconds})
++            del clean
++        if len(quality_rows) != len(test_samples):
++            raise RuntimeError("Query quality is not one row per test parent")
++        query_manifest_sha256 = _query_manifest_sha(
++            calibration_samples + test_samples, input_hashes, query_hashes
++        )
++        if query_manifest_sha256 != baseline_provenance["query_manifest_sha256"]:
++            raise ValueError("Extension query bytes differ from the existing seed-11 2x2 baseline")
++
++        train_input_hashes = {p: branch_b._checksum(data_root / p) for p in fit_paths + calibration_paths}
++        state.update({
++            "train_input_sha256": train_input_hashes,
++            "test_input_sha256": {s.relative_path.as_posix(): input_hashes[s.relative_path.as_posix()] for s in test_samples},
++            "query_rgb_sha256": query_hashes,
++            "patchcore_source_commit": actual_patchcore_commit,
++            "swinir_checkpoint_sha256": checkpoint_sha,
++            "backbone_checkpoint_sha256": backbone_sha,
++            "torch_version": torch.__version__,
++            "torchvision_version": __import__("torchvision").__version__,
++            "faiss_version": __import__("faiss").__version__,
++            "timm_version": __import__("timm").__version__,
++            "python_version": sys.version,
++            "platform": platform.platform(),
++            "torch_cuda_build": torch.version.cuda,
++            "device": str(device),
++            "gpu_name": torch.cuda.get_device_name(device),
++            "threshold_rule": "existing robust_params/normalize; per query; normal calibration only; fixed q=0.99",
++            "metric_rule": "existing evaluate_predictions; pooled AU-PRO@0.3 primary; 200 thresholds; 4-connectivity",
++            "model_configuration": {"bank_domain": extension.BANK_DOMAIN,
++                "bank_fit_transform": "clean RGB -> bicubic 56x56 -> bicubic 224x224",
++                "sampler": "IdentitySampler", "patches_per_fit_image": PATCHES_PER_IMAGE,
++                "patch_selection": "all patch rows in deterministic fit loader order",
++                "faiss": "CPU IndexFlatL2 exact 1-NN", "backbone": "WideResNet50-2 ImageNet V1",
++                "backbone_checkpoint_sha256": backbone_sha, "swinir_checkpoint_sha256": checkpoint_sha,
++                "query_domains": list(extension.QUERY_DOMAINS), "seed": args.seed},
++            "command": [sys.executable, *sys.argv],
++            "submodule_revisions": {name: branch_b.subprocess.check_output(
++                ["git", "-C", str(ROOT / "third_party" / name), "rev-parse", "HEAD"], text=True).strip()
++                for name in ("SwinIR", "patchcore-inspection")},
++            "query_manifest_sha256": query_manifest_sha256,
++        })
++        try:
++            state["nvidia_smi"] = branch_b.subprocess.check_output(
++                ["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv,noheader"], text=True
++            ).strip()
++        except Exception as error:
++            state["nvidia_smi_query_error"] = f"{type(error).__name__}: {error}"
++
++        available_before_fit = study.available_ram_bytes()
++        study.check_fit_ram(fit_plan, available_bytes=available_before_fit)
++        state["resource_snapshot_before_fit"] = {"available_ram_bytes": available_before_fit,
++            "plan": fit_plan, "disk_free_bytes": shutil.disk_usage(run_dir).free,
++            "gpu_name": torch.cuda.get_device_name(device),
++            "gpu_free_bytes_before_fit": int(torch.cuda.mem_get_info(device)[0])}
++        state["available_ram_before_bank_bytes"] = available_before_fit
++        study.write_status(run_dir, state)
++        torch.manual_seed(args.seed)
++        torch.cuda.manual_seed_all(args.seed)
++        torch.cuda.reset_peak_memory_stats(device)
++        model = base._new_patchcore(torch, backbones, common, patchcore, sampler, device, backbone_checkpoint)
++        fit_dataset = _BicubicBankDataset(train_set, fit_indices, resize, crop, tensor, torch)
++        fit_loader = torch.utils.data.DataLoader(fit_dataset, batch_size=8, shuffle=False,
++                                                 num_workers=0, pin_memory=False)
++        fit_started = time.perf_counter()
++        model.fit(fit_loader)
++        torch.cuda.synchronize(device)
++        fit_seconds = time.perf_counter() - fit_started
++        bank_values = np.asarray(model.anomaly_scorer.detection_features)
++        if (bank_values.ndim != 2 or bank_values.shape != (fit_plan["fit_vectors"], 1024)
++                or bank_values.dtype != np.float32 or not np.isfinite(bank_values).all()):
++            raise ValueError(f"Unexpected Bicubic normal bank: {bank_values.shape} {bank_values.dtype}")
++        bank_hash = study.sha256_array(bank_values)
++        bank_vector_count = int(bank_values.shape[0])
++
++        raw = {
++            "calibration_scores": np.empty((len(calibration_indices), 2), np.float64),
++            "calibration_maps": np.empty((len(calibration_indices), 2, IMAGE_SIZE, IMAGE_SIZE), np.float32),
++            "test_scores": np.empty((len(test_samples), 2), np.float64),
++            "test_maps": np.empty((len(test_samples), 2, IMAGE_SIZE, IMAGE_SIZE), np.float32),
++        }
++        inference_seconds = 0.0
++        for query_index, query_domain in enumerate(extension.QUERY_DOMAINS):
++            cal_scores, cal_maps, cal_times = base._predict_all(
++                model, tensor, cache, calibration_samples, query_domain
++            )
++            test_scores, test_maps, test_times = base._predict_all(
++                model, tensor, cache, test_samples, query_domain
++            )
++            raw["calibration_scores"][:, query_index] = cal_scores
++            raw["calibration_maps"][:, query_index] = cal_maps
++            raw["test_scores"][:, query_index] = test_scores
++            raw["test_maps"][:, query_index] = test_maps
++            inference_seconds += float(cal_times.sum() + test_times.sum())
++        raw_artifact = base._write_npz(
++            run_dir / "raw_bicubic_x4.npz",
++            bank_domain=np.asarray(extension.BANK_DOMAIN),
++            calibration_samples=np.asarray([s.relative_path.as_posix() for s in calibration_samples]),
++            test_samples=np.asarray([s.relative_path.as_posix() for s in test_samples]),
++            query_domains=np.asarray(extension.QUERY_DOMAINS),
++            bank_sha256=np.asarray(bank_hash),
++            query_input_sha256=np.asarray([input_hashes[s.relative_path.as_posix()] for s in test_samples]),
++            query_bicubic_sha256=np.asarray([query_hashes[s.relative_path.as_posix()]["bicubic_x4"] for s in test_samples]),
++            query_swinir_sha256=np.asarray([query_hashes[s.relative_path.as_posix()]["swinir_x4"] for s in test_samples]),
++            **raw,
++        )
++        state["artifacts"].append(raw_artifact)
++        state["bank_hash"] = bank_hash
++        state["bank_vector_count"] = bank_vector_count
++        state["bank_vector_dimension"] = 1024
++        state["runtime"] = {"fit_seconds": fit_seconds, "query_inference_seconds": inference_seconds,
++            "torch_cuda_peak_allocated_bytes": int(torch.cuda.max_memory_allocated(device)),
++            "torch_cuda_peak_reserved_bytes": int(torch.cuda.max_memory_reserved(device)),
++            "bank_bytes": int(bank_values.nbytes), "bank_sha256": bank_hash}
++        state["predictions_saved_before_gt_read"] = True
++        study.write_status(run_dir, state)
++        nn_method = getattr(model.anomaly_scorer, "nn_method", None)
++        if nn_method is not None:
++            nn_method.reset_index()
++        del fit_loader, fit_dataset, bank_values, model
++        gc.collect()
++        torch.cuda.empty_cache()
++        torch.cuda.synchronize(device)
++
++        # The extension query SHA must agree with both seed-11 existing-bank inputs.
++        query_inputs = _query_manifest_sha(calibration_samples + test_samples, input_hashes, query_hashes)
++        if query_inputs != baseline_provenance["query_manifest_sha256"]:
++            raise ValueError("Query manifest changed between prediction and saved provenance")
++        # Only now read test GT/mask bytes.
++        test_mask_hashes = {s.relative_path.as_posix():
++            (study.sha256_file(s.mask_path) if s.mask_path else None) for s in test_samples}
++        test_labels = np.asarray([s.metadata["label"] for s in test_samples], dtype=np.uint8)
++        resize_mask = transforms.Resize(256, interpolation=InterpolationMode.NEAREST)
++        masks = []
++        for sample in test_samples:
++            if sample.mask_path is None:
++                masks.append(np.zeros((IMAGE_SIZE, IMAGE_SIZE), dtype=bool))
++            else:
++                with Image.open(sample.mask_path) as source:
++                    masks.append(np.asarray(branch_b._canonical(source.convert("L"), resize_mask, crop)) > 0)
++        test_masks = np.stack(masks)
++        if not np.array_equal(test_masks.reshape(len(test_masks), -1).any(axis=1), test_labels.astype(bool)):
++            raise ValueError("Official test mask occupancy disagrees with image labels")
++        state["test_mask_sha256"] = test_mask_hashes
++        input_manifest = data_root / "FILE_MANIFEST.csv"
++        if not input_manifest.is_file():
++            raise FileNotFoundError("Verified transfer FILE_MANIFEST.csv is missing")
++        input_manifest_sha = study.sha256_file(input_manifest)
++        split_manifest_sha = base._canonical_sha256({"seed": args.seed, "fit_paths": fit_paths,
++                                                      "calibration_paths": calibration_paths})
++        test_manifest_sha = base._canonical_sha256([{
++            "sample": s.relative_path.as_posix(), "image_sha256": input_hashes[s.relative_path.as_posix()],
++            "label": int(s.metadata["label"]), "defect_type": s.metadata.get("defect_type"),
++            "mask_sha256": test_mask_hashes[s.relative_path.as_posix()],
++        } for s in test_samples])
++        if split_manifest_sha != baseline_provenance["split_manifest_sha256"]:
++            raise ValueError("Extension fit/calibration split differs from existing seed-11 baseline")
++        if input_manifest_sha != baseline_provenance["input_manifest_sha256"]:
++            raise ValueError("Extension verified input inventory differs from existing baseline")
++
++        quality_by_sample = {r["sample"]: r for r in quality_rows}
++        summary_rows = []
++        per_image_rows = []
++        calibration_by_query = {}
++        for query_index, query_domain in enumerate(extension.QUERY_DOMAINS):
++            calibration = study.fit_cell_calibration(
++                np.zeros(len(calibration_indices), dtype=np.uint8),
++                raw["calibration_scores"][:, query_index], raw["calibration_maps"][:, query_index],
++            )
++            metrics, image_rows = study.evaluate_cell(
++                test_labels, raw["test_scores"][:, query_index], test_masks,
++                raw["test_maps"][:, query_index], calibration,
++                [s.relative_path.as_posix() for s in test_samples],
++            )
++            calibration_by_query[query_domain] = calibration
++            qmetrics = ("psnr_bicubic", "ssim_bicubic") if query_domain == "bicubic_x4" else ("psnr_swinir", "ssim_swinir")
++            summary_rows.append({
++                "category": category, "seed": args.seed, "bank_domain": extension.BANK_DOMAIN,
++                "query_domain": query_domain, "fit_count": len(fit_indices),
++                "calibration_count": len(calibration_indices), "test_count": len(test_samples),
++                "n_test": len(test_samples), "n_anomaly": int(test_labels.sum()),
++                "image_auroc": metrics["classification"]["image_auroc"],
++                "image_f1": metrics["classification"]["image_f1"],
++                "pixel_auroc": metrics["localization"]["pixel_auroc"],
++                "pooled_aupro_at_0_3": metrics["localization"]["au_pro"],
++                "pooled_aupro": metrics["localization"]["au_pro"],
++                "mean_psnr": float(np.mean([quality_by_sample[s.relative_path.as_posix()][qmetrics[0]] for s in test_samples])),
++                "mean_ssim": float(np.mean([quality_by_sample[s.relative_path.as_posix()][qmetrics[1]] for s in test_samples])),
++                "pixel_f1": metrics["localization"]["pixel_f1"],
++                "image_threshold": calibration["image_threshold"],
++                "pixel_threshold": calibration["pixel_threshold"],
++            })
++            for row in image_rows:
++                quality = quality_by_sample[row["sample"]]
++                psnr, ssim = ((quality["psnr_bicubic"], quality["ssim_bicubic"])
++                              if query_domain == "bicubic_x4"
++                              else (quality["psnr_swinir"], quality["ssim_swinir"]))
++                per_image_rows.append({
++                    **row, "category": category, "seed": args.seed,
++                    "bank_domain": extension.BANK_DOMAIN, "query_domain": query_domain,
++                    "defect_type": next(s.metadata.get("defect_type") for s in test_samples
++                                         if s.relative_path.as_posix() == row["sample"]),
++                    "psnr": psnr, "ssim": ssim,
++                })
++                state["prediction_rows"].append({"bank_domain": extension.BANK_DOMAIN,
++                                                   "query_domain": query_domain, "sample": row["sample"]})
++        state["artifacts"].append(base._write_npz(
++            run_dir / "test_masks_for_local_analysis.npz",
++            samples=np.asarray([s.relative_path.as_posix() for s in test_samples]), masks=test_masks,
++        ))
++        base._write_csv(run_dir / "extension_summary.csv", summary_rows)
++        base._write_csv(run_dir / "extension_per_image.csv", per_image_rows)
++        base._write_csv(run_dir / "extension_query_quality.csv", quality_rows)
++        state["artifacts"].extend({"file": name, "sha256": study.sha256_file(run_dir / name)}
++                                  for name in ("extension_summary.csv", "extension_per_image.csv", "extension_query_quality.csv"))
++        code_hashes = state["execution_source_sha256_snapshot"]
++        if any(study.sha256_file(ROOT / name) != digest for name, digest in code_hashes.items()):
++            raise RuntimeError("Execution source changed while this run was active")
++        protocol = {
++            "dataset": "MVTec AD", "geometry_id": "pil-resize256-center-crop224-mask-nearest-v1",
++            "degradation_id": "pil-bicubic-224-to-56-upsample224-v1",
++            "detector_id": f"PatchCore-{actual_patchcore_commit}-WideResNet50-2-layer2-layer3",
++            "restorer_id": "SwinIR-S-x4-lightweight",
++            "bank_spec": {"bank_domains": [extension.BANK_DOMAIN], "fit_count": len(fit_indices),
++                "vector_count": bank_vector_count, "dimension": 1024, "dtype": "float32",
++                "layers": ["layer2", "layer3"], "sampler": "IdentitySampler",
++                "patches_per_fit_image": PATCHES_PER_IMAGE,
++                "patch_selection": "all patch rows in deterministic fit loader order",
++                "coreset_or_ordinal_subsampling": False, "faiss": "CPU IndexFlatL2 exact 1-NN",
++                "patchcore_source_commit": actual_patchcore_commit,
++                "fit_transform": "clean RGB -> bicubic 56x56 -> bicubic 224x224"},
++            "checkpoints_sha256": {"backbone": backbone_sha, "swinir": checkpoint_sha},
++            "calibration_source": "normal_calibration_only",
++            "metric_definition": {"primary": "pooled_aupro", "max_fpr": 0.3,
++                                  "num_thresholds": 200, "connectivity": 4},
++        }
++        protocol_sha = base._canonical_sha256({"protocol": protocol, "code_sha256": code_hashes})
++        config = {"schema_version": extension.SCHEMA_VERSION,
++            "study_family": extension.EXTENSION_FAMILY, "category": category, "seed": args.seed,
++            "protocol": protocol, "protocol_sha256": protocol_sha,
++            "baseline_run_id": baseline_provenance["run_id"]}
++        bank_manifest_sha = base._canonical_sha256({"bank_domain": extension.BANK_DOMAIN,
++            "array_sha256": bank_hash, "vector_count": bank_vector_count,
++            "dimension": 1024, "dtype": "float32"})
++        split_cal_disjoint = set(fit_paths).isdisjoint(calibration_paths)
++        if not split_cal_disjoint:
++            raise ValueError("Fit/calibration provenance overlaps")
++        provenance = {
++            "source_commit": state["source_commit"], "source_worktree_dirty": state["git_dirty"],
++            "source_branch": state["git_branch"], "code_sha256": code_hashes,
++            "protocol_sha256": protocol_sha, "normal_fit_calibration_disjoint": True,
++            "test_gt_used_for_selection": False, "test_predictions_saved_before_gt_read": True,
++            "input_manifest_sha256": input_manifest_sha, "split_manifest_sha256": split_manifest_sha,
++            "test_manifest_sha256": test_manifest_sha, "query_manifest_sha256": query_manifest_sha256,
++            "bank_manifest_sha256": {extension.BANK_DOMAIN: bank_manifest_sha},
++            "bank_vector_counts": {extension.BANK_DOMAIN: bank_vector_count},
++            "baseline_run_id": baseline_provenance["run_id"],
++            "baseline_query_manifest_sha256": baseline_provenance["query_manifest_sha256"],
++            "baseline_config_sha256": study.sha256_file(baseline_path / "config.json"),
++            "dataset_receipt": {"source_url": dataset_provenance["source_url"],
++                "archive_sha256": dataset_provenance["archive_sha256"],
++                "archive_sha256_role": "private_team_category_repack",
++                "original_publisher_archive_sha256": None,
++                "license_file": dataset_provenance["license_file"],
++                "license_sha256": dataset_provenance["license_sha256"],
++                "input_inventory_sha256": input_manifest_sha},
++            "submodule_revisions": state["submodule_revisions"], "run_id": run_id,
++        }
++        study.write_json_atomic(run_dir / "config.json", config)
++        study.write_json_atomic(run_dir / "provenance.json", provenance)
++        files = {name: study.sha256_file(run_dir / name) for name in extension.EXPORT_FILES}
++        state["calibration_by_query"] = calibration_by_query
++        state["resource_snapshot_after"] = {"available_ram_bytes": study.available_ram_bytes(),
++                                              "disk_free_bytes": shutil.disk_usage(run_dir).free}
++        state["status"] = "COMPLETE"
++        study.write_status(run_dir, state)
++        _write_extension_manifest(run_dir, status="COMPLETE", evidence_kind=evidence_kind, files=files)
++        extension.verify_extension_complete_run(run_dir)
++        completed = True
++        return run_dir
++    except BaseException as error:
++        state["status"] = "FAILED"
++        state["error"] = f"{type(error).__name__}: {error}"
++        state["traceback"] = traceback.format_exc()
++        study.write_status(run_dir, state)
++        _write_extension_manifest(run_dir, status="PARTIAL" if state.get("artifacts") else "FAILED",
++                                  evidence_kind=evidence_kind)
++        raise
++    finally:
++        if restorer is not None:
++            del restorer
++        gc.collect()
++        if torch.cuda.is_available():
++            torch.cuda.empty_cache()
++        if not completed:
++            print(f"Partial/failed extension preserved at {run_dir}", file=sys.stderr)
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--data-root", type=Path, default=ROOT / "data" / "external" / "MVTecAD")
++    parser.add_argument("--dataset-provenance", type=Path)
++    parser.add_argument("--category", choices=("hazelnut", "screw"), required=True)
++    parser.add_argument("--seed", type=int, choices=(11,), default=11)
++    parser.add_argument("--baseline-run", type=Path, required=True)
++    parser.add_argument("--swinir-checkpoint", type=Path,
++                        default=ROOT / "checkpoints" / "swinir" / "002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth")
++    parser.add_argument("--backbone-checkpoint", type=Path,
++                        default=ROOT / "checkpoints" / "wide_resnet50_2-95faca4d.pth")
++    parser.add_argument("--device", choices=("cuda",), default="cuda")
++    parser.add_argument("--output-root", type=Path, default=ROOT / "outputs" / "bank-domain-extension-runs")
++    parser.add_argument("--run-id", required=True)
++    args = parser.parse_args()
++    if args.dataset_provenance is None:
++        args.dataset_provenance = args.data_root / "dataset_provenance.json"
++    try:
++        run_dir = run(args)
++    except Exception as error:
++        print(json.dumps({"status": "BLOCKED_OR_FAILED", "error": f"{type(error).__name__}: {error}"},
++                         ensure_ascii=False))
++        return 1
++    print(json.dumps({"status": "COMPLETE", "run_dir": str(run_dir)}, ensure_ascii=False))
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/src/sr_anomaly/bicubic_bank_extension.py b/src/sr_anomaly/bicubic_bank_extension.py
+new file mode 100644
+--- /dev/null
++++ b/src/sr_anomaly/bicubic_bank_extension.py
+@@ -0,0 +1,134 @@
++"""Contracts for the separate seed-11 Bicubic normal-bank extension."""
++from __future__ import annotations
++
++import json
++from pathlib import Path
++from typing import Any
++
++import numpy as np
++from PIL import Image
++
++from . import bank_domain_study as study
++
++EXTENSION_FAMILY = "patchcore_full_patch_bicubic_bank_extension"
++BANK_DOMAIN = "bicubic_x4"
++QUERY_DOMAINS = ("bicubic_x4", "swinir_x4")
++SCHEMA_VERSION = 1
++EXPORT_FILES = {
++    "extension_summary.csv",
++    "extension_per_image.csv",
++    "extension_query_quality.csv",
++    "config.json",
++    "provenance.json",
++}
++
++
++def make_bicubic_x4_fit_image(clean: Image.Image, *, image_size: int = 224) -> Image.Image:
++    """Apply the frozen clean -> 56px bicubic -> x4 bicubic transform."""
++    if clean.mode != "RGB" or clean.size != (image_size, image_size):
++        raise ValueError(f"Expected canonical RGB {image_size}x{image_size} input")
++    low = clean.resize((56, 56), Image.Resampling.BICUBIC)
++    return low.resize((image_size, image_size), Image.Resampling.BICUBIC)
++
++
++def _sha256(value: Any) -> bool:
++    return (isinstance(value, str) and len(value) == 64
++            and all(char in "0123456789abcdef" for char in value))
++
++
++def verify_extension_result_contract(run_dir: str | Path, *, allow_synthetic: bool = False) -> dict[str, Any]:
++    """Check the separate five-file extension export without loading raw arrays."""
++    root = Path(run_dir).resolve()
++    manifest = json.loads((root / "bank_domain_extension_manifest.json").read_text(encoding="utf-8"))
++    if (manifest.get("schema_version") != SCHEMA_VERSION
++            or manifest.get("kind") != "bicubic_bank_extension_results"
++            or manifest.get("family") != EXTENSION_FAMILY
++            or manifest.get("status") != "COMPLETE"):
++        raise ValueError("Unsupported or incomplete Bicubic-bank extension export")
++    evidence = manifest.get("evidence_kind")
++    if evidence not in ("model_predictions", "synthetic_fixture"):
++        raise ValueError("Unknown extension evidence kind")
++    if evidence == "synthetic_fixture" and not allow_synthetic:
++        raise ValueError("Synthetic fixture requires explicit opt-in")
++    files = manifest.get("files")
++    if not isinstance(files, dict) or set(files) != EXPORT_FILES:
++        raise ValueError("Extension manifest must bind exactly its five public result files")
++    for name, digest in files.items():
++        if not _sha256(digest):
++            raise ValueError(f"Invalid SHA-256 for {name}")
++        path = study.safe_artifact_path(root, name)
++        if not path.is_file() or study.sha256_file(path) != digest:
++            raise ValueError(f"Missing or changed extension export file: {name}")
++    return manifest
++
++
++def verify_extension_complete_run(run_dir: str | Path, *, allow_synthetic: bool = False) -> dict[str, Any]:
++    """Verify status order, artifact hashes, raw prediction shapes and finiteness."""
++    root = Path(run_dir).resolve()
++    state = json.loads((root / "status.json").read_text(encoding="utf-8"))
++    if (state.get("status") != "COMPLETE"
++            or state.get("study_family") != EXTENSION_FAMILY
++            or state.get("bank_domain") != BANK_DOMAIN
++            or state.get("query_domains") != list(QUERY_DOMAINS)):
++        raise ValueError("Run is not a complete supported Bicubic-bank extension")
++    evidence = state.get("evidence_kind")
++    if evidence not in ("model_predictions", "synthetic_fixture"):
++        raise ValueError("Unknown extension run evidence kind")
++    if evidence == "synthetic_fixture" and not allow_synthetic:
++        raise ValueError("Synthetic fixture requires explicit opt-in")
++    samples = state.get("test_samples")
++    if not isinstance(samples, list) or not samples or len(set(samples)) != len(samples):
++        raise ValueError("Extension test sample inventory must be ordered and unique")
++    expected = [(BANK_DOMAIN, query, sample) for query in QUERY_DOMAINS for sample in samples]
++    observed = [(row.get("bank_domain"), row.get("query_domain"), row.get("sample"))
++                for row in state.get("prediction_rows", [])]
++    if observed != expected:
++        raise ValueError("Extension bank/query/sample order differs from the frozen two-query inventory")
++    artifacts = state.get("artifacts")
++    if not isinstance(artifacts, list) or not artifacts:
++        raise ValueError("Extension has no complete artifact inventory")
++    seen: set[str] = set()
++    for item in artifacts:
++        relative = item.get("file")
++        if relative in seen:
++            raise ValueError("Duplicate extension artifact path")
++        seen.add(relative)
++        path = study.safe_artifact_path(root, relative)
++        if not path.is_file() or study.sha256_file(path) != item.get("sha256"):
++            raise ValueError(f"Missing or changed extension artifact: {relative}")
++    raw = root / "raw_bicubic_x4.npz"
++    with np.load(raw, allow_pickle=False) as values:
++        calibration_samples = values["calibration_samples"].astype(str).tolist()
++        test_samples = values["test_samples"].astype(str).tolist()
++        if test_samples != samples or values["query_domains"].astype(str).tolist() != list(QUERY_DOMAINS):
++            raise ValueError("Raw extension query/sample identity mismatch")
++        expected_shapes = {
++            "calibration_scores": (state["calibration_count"], 2),
++            "calibration_maps": (state["calibration_count"], 2, 224, 224),
++            "test_scores": (state["test_count"], 2),
++            "test_maps": (state["test_count"], 2, 224, 224),
++        }
++        for name, shape in expected_shapes.items():
++            if values[name].shape != shape or not np.isfinite(values[name]).all():
++                raise ValueError(f"Invalid extension raw array {name}: {values[name].shape}")
++        if values["bank_domain"].item() != BANK_DOMAIN:
++            raise ValueError("Raw extension bank domain mismatch")
++        if values["bank_sha256"].item() != state["bank_hash"]:
++            raise ValueError("Raw extension bank digest differs from status")
++        query_hashes = {
++            "query_input_sha256": values["query_input_sha256"].astype(str).tolist(),
++            "bicubic_x4": values["query_bicubic_sha256"].astype(str).tolist(),
++            "swinir_x4": values["query_swinir_sha256"].astype(str).tolist(),
++        }
++        if any(len(digests) != len(samples) or not all(_sha256(x) for x in digests)
++               for digests in query_hashes.values()):
++            raise ValueError("Extension query SHA inventory is incomplete")
++    if (len(calibration_samples) != state["calibration_count"]
++            or calibration_samples != state.get("calibration_paths")):
++        raise ValueError("Raw extension calibration sample inventory mismatch")
++    manifest = verify_extension_result_contract(root, allow_synthetic=allow_synthetic)
++    if manifest.get("evidence_kind") != evidence:
++        raise ValueError("Status and export evidence kinds differ")
++    return {"status": "COMPLETE", "prediction_rows": len(observed),
++            "test_samples": len(samples), "calibration_samples": len(calibration_samples),
++            "query_hashes": query_hashes, "artifacts": artifacts}
+diff --git a/scripts/resume_bicubic_bank_extension_evaluation.py b/scripts/resume_bicubic_bank_extension_evaluation.py
+new file mode 100644
+--- /dev/null
++++ b/scripts/resume_bicubic_bank_extension_evaluation.py
+@@ -0,0 +1,377 @@
++"""Finish metrics/provenance from a hash-verified raw extension prediction artifact."""
++from __future__ import annotations
++
++import argparse
++import csv
++import hashlib
++import json
++import os
++from pathlib import Path
++import shutil
++import tempfile
++from datetime import datetime, timezone
++
++import numpy as np
++from PIL import Image
++
++ROOT = Path(__file__).resolve().parents[1]
++import sys
++sys.path.insert(0, str(ROOT / "src"))
++
++from sr_anomaly.dataset import MVTecADFolder, safe_component
++from sr_anomaly import bank_domain_study as study
++from sr_anomaly import bicubic_bank_extension as extension
++
++
++def _canonical_sha(value):
++    data = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
++                      allow_nan=False).encode("utf-8")
++    return hashlib.sha256(data).hexdigest()
++
++
++def _write_csv(path, rows):
++    fields = list(dict.fromkeys(k for row in rows for k in row))
++    with Path(path).open("w", encoding="utf-8", newline="") as stream:
++        writer = csv.DictWriter(stream, fieldnames=fields)
++        writer.writeheader()
++        writer.writerows(rows)
++
++
++def _write_npz(path, **arrays):
++    path = Path(path)
++    temporary = path.with_name(path.name + ".tmp")
++    with temporary.open("wb") as stream:
++        np.savez_compressed(stream, **arrays)
++        stream.flush()
++        os.fsync(stream.fileno())
++    temporary.replace(path)
++    return {"file": path.name, "sha256": study.sha256_file(path),
++            "arrays": {name: list(np.asarray(value).shape) for name, value in arrays.items()}}
++
++
++def _write_extension_manifest(run_dir, status, evidence_kind, files=None):
++    study.write_json_atomic(Path(run_dir) / "bank_domain_extension_manifest.json", {
++        "schema_version": extension.SCHEMA_VERSION,
++        "kind": "bicubic_bank_extension_results",
++        "family": extension.EXTENSION_FAMILY,
++        "status": status,
++        "evidence_kind": evidence_kind,
++        "bank_domain": extension.BANK_DOMAIN,
++        "query_domains": list(extension.QUERY_DOMAINS),
++        "files": files or {},
++    })
++
++
++def _mask(sample):
++    if sample.mask_path is None:
++        return np.zeros((224, 224), dtype=bool)
++    with Image.open(sample.mask_path) as source:
++        mask = source.convert("L").resize((256, 256), Image.Resampling.NEAREST)
++        mask = mask.crop((16, 16, 240, 240))
++        result = np.asarray(mask) > 0
++    if result.shape != (224, 224):
++        raise ValueError(f"Unexpected canonical mask shape: {sample.relative_path}")
++    return result
++
++
++def _validate_raw(run_dir, state, baseline_provenance):
++    raw_path = Path(run_dir) / "raw_bicubic_x4.npz"
++    artifact = next((item for item in state.get("artifacts", [])
++                     if item.get("file") == raw_path.name), None)
++    if artifact is None or not raw_path.is_file() or study.sha256_file(raw_path) != artifact.get("sha256"):
++        raise ValueError("Saved raw prediction archive is missing or its recorded hash changed")
++    with np.load(raw_path, allow_pickle=False) as archive:
++        values = {name: archive[name].copy() for name in archive.files}
++    samples = state.get("test_samples")
++    calibration_samples = state.get("calibration_paths")
++    if (values["test_samples"].astype(str).tolist() != samples
++            or values["calibration_samples"].astype(str).tolist() != calibration_samples
++            or values["query_domains"].astype(str).tolist() != list(extension.QUERY_DOMAINS)
++            or values["bank_domain"].item() != extension.BANK_DOMAIN
++            or values["bank_sha256"].item() != state.get("bank_hash")):
++        raise ValueError("Saved raw prediction archive identity differs from status")
++    expected_shapes = {
++        "calibration_scores": (state["calibration_count"], 2),
++        "calibration_maps": (state["calibration_count"], 2, 224, 224),
++        "test_scores": (state["test_count"], 2),
++        "test_maps": (state["test_count"], 2, 224, 224),
++    }
++    for name, shape in expected_shapes.items():
++        if values[name].shape != shape or not np.isfinite(values[name]).all():
++            raise ValueError(f"Saved raw array failed shape/finite validation: {name}")
++    if int(state.get("bank_vector_count", 0)) < 1 or state.get("bank_vector_dimension") != 1024:
++        raise ValueError("Saved bank shape metadata is incomplete")
++    for field in ("query_input_sha256", "query_bicubic_sha256", "query_swinir_sha256"):
++        hashes = values[field].astype(str).tolist()
++        if len(hashes) != len(samples) or any(len(h) != 64 for h in hashes):
++            raise ValueError(f"Saved raw query hash inventory is invalid: {field}")
++    if state.get("query_manifest_sha256") != baseline_provenance.get("query_manifest_sha256"):
++        raise ValueError("Saved extension query manifest differs from the main seed-11 baseline")
++    state_inputs = state.get("test_input_sha256", {})
++    state_queries = state.get("query_rgb_sha256", {})
++    for index, sample in enumerate(samples):
++        if values["query_input_sha256"].astype(str)[index] != state_inputs.get(sample):
++            raise ValueError("Saved raw input hash differs from extension status")
++        if (values["query_bicubic_sha256"].astype(str)[index] != state_queries.get(sample, {}).get("bicubic_x4")
++                or values["query_swinir_sha256"].astype(str)[index] != state_queries.get(sample, {}).get("swinir_x4")):
++            raise ValueError("Saved raw query RGB hash differs from extension status")
++    return values, artifact
++
++
++def resume(run_dir, baseline_dir, data_root):
++    run_dir = Path(run_dir).resolve()
++    baseline_dir = Path(baseline_dir).resolve()
++    data_root = Path(data_root).resolve()
++    state_path = run_dir / "status.json"
++    state = json.loads(state_path.read_text(encoding="utf-8"))
++    if state.get("status") != "FAILED" or state.get("predictions_saved_before_gt_read") is not True:
++        raise ValueError("Resume requires a failed run with its prediction checkpoint saved before GT")
++    if state.get("category") not in ("hazelnut", "screw") or state.get("seed") != 11:
++        raise ValueError("Resume is limited to the frozen seed-11 extension")
++    if state.get("error") != "TypeError: expected str, bytes or os.PathLike object, not NoneType":
++        raise ValueError("Failure is not the known missing-normal-mask evaluation interruption")
++    if (state.get("initial_failed_status_file") != "status.failed.initial.json"
++            or not (run_dir / "status.failed.initial.json").is_file()
++            or study.sha256_file(run_dir / "status.failed.initial.json") != state.get("initial_failed_status_sha256")):
++        raise ValueError("Immutable initial failed status snapshot is missing or changed")
++    original_status = json.loads((run_dir / "status.failed.initial.json").read_text(encoding="utf-8"))
++    if original_status.get("status") != "FAILED" or original_status.get("predictions_saved_before_gt_read") is not True:
++        raise ValueError("Initial failure snapshot is not the expected saved-prediction failure")
++    if not isinstance(state.get("execution_source_sha256_snapshot"), dict):
++        raise ValueError("Run-time source hash snapshot is missing")
++    for name, expected in state["execution_source_sha256_snapshot"].items():
++        if study.sha256_file(ROOT / name) != expected:
++            raise ValueError(f"Execution source changed after the saved run: {name}")
++
++    baseline_manifest = study.verify_result_contract(baseline_dir)
++    if (baseline_manifest.get("evidence_kind") != "model_predictions"
++            or baseline_manifest.get("status") != "COMPLETE"):
++        raise ValueError("Baseline must be a complete actual seed-11 main-study result")
++    baseline_config = json.loads((baseline_dir / "config.json").read_text(encoding="utf-8"))
++    baseline_provenance = json.loads((baseline_dir / "provenance.json").read_text(encoding="utf-8"))
++    baseline_status = json.loads((baseline_dir / "status.json").read_text(encoding="utf-8"))
++    if (baseline_config.get("study_family") != "patchcore_full_patch_bank_domain_2x2"
++            or baseline_config.get("category") != state["category"] or baseline_config.get("seed") != 11
++            or baseline_status.get("status") != "COMPLETE"):
++        raise ValueError("Baseline category/seed/family differs from failed extension")
++    values, raw_artifact = _validate_raw(run_dir, state, baseline_provenance)
++
++    category = state["category"]
++    samples = MVTecADFolder(data_root, category, split="test", require_masks=True).samples()
++    sample_ids = [sample.relative_path.as_posix() for sample in samples]
++    if sample_ids != state["test_samples"] or sample_ids != baseline_status["test_samples"]:
++        raise ValueError("Current test inventory differs from the saved prediction identity")
++    test_input_hashes = {sample.relative_path.as_posix(): study.sha256_file(sample.path) for sample in samples}
++    if test_input_hashes != state.get("test_input_sha256"):
++        raise ValueError("Test image bytes changed after the saved predictions")
++
++    fit_paths, calibration_paths = state["fit_paths"], state["calibration_paths"]
++    if set(fit_paths).intersection(calibration_paths):
++        raise ValueError("Saved fit and calibration splits overlap")
++    train_input_hashes = {}
++    for relative in fit_paths + calibration_paths:
++        path = data_root / Path(relative)
++        if not path.is_file() or "train/good" not in relative.replace("\\", "/"):
++            raise ValueError(f"Saved fit/calibration input is absent or not normal train data: {relative}")
++        train_input_hashes[relative] = study.sha256_file(path)
++    if train_input_hashes != state.get("train_input_sha256"):
++        raise ValueError("Fit/calibration source files changed after the saved predictions")
++    split_sha = _canonical_sha({"seed": 11, "fit_paths": fit_paths, "calibration_paths": calibration_paths})
++    if split_sha != baseline_provenance["split_manifest_sha256"]:
++        raise ValueError("Saved fit/calibration split differs from main seed-11 baseline")
++    input_manifest = data_root / "FILE_MANIFEST.csv"
++    input_manifest_sha = study.sha256_file(input_manifest)
++    if input_manifest_sha != baseline_provenance["input_manifest_sha256"]:
++        raise ValueError("Verified MVTec input inventory differs from main baseline")
++
++    # Prediction and query RGB hashes are checked before any GT/mask is opened.
++    ordered_all = calibration_paths + sample_ids
++    input_hashes = {**train_input_hashes, **test_input_hashes}
++    query_hashes = state.get("query_rgb_sha256", {})
++    query_manifest = _canonical_sha([{
++        "sample": sample,
++        "input_sha256": input_hashes[sample],
++        "bicubic_x4_rgb_sha256": query_hashes[sample]["bicubic_x4"],
++        "swinir_x4_rgb_sha256": query_hashes[sample]["swinir_x4"],
++    } for sample in ordered_all])
++    if query_manifest != baseline_provenance["query_manifest_sha256"]:
++        raise ValueError("Saved query RGB identity differs from the existing clean/restored baseline")
++
++    # Only after raw and source identities pass do we open test GT. Normal samples have no mask file.
++    test_mask_hashes = {sample.relative_path.as_posix():
++        (study.sha256_file(sample.mask_path) if sample.mask_path else None) for sample in samples}
++    labels = np.asarray([sample.metadata["label"] for sample in samples], dtype=np.uint8)
++    masks = np.stack([_mask(sample) for sample in samples])
++    if not np.array_equal(masks.reshape(len(masks), -1).any(axis=1), labels.astype(bool)):
++        raise ValueError("Official test mask occupancy disagrees with image labels")
++    test_manifest_sha = _canonical_sha([{
++        "sample": sample.relative_path.as_posix(), "image_sha256": test_input_hashes[sample.relative_path.as_posix()],
++        "label": int(sample.metadata["label"]), "defect_type": sample.metadata.get("defect_type"),
++        "mask_sha256": test_mask_hashes[sample.relative_path.as_posix()],
++    } for sample in samples])
++    if test_manifest_sha != baseline_provenance["test_manifest_sha256"]:
++        raise ValueError("Test GT manifest differs from the existing seed-11 baseline")
++
++    # Reuse quality values from the exact same saved query inputs in the complete baseline.
++    with (baseline_dir / "per_image.csv").open(encoding="utf-8-sig", newline="") as stream:
++        baseline_rows = list(csv.DictReader(stream))
++    quality = {}
++    for query in extension.QUERY_DOMAINS:
++        for row in baseline_rows:
++            if row["bank_domain"] == "clean" and row["query_domain"] == query:
++                quality.setdefault(row["sample"], {})[query] = (float(row["psnr"]), float(row["ssim"]))
++    if set(quality) != set(sample_ids) or any(set(quality[s]) != set(extension.QUERY_DOMAINS) for s in sample_ids):
++        raise ValueError("Complete same-query baseline quality values are unavailable")
++    quality_rows = [{"sample": sample,
++        "psnr_bicubic": quality[sample]["bicubic_x4"][0],
++        "ssim_bicubic": quality[sample]["bicubic_x4"][1],
++        "psnr_swinir": quality[sample]["swinir_x4"][0],
++        "ssim_swinir": quality[sample]["swinir_x4"][1],
++        "quality_source": "same-query baseline; input/query manifest hashes match"}
++        for sample in sample_ids]
++    quality_by_sample = {row["sample"]: row for row in quality_rows}
++
++    summaries, image_rows, calibration_by_query, prediction_rows = [], [], {}, []
++    for query_index, query in enumerate(extension.QUERY_DOMAINS):
++        calibration = study.fit_cell_calibration(
++            np.zeros(state["calibration_count"], dtype=np.uint8),
++            values["calibration_scores"][:, query_index], values["calibration_maps"][:, query_index])
++        metrics, per_image = study.evaluate_cell(labels, values["test_scores"][:, query_index], masks,
++            values["test_maps"][:, query_index], calibration, sample_ids)
++        calibration_by_query[query] = calibration
++        psnr_key, ssim_key = (("psnr_bicubic", "ssim_bicubic") if query == "bicubic_x4"
++                              else ("psnr_swinir", "ssim_swinir"))
++        summaries.append({"category": category, "seed": 11, "bank_domain": extension.BANK_DOMAIN,
++            "query_domain": query, "fit_count": state["fit_count"],
++            "calibration_count": state["calibration_count"], "test_count": len(samples),
++            "n_test": len(samples), "n_anomaly": int(labels.sum()),
++            "image_auroc": metrics["classification"]["image_auroc"],
++            "image_f1": metrics["classification"]["image_f1"],
++            "pixel_auroc": metrics["localization"]["pixel_auroc"],
++            "pooled_aupro_at_0_3": metrics["localization"]["au_pro"],
++            "pooled_aupro": metrics["localization"]["au_pro"],
++            "mean_psnr": float(np.mean([quality_by_sample[s][psnr_key] for s in sample_ids])),
++            "mean_ssim": float(np.mean([quality_by_sample[s][ssim_key] for s in sample_ids])),
++            "pixel_f1": metrics["localization"]["pixel_f1"],
++            "image_threshold": calibration["image_threshold"],
++            "pixel_threshold": calibration["pixel_threshold"]})
++        sample_meta = {sample.relative_path.as_posix(): sample.metadata for sample in samples}
++        for row in per_image:
++            q = quality_by_sample[row["sample"]]
++            psnr, ssim = ((q["psnr_bicubic"], q["ssim_bicubic"]) if query == "bicubic_x4"
++                          else (q["psnr_swinir"], q["ssim_swinir"]))
++            image_rows.append({**row, "category": category, "seed": 11,
++                "bank_domain": extension.BANK_DOMAIN, "query_domain": query,
++                "defect_type": sample_meta[row["sample"]].get("defect_type"), "psnr": psnr, "ssim": ssim})
++            prediction_rows.append({"bank_domain": extension.BANK_DOMAIN,
++                "query_domain": query, "sample": row["sample"]})
++
++    output_names = (*extension.EXPORT_FILES, "test_masks_for_local_analysis.npz")
++    if any((run_dir / name).exists() for name in output_names):
++        raise FileExistsError("Resume export already exists; refusing to overwrite")
++    mask_artifact = _write_npz(run_dir / "test_masks_for_local_analysis.npz",
++        samples=np.asarray(sample_ids), masks=masks)
++    state["artifacts"].append(mask_artifact)
++    _write_csv(run_dir / "extension_summary.csv", summaries)
++    _write_csv(run_dir / "extension_per_image.csv", image_rows)
++    _write_csv(run_dir / "extension_query_quality.csv", quality_rows)
++    state["artifacts"].extend({"file": name, "sha256": study.sha256_file(run_dir / name)}
++        for name in ("extension_summary.csv", "extension_per_image.csv", "extension_query_quality.csv"))
++
++    protocol = {
++        "dataset": "MVTec AD", "geometry_id": "pil-resize256-center-crop224-mask-nearest-v1",
++        "degradation_id": "pil-bicubic-224-to-56-upsample224-v1",
++        "detector_id": f"PatchCore-{state['patchcore_source_commit']}-WideResNet50-2-layer2-layer3",
++        "restorer_id": "SwinIR-S-x4-lightweight",
++        "bank_spec": {"bank_domains": [extension.BANK_DOMAIN], "fit_count": state["fit_count"],
++            "vector_count": state["bank_vector_count"], "dimension": 1024, "dtype": "float32",
++            "layers": ["layer2", "layer3"], "sampler": "IdentitySampler",
++            "patches_per_fit_image": 784,
++            "patch_selection": "all patch rows in deterministic fit loader order",
++            "coreset_or_ordinal_subsampling": False, "faiss": "CPU IndexFlatL2 exact 1-NN",
++            "patchcore_source_commit": state["patchcore_source_commit"],
++            "fit_transform": "clean RGB -> bicubic 56x56 -> bicubic 224x224"},
++        "checkpoints_sha256": {"backbone": state["backbone_checkpoint_sha256"],
++                               "swinir": state["swinir_checkpoint_sha256"]},
++        "calibration_source": "normal_calibration_only",
++        "metric_definition": {"primary": "pooled_aupro", "max_fpr": 0.3,
++                               "num_thresholds": 200, "connectivity": 4}}
++    code_sha = state["execution_source_sha256_snapshot"]
++    protocol_sha = _canonical_sha({"protocol": protocol, "code_sha256": code_sha})
++    config = {"schema_version": extension.SCHEMA_VERSION, "study_family": extension.EXTENSION_FAMILY,
++        "category": category, "seed": 11, "protocol": protocol, "protocol_sha256": protocol_sha,
++        "baseline_run_id": baseline_provenance["run_id"]}
++    bank_manifest_sha = _canonical_sha({"bank_domain": extension.BANK_DOMAIN,
++        "array_sha256": state["bank_hash"], "vector_count": state["bank_vector_count"],
++        "dimension": 1024, "dtype": "float32"})
++    failed_snapshot_sha = state["initial_failed_status_sha256"]
++    provenance = {
++        "source_commit": state["source_commit"], "source_worktree_dirty": state["git_dirty"],
++        "source_branch": state["git_branch"], "code_sha256": code_sha,
++        "protocol_sha256": protocol_sha, "normal_fit_calibration_disjoint": True,
++        "test_gt_used_for_selection": False, "test_predictions_saved_before_gt_read": True,
++        "input_manifest_sha256": input_manifest_sha, "input_inventory_sha256": input_manifest_sha,
++        "split_manifest_sha256": split_sha, "test_manifest_sha256": test_manifest_sha,
++        "query_manifest_sha256": query_manifest, "bank_manifest_sha256": {extension.BANK_DOMAIN: bank_manifest_sha},
++        "bank_vector_counts": {extension.BANK_DOMAIN: state["bank_vector_count"]},
++        "baseline_run_id": baseline_provenance["run_id"],
++        "baseline_query_manifest_sha256": baseline_provenance["query_manifest_sha256"],
++        "baseline_config_sha256": study.sha256_file(baseline_dir / "config.json"),
++        "dataset_receipt": {"source_url": state["dataset_provenance"]["source_url"],
++            "archive_sha256": state["dataset_provenance"]["archive_sha256"],
++            "archive_sha256_role": "private_team_category_repack",
++            "original_publisher_archive_sha256": None,
++            "license_file": state["dataset_provenance"]["license_file"],
++            "license_sha256": state["dataset_provenance"]["license_sha256"],
++            "input_inventory_sha256": input_manifest_sha},
++        "submodule_revisions": state["submodule_revisions"], "run_id": state["run_id"],
++        "resumed_evaluation_without_model_rerun": True,
++        "initial_failed_status_sha256": failed_snapshot_sha,
++        "quality_source": "exact same-query values reused from complete baseline; query/input manifest SHA matched",
++        "recovery_script_sha256": study.sha256_file(Path(__file__))}
++    study.write_json_atomic(run_dir / "config.json", config)
++    study.write_json_atomic(run_dir / "provenance.json", provenance)
++    files = {name: study.sha256_file(run_dir / name) for name in extension.EXPORT_FILES}
++    state["test_mask_sha256"] = test_mask_hashes
++    state["input_inventory_sha256"] = _canonical_sha({
++        **train_input_hashes, **test_input_hashes,
++        **{f"mask:{sample}": digest for sample, digest in test_mask_hashes.items() if digest}})
++    state["prediction_rows"] = prediction_rows
++    state["calibration_by_query"] = calibration_by_query
++    state["resume_history"] = [{"from_status": "FAILED", "failed_stage": "test_mask_sha256 on normal sample with mask_path=None",
++        "initial_error": original_status["error"], "initial_status_sha256": failed_snapshot_sha,
++        "resumed_at_utc": datetime.now(timezone.utc).isoformat(),
++        "raw_prediction_archive_reused": raw_artifact["sha256"], "model_or_query_rerun": False}]
++    state["initial_error"] = original_status["error"]
++    state["initial_traceback"] = original_status["traceback"]
++    state["resource_snapshot_after"] = {"available_ram_bytes": study.available_ram_bytes(),
++        "disk_free_bytes": shutil.disk_usage(run_dir).free}
++    state["status"] = "COMPLETE"
++    state.pop("error", None)
++    state.pop("traceback", None)
++    study.write_status(run_dir, state)
++    _write_extension_manifest(run_dir, "COMPLETE", "model_predictions", files)
++    result = extension.verify_extension_complete_run(run_dir)
++    return {"run_dir": str(run_dir), "status": "COMPLETE", "raw_prediction_archive_reused": True,
++            "initial_failed_status_sha256": failed_snapshot_sha,
++            "predictions": result["prediction_rows"], "test_samples": result["test_samples"]}
++
++
++def main(argv=None):
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--run-dir", type=Path, required=True)
++    parser.add_argument("--baseline-run", type=Path, required=True)
++    parser.add_argument("--data-root", type=Path, required=True)
++    args = parser.parse_args(argv)
++    try:
++        result = resume(args.run_dir, args.baseline_run, args.data_root)
++    except Exception as error:
++        print(json.dumps({"status": "RESUME_FAILED", "error": f"{type(error).__name__}: {error}"},
++                         ensure_ascii=False))
++        return 1
++    print(json.dumps(result, ensure_ascii=False))
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tests/test_bicubic_bank_extension.py b/tests/test_bicubic_bank_extension.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_bicubic_bank_extension.py
+@@ -0,0 +1,91 @@
++import json
++from pathlib import Path
++from types import SimpleNamespace
++
++import numpy as np
++import pytest
++from PIL import Image
++
++from sr_anomaly import bicubic_bank_extension as extension
++from sr_anomaly import bank_domain_study as study
++from scripts.resume_bicubic_bank_extension_evaluation import _mask
++
++
++def _fake_run(root):
++    root.mkdir()
++    sample = "hazelnut/test/crack/000.png"
++    cal = "hazelnut/train/good/000.png"
++    raw_path = root / "raw_bicubic_x4.npz"
++    np.savez_compressed(raw_path,
++        calibration_samples=np.asarray([cal]), test_samples=np.asarray([sample]),
++        query_domains=np.asarray(extension.QUERY_DOMAINS), bank_domain=np.asarray(extension.BANK_DOMAIN),
++        bank_sha256=np.asarray("b" * 64), query_input_sha256=np.asarray(["1" * 64]),
++        query_bicubic_sha256=np.asarray(["2" * 64]), query_swinir_sha256=np.asarray(["3" * 64]),
++        calibration_scores=np.ones((1, 2), dtype=np.float64),
++        calibration_maps=np.ones((1, 2, 224, 224), dtype=np.float32),
++        test_scores=np.ones((1, 2), dtype=np.float64),
++        test_maps=np.ones((1, 2, 224, 224), dtype=np.float32))
++    exports = {}
++    for name in extension.EXPORT_FILES:
++        (root / name).write_text("synthetic fixture\n", encoding="utf-8")
++        exports[name] = study.sha256_file(root / name)
++    artifacts = [{"file": raw_path.name, "sha256": study.sha256_file(raw_path)}]
++    state = {"status": "COMPLETE", "study_family": extension.EXTENSION_FAMILY,
++        "bank_domain": extension.BANK_DOMAIN, "query_domains": list(extension.QUERY_DOMAINS),
++        "test_samples": [sample], "calibration_paths": [cal], "calibration_count": 1,
++        "test_count": 1, "bank_hash": "b" * 64, "artifacts": artifacts,
++        "evidence_kind": "synthetic_fixture", "prediction_rows": [
++            {"bank_domain": extension.BANK_DOMAIN, "query_domain": query, "sample": sample}
++            for query in extension.QUERY_DOMAINS]}
++    study.write_json_atomic(root / "status.json", state)
++    study.write_json_atomic(root / "bank_domain_extension_manifest.json", {
++        "schema_version": extension.SCHEMA_VERSION, "kind": "bicubic_bank_extension_results",
++        "family": extension.EXTENSION_FAMILY, "status": "COMPLETE",
++        "evidence_kind": "synthetic_fixture", "files": exports})
++    return root
++
++
++def test_bicubic_bank_transform_matches_frozen_query_bytes():
++    pixels = np.arange(224 * 224 * 3, dtype=np.uint32).reshape(224, 224, 3).astype(np.uint8)
++    clean = Image.fromarray(pixels, mode="RGB")
++    expected = clean.resize((56, 56), Image.Resampling.BICUBIC).resize((224, 224), Image.Resampling.BICUBIC)
++    actual = extension.make_bicubic_x4_fit_image(clean)
++    assert actual.mode == "RGB" and actual.size == (224, 224)
++    assert actual.tobytes() == expected.tobytes()
++
++
++def test_normal_test_parent_without_gt_file_gets_native_zero_mask():
++    sample = SimpleNamespace(mask_path=None, relative_path=Path("hazelnut/test/good/000.png"))
++    mask = _mask(sample)
++    assert mask.shape == (224, 224) and mask.dtype == np.bool_
++    assert not mask.any()
++
++
++def test_synthetic_extension_requires_opt_in_and_verifies_files(tmp_path):
++    root = _fake_run(tmp_path / "extension")
++    with pytest.raises(ValueError, match="Synthetic"):
++        extension.verify_extension_complete_run(root)
++    result = extension.verify_extension_complete_run(root, allow_synthetic=True)
++    assert result["status"] == "COMPLETE" and result["prediction_rows"] == 2
++
++
++def test_extension_export_hash_drift_rejected(tmp_path):
++    root = _fake_run(tmp_path / "extension")
++    with (root / "extension_summary.csv").open("a", encoding="utf-8") as stream:
++        stream.write("tampered\n")
++    with pytest.raises(ValueError, match="changed extension export"):
++        extension.verify_extension_result_contract(root, allow_synthetic=True)
++
++
++def test_raw_nonfinite_map_rejected(tmp_path):
++    root = _fake_run(tmp_path / "extension")
++    raw_path = root / "raw_bicubic_x4.npz"
++    with np.load(raw_path, allow_pickle=False) as values:
++        payload = {key: values[key] for key in values.files}
++    payload["test_maps"][0, 0, 0, 0] = np.nan
++    np.savez_compressed(raw_path, **payload)
++    state = json.loads((root / "status.json").read_text(encoding="utf-8"))
++    state["artifacts"][0]["sha256"] = study.sha256_file(raw_path)
++    study.write_json_atomic(root / "status.json", state)
++    with pytest.raises(ValueError, match="Invalid extension raw array"):
++        extension.verify_extension_complete_run(root, allow_synthetic=True)

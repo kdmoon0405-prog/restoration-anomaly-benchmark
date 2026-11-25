@@ -1,0 +1,60 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "phone-synthetic-demo-20261112",
+  "prepared_utc": "2026-11-12T05:09:25.608214+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "RUN_RECORD.md",
+      "bytes": 3071,
+      "sha256": "ea12a4a9397f244721e6f577fbac088b413ee149dffd52a6432d2c0237ff78c9"
+    },
+    {
+      "path": "PROGRESS.md",
+      "bytes": 4619,
+      "sha256": "b2579cca6400eb8d67030d14de0e90e33293acdb9f86a0a776564a433e01bc20"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 3378,
+      "sha256": "b537322212e960be681b81c66957a5618a3c984c8185e91bab588001f309f5d9"
+    },
+    {
+      "path": "captures.csv",
+      "bytes": 8021,
+      "sha256": "cc3ddc9a0398e440c50a1b0e0085c6f7c7ee628e5ad8af1c3bac40b73515228c"
+    },
+    {
+      "path": "slots.csv",
+      "bytes": 655,
+      "sha256": "326450d9643aaa7bec95b99869a7e899c265a85a73d363d4944af24a1eb2e6a8"
+    },
+    {
+      "path": "repeatability.csv",
+      "bytes": 1533,
+      "sha256": "d749ee4d336c3ab5ef3d5cb03ed88d461e19997f77c29e99d02d94517744973d"
+    },
+    {
+      "path": "recipe_summary.csv",
+      "bytes": 529,
+      "sha256": "a821b5b1189d50498881d1fa1b0d4660990133fb0731c8ac1cea8a9ac16f0948"
+    },
+    {
+      "path": "station_cycles.csv",
+      "bytes": 2118,
+      "sha256": "827c28ece6de2e2458e023c4c837f28857a17d66d654bb21d363721b11b23db2"
+    },
+    {
+      "path": "synthetic_capture_sheet.csv",
+      "bytes": 920,
+      "sha256": "d7e6faaa6a32703170767831508669e2f5c7dc822f46200e145954934822a756"
+    },
+    {
+      "path": "synthetic_expected.json",
+      "bytes": 1783,
+      "sha256": "69480253a1180eb2ba90835a0ed4e89406d816b55c2bf3bd6004a309c1ccdbb9"
+    }
+  ]
+}

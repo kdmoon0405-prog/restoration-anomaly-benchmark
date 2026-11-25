@@ -1,0 +1,35 @@
+{
+  "completed_at_utc": "2026-11-15T11:50:56.936261+00:00",
+  "consumer_tests": {
+    "passed": 9,
+    "seconds": 0.4,
+    "kind": "synthetic metadata"
+  },
+  "producer_tests": {
+    "source_commit": "5839caae0150073eb2738a50cc1cc2a999d832e7",
+    "passed": 7,
+    "seconds": 137.68,
+    "kind": "CPU, fake restorers"
+  },
+  "full_pytest_run": false,
+  "local_gpu_inference": false,
+  "physical_capture_time_measured": false,
+  "metadata_files_verified": 17,
+  "photo_jpeg_hashes_verified": 24,
+  "source_code_hashes_verified": 6,
+  "previous_example_hashes_verified": 6,
+  "scalar_figure_visual_check": "corrected PNG opened and inspected",
+  "camera_pixels_in_public_figure": false,
+  "private_contact_sheet_visual_check": true,
+  "graphify_ast_update": {
+    "nodes": 3240,
+    "edges": 6203,
+    "llm_used": false
+  },
+  "prose_audit": {
+    "files": 3,
+    "flagged_count": 0,
+    "density_tier": "low"
+  },
+  "git_diff_check": "passed"
+}

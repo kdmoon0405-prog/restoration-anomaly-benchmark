@@ -1,0 +1,25 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "design-review-20261112",
+  "prepared_utc": "2026-11-12T04:39:56.776660+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "INDEPENDENT_DRAFT_JUHYUNG_20261112_v0.md",
+      "bytes": 5040,
+      "sha256": "efd6a6080758c2b1da0c1c39241f59c1bd1cdd3d119d34b26a0295f406696e06"
+    },
+    {
+      "path": "DESIGN_REVIEW_JUHYUNG_20261112.md",
+      "bytes": 8246,
+      "sha256": "a57c1c01c4776401ccf5d56de8222842f4cd1d92b940c3446dd4f722c1f023f3"
+    },
+    {
+      "path": "PROGRESS.md",
+      "bytes": 2984,
+      "sha256": "4fc7ce4c59b4ff3dee8998c885c5cb5d85c1536bdcb871fd6912dc9820329e92"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+category,seed,정상 bank,검사 입력,pooled AU-PRO,image AUROC,출처
+hazelnut,11,원본,Bicubic,0.8175,0.9979,주형 재실행
+hazelnut,11,원본,SwinIR,0.8416,0.9986,주형 재실행
+hazelnut,11,SwinIR 복원,Bicubic,0.8259,0.9986,주형 재실행
+hazelnut,11,SwinIR 복원,SwinIR,0.8480,0.9996,주형 재실행
+hazelnut,11,Bicubic 복원,Bicubic,0.8380,1.0000,지혁 확장 수신
+hazelnut,11,Bicubic 복원,SwinIR,0.8549,0.9993,지혁 확장 수신
+hazelnut,23,원본,Bicubic,0.8176,0.9993,주형 재실행
+hazelnut,23,원본,SwinIR,0.8425,0.9989,주형 재실행
+hazelnut,23,SwinIR 복원,Bicubic,0.8261,0.9996,주형 재실행
+hazelnut,23,SwinIR 복원,SwinIR,0.8496,0.9996,주형 재실행
+screw,11,원본,Bicubic,0.7990,0.4812,주형 재실행
+screw,11,원본,SwinIR,0.8532,0.6717,주형 재실행
+screw,11,SwinIR 복원,Bicubic,0.8587,0.6120,주형 재실행
+screw,11,SwinIR 복원,SwinIR,0.9384,0.9158,주형 재실행
+screw,11,Bicubic 복원,Bicubic,0.8989,0.9342,지혁 확장 수신
+screw,11,Bicubic 복원,SwinIR,0.8616,0.7258,지혁 확장 수신

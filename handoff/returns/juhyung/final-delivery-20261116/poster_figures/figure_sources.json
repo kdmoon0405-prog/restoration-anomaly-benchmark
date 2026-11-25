@@ -1,0 +1,85 @@
+{
+ "sources": {
+  "fig_B_benchmark.png": [
+   "57235a2:analysis/hazelnut/cross_category_summary.json",
+   "57235a2:analysis/noise_repeatability_20261111/master/master_results.csv (historical_recovery)",
+   "outputs/realistic-degradation/<cat>-v1/summary.csv",
+   "outputs/realistic-noise-v2/<cat>-noise{23,37}/summary.csv"
+  ],
+  "fig_C_screw_aggregation.png": [
+   "outputs/image-score-aggregation-clean-control-20261112/summary.csv (returned as image-score-aggregation-clean-control-20261112)"
+  ],
+  "fig_M_station_flow.png": [
+   "docs/DESIGN_DECISION_PHONE_V0.3.md §1, §4"
+  ],
+  "fig_E1_real_photos.png": [
+   "private photos outputs/phone-captures/20261115 (cycle foreign-1, references and calibration from manifest.plan)",
+   "recomputed scores [('L0', 165), ('L1', 1515)]; stored in outputs/phone-station-20261116-final/inspections.csv"
+  ],
+  "fig_E2_quality_and_retake.png": [
+   "private photos (cycles normal-3, lowlight-3)",
+   "outputs/phone-audit-20261115-v01-dev/captures.csv",
+   "outputs/phone-station-20261116-final/captures_quality.csv, station_result.csv"
+  ],
+  "fig_E3_quality_states.png": [
+   "outputs/phone-audit-20261115-v01-dev/captures.csv",
+   "outputs/phone-station-20261116-final/captures_quality.csv",
+   "outputs/phone-station-20261116-final/captures_quality_v03.csv"
+  ],
+  "fig_E4_conditions.png": [
+   "outputs/phone-station-20261116-final/cycles.csv",
+   "handoff/juhyung@8ddde87:analysis/phone_station_return_20261115/cohort_membership.csv (paired_available)"
+  ]
+ },
+ "checks": {
+  "quality_states": {
+   "v0.1 화면 전체": {
+    "PASS": 3,
+    "REVIEW": 3,
+    "RETAKE": 18
+   },
+   "v0.1 관찰 영역": {
+    "PASS": 3,
+    "REVIEW": 6,
+    "RETAKE": 15
+   },
+   "v0.2 기준 사진 대비": {
+    "PASS": 15,
+    "REVIEW": 9,
+    "RETAKE": 0
+   },
+   "v0.3 같은 조명 참조": {
+    "PASS": 15,
+    "REVIEW": 9,
+    "RETAKE": 0
+   }
+  },
+  "photo_uses": {
+   "두 조명 사진이 있는 7 cycle": {
+    "C0_direct": 7,
+    "C3_two_lights": 14,
+    "C2_policy_v0.3": 10,
+    "C2_policy_v0.2": 10,
+    "C1_bicubic_x4": 7,
+    "C1_swinir_x4": 7
+   },
+   "전체 16 cycle (C3 9건 NA)": {
+    "C0_direct": 16,
+    "C3_two_lights": 14,
+    "C2_policy_v0.3": 19,
+    "C2_policy_v0.2": 19,
+    "C1_bicubic_x4": 16,
+    "C1_swinir_x4": 16
+   }
+  },
+  "paired_cycles": [
+   "foreign-1",
+   "foreign-2",
+   "foreign-3",
+   "lowlight-1",
+   "lowlight-2",
+   "lowlight-3",
+   "normal-3"
+  ]
+ }
+}

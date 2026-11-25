@@ -1,0 +1,7 @@
+source: exp/phone-lighting-juhyung@7b868a34e9ed6c423e2a127bde12eae8687dfb21
+command: python -m pytest -q tests/test_phone_station.py tests/test_phone_capture.py tests/test_inspection_station.py tests/test_team_return.py -p no:cacheprovider
+start: 2026-11-16 11:54:43 +0900
+.................................................                        [100%]
+49 passed in 339.14s (0:05:39)
+exit_code: 0
+end: 2026-11-16 12:00:23 +0900

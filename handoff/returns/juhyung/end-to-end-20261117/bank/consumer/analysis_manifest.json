@@ -1,0 +1,542 @@
+{
+  "kind": "read_only_bank_domain_analysis",
+  "schema_version": 1,
+  "status": "COMPLETE",
+  "settings": {
+    "schema_version": 1,
+    "bootstrap_repeats": 2000,
+    "bootstrap_seed": 11,
+    "quality_atol": 1e-09,
+    "quality_rtol": 1e-09
+  },
+  "complete_unique_runs": 3,
+  "skipped_runs": [],
+  "duplicate_runs": [],
+  "evidence_kinds": [
+    "model_predictions"
+  ],
+  "raw_prediction_arrays_opened": false,
+  "detection_metrics_recomputed": false,
+  "source_byte_binding_checked": true,
+  "plots_generated": false,
+  "ci_scope": "Per-contrast and per-seed anomalous-image paired mean; not pooled AU-PRO or cross-seed CI",
+  "sources": [
+    {
+      "run": "<workspace>/hazelnut_seed11",
+      "files": {
+        "summary.csv": "e6ad62718be0172e538f06e3fd4d072973392080ed63090ce33c519a1be1e6fe",
+        "per_image.csv": "5da7fa70dab21bce8be6b001f77b2645bf7a565ca3397a53b9b0636ad417979c",
+        "config.json": "e73747725c8165d8884ea36988d949f9aee594c266fe72cbea9e7724aaf46ad5",
+        "provenance.json": "afdca64ae7b4951008102c17fa6628ec4dfa77aadf27f504fee876597d8f0928",
+        "bank_domain_manifest.json": "5db2a1562846ec759c9b0f49b7be91a1c4b77e8b7d8efebbbcfcbc75808c7a32"
+      },
+      "provenance": {
+        "source_commit": "b94a189727b3f1241b356894e5beb75ce5088b2b",
+        "source_worktree_dirty": false,
+        "source_branch": "exp/bank-domain-juhyung",
+        "code_sha256": {
+          "scripts/run_bank_domain_study.py": "f0c05f6d9bc283bb237af674b74641f4a294878cbbc36cf86616182c1ae27c9c",
+          "src/sr_anomaly/bank_domain_study.py": "3586cb0b644e651ed9a1e02b3bb677f35d334df3fe3c761b305630ad39c84a2a",
+          "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+          "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+          "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+          "src/sr_anomaly/real_models.py": "497359e05baaac16dda5d3288af46524818d90aef84c01369e8ed32e9e135bd5",
+          "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+          "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d"
+        },
+        "normal_fit_calibration_disjoint": true,
+        "test_gt_used_for_selection": false,
+        "input_manifest_sha256": "ccb922226c07f03af5c37ce5ef170fe7617930347b3dde0a0602548ed3ff7664",
+        "split_manifest_sha256": "90e419f9a85325062c73ff56209438f5bb4905272408d961f669239b22f8cdeb",
+        "test_manifest_sha256": "69f2f5035f173be4df7859f61086015decfe1bf556a4c099f0dcf5f27070beef",
+        "query_manifest_sha256": "00374595ee012939551c46c34ab25270e16b17969f3b7c8863e4b0246f6d2dc1",
+        "bank_manifest_sha256": {
+          "clean": "3ca7c71f8a60e49b07979409225f9a3ba9900434ea00c4d4f05447e6d43a23ac",
+          "swinir_restored": "3fedd335146b89d1d8f1ce17620ede020894466b055c79c95afc930a5040a517"
+        },
+        "bank_manifest_kind": "sha256 of the float32 bank vector array",
+        "bank_vector_counts": {
+          "clean": 245392,
+          "swinir_restored": 245392
+        },
+        "submodule_revisions": {
+          "SwinIR": "6545850fbf8df298df73d81f3e8cba638787c8bd",
+          "patchcore-inspection": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+        },
+        "producer_run": {
+          "run_id": "bank-domain-juhyung-20261117b",
+          "status_sha256": "c1959557a174e9ebccbd47cfc45f2161a3818a498352b7a3c99d9936759f4b34",
+          "artifacts": [
+            {
+              "file": "raw_clean.npz",
+              "sha256": "921930dcd5adcc6baf185e60ead51888186f44fee82f139173ef18b430fafb36",
+              "arrays": {
+                "calibration_samples": [
+                  78
+                ],
+                "test_samples": [
+                  110
+                ],
+                "query_domains": [
+                  2
+                ],
+                "bank_sha256": [],
+                "query_input_sha256": [
+                  110
+                ],
+                "query_bicubic_sha256": [
+                  110
+                ],
+                "query_swinir_sha256": [
+                  110
+                ],
+                "calibration_scores": [
+                  78,
+                  2
+                ],
+                "calibration_maps": [
+                  78,
+                  2,
+                  224,
+                  224
+                ],
+                "test_scores": [
+                  110,
+                  2
+                ],
+                "test_maps": [
+                  110,
+                  2,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "raw_swinir_restored.npz",
+              "sha256": "060f0a0715912874a1cf444f141a9e1a46e6ef2137630be4c79067dc4847f8ee",
+              "arrays": {
+                "calibration_samples": [
+                  78
+                ],
+                "test_samples": [
+                  110
+                ],
+                "query_domains": [
+                  2
+                ],
+                "bank_sha256": [],
+                "query_input_sha256": [
+                  110
+                ],
+                "query_bicubic_sha256": [
+                  110
+                ],
+                "query_swinir_sha256": [
+                  110
+                ],
+                "calibration_scores": [
+                  78,
+                  2
+                ],
+                "calibration_maps": [
+                  78,
+                  2,
+                  224,
+                  224
+                ],
+                "test_scores": [
+                  110,
+                  2
+                ],
+                "test_maps": [
+                  110,
+                  2,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "test_masks_for_local_analysis.npz",
+              "sha256": "04fa479b8213c10306fe3bf04ab2c18bb98a6ea11b4a1fa688969ed2c13c9f4b",
+              "arrays": {
+                "samples": [
+                  110
+                ],
+                "masks": [
+                  110,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "summary.csv",
+              "sha256": "1ff18ade0a362f46120daeecd1f078e074735efddd16fa1ef794483756cfcf21"
+            },
+            {
+              "file": "per_image.csv",
+              "sha256": "607fc485d76eb4acfbf06156eee1a316995eb21f8865faeac67ae34861658f56"
+            },
+            {
+              "file": "query_quality.csv",
+              "sha256": "150da2af75a661af00692b9586ebb16ed2b6429c16a563ea0b0653153969e7b1"
+            }
+          ]
+        },
+        "exporter": "scripts/export_bank_domain_contract.py",
+        "exporter_sha256": "e090262f41586a8f09e7c9aa5cd0305289112c4073de97292c0e0dc0e68b45d3"
+      }
+    },
+    {
+      "run": "<workspace>/hazelnut_seed23",
+      "files": {
+        "summary.csv": "eedc3247f79b8a7f3d761b03e644ac455fc66be926915e20b72dbd33597b318e",
+        "per_image.csv": "63ef23e874889ba3904bc804d1f7eefa43208103d3d4ade63f46056b9b0ddff4",
+        "config.json": "248d5d44e9d80c67d5922939eefbe30870a86d2c81907dbf1e14911a1811aa93",
+        "provenance.json": "29c434c8a87840deecaa5b9d60d6d8c7332667df49a2e152f937185c6232f307",
+        "bank_domain_manifest.json": "139ac967a34c161e06fd9c6643ffe9ff020f36ec7ef2e396b8f780a3fd23d57b"
+      },
+      "provenance": {
+        "source_commit": "c60dd80a0e7e4596a142634bd2c0dcf092a1a8e6",
+        "source_worktree_dirty": false,
+        "source_branch": "exp/bank-domain-juhyung",
+        "code_sha256": {
+          "scripts/run_bank_domain_study.py": "f0c05f6d9bc283bb237af674b74641f4a294878cbbc36cf86616182c1ae27c9c",
+          "src/sr_anomaly/bank_domain_study.py": "3586cb0b644e651ed9a1e02b3bb677f35d334df3fe3c761b305630ad39c84a2a",
+          "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+          "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+          "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+          "src/sr_anomaly/real_models.py": "497359e05baaac16dda5d3288af46524818d90aef84c01369e8ed32e9e135bd5",
+          "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+          "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d"
+        },
+        "normal_fit_calibration_disjoint": true,
+        "test_gt_used_for_selection": false,
+        "input_manifest_sha256": "ccb922226c07f03af5c37ce5ef170fe7617930347b3dde0a0602548ed3ff7664",
+        "split_manifest_sha256": "79317f51d2ccea8e407d77d81c2fe857619ece7d5427c8a51d1dac47e3e5d934",
+        "test_manifest_sha256": "69f2f5035f173be4df7859f61086015decfe1bf556a4c099f0dcf5f27070beef",
+        "query_manifest_sha256": "00374595ee012939551c46c34ab25270e16b17969f3b7c8863e4b0246f6d2dc1",
+        "bank_manifest_sha256": {
+          "clean": "3cc1edcbaa0e7a924f0d9ce338d892d1550cb55e9129aa5cbfebee97e78bacf1",
+          "swinir_restored": "36be128cf5839586284ed3f78fd62893d716842ff7c0beede150bebbb53e6fb8"
+        },
+        "bank_manifest_kind": "sha256 of the float32 bank vector array",
+        "bank_vector_counts": {
+          "clean": 245392,
+          "swinir_restored": 245392
+        },
+        "submodule_revisions": {
+          "SwinIR": "6545850fbf8df298df73d81f3e8cba638787c8bd",
+          "patchcore-inspection": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+        },
+        "producer_run": {
+          "run_id": "bank-domain-juhyung-20261117b",
+          "status_sha256": "5cf951d8419a575468d881008b25ad3f751ef11b3cbc5f0a7469ab2ace2b18bb",
+          "artifacts": [
+            {
+              "file": "raw_clean.npz",
+              "sha256": "7bb3f3263552c65bc9b8fa8b52e4a3d9ac9266460ef52874921247e32d81f429",
+              "arrays": {
+                "calibration_samples": [
+                  78
+                ],
+                "test_samples": [
+                  110
+                ],
+                "query_domains": [
+                  2
+                ],
+                "bank_sha256": [],
+                "query_input_sha256": [
+                  110
+                ],
+                "query_bicubic_sha256": [
+                  110
+                ],
+                "query_swinir_sha256": [
+                  110
+                ],
+                "calibration_scores": [
+                  78,
+                  2
+                ],
+                "calibration_maps": [
+                  78,
+                  2,
+                  224,
+                  224
+                ],
+                "test_scores": [
+                  110,
+                  2
+                ],
+                "test_maps": [
+                  110,
+                  2,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "raw_swinir_restored.npz",
+              "sha256": "901061498758b76a148b59260b026fdc5cb420866e788a5fa5774e2e60f160b6",
+              "arrays": {
+                "calibration_samples": [
+                  78
+                ],
+                "test_samples": [
+                  110
+                ],
+                "query_domains": [
+                  2
+                ],
+                "bank_sha256": [],
+                "query_input_sha256": [
+                  110
+                ],
+                "query_bicubic_sha256": [
+                  110
+                ],
+                "query_swinir_sha256": [
+                  110
+                ],
+                "calibration_scores": [
+                  78,
+                  2
+                ],
+                "calibration_maps": [
+                  78,
+                  2,
+                  224,
+                  224
+                ],
+                "test_scores": [
+                  110,
+                  2
+                ],
+                "test_maps": [
+                  110,
+                  2,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "test_masks_for_local_analysis.npz",
+              "sha256": "04fa479b8213c10306fe3bf04ab2c18bb98a6ea11b4a1fa688969ed2c13c9f4b",
+              "arrays": {
+                "samples": [
+                  110
+                ],
+                "masks": [
+                  110,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "summary.csv",
+              "sha256": "1bac06e50048ea983e2633b32e807fc2d13dff5dbccea974f9a3ea5c2c99c214"
+            },
+            {
+              "file": "per_image.csv",
+              "sha256": "4a9642efa655b7dc6cbb8b2445278d6913e82f771e5d9b3103d472ba103bc393"
+            },
+            {
+              "file": "query_quality.csv",
+              "sha256": "22ab5a29fa987b8d409b20aa00581152ccae5421676206689dbe2ac47c27deae"
+            }
+          ]
+        },
+        "exporter": "scripts/export_bank_domain_contract.py",
+        "exporter_sha256": "e090262f41586a8f09e7c9aa5cd0305289112c4073de97292c0e0dc0e68b45d3"
+      }
+    },
+    {
+      "run": "<workspace>/screw_seed11",
+      "files": {
+        "summary.csv": "d03145697fb4f27b5e8811d860cd9b03beaf6c2642ea59348c5cb65a846babaa",
+        "per_image.csv": "385b03244ab99ee6953f21526e098e1d189478fc4513680c5321051fe8ca2fe7",
+        "config.json": "3917c21006f93c312a880ca1b607dbc915fa695bdb82a3e54a957926c86489d1",
+        "provenance.json": "dc40fd560fda6b2ff6f5658d2960b3617cd28ca83d68150c69258402800534c7",
+        "bank_domain_manifest.json": "147032230f44cb7ca61c62154cdc03cb6e0d78933e369f513d786ef6382c046a"
+      },
+      "provenance": {
+        "source_commit": "c60dd80a0e7e4596a142634bd2c0dcf092a1a8e6",
+        "source_worktree_dirty": false,
+        "source_branch": "exp/bank-domain-juhyung",
+        "code_sha256": {
+          "scripts/run_bank_domain_study.py": "f0c05f6d9bc283bb237af674b74641f4a294878cbbc36cf86616182c1ae27c9c",
+          "src/sr_anomaly/bank_domain_study.py": "3586cb0b644e651ed9a1e02b3bb677f35d334df3fe3c761b305630ad39c84a2a",
+          "scripts/run_fusion_patchcore.py": "0ca03efd1c96967e3250b524b523a3d61ee29fa935bef44c9cac7b1216c515e2",
+          "src/sr_anomaly/fusion.py": "7337a26e30e267a01c3b737b28920bf471e0c1f066b4af17371cdbf02d571f5b",
+          "src/sr_anomaly/evaluation.py": "8831eb57d0a14a479893502aab7a900e5965ae5a0a5b3d2946b8d3df751deb44",
+          "src/sr_anomaly/real_models.py": "497359e05baaac16dda5d3288af46524818d90aef84c01369e8ed32e9e135bd5",
+          "src/sr_anomaly/metrics.py": "22b7ec30e914858f7785f174244c33e57c9d421b43dfdb3b62743b4fee28bff1",
+          "src/sr_anomaly/dataset.py": "9d00c374592f78563742013d5b6d8e570e94bfd26383ec436af0f98d74309e1d"
+        },
+        "normal_fit_calibration_disjoint": true,
+        "test_gt_used_for_selection": false,
+        "input_manifest_sha256": "5301839af86c41cf08007eba0d4375d0e1cc79c3bc1a6cd0366795cc4db3aba3",
+        "split_manifest_sha256": "5c4c0573f67b3537641c5e8196ff0f9697d1b05deb3456ded4fa8b2b76e23799",
+        "test_manifest_sha256": "21a073203c0857eb69411b85325aca842592d72ec920a6c30ac257402be8c90a",
+        "query_manifest_sha256": "5ad7cf7679136d3546b08cda11af67bd7afe67cf23190ba0f56287c68219e882",
+        "bank_manifest_sha256": {
+          "clean": "bdb6c951eeecc181990640a479c0f09ff9d6217cb1ae8802f95397edcc581498",
+          "swinir_restored": "c00a376f786a22335bc6cc23890ed2a0e71fffcab4d496d02bea39e32bad1bd8"
+        },
+        "bank_manifest_kind": "sha256 of the float32 bank vector array",
+        "bank_vector_counts": {
+          "clean": 200704,
+          "swinir_restored": 200704
+        },
+        "submodule_revisions": {
+          "SwinIR": "6545850fbf8df298df73d81f3e8cba638787c8bd",
+          "patchcore-inspection": "fcaa92f124fb1ad74a7acf56726decd4b27cbcad"
+        },
+        "producer_run": {
+          "run_id": "bank-domain-juhyung-20261117b",
+          "status_sha256": "df811d8353f22834a7a950686aa94e2e4ba360665fbe6b4715eeeea7aea83999",
+          "artifacts": [
+            {
+              "file": "raw_clean.npz",
+              "sha256": "9e064b458d35918c37c52d2f212c75145dbc23a9b5d3c1c3f2f36187e7b76681",
+              "arrays": {
+                "calibration_samples": [
+                  64
+                ],
+                "test_samples": [
+                  160
+                ],
+                "query_domains": [
+                  2
+                ],
+                "bank_sha256": [],
+                "query_input_sha256": [
+                  160
+                ],
+                "query_bicubic_sha256": [
+                  160
+                ],
+                "query_swinir_sha256": [
+                  160
+                ],
+                "calibration_scores": [
+                  64,
+                  2
+                ],
+                "calibration_maps": [
+                  64,
+                  2,
+                  224,
+                  224
+                ],
+                "test_scores": [
+                  160,
+                  2
+                ],
+                "test_maps": [
+                  160,
+                  2,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "raw_swinir_restored.npz",
+              "sha256": "fd087251244bd46003cad1ad3270d3c9dc795e30e2088a95ae12ab87658a4065",
+              "arrays": {
+                "calibration_samples": [
+                  64
+                ],
+                "test_samples": [
+                  160
+                ],
+                "query_domains": [
+                  2
+                ],
+                "bank_sha256": [],
+                "query_input_sha256": [
+                  160
+                ],
+                "query_bicubic_sha256": [
+                  160
+                ],
+                "query_swinir_sha256": [
+                  160
+                ],
+                "calibration_scores": [
+                  64,
+                  2
+                ],
+                "calibration_maps": [
+                  64,
+                  2,
+                  224,
+                  224
+                ],
+                "test_scores": [
+                  160,
+                  2
+                ],
+                "test_maps": [
+                  160,
+                  2,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "test_masks_for_local_analysis.npz",
+              "sha256": "98f59ebf4ab02b26ab34bd3085db7f291996f58b6ad824436f4af8345d57f6b4",
+              "arrays": {
+                "samples": [
+                  160
+                ],
+                "masks": [
+                  160,
+                  224,
+                  224
+                ]
+              }
+            },
+            {
+              "file": "summary.csv",
+              "sha256": "d0f7deea1367934dda5ad4ccdb47cc8390e2d47d652044fbe9ad0f659f53ed89"
+            },
+            {
+              "file": "per_image.csv",
+              "sha256": "2e8e7605dd645675e28b8861ca6fba6689a9171f33ded792b8c9b1885d186f11"
+            },
+            {
+              "file": "query_quality.csv",
+              "sha256": "3a68ef89bdac8c5912da171b2b7496fd2b1390b6d6cdf231350477720b1660ea"
+            }
+          ]
+        },
+        "exporter": "scripts/export_bank_domain_contract.py",
+        "exporter_sha256": "e090262f41586a8f09e7c9aa5cd0305289112c4073de97292c0e0dc0e68b45d3"
+      }
+    }
+  ],
+  "analysis_code_sha256": {
+    "bank_domain_analysis.py": "dfe9fe19cf9655b90caadddfaa10f313ca38a02177d4554a9ef16f188a5a0c99",
+    "analysis_io.py": "2f688bcf78fde423d358e631082a36cbad4d1fe9b219ba997e6a3f21e09403c8",
+    "analysis_statistics.py": "1892d8f5656ea3934b72a3c64aa3e1766b448e11ffb2c7fc95e2d862bfa61ebb"
+  },
+  "tables": {
+    "bank_domain_summary.csv": "16083165c742ba067850387424bf00288a427c365536f4e8903b5b982990ab7c",
+    "bank_effects.csv": "e3befff378656fc04286ad910d76fd47bd99c38dbc0bc0a81a3f6a925e0a345e",
+    "query_effects.csv": "d397e5c8f414437c6da04c8a25a994f0578ea439992299164482e6aa6f69829e",
+    "per_image_deltas.csv": "8a2633a6440d50a2254a79bb74ba9b19b1812401931fb4e4e06377c21c09e032",
+    "quality_by_query.csv": "931f0395c216147f26e7a07e1fdd2985b5ff13654c98d57c6f39a4f3ee52665f",
+    "seed_summary.csv": "0e6ecfd45467f386a734b8f887b669fb6fba9dc1f280b8f14cbc5b4c1970ae5e"
+  }
+}

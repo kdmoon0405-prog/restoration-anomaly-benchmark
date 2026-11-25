@@ -1,0 +1,95 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "phone-station-dev-20261115",
+  "prepared_utc": "2026-11-15T07:36:16.754552+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "RUN_RECORD.md",
+      "bytes": 8286,
+      "sha256": "853477cabcc54bda721f8cf31b5c0851585fccfcc82b2457b857e476e6dcdc6e"
+    },
+    {
+      "path": "PROGRESS.md",
+      "bytes": 9698,
+      "sha256": "5520b7ac24e663d8c17f9aa837fc246f80f2e1806aae75f3ab46890aa40e8353"
+    },
+    {
+      "path": "POSTER_DRAFT_JUHYUNG_20261115.md",
+      "bytes": 8184,
+      "sha256": "15073188cbbe6db64b3bf34ca9888650cefd9ba95f4703b5927be362392ab774"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 14909,
+      "sha256": "b60f6cce1db4692fcc2fdd4558f66abe073482ceeeab46c0df5f1774f37a279e"
+    },
+    {
+      "path": "summary.csv",
+      "bytes": 682,
+      "sha256": "e72e41ad9f0bc05511c325a4988ad7ae5df86867f294506323d6c0a13f086bd2"
+    },
+    {
+      "path": "cycles.csv",
+      "bytes": 15038,
+      "sha256": "31676f7db7348fae9b48137f462bb1f1782c1d6c7fb45d51ef716a77eb51ac41"
+    },
+    {
+      "path": "captures_quality.csv",
+      "bytes": 13390,
+      "sha256": "7f7868801217732277c55b03603eb94a7829a4b03d13e7cf1a7dadc09e966961"
+    },
+    {
+      "path": "inspections.csv",
+      "bytes": 9056,
+      "sha256": "d912602f2e83b4b5606e6e60c8cf620cba21633d7715ed5897d5a5bb937b9bb8"
+    },
+    {
+      "path": "gr_calibration.csv",
+      "bytes": 490,
+      "sha256": "47c202698d16258d27dae8b33a75d4e2f2fd0c9c006d9afed00a10613985b862"
+    },
+    {
+      "path": "recipe.json",
+      "bytes": 763,
+      "sha256": "0214402aed17c35fc4ed512e7ff99142d2d875fe0e00a72032ece678cc989da9"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 3886,
+      "sha256": "f4d64676eecda747ffdf1ec5639d28aadd7a13b661820ac4edf93b8b271a34f2"
+    },
+    {
+      "path": "examples_registration.csv",
+      "bytes": 1858,
+      "sha256": "ba301286fc29b73ced39548223c49b71f08868f4ba94b8ee8d2cd4f78bd0a593"
+    },
+    {
+      "path": "v01_audit/captures.csv",
+      "bytes": 16539,
+      "sha256": "c5f36b47d55926fb1054b3d78f4b1032c58f1e176fe8fe3d7140c5b215afd0dd"
+    },
+    {
+      "path": "v01_audit/slots.csv",
+      "bytes": 1232,
+      "sha256": "9e2fceb932cdfda6a1946c11d7e8cec04ce077485c6e7b04686a7a6f7957663c"
+    },
+    {
+      "path": "v01_audit/repeatability.csv",
+      "bytes": 2568,
+      "sha256": "e0f942869c29cb009b56edc144a97d8df5fdea5deb074903c94fd65f74f9f222"
+    },
+    {
+      "path": "v01_audit/recipe_summary.csv",
+      "bytes": 574,
+      "sha256": "2781ad7494fdf58b4dddb6c1e85fa082bb1044d2eb18295a8bc1861a0774a1ff"
+    },
+    {
+      "path": "v01_audit/manifest.json",
+      "bytes": 4445,
+      "sha256": "b8fa5cb43b70255544bc2276f3a1965fd71e54e42f61b331643643ad3274177c"
+    }
+  ]
+}

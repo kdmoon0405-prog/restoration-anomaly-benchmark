@@ -1,0 +1,98 @@
+{
+ "kind": "post-hoc illustration of stored predictions",
+ "selection_rule": "Fixed rule per class: improvement = largest delta; suppression / geometry_candidate = most negative delta;\n    small_change = smallest |delta| over all anomalies. delta = SwinIR - Bicubic per-image AU-PRO (same condition).",
+ "taxonomy_rule": "Existing fixed taxonomy (docs/EXPERIMENT_PROTOCOL_V0.2): regression if delta per-image AU-PRO < 0; suppression if\n    also delta ROI-background gap < 0, otherwise geometry_candidate; improvement/tie otherwise.",
+ "crop_rule": "Square box around the GT bounding box with a 25 % margin (min CROP_MIN px), clamped to the 224 frame.",
+ "display_px": 288,
+ "canonical": "resize 256 bilinear + center crop 224",
+ "sources": {
+  "hazelnut": {
+   "run": "outputs/realistic-degradation/hazelnut-v1",
+   "bank_sha256": {
+    "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+    "nnscorer_search_index.faiss": "8c82d4dca55dacf368d52b1b69b356b94d7e9ad06259f085828d53cc894148a2"
+   }
+  },
+  "screw": {
+   "run": "outputs/realistic-degradation/screw-v1",
+   "bank_sha256": {
+    "patchcore_params.pkl": "7c2728899e9e4aeca619d5c6f24ad47456c1603cc16e4c846a80f002c6ddc8b4",
+    "nnscorer_search_index.faiss": "4bd450a0bfbd7f06108ce5cd6cd7bdc52ff57879d6990392b15b31db92155ab4"
+   }
+  }
+ },
+ "clean_map": "CPU predict with the stored v1 bank (load-only), selected samples only",
+ "class_counts": {
+  "hazelnut/none": {
+   "anomalies": 70,
+   "improvement": 41,
+   "suppression": 14,
+   "geometry_candidate": 15
+  },
+  "hazelnut/blur_s1.6": {
+   "anomalies": 70,
+   "improvement": 31,
+   "suppression": 37,
+   "geometry_candidate": 2
+  },
+  "hazelnut/noise_s15": {
+   "anomalies": 70,
+   "improvement": 18,
+   "suppression": 45,
+   "geometry_candidate": 7
+  },
+  "screw/none": {
+   "anomalies": 119,
+   "improvement": 95,
+   "suppression": 24,
+   "geometry_candidate": 0
+  },
+  "screw/blur_s1.6": {
+   "anomalies": 119,
+   "improvement": 68,
+   "suppression": 50,
+   "geometry_candidate": 1
+  },
+  "screw/noise_s15": {
+   "anomalies": 119,
+   "improvement": 37,
+   "suppression": 79,
+   "geometry_candidate": 3
+  }
+ },
+ "lr_check": {
+  "hazelnut/none/hazelnut/test/crack/006.png": true,
+  "hazelnut/none/hazelnut/test/crack/001.png": true,
+  "hazelnut/none/hazelnut/test/crack/013.png": true,
+  "hazelnut/none/hazelnut/test/print/002.png": true,
+  "hazelnut/blur_s1.6/hazelnut/test/cut/000.png": true,
+  "hazelnut/blur_s1.6/hazelnut/test/crack/014.png": true,
+  "hazelnut/blur_s1.6/hazelnut/test/crack/013.png": true,
+  "hazelnut/blur_s1.6/hazelnut/test/hole/015.png": true,
+  "hazelnut/noise_s15/hazelnut/test/hole/006.png": true,
+  "hazelnut/noise_s15/hazelnut/test/cut/002.png": true,
+  "hazelnut/noise_s15/hazelnut/test/crack/013.png": true,
+  "hazelnut/noise_s15/hazelnut/test/cut/004.png": true,
+  "screw/none/screw/test/manipulated_front/023.png": true,
+  "screw/none/screw/test/thread_side/019.png": true,
+  "screw/none/screw/test/thread_top/006.png": true,
+  "screw/blur_s1.6/screw/test/scratch_head/019.png": true,
+  "screw/blur_s1.6/screw/test/scratch_head/001.png": true,
+  "screw/blur_s1.6/screw/test/thread_side/000.png": true,
+  "screw/blur_s1.6/screw/test/scratch_head/023.png": true,
+  "screw/noise_s15/screw/test/thread_top/022.png": true,
+  "screw/noise_s15/screw/test/scratch_head/020.png": true,
+  "screw/noise_s15/screw/test/thread_top/020.png": true,
+  "screw/noise_s15/screw/test/scratch_neck/008.png": true
+ },
+ "clean_maps_reused": {
+  "hazelnut": {
+   "file": "clean_maps_hazelnut.npz",
+   "sha256": "3b63e0e681bd848b23b630c8f3293223195a5c7dfd3a8b6145ab214001c7e3eb"
+  },
+  "screw": {
+   "file": "clean_maps_screw.npz",
+   "sha256": "962aba0bd517b93cdf569704d841f7771cac71da35b95b08315757035553de42"
+  }
+ }
+}

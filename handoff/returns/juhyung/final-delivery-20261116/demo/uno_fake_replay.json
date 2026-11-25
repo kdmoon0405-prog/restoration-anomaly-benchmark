@@ -1,0 +1,1 @@
+{"kind": "fake_serial_simulation", "frames": 57, "states": ["BUSY", "OK", "READY", "BUSY", "NG", "READY", "BUSY", "NG", "READY", "BUSY", "NG", "READY"], "physical_hardware_tested": false}

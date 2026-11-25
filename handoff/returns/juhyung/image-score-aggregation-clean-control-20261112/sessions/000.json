@@ -1,0 +1,18 @@
+{
+ "start": "2026-11-12T13:37:39+09:00",
+ "source_commit": "f66eb6793099207780e875909191e42349675a16",
+ "source_branch": "exp/image-score-aggregation-juhyung",
+ "tracked_worktree_dirty": false,
+ "tracked_dirty_paths": [],
+ "source_worktree_dirty": false,
+ "untracked_paths": [],
+ "units": {
+  "clean": "COMPLETE",
+  "bicubic_x4": "COMPLETE",
+  "swinir_x4": "COMPLETE"
+ },
+ "end": "2026-11-12T13:38:33+09:00",
+ "units_complete": 3,
+ "units_planned": 3,
+ "cells": 15
+}

@@ -1,0 +1,2135 @@
+From ac931349ba0f3db795a5400534b3a79d2bdc4f44 Mon Sep 17 00:00:00 2001
+From: Codex <codex@localhost>
+Date: Sun, 1 Nov 2026 01:10:20 +0900
+Subject: [PATCH] Add fixed bank-domain study runner and analysis
+
+---
+ docs/BANK_DOMAIN_STUDY.md            |  90 ++++
+ scripts/analyze_bank_domain_study.py | 501 ++++++++++++++++++
+ scripts/run_bank_domain_study.py     | 741 +++++++++++++++++++++++++++
+ src/sr_anomaly/bank_domain_study.py  | 290 +++++++++++
+ tests/test_bank_domain_study.py      | 462 +++++++++++++++++
+ 5 files changed, 2084 insertions(+)
+ create mode 100644 docs/BANK_DOMAIN_STUDY.md
+ create mode 100644 scripts/analyze_bank_domain_study.py
+ create mode 100644 scripts/run_bank_domain_study.py
+ create mode 100644 src/sr_anomaly/bank_domain_study.py
+ create mode 100644 tests/test_bank_domain_study.py
+
+diff --git a/docs/BANK_DOMAIN_STUDY.md b/docs/BANK_DOMAIN_STUDY.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..18a2be1e0bde1dd922475770159030bf3c8d19c2
+--- /dev/null
++++ b/docs/BANK_DOMAIN_STUDY.md
+@@ -0,0 +1,90 @@
++# Normal-bank domain study
++
++## Question and scope
++
++This study asks whether changing the RGB domain of the normal PatchCore fit bank changes anomaly detection when every query image and its restoration are held fixed. It is a new 2×2 study. Historical Branch B/full110 summaries are not copied into its tables; a prior bank or prediction cache can only be reused after byte-level compatibility has been established.
++
++The initial category queue is Hazelnut seed 11, Screw seed 11, then Hazelnut and Screw seeds 23 and 37. The fixed seed list is `(11, 23, 37)`. Capsule is gated until the team supplies a receipt confirming prior test-label/output use. It must not be described as untouched based only on this repository's history.
++
++The first PatchCore queue is 2 categories × 3 seeds × 4 cells. If the Capsule history receipt and staged-study gates pass later, the maximum planned scope becomes 3 categories × 3 seeds × 4 cells = 36 dataset evaluation conditions. These are queues, not completed results. Each category/seed/domain fit is performed once and reused for its two query domains. Runs are sequential; no simultaneous model banks are loaded.
++
++## Frozen 2×2 conditions
++
++| Normal fit-bank RGB | Query Bicubic x4 | Query SwinIR-S x4 |
++| --- | --- | --- |
++| Clean canonical RGB | clean-bank / bicubic-query | clean-bank / SwinIR-query |
++| Canonical RGB → Bicubic x4 degradation → SwinIR-S x4 restoration | restored-bank / bicubic-query | restored-bank / SwinIR-query |
++
++For restored fit images, the code applies the degradation and restoration to canonical RGB before tensor conversion and ImageNet normalization. It never reconstructs RGB from an already normalized tensor. Both banks use the same ordered normal fit paths, 80/20 train/calibration split, identity patch sampler, WideResNet50-2 layers `layer2`/`layer3`, 224-pixel center crop, 1024-dimensional embedding, 3-pixel patch, CPU exact FAISS, and PatchCore implementation commit `fcaa92f124fb1ad74a7acf56726decd4b27cbcad`. The bank length is checked against the fit image count × 784 patches and all vectors must be finite.
++
++The official test set is never used for fit or calibration. For each train/seed split, calibration contains normal train/good images only. The normal calibration set is evaluated separately against each fitted bank and query variant. Every cell gets its own median/IQR normalization (existing standard-deviation and unit fallbacks) and q=0.99 thresholds from that cell's normal calibration predictions.
++
++The query variants are computed once per image and reused across both bank fits. Each raw artifact carries the ordered test image hashes and RGB hashes for Bicubic and SwinIR queries. Completion checks compare those identities between banks. PSNR/SSIM are computed once per test query and stored in `query_quality.csv`; quality is not duplicated as a bank effect.
++
++## Preprocessing and metrics
++
++The image preprocessing, SwinIR-S x4 checkpoint, PatchCore adapter, and raw prediction function are reused from `scripts/run_fusion_patchcore.py`. The local WideResNet50-2 ImageNet V1 checkpoint must match SHA-256 `95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8`; the SwinIR checkpoint must match the SHA recorded in that runner. Both checkpoints load from local paths, so no implicit torchvision backbone download is needed. The query path is canonical clean RGB → 56×56 Bicubic downsample → either the existing Bicubic x4 upsample or SwinIR-S x4 restoration.
++
++Primary metric is the existing pooled AU-PRO@0.3. Secondary metrics are image AUROC, pixel AUROC, calibration-threshold F1, query PSNR/SSIM, and anomalous-image per-image AU-PRO. Normal per-image AU-PRO is blank/not applicable. Research metrics are computed only after all test predictions and masks have been produced; test labels do not select models, fit data, calibration, or thresholds.
++
++Analysis keeps two contrasts separate:
++
++- **Bank-domain effect:** restored-bank minus clean-bank for the same query.
++- **Query-domain effect:** SwinIR-query minus Bicubic-query for the same bank.
++
++Pooled AU-PRO deltas are point estimates. The paired percentile bootstrap is only for the mean anomalous-image per-image AU-PRO delta; it is not reported as a pooled AU-PRO confidence interval. Per-image rows retain the sample path and defect subtype. Defect summaries and best/worst cases use metric delta order with lexical path tie-breaking. Seed variation is descriptive; the same test images repeated across seeds are not independent samples.
++
++## Output and integrity
++
++Run outputs go to a fresh path:
++
++```powershell
++.venv\Scripts\python.exe scripts\run_bank_domain_study.py `
++  --category hazelnut --seed 11 --device cuda `
++  --data-root data\external\MVTecAD `
++  --run-id <unique-run-id>
++```
++
++Each run directory contains `status.json`, `raw_clean.npz`, `raw_swinir_restored.npz`, `test_masks_for_local_analysis.npz`, `summary.csv`, `per_image.csv`, and `query_quality.csv`. Raw query score/maps, calibration score/maps, masks, ordered sample identity, bank hashes, input hashes, package versions, runtime, resource snapshots, and file hashes are retained. The actual in-memory bank/index is not redundantly serialized; its feature count, finite-value check, byte count, and SHA-256 are recorded before the index is freed. Failed run directories are preserved. Retry with a fresh run-id; do not replace failed outputs.
++
++Analyze only a hash-verified complete run, with one `--run-dir` argument per category/seed:
++
++```powershell
++.venv\Scripts\python.exe scripts\analyze_bank_domain_study.py `
++  --run-dir outputs\bank-domain-study\<run-id>\hazelnut\seed11 `
++  --output-dir outputs\bank-domain-study-analysis\<analysis-id>
++```
++
++The analyzer rechecks run status, expected cell/sample order, raw NPZ shapes/finiteness, bank hashes, and the shared query identity before writing pooled contrasts, paired per-image deltas and bootstrap CIs, defect summaries, quality, normal-calibration changes, runtime/resource tables, and its SHA-256 manifest.
++
++RAM planning is a conservative visible-payload scenario (`3 × bank bytes + one 8-image embedding chunk + 2 GiB reserve`); it is not a measured peak. Disk planning reserves space for the four full-resolution raw map arrays plus a 2 GiB reserve; it is not a promise that all future runs fit. Current available RAM and disk are checked before each run, and available RAM is checked again before each sequential bank fit. Runtime-reported CUDA peak allocation is scoped to the PatchCore fit/inference phase after a fresh peak-stat reset; it excludes the earlier query restoration phase. It is not whole-process peak VRAM.
++
++## Required inputs and current gate
++
++The current checkout contains the VisA inputs and both required model checkpoints, but no MVTec AD Hazelnut or Screw data. The official category package has not been downloaded. No MVTec download is triggered by the runner, and it never fetches all 15 categories. The run exits before loading the model if the selected category directory is missing.
++
++Provide these official MVTec AD folders under `data/external/MVTecAD/`, plus `dataset_provenance.json`:
++
++- `hazelnut/train/good/` and the complete `hazelnut/test/` normal and anomaly subtype folders with matching `hazelnut/ground_truth/<subtype>/<image-stem>_mask.png` masks.
++- `screw/train/good/` and the complete `screw/test/` normal and anomaly subtype folders with matching `screw/ground_truth/<subtype>/<image-stem>_mask.png` masks.
++- The license/attribution text from the official package, official download/source information, downloaded archive SHA-256, and an extracted file inventory/SHA-256 record.
++
++Check the category counts against the official MVTec AD paper before running: Hazelnut has 391 train-good, 40 test-good, and 70 defective test images across 4 defect types; Screw has 320 train-good, 41 test-good, and 119 defective test images across 5 defect types. See the [official dataset paper](https://www.mvtec.com/fileadmin/Redaktion/mvtec.com/05_research_teaching/datasets/mvtec_ad.pdf). The new 80/20 split is made only from those official train-good images, so Hazelnut seed 11 gives 313 fit / 78 normal-calibration images.
++
++The provenance receipt must identify `MVTec AD`, the official source URL, delivered category names, a 64-character archive SHA-256, the relative license-file path, and the license file SHA-256. If the original archive is retained under the data root, include its relative path as `archive_file` and the runner verifies that hash too. Every fit/calibration/test image and anomaly mask is independently hashed into the run status.
++
++MVTec AD is distributed under CC BY-NC-SA 4.0 for non-commercial research; obtain these categories from the [official MVTec AD page](https://www.mvtec.com/research-teaching/datasets/mvtec-ad) and preserve its license/attribution. This folder layout has no split CSV: the official `train/good`, `test`, and `ground_truth` directories define its split. Do not substitute a mirror with unknown provenance or pull the full dataset to avoid the category-only handoff.
++
++**Exact CPU input handoff request:** Hazelnut and Screw category folders listed above are entirely absent from this PC. Please provide only those two official categories (all `train/good`, all test subtypes, matching pixel masks), the original license/attribution, and `dataset_provenance.json` with official source URL, archive SHA-256, license-file hash, and extracted inventory hashes. No other MVTec category or VisA download is needed for the first four PatchCore batches.
++
++Capsule requires a separate receipt with `all_team_members_confirmed_no_test_use: true`, `patchcore_hazelnut_screw_seed11_reviewed: true`, and `efficientad_seed11_complete_or_protocol_frozen: true` before any Capsule test labels or predictions are opened. Without it, Capsule is blocked and cannot support an untouched-category claim.
++
++## EfficientAD follow-up gate
++
++Only after Hazelnut/Screw PatchCore seed-11 results are complete should the EfficientAD seed-11 comparison start. Use a maintained upstream implementation in a separate environment if needed; do not reimplement the detector or modify the PatchCore environment. The [Anomalib EfficientAD implementation](https://github.com/open-edge-platform/anomalib/tree/main/src/anomalib/models/image/efficient_ad) is a candidate to pin and review. Its documented training uses ImageNette images in the training loss and computes map-normalization quantiles on normal/good validation data. Freeze its source commit, dependencies, teacher checkpoint, ImageNette source/hash, geometry, and normal-only validation/calibration path before training. Never select a checkpoint or threshold from MVTec test anomalies. If the chosen maintained recipe requires anomaly-labelled validation, stop that comparison and declare a different protocol before using labels.
++
++The planned detector comparison is Hazelnut/Screw seed 11 with query inputs Clean, Bicubic x4, and SwinIR x4. It is not multiplied across all PatchCore bank-domain cells. Category-specific training is permitted only on normal training images. Test masks enter after prediction, at evaluation only.
++
++## Implementation checks
++
++`tests/test_bank_domain_study.py` contains pure-array tests plus a small fake-model end-to-end exercise. The fake test runs the orchestration with temporary synthetic images, checks normal-only fit batches and four-cell payload/identity binding, preserves a simulated failure, then succeeds with a fresh run-id. It does not train the real PatchCore model, touch MVTec data, or count as a GPU/model result.
+diff --git a/scripts/analyze_bank_domain_study.py b/scripts/analyze_bank_domain_study.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..5278857706fd6d5a13a3a3fddfcfb5c9167977bc
+--- /dev/null
++++ b/scripts/analyze_bank_domain_study.py
+@@ -0,0 +1,501 @@
++"""Analyze only hash-verified complete 2x2 normal-bank domain study runs."""
++from __future__ import annotations
++
++import argparse
++import csv
++import hashlib
++import json
++from pathlib import Path
++import zlib
++
++import numpy as np
++
++from sr_anomaly import bank_domain_study as study
++
++
++BOOTSTRAP_DRAWS = 10_000
++
++
++def _read_csv(path: Path) -> list[dict[str, str]]:
++    with path.open("r", encoding="utf-8-sig", newline="") as handle:
++        return list(csv.DictReader(handle))
++
++
++def _float(value: str, *, allow_blank: bool = False) -> float | None:
++    if value == "" and allow_blank:
++        return None
++    result = float(value)
++    if not np.isfinite(result):
++        raise ValueError(f"Non-finite value in CSV: {value!r}")
++    return result
++
++
++def _quality_float(value: str) -> float:
++    result = float(value)
++    # PSNR is +inf for an exact reconstruction; preserve that valid boundary case.
++    if np.isnan(result) or np.isneginf(result):
++        raise ValueError(f"Invalid quality value in CSV: {value!r}")
++    return result
++
++
++def _quality_mean(values: list[float]) -> float:
++    return float(np.mean(np.asarray(values, dtype=np.float64)))
++
++
++def _quality_delta_mean(comparison: list[float], baseline: list[float]) -> float | None:
++    deltas: list[float] = []
++    for left, right in zip(baseline, comparison, strict=True):
++        if np.isposinf(left) and np.isposinf(right):
++            return None
++        deltas.append(right - left)
++    if np.isposinf(deltas).any() and np.isneginf(deltas).any():
++        return None
++    return float(np.mean(np.asarray(deltas, dtype=np.float64)))
++
++
++def _write_csv(path: Path, rows: list[dict]) -> None:
++    if not rows:
++        raise ValueError(f"Cannot write empty analysis table: {path.name}")
++    with path.open("x", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
++        writer.writeheader()
++        writer.writerows(rows)
++
++
++def paired_mean_bootstrap_ci(
++    deltas: list[float] | np.ndarray,
++    *,
++    seed: int,
++    draws: int = BOOTSTRAP_DRAWS,
++) -> dict[str, float | int]:
++    values = np.asarray(deltas, dtype=np.float64).ravel()
++    if values.size == 0 or not np.isfinite(values).all() or draws < 1:
++        raise ValueError("Bootstrap requires finite paired deltas and positive draw count")
++    rng = np.random.default_rng(seed)
++    indices = rng.integers(0, values.size, size=(draws, values.size))
++    means = values[indices].mean(axis=1)
++    lower, upper = np.quantile(means, [0.025, 0.975])
++    return {
++        "mean_delta": float(values.mean()),
++        "ci_95_lower": float(lower),
++        "ci_95_upper": float(upper),
++        "anomalous_image_count": int(values.size),
++        "bootstrap_draws": int(draws),
++    }
++
++
++def _load_run(run_dir: Path) -> dict:
++    status_path = run_dir / "status.json"
++    state = json.loads(status_path.read_text(encoding="utf-8"))
++    samples = state.get("test_samples", [])
++    study.verify_complete_run(run_dir, study.expected_condition_order(samples))
++    required_input_hashes = {
++        **state.get("train_input_sha256", {}),
++        **state.get("test_input_sha256", {}),
++        **{
++            f"mask:{sample}": digest
++            for sample, digest in state.get("test_mask_sha256", {}).items()
++            if digest is not None
++        },
++    }
++    inventory_sha = hashlib.sha256(
++        json.dumps(required_input_hashes, sort_keys=True, separators=(",", ":")).encode("utf-8")
++    ).hexdigest()
++    if inventory_sha != state.get("input_inventory_sha256"):
++        raise ValueError(f"{run_dir}: dataset input inventory hash is missing or inconsistent")
++    artifact_by_name = {item["file"]: item for item in state["artifacts"]}
++    raw_identity: dict[str, dict] = {}
++    raw_calibration_stats: dict[tuple[str, str], dict[str, float]] = {}
++    for bank in study.BANK_DOMAINS:
++        raw_name = f"raw_{bank}.npz"
++        if raw_name not in artifact_by_name:
++            raise ValueError(f"{run_dir}: missing raw prediction artifact {raw_name}")
++        raw_path = study.safe_artifact_path(run_dir, raw_name)
++        with np.load(raw_path, allow_pickle=False) as archive:
++            actual_shapes = {name: list(archive[name].shape) for name in archive.files}
++            if actual_shapes != artifact_by_name[raw_name].get("arrays"):
++                raise ValueError(f"{run_dir}: raw array shapes differ from artifact manifest: {raw_name}")
++            for name in archive.files:
++                values = archive[name]
++                if values.dtype.kind in "fiu" and not np.isfinite(values).all():
++                    raise ValueError(f"{run_dir}: non-finite values in {raw_name}/{name}")
++            if archive["test_samples"].astype(str).tolist() != samples:
++                raise ValueError(f"{run_dir}: raw test sample inventory differs from status")
++            if archive["query_domains"].astype(str).tolist() != list(study.QUERY_DOMAINS):
++                raise ValueError(f"{run_dir}: raw query domain order differs from protocol")
++            expected_calibration = state["calibration_paths"]
++            if archive["calibration_samples"].astype(str).tolist() != expected_calibration:
++                raise ValueError(f"{run_dir}: raw calibration inventory differs from status")
++            if archive["test_scores"].shape != (len(samples), len(study.QUERY_DOMAINS)):
++                raise ValueError(f"{run_dir}: unexpected test score shape")
++            if archive["test_maps"].shape != (len(samples), len(study.QUERY_DOMAINS), 224, 224):
++                raise ValueError(f"{run_dir}: unexpected test map shape")
++            if archive["calibration_scores"].shape != (int(state["calibration_count"]), len(study.QUERY_DOMAINS)):
++                raise ValueError(f"{run_dir}: unexpected calibration score shape")
++            if archive["calibration_maps"].shape != (
++                int(state["calibration_count"]), len(study.QUERY_DOMAINS), 224, 224
++            ):
++                raise ValueError(f"{run_dir}: unexpected calibration map shape")
++            bank_hash = archive["bank_sha256"].astype(str).item()
++            if bank_hash != state.get("bank_hashes", {}).get(bank):
++                raise ValueError(f"{run_dir}: saved bank hash differs for {bank}")
++            raw_identity[bank] = {
++                "samples": samples,
++                "query_input_sha256": archive["query_input_sha256"].astype(str).tolist(),
++                "query_domains": archive["query_domains"].astype(str).tolist(),
++                "query_domain_sha256": {
++                    "bicubic_x4": archive["query_bicubic_sha256"].astype(str).tolist(),
++                    "swinir_x4": archive["query_swinir_sha256"].astype(str).tolist(),
++                },
++            }
++            for query_index, query in enumerate(study.QUERY_DOMAINS):
++                scores = np.asarray(archive["calibration_scores"][:, query_index], dtype=np.float64)
++                pixels = np.asarray(archive["calibration_maps"][:, query_index], dtype=np.float32)
++                raw_calibration_stats[(bank, query)] = {
++                    "score_mean": float(scores.mean()),
++                    "score_median": float(np.median(scores)),
++                    "score_std": float(scores.std()),
++                    "score_q95": float(np.quantile(scores, 0.95)),
++                    "pixel_mean": float(pixels.mean()),
++                    "pixel_median": float(np.median(pixels)),
++                    "pixel_std": float(pixels.std()),
++                    "pixel_q95": float(np.quantile(pixels, 0.95)),
++                }
++    study.validate_pair_identity(raw_identity["clean"], raw_identity["swinir_restored"])
++    summary = _read_csv(run_dir / "summary.csv")
++    per_image = _read_csv(run_dir / "per_image.csv")
++    quality = _read_csv(run_dir / "query_quality.csv")
++    if len(summary) != 4:
++        raise ValueError(f"{run_dir}: expected exactly four condition summary rows")
++    summary_keys = {
++        (row["bank_domain"], row["query_domain"]): row
++        for row in summary
++    }
++    expected_keys = {(bank, query) for bank in study.BANK_DOMAINS for query in study.QUERY_DOMAINS}
++    if set(summary_keys) != expected_keys:
++        raise ValueError(f"{run_dir}: summary does not contain the frozen 2x2 conditions")
++    sample_ids = list(samples)
++    if len(quality) != len(sample_ids) or [row["sample"] for row in quality] != sample_ids:
++        raise ValueError(f"{run_dir}: query quality must appear once in test sample order")
++    rows_by_cell: dict[tuple[str, str], dict[str, dict[str, str]]] = {}
++    for bank in study.BANK_DOMAINS:
++        for query in study.QUERY_DOMAINS:
++            cell_rows = [row for row in per_image
++                         if row["bank_domain"] == bank and row["query_domain"] == query]
++            if [row["sample"] for row in cell_rows] != sample_ids:
++                raise ValueError(f"{run_dir}: per-image row order differs for {bank}/{query}")
++            if any(row["label"] == "0" and row["per_image_aupro"] != "" for row in cell_rows):
++                raise ValueError("Normal samples must not receive per-image AU-PRO values")
++            if any(row["label"] == "1" and row["per_image_aupro"] == "" for row in cell_rows):
++                raise ValueError("Anomalous samples are missing per-image AU-PRO")
++            rows_by_cell[(bank, query)] = {row["sample"]: row for row in cell_rows}
++    return {
++        "path": run_dir.resolve(),
++        "state": state,
++        "summary": summary_keys,
++        "per_image": rows_by_cell,
++        "quality": quality,
++        "samples": sample_ids,
++        "raw_calibration_stats": raw_calibration_stats,
++    }
++
++
++def _calibration_rows(run: dict) -> list[dict]:
++    state = run["state"]
++    result = []
++    for bank in study.BANK_DOMAINS:
++        for query in study.QUERY_DOMAINS:
++            cell = state["calibration_by_cell"][f"{bank}/{query}"]
++            raw = run["raw_calibration_stats"][(bank, query)]
++            result.append({
++                "category": state["category"],
++                "seed": int(state["seed"]),
++                "bank_domain": bank,
++                "query_domain": query,
++                "calibration_count": int(cell["calibration_count"]),
++                **raw,
++                "image_normalization_median": cell["image"]["median"],
++                "image_normalization_scale": cell["image"]["scale"],
++                "image_normalization_fallback": cell["image"]["method"],
++                "image_threshold": cell["image_threshold"],
++                "pixel_normalization_median": cell["pixel"]["median"],
++                "pixel_normalization_scale": cell["pixel"]["scale"],
++                "pixel_normalization_fallback": cell["pixel"]["method"],
++                "pixel_threshold": cell["pixel_threshold"],
++            })
++    return result
++
++
++def _runtime_rows(run: dict) -> list[dict]:
++    state = run["state"]
++    after = state.get("resource_snapshot_after", {})
++    before = state.get("resource_snapshot_before_fit", {})
++    per_bank_ram = state.get("available_ram_before_each_bank_bytes", {})
++    result = []
++    for item in state.get("runtime", []):
++        result.append({
++            "category": state["category"],
++            "seed": int(state["seed"]),
++            **item,
++            "available_ram_before_bank_bytes": per_bank_ram.get(item["bank_domain"]),
++            "available_ram_after_run_bytes": after.get("available_ram_bytes"),
++            "disk_free_before_run_bytes": state.get("resource_plan", {}).get("free_disk_before_run_bytes"),
++            "disk_free_before_fit_bytes": before.get("disk_free_bytes"),
++            "disk_free_after_run_bytes": after.get("disk_free_bytes"),
++            "cuda_free_bytes_before_fit": before.get("gpu_free_bytes_before_fit"),
++            "ram_plan_scenario_is_measured": False,
++        })
++    return result
++
++
++def _contrast_rows(run: dict) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
++    state = run["state"]
++    category = state["category"]
++    seed = int(state["seed"])
++    pooled_rows: list[dict] = []
++    paired_rows: list[dict] = []
++    bootstrap_rows: list[dict] = []
++    defect_rows: list[dict] = []
++    effects: list[tuple[str, str, str, str]] = []
++
++    # Bank-domain contrasts hold the restored/bicubic query fixed.
++    for query in study.QUERY_DOMAINS:
++        effects.append(("bank_domain", "swinir_restored_minus_clean", query, "same_query"))
++    # Query-domain contrasts hold the normal bank fixed.
++    for bank in study.BANK_DOMAINS:
++        effects.append(("query_domain", "swinir_x4_minus_bicubic_x4", bank, "same_bank"))
++
++    for contrast_type, contrast_name, fixed_domain, pairing in effects:
++        if contrast_type == "bank_domain":
++            left_key = ("clean", fixed_domain)
++            right_key = ("swinir_restored", fixed_domain)
++            left_label, right_label = "clean", "swinir_restored"
++            pooled_metric = "pooled_aupro_at_0_3"
++        else:
++            left_key = (fixed_domain, "bicubic_x4")
++            right_key = (fixed_domain, "swinir_x4")
++            left_label, right_label = "bicubic_x4", "swinir_x4"
++            pooled_metric = "pooled_aupro_at_0_3"
++        left_summary = run["summary"][left_key]
++        right_summary = run["summary"][right_key]
++        pooled_delta = _float(right_summary[pooled_metric]) - _float(left_summary[pooled_metric])
++        pooled_rows.append({
++            "category": category,
++            "seed": seed,
++            "contrast_type": contrast_type,
++            "contrast": contrast_name,
++            "fixed_domain": fixed_domain,
++            "baseline": left_label,
++            "comparison": right_label,
++            "metric": "pooled_aupro_at_0_3",
++            "baseline_value": _float(left_summary[pooled_metric]),
++            "comparison_value": _float(right_summary[pooled_metric]),
++            "delta": pooled_delta,
++            "uncertainty": "point_estimate_only",
++        })
++        anomaly_deltas: list[float] = []
++        defect_groups: dict[str, list[float]] = {}
++        for sample in run["samples"]:
++            left = run["per_image"][left_key][sample]
++            right = run["per_image"][right_key][sample]
++            if left["label"] != right["label"] or left["defect_type"] != right["defect_type"]:
++                raise ValueError("Paired predictions disagree on sample label or defect type")
++            if left["label"] == "0":
++                continue
++            delta = _float(right["per_image_aupro"]) - _float(left["per_image_aupro"])
++            anomaly_deltas.append(delta)
++            defect_groups.setdefault(left["defect_type"], []).append(delta)
++            paired_rows.append({
++                "category": category,
++                "seed": seed,
++                "contrast_type": contrast_type,
++                "contrast": contrast_name,
++                "fixed_domain": fixed_domain,
++                "sample": sample,
++                "defect_type": left["defect_type"],
++                "baseline_per_image_aupro": _float(left["per_image_aupro"]),
++                "comparison_per_image_aupro": _float(right["per_image_aupro"]),
++                "delta": delta,
++            })
++        bootstrap_seed = (seed * 1_000_003 + zlib.crc32(
++            f"{category}:{contrast_type}:{fixed_domain}".encode("utf-8")
++        )) & 0xFFFFFFFF
++        ci = paired_mean_bootstrap_ci(anomaly_deltas, seed=bootstrap_seed)
++        bootstrap_rows.append({
++            "category": category,
++            "seed": seed,
++            "contrast_type": contrast_type,
++            "contrast": contrast_name,
++            "fixed_domain": fixed_domain,
++            "estimand": "mean_paired_per_anomalous_image_aupro_delta",
++            **ci,
++        })
++        for defect_type, values in sorted(defect_groups.items()):
++            array = np.asarray(values, dtype=np.float64)
++            defect_rows.append({
++                "category": category,
++                "seed": seed,
++                "contrast_type": contrast_type,
++                "contrast": contrast_name,
++                "fixed_domain": fixed_domain,
++                "defect_type": defect_type,
++                "anomalous_image_count": int(array.size),
++                "mean_per_image_aupro_delta": float(array.mean()),
++                "median_per_image_aupro_delta": float(np.median(array)),
++                "negative_delta_count": int(np.count_nonzero(array < 0)),
++                "zero_delta_count": int(np.count_nonzero(array == 0)),
++                "positive_delta_count": int(np.count_nonzero(array > 0)),
++            })
++    return pooled_rows, paired_rows, bootstrap_rows, defect_rows
++
++
++def analyze(run_dirs: list[Path], output_dir: Path) -> Path:
++    if output_dir.exists():
++        raise FileExistsError(f"Analysis output already exists and will not be overwritten: {output_dir}")
++    runs = [_load_run(path) for path in run_dirs]
++    identities = [(run["state"]["category"], int(run["state"]["seed"])) for run in runs]
++    if len(set(identities)) != len(identities):
++        raise ValueError("Duplicate category/seed run supplied")
++    by_category: dict[str, list[dict]] = {}
++    for run in runs:
++        by_category.setdefault(run["state"]["category"], []).append(run)
++    for category, category_runs in by_category.items():
++        reference = category_runs[0]["samples"]
++        if any(run["samples"] != reference for run in category_runs[1:]):
++            raise ValueError(f"{category}: test inventory/order differs across seeds")
++
++    pooled_rows: list[dict] = []
++    paired_rows: list[dict] = []
++    bootstrap_rows: list[dict] = []
++    defect_rows: list[dict] = []
++    quality_rows: list[dict] = []
++    calibration_rows: list[dict] = []
++    runtime_rows: list[dict] = []
++    for run in runs:
++        pooled, paired, bootstrap, defect = _contrast_rows(run)
++        pooled_rows.extend(pooled)
++        paired_rows.extend(paired)
++        bootstrap_rows.extend(bootstrap)
++        defect_rows.extend(defect)
++        calibration_rows.extend(_calibration_rows(run))
++        runtime_rows.extend(_runtime_rows(run))
++        quality = run["quality"]
++        psnr_bicubic = [_quality_float(row["psnr_bicubic"]) for row in quality]
++        psnr_swinir = [_quality_float(row["psnr_swinir"]) for row in quality]
++        ssim_bicubic = [_quality_float(row["ssim_bicubic"]) for row in quality]
++        ssim_swinir = [_quality_float(row["ssim_swinir"]) for row in quality]
++        quality_rows.append({
++            "category": run["state"]["category"],
++            "seed": int(run["state"]["seed"]),
++            "test_count": len(quality),
++            "mean_psnr_bicubic": _quality_mean(psnr_bicubic),
++            "mean_psnr_swinir": _quality_mean(psnr_swinir),
++            "mean_psnr_swinir_minus_bicubic": _quality_delta_mean(psnr_swinir, psnr_bicubic),
++            "mean_psnr_delta_unavailable_count": sum(
++                np.isposinf(left) and np.isposinf(right)
++                for left, right in zip(psnr_bicubic, psnr_swinir, strict=True)
++            ),
++            "mean_ssim_bicubic": _quality_mean(ssim_bicubic),
++            "mean_ssim_swinir": _quality_mean(ssim_swinir),
++            "mean_ssim_swinir_minus_bicubic": _quality_delta_mean(ssim_swinir, ssim_bicubic),
++            "quality_computed_once_per_test_sample": True,
++        })
++
++    seed_summary: list[dict] = []
++    grouping: dict[tuple[str, str, str], list[float]] = {}
++    for row in pooled_rows:
++        key = (row["category"], row["contrast_type"], row["contrast"] + ":" + row["fixed_domain"])
++        grouping.setdefault(key, []).append(float(row["delta"]))
++    for (category, contrast_type, condition), values in sorted(grouping.items()):
++        array = np.asarray(values, dtype=np.float64)
++        seed_summary.append({
++            "category": category,
++            "contrast_type": contrast_type,
++            "contrast_and_fixed_domain": condition,
++            "seed_count": int(array.size),
++            "mean_pooled_aupro_delta_across_seeds": float(array.mean()),
++            "sd_across_seeds_descriptive_only": float(array.std(ddof=1)) if array.size > 1 else None,
++            "unit": "fixed_seed_run; repeated test images are not independent samples",
++        })
++
++    output_dir.mkdir(parents=True, exist_ok=False)
++    for name, rows in (
++        ("pooled_metric_contrasts.csv", pooled_rows),
++        ("paired_anomalous_image_deltas.csv", paired_rows),
++        ("per_image_mean_bootstrap.csv", bootstrap_rows),
++        ("defect_type_descriptive.csv", defect_rows),
++        ("normal_calibration_summary.csv", calibration_rows),
++        ("runtime_resources.csv", runtime_rows),
++        ("query_quality_summary.csv", quality_rows),
++        ("seed_summary.csv", seed_summary),
++    ):
++        _write_csv(output_dir / name, rows)
++
++    extremes: list[dict] = []
++    grouped_pairs: dict[tuple[str, int, str, str, str], list[dict]] = {}
++    for row in paired_rows:
++        key = (row["category"], row["seed"], row["contrast_type"], row["contrast"], row["fixed_domain"])
++        grouped_pairs.setdefault(key, []).append(row)
++    for key, values in sorted(grouped_pairs.items()):
++        values = sorted(values, key=lambda row: (float(row["delta"]), row["sample"]))
++        for rank, row in enumerate(values[:5], 1):
++            extremes.append({**row, "side": "most_negative", "rank": rank})
++        for rank, row in enumerate(reversed(values[-5:]), 1):
++            extremes.append({**row, "side": "most_positive", "rank": rank})
++    _write_csv(output_dir / "per_image_extremes.csv", extremes)
++
++    provenance = {
++        "schema_version": 1,
++        "input_runs": [
++            {
++                "run_dir": str(run["path"]),
++                "run_id": run["state"].get("run_id"),
++                "category": run["state"]["category"],
++                "seed": run["state"]["seed"],
++                "status": run["state"]["status"],
++                "artifact_manifest": run["state"]["artifacts"],
++            }
++            for run in runs
++        ],
++        "fixed_seeds": list(study.SEEDS),
++        "primary_metric": "pooled_aupro_at_0_3_point_estimate",
++        "per_image_uncertainty": {
++            "estimand": "mean paired per-anomalous-image AU-PRO delta",
++            "bootstrap_draws": BOOTSTRAP_DRAWS,
++            "confidence_interval": "percentile 95%",
++        },
++        "pooled_aupro_confidence_interval": "not computed; per-image CI is not a pooled metric CI",
++        "contrast_separation": "bank-domain and query-domain deltas are reported in separate rows",
++        "capsule_history_receipt": "required before Capsule execution; not established by this analyzer",
++    }
++    provenance_path = output_dir / "analysis.json"
++    provenance_path.write_text(json.dumps(provenance, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
++                               encoding="utf-8")
++    file_hashes = {
++        path.name: study.sha256_file(path)
++        for path in sorted(output_dir.iterdir()) if path.is_file()
++    }
++    (output_dir / "SHA256SUMS.json").write_text(
++        json.dumps(file_hashes, indent=2, allow_nan=False) + "\n", encoding="utf-8"
++    )
++    return output_dir
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--run-dir", type=Path, action="append", required=True,
++                        help="complete category/seed run directory; repeat per run")
++    parser.add_argument("--output-dir", type=Path, required=True)
++    args = parser.parse_args()
++    try:
++        output = analyze(args.run_dir, args.output_dir)
++    except Exception as exc:
++        print(json.dumps({"status": "BLOCKED_OR_FAILED", "error": f"{type(exc).__name__}: {exc}"},
++                         ensure_ascii=False))
++        return 1
++    print(json.dumps({"status": "COMPLETE", "analysis_dir": str(output)}, ensure_ascii=False))
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/scripts/run_bank_domain_study.py b/scripts/run_bank_domain_study.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..ec8b2abd04cf5dc4477d5cbec55b294f47c15636
+--- /dev/null
++++ b/scripts/run_bank_domain_study.py
+@@ -0,0 +1,741 @@
++"""Run the fixed 2x2 PatchCore normal-bank-domain study on one full MVTec category."""
++from __future__ import annotations
++
++import argparse
++import csv
++import gc
++import hashlib
++import json
++import platform
++from pathlib import Path
++import shutil
++import sys
++import time
++import traceback
++
++import numpy as np
++from PIL import Image
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++sys.path.insert(0, str(ROOT / "src"))
++
++from sr_anomaly.dataset import ImageSample, MVTecADFolder, safe_component
++from sr_anomaly.fusion import split_train_calibration
++from sr_anomaly.metrics import compute_quality_metrics
++from sr_anomaly.real_models import SwinIRLightweight
++from sr_anomaly import bank_domain_study as study
++from scripts import run_fusion_patchcore as branch_b
++
++EXPECTED_PATCHCORE_COMMIT = branch_b.EXPECTED_PATCHCORE_COMMIT
++EXPECTED_SWINIR_SHA256 = branch_b.EXPECTED_SWINIR_X4_SHA256
++EXPECTED_WIDERESNET_SHA256 = "95faca4d11227dddf8633dbb5ff6c8a9003c1aa5b8945c73834b8007b10950b8"
++OFFICIAL_MVTEC_AD_URL = "https://www.mvtec.com/research-teaching/datasets/mvtec-ad"
++IMAGE_SIZE = 224
++PATCHES_PER_IMAGE = 28 * 28
++
++
++def _checksum_images(samples, category_root: Path) -> list[dict]:
++    records = []
++    for sample in samples:
++        record = {
++            "sample": sample.relative_path.as_posix(),
++            "image_sha256": study.sha256_file(sample.path),
++            "label": int(sample.metadata["label"]),
++            "defect_type": sample.metadata.get("defect_type"),
++            "mask_sha256": study.sha256_file(sample.mask_path) if sample.mask_path else None,
++        }
++        records.append(record)
++    return records
++
++
++def _rgb_sha(image: Image.Image) -> str:
++    return study.sha256_array(np.asarray(image.convert("RGB"), dtype=np.uint8))
++
++
++def _query_variants(image_path: Path, restorer, resize, crop):
++    with Image.open(image_path) as source:
++        clean = branch_b._canonical(source.convert("RGB"), resize, crop)
++    low = clean.resize((56, 56), Image.Resampling.BICUBIC)
++    bicubic = low.resize((IMAGE_SIZE, IMAGE_SIZE), Image.Resampling.BICUBIC)
++    started = time.perf_counter()
++    restored = restorer.restore(low)
++    seconds = time.perf_counter() - started
++    if restored.mode != "RGB" or restored.size != clean.size:
++        raise ValueError(f"SwinIR output must be RGB {clean.size}, got {restored.mode} {restored.size}")
++    return clean.copy(), bicubic.copy(), restored.copy(), seconds
++
++
++class _BankDomainDataset:
++    """PatchCore fit wrapper; transforms clean RGB before tensor normalization."""
++
++    def __init__(self, base, indices, domain, restorer, resize, crop, transforms, torch):
++        self.base = base
++        self.indices = tuple(indices)
++        self.domain = domain
++        self.restorer = restorer
++        self.resize = resize
++        self.crop = crop
++        self.transforms = transforms
++        self.torch = torch
++
++    def __len__(self):
++        return len(self.indices)
++
++    def __getitem__(self, local_index):
++        source_index = self.indices[local_index]
++        classname, anomaly, image_path, _ = self.base.data_to_iterate[source_index]
++        with Image.open(image_path) as source:
++            clean = branch_b._canonical(source.convert("RGB"), self.resize, self.crop)
++        if self.domain == "swinir_restored":
++            low = clean.resize((56, 56), Image.Resampling.BICUBIC)
++            image = self.restorer.restore(low)
++            if image.mode != "RGB" or image.size != clean.size:
++                raise ValueError("Restored fit RGB differs from canonical native size")
++        elif self.domain == "clean":
++            image = clean
++        else:
++            raise ValueError(f"Unknown bank domain: {self.domain}")
++        tensor = self.transforms(image)
++        return {
++            "image": tensor,
++            "mask": self.torch.zeros((1, IMAGE_SIZE, IMAGE_SIZE)),
++            "classname": classname,
++            "anomaly": anomaly,
++            "is_anomaly": 0,
++            "image_name": Path(image_path).as_posix(),
++            # Default DataLoader collation cannot handle pathlib.Path objects.
++            "image_path": str(image_path),
++        }
++
++
++def _new_patchcore(torch, backbones, common, patchcore, sampler, device, backbone_checkpoint: Path):
++    model = patchcore.PatchCore(device)
++    # Use the checked-in local torchvision ImageNet V1 checkpoint instead of
++    # triggering an implicit torchvision network download on a fresh PC.
++    import torchvision.models as torchvision_models
++
++    backbone = torchvision_models.wide_resnet50_2(weights=None)
++    backbone.load_state_dict(
++        torch.load(backbone_checkpoint, map_location="cpu", weights_only=True), strict=True
++    )
++    backbone.name = "wideresnet50"
++    model.load(
++        backbone=backbone,
++        layers_to_extract_from=["layer2", "layer3"],
++        device=device,
++        input_shape=(3, IMAGE_SIZE, IMAGE_SIZE),
++        pretrain_embed_dimension=1024,
++        target_embed_dimension=1024,
++        patchsize=3,
++        featuresampler=sampler.IdentitySampler(),
++        nn_method=common.FaissNN(False, 4),
++    )
++    return model
++
++
++def _predict_all(model, tensor, cache, ordered_samples, query_domain):
++    scores = np.empty(len(ordered_samples), dtype=np.float64)
++    maps = np.empty((len(ordered_samples), IMAGE_SIZE, IMAGE_SIZE), dtype=np.float32)
++    seconds = np.empty(len(ordered_samples), dtype=np.float64)
++    for index, sample in enumerate(ordered_samples):
++        image = cache[sample.relative_path.as_posix()][query_domain]
++        started = time.perf_counter()
++        scores[index], maps[index] = branch_b._predict(model, tensor, image)
++        seconds[index] = time.perf_counter() - started
++    if not np.isfinite(scores).all() or not np.isfinite(maps).all():
++        raise ValueError("Non-finite query prediction")
++    return scores, maps, seconds
++
++
++def _write_csv(path: Path, rows: list[dict]) -> None:
++    if not rows:
++        raise ValueError(f"Cannot write empty table: {path.name}")
++    with path.open("x", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
++        writer.writeheader()
++        writer.writerows(rows)
++
++
++def _write_npz(path: Path, **arrays) -> dict:
++    temporary = path.with_name(path.name + ".partial")
++    if path.exists() or temporary.exists():
++        raise FileExistsError(path)
++    with temporary.open("xb") as handle:
++        np.savez_compressed(handle, **arrays)
++        handle.flush()
++        import os
++        os.fsync(handle.fileno())
++    temporary.replace(path)
++    with np.load(path, allow_pickle=False) as artifact:
++        shapes = {name: list(artifact[name].shape) for name in artifact.files}
++        for name in artifact.files:
++            values = artifact[name]
++            if values.dtype.kind in "fiu" and not np.isfinite(values).all():
++                raise ValueError(f"Non-finite artifact array: {name}")
++    return {"file": path.name, "sha256": study.sha256_file(path), "arrays": shapes}
++
++
++def _identity_from_raw(path: Path) -> dict:
++    with np.load(path, allow_pickle=False) as artifact:
++        return {
++            "samples": artifact["test_samples"].astype(str).tolist(),
++            "query_input_sha256": artifact["query_input_sha256"].astype(str).tolist(),
++            "query_domains": artifact["query_domains"].astype(str).tolist(),
++            "query_domain_sha256": {
++                "bicubic_x4": artifact["query_bicubic_sha256"].astype(str).tolist(),
++                "swinir_x4": artifact["query_swinir_sha256"].astype(str).tolist(),
++            },
++        }
++
++
++def _load_dataset_provenance(path: Path, data_root: Path, category: str) -> dict:
++    if not path.is_file():
++        raise FileNotFoundError(
++            f"Dataset provenance receipt is required: {path}. Record the official source, archive SHA-256, "
++            "license file/hash, and delivered categories before running inference."
++        )
++    receipt = json.loads(path.read_text(encoding="utf-8"))
++    if receipt.get("dataset") != "MVTec AD" or receipt.get("source_url") != OFFICIAL_MVTEC_AD_URL:
++        raise ValueError("Dataset receipt must identify the official MVTec AD source URL")
++    categories = receipt.get("categories")
++    if not isinstance(categories, list) or category not in categories:
++        raise ValueError(f"Dataset receipt does not include category {category}")
++    archive_sha = str(receipt.get("archive_sha256", "")).lower()
++    if len(archive_sha) != 64 or any(char not in "0123456789abcdef" for char in archive_sha):
++        raise ValueError("Dataset receipt must contain a 64-character archive_sha256")
++    license_relative = receipt.get("license_file")
++    if not isinstance(license_relative, str) or not license_relative:
++        raise ValueError("Dataset receipt must name the delivered license_file")
++    license_path = study.safe_artifact_path(data_root, license_relative)
++    if not license_path.is_file():
++        raise FileNotFoundError(f"Dataset license file is missing: {license_path}")
++    license_sha = study.sha256_file(license_path)
++    expected_license_sha = str(receipt.get("license_sha256", "")).lower()
++    if expected_license_sha != license_sha:
++        raise ValueError("Dataset license SHA-256 does not match the provenance receipt")
++    archive_relative = receipt.get("archive_file")
++    if archive_relative is not None:
++        archive_path = study.safe_artifact_path(data_root, str(archive_relative))
++        if not archive_path.is_file() or study.sha256_file(archive_path) != archive_sha:
++            raise ValueError("Retained dataset archive is missing or its SHA-256 differs from the receipt")
++    return {
++        "dataset": "MVTec AD",
++        "source_url": OFFICIAL_MVTEC_AD_URL,
++        "receipt_path": str(path.resolve()),
++        "receipt_sha256": study.sha256_file(path),
++        "archive_sha256": archive_sha,
++        "categories": categories,
++        "license_file": license_relative,
++        "license_sha256": license_sha,
++        "license_text": "CC BY-NC-SA 4.0; verify the delivered official license text",
++    }
++
++
++def run(args: argparse.Namespace) -> Path:
++    category = safe_component(args.category, "category").lower()
++    run_id = safe_component(args.run_id, "run id")
++    if category not in {"hazelnut", "screw", "capsule"}:
++        raise ValueError("Only the preselected MVTec categories are supported")
++    if args.seed not in study.SEEDS:
++        raise ValueError(f"Study seeds are frozen to {study.SEEDS}")
++    if category == "capsule":
++        receipt_path = args.capsule_history_receipt
++        if receipt_path is None or not receipt_path.is_file():
++            raise RuntimeError("Capsule is gated until an explicit team-use history receipt is supplied")
++        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
++        if receipt.get("all_team_members_confirmed_no_test_use") is not True:
++            raise RuntimeError("Capsule history receipt does not confirm untouched test use")
++        if receipt.get("patchcore_hazelnut_screw_seed11_reviewed") is not True:
++            raise RuntimeError("Capsule is gated until Hazelnut/Screw seed-11 PatchCore results are reviewed")
++        if receipt.get("efficientad_seed11_complete_or_protocol_frozen") is not True:
++            raise RuntimeError("Capsule is gated until EfficientAD seed-11 work is complete or its protocol is frozen")
++    data_root = args.data_root.resolve()
++    category_root = data_root / category
++    if not category_root.is_dir():
++        raise FileNotFoundError(
++            f"Required MVTec category is missing: {category_root}. "
++            "This run will not download the full 15-category archive."
++        )
++    dataset_provenance = _load_dataset_provenance(
++        args.dataset_provenance.resolve(), data_root, category
++    )
++
++    torch, transforms, InterpolationMode, backbones, common, patchcore, sampler, mvtec = branch_b._official_imports()
++    cuda_available = torch.cuda.is_available()
++    device = torch.device(branch_b.resolve_device(args.device, cuda_available))
++    if device.type != "cuda":
++        raise RuntimeError("This execution queue requires the existing CUDA device; CPU is for tests only")
++    checkpoint = args.swinir_checkpoint.resolve()
++    checkpoint_sha = branch_b._checksum(checkpoint)
++    if checkpoint_sha != EXPECTED_SWINIR_SHA256:
++        raise ValueError(f"SwinIR checkpoint SHA mismatch: {checkpoint_sha}")
++    backbone_checkpoint = args.backbone_checkpoint.resolve()
++    backbone_sha = branch_b._checksum(backbone_checkpoint)
++    if backbone_sha != EXPECTED_WIDERESNET_SHA256:
++        raise ValueError(f"WideResNet50-2 ImageNet V1 SHA mismatch: {backbone_sha}")
++    patchcore_source = branch_b.PATCHCORE_SOURCE
++    actual_patchcore_commit = branch_b.subprocess.check_output(
++        ["git", "-C", str(patchcore_source.parent), "rev-parse", "HEAD"], text=True
++    ).strip()
++    if actual_patchcore_commit != EXPECTED_PATCHCORE_COMMIT:
++        raise RuntimeError(
++            f"PatchCore revision mismatch: expected {EXPECTED_PATCHCORE_COMMIT}, got {actual_patchcore_commit}"
++        )
++
++    torch.set_num_threads(min(4, torch.get_num_threads()))
++    torch.manual_seed(args.seed)
++    resize = transforms.Resize(256, interpolation=InterpolationMode.BILINEAR)
++    crop = transforms.CenterCrop(IMAGE_SIZE)
++    tensor = transforms.Compose([
++        transforms.ToTensor(),
++        transforms.Normalize(mvtec.IMAGENET_MEAN, mvtec.IMAGENET_STD),
++    ])
++    train_set = mvtec.MVTecDataset(
++        str(data_root), category, resize=256, imagesize=IMAGE_SIZE, split=mvtec.DatasetSplit.TRAIN
++    )
++    train_total = len(train_set)
++    fit_indices, calibration_indices = split_train_calibration(train_total, 0.8, args.seed)
++    if not fit_indices or not calibration_indices:
++        raise ValueError("Fit and normal calibration splits must both be nonempty")
++    test_samples = MVTecADFolder(data_root, category, split="test", require_masks=True).samples()
++    if not test_samples or any(sample.mask_path and not sample.mask_path.is_file() for sample in test_samples):
++        raise ValueError("Full-category test images and anomaly masks must be present")
++    if any(row[1] != "good" for row in train_set.data_to_iterate):
++        raise ValueError("PatchCore bank and calibration inputs must contain normal train/good images only")
++    train_paths = [Path(train_set.data_to_iterate[i][2]).relative_to(data_root).as_posix()
++                   for i in fit_indices]
++    calibration_paths = [Path(train_set.data_to_iterate[i][2]).relative_to(data_root).as_posix()
++                         for i in calibration_indices]
++    calibration_samples = []
++    for index in calibration_indices:
++        image_path = Path(train_set.data_to_iterate[index][2])
++        relative_path = image_path.relative_to(data_root)
++        calibration_samples.append(ImageSample(
++            sample_id=relative_path.as_posix(),
++            path=image_path,
++            relative_path=relative_path,
++            mask_path=None,
++            metadata={"category": category, "split": "train", "label": 0, "defect_type": "good"},
++        ))
++    test_ids = {sample.relative_path.as_posix() for sample in test_samples}
++    test_mask_paths = {
++        sample.relative_path.as_posix(): (
++            sample.mask_path.relative_to(data_root).as_posix() if sample.mask_path else None
++        )
++        for sample in test_samples
++    }
++    test_mask_hashes = {
++        sample.relative_path.as_posix(): (study.sha256_file(sample.mask_path) if sample.mask_path else None)
++        for sample in test_samples
++    }
++
++    plan = study.bank_fit_plan(len(fit_indices), batch_size=8)
++    available_ram_before_run = study.available_ram_bytes()
++    study.check_fit_ram(plan, available_bytes=available_ram_before_run)
++
++    output_root = args.output_root.resolve()
++    output_root.mkdir(parents=True, exist_ok=True)
++    disk_plan = study.output_disk_plan(len(calibration_indices), len(test_samples), image_size=IMAGE_SIZE)
++    disk_free_before_run = shutil.disk_usage(output_root).free
++    study.check_output_disk(disk_plan, free_bytes=disk_free_before_run)
++    run_dir = output_root / run_id / category / f"seed{args.seed}"
++    if run_dir.exists():
++        raise FileExistsError(f"Run directory exists; failed/old outputs are never overwritten: {run_dir}")
++    run_dir.mkdir(parents=True, exist_ok=False)
++    state = {
++        "schema_version": study.SCHEMA_VERSION,
++        "status": "BUILDING",
++        "scope": "full-category-bank-domain-study",
++        "run_id": run_id,
++        "category": category,
++        "seed": args.seed,
++        "seeds_frozen": list(study.SEEDS),
++        "bank_domains": list(study.BANK_DOMAINS),
++        "query_domains": list(study.QUERY_DOMAINS),
++        "fit_paths": train_paths,
++        "calibration_paths": calibration_paths,
++        "test_samples": [sample.relative_path.as_posix() for sample in test_samples],
++        "test_mask_paths": test_mask_paths,
++        "test_mask_sha256": test_mask_hashes,
++        "fit_count": len(fit_indices),
++        "calibration_count": len(calibration_indices),
++        "test_count": len(test_samples),
++        "dataset_provenance": dataset_provenance,
++        "resource_plan": {
++            "fit_ram": plan,
++            "available_ram_before_run_bytes": available_ram_before_run,
++            "prediction_disk": disk_plan,
++            "free_disk_before_run_bytes": disk_free_before_run,
++        },
++        "artifacts": [],
++        "prediction_rows": [],
++    }
++    study.write_status(run_dir, state)
++    restorer = None
++    completed = False
++    try:
++        restorer = SwinIRLightweight(
++            ROOT / "third_party" / "SwinIR", checkpoint,
++            device=str(device), scale=4, tile=56, tile_overlap=0
++        )
++        cache: dict[str, dict[str, Image.Image]] = {}
++        input_hashes: dict[str, str] = {}
++        query_hashes: dict[str, dict[str, str]] = {}
++        quality_rows: list[dict] = []
++        for sample in calibration_samples + test_samples:
++            sample_id = sample.relative_path.as_posix()
++            clean, bicubic, restored, restoration_seconds = _query_variants(
++                sample.path, restorer, resize, crop
++            )
++            cache[sample_id] = {"bicubic_x4": bicubic, "swinir_x4": restored}
++            input_hashes[sample_id] = branch_b._checksum(sample.path)
++            query_hashes[sample_id] = {
++                "bicubic_x4": _rgb_sha(bicubic),
++                "swinir_x4": _rgb_sha(restored),
++            }
++            if sample_id in test_ids:
++                bicubic_quality = compute_quality_metrics(clean, bicubic, ("psnr", "ssim"))
++                restored_quality = compute_quality_metrics(clean, restored, ("psnr", "ssim"))
++                quality_rows.append({
++                    "sample": sample_id,
++                    "psnr_bicubic": bicubic_quality["psnr"],
++                    "ssim_bicubic": bicubic_quality["ssim"],
++                    "psnr_swinir": restored_quality["psnr"],
++                    "ssim_swinir": restored_quality["ssim"],
++                    "swinir_seconds": restoration_seconds,
++                })
++            del clean
++        if len(quality_rows) != len(test_samples):
++            raise RuntimeError("Query quality was not computed exactly once per test image")
++
++        available_ram = study.available_ram_bytes()
++        study.check_fit_ram(plan, available_bytes=available_ram)
++        state["resource_snapshot_before_fit"] = {
++            "available_ram_bytes": available_ram,
++            "plan": plan,
++            "disk_free_bytes": shutil.disk_usage(run_dir).free,
++            "gpu_name": torch.cuda.get_device_name(device),
++            "gpu_free_bytes_before_fit": int(torch.cuda.mem_get_info(device)[0]),
++        }
++        train_input_hashes = {
++            path: branch_b._checksum(data_root / path) for path in train_paths + calibration_paths
++        }
++        state["train_input_sha256"] = train_input_hashes
++        state["test_input_sha256"] = {
++            sample.relative_path.as_posix(): input_hashes[sample.relative_path.as_posix()]
++            for sample in test_samples
++        }
++        inventory_hashes = {
++            **train_input_hashes,
++            **state["test_input_sha256"],
++            **{f"mask:{sample_id}": digest for sample_id, digest in test_mask_hashes.items() if digest},
++        }
++        state["input_inventory_sha256"] = hashlib.sha256(
++            json.dumps(inventory_hashes, sort_keys=True, separators=(",", ":")).encode("utf-8")
++        ).hexdigest()
++        state["query_rgb_sha256"] = query_hashes
++        state["patchcore_source_commit"] = actual_patchcore_commit
++        state["swinir_checkpoint_sha256"] = checkpoint_sha
++        state["backbone_checkpoint_sha256"] = backbone_sha
++        state["backbone_checkpoint"] = str(backbone_checkpoint)
++        state["source_commit"] = branch_b.subprocess.check_output(
++            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
++        ).strip()
++        state["torch_version"] = torch.__version__
++        torchvision = __import__("torchvision")
++        import faiss
++        import timm
++        state["torchvision_version"] = torchvision.__version__
++        state["faiss_version"] = faiss.__version__
++        state["timm_version"] = timm.__version__
++        state["python_version"] = sys.version
++        state["platform"] = platform.platform()
++        state["torch_cuda_build"] = torch.version.cuda
++        state["device"] = str(device)
++        state["gpu_name"] = torch.cuda.get_device_name(device)
++        state["normalization_rule"] = "existing robust_params/normalize; per cell; normal calibration only"
++        state["threshold_rule"] = "existing quantile_threshold at fixed q=0.99; normal calibration only"
++        state["metric_rule"] = "existing evaluate_predictions; pooled AU-PRO@0.3 primary"
++        state["model_configuration"] = {
++            "patchcore_source_commit": actual_patchcore_commit,
++            "backbone": "WideResNet50-2 ImageNet V1",
++            "backbone_checkpoint_sha256": backbone_sha,
++            "layers": ["layer2", "layer3"],
++            "resize_short_side": 256,
++            "center_crop": IMAGE_SIZE,
++            "pretrain_embed_dimension": 1024,
++            "target_embed_dimension": 1024,
++            "patch_size": 3,
++            "sampler": "IdentitySampler",
++            "patches_per_fit_image": PATCHES_PER_IMAGE,
++            "faiss": "CPU IndexFlatL2; FaissNN(False, 4); 1-nearest-neighbor score",
++            "fit_batch_size": 8,
++            "train_fit_fraction": 0.8,
++            "normal_calibration_fraction": 0.2,
++            "seed": args.seed,
++            "swinir_checkpoint": str(checkpoint),
++            "swinir_checkpoint_sha256": checkpoint_sha,
++            "swinir_scale": 4,
++            "swinir_tile": 56,
++            "swinir_tile_overlap": 0,
++            "bicubic_downsample_size": 56,
++            "query_domains": list(study.QUERY_DOMAINS),
++        }
++        state["command"] = [sys.executable, *sys.argv]
++        state["git_branch"] = branch_b.subprocess.check_output(
++            ["git", "branch", "--show-current"], cwd=ROOT, text=True
++        ).strip()
++        state["git_dirty"] = bool(branch_b.subprocess.check_output(
++            ["git", "status", "--porcelain"], cwd=ROOT, text=True
++        ).strip())
++        state["submodule_revisions"] = {
++            name: branch_b.subprocess.check_output(
++                ["git", "-C", str(ROOT / "third_party" / name), "rev-parse", "HEAD"],
++                text=True,
++            ).strip()
++            for name in ("SwinIR", "patchcore-inspection")
++        }
++        try:
++            state["nvidia_smi"] = branch_b.subprocess.check_output(
++                ["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv,noheader"],
++                text=True,
++            ).strip()
++        except Exception as exc:
++            state["nvidia_smi_query_error"] = f"{type(exc).__name__}: {exc}"
++        study.write_status(run_dir, state)
++
++        raw_results: dict[str, dict[str, np.ndarray]] = {}
++        bank_hashes: dict[str, str] = {}
++        runtime_rows: list[dict] = []
++        for bank_domain in study.BANK_DOMAINS:
++            available_ram_for_bank = study.available_ram_bytes()
++            study.check_fit_ram(plan, available_bytes=available_ram_for_bank)
++            state.setdefault("available_ram_before_each_bank_bytes", {})[bank_domain] = available_ram_for_bank
++            study.write_status(run_dir, state)
++            # Re-seed construction so randomly initialized PatchCore projection modules
++            # are identical within this paired bank-domain comparison.
++            torch.manual_seed(args.seed)
++            if torch.cuda.is_available():
++                torch.cuda.manual_seed_all(args.seed)
++                torch.cuda.reset_peak_memory_stats(device)
++            model = _new_patchcore(
++                torch, backbones, common, patchcore, sampler, device, backbone_checkpoint
++            )
++            fit_dataset = _BankDomainDataset(
++                train_set, fit_indices, bank_domain, restorer, resize, crop, tensor, torch
++            )
++            fit_loader = torch.utils.data.DataLoader(
++                fit_dataset, batch_size=8, shuffle=False, num_workers=0, pin_memory=False
++            )
++            fit_started = time.perf_counter()
++            model.fit(fit_loader)
++            torch.cuda.synchronize(device)
++            fit_seconds = time.perf_counter() - fit_started
++            bank_values = np.asarray(model.anomaly_scorer.detection_features)
++            if (bank_values.ndim != 2 or bank_values.shape[0] != plan["fit_vectors"]
++                    or bank_values.shape[1] != 1024 or bank_values.dtype != np.float32
++                    or not np.isfinite(bank_values).all()):
++                raise ValueError(f"Unexpected feature bank from {bank_domain}: {bank_values.shape} {bank_values.dtype}")
++            bank_hashes[bank_domain] = study.sha256_array(bank_values)
++            cell_data = {
++                "calibration_scores": np.empty((len(calibration_indices), len(study.QUERY_DOMAINS)), np.float64),
++                "calibration_maps": np.empty((len(calibration_indices), len(study.QUERY_DOMAINS), IMAGE_SIZE, IMAGE_SIZE), np.float32),
++                "test_scores": np.empty((len(test_samples), len(study.QUERY_DOMAINS)), np.float64),
++                "test_maps": np.empty((len(test_samples), len(study.QUERY_DOMAINS), IMAGE_SIZE, IMAGE_SIZE), np.float32),
++            }
++            infer_seconds = 0.0
++            for query_index, query_domain in enumerate(study.QUERY_DOMAINS):
++                cal_scores, cal_maps, cal_times = _predict_all(
++                    model, tensor, cache, calibration_samples, query_domain
++                )
++                test_scores, test_maps, test_times = _predict_all(
++                    model, tensor, cache, test_samples, query_domain
++                )
++                cell_data["calibration_scores"][:, query_index] = cal_scores
++                cell_data["calibration_maps"][:, query_index] = cal_maps
++                cell_data["test_scores"][:, query_index] = test_scores
++                cell_data["test_maps"][:, query_index] = test_maps
++                infer_seconds += float(cal_times.sum() + test_times.sum())
++            raw_results[bank_domain] = cell_data
++            raw_path = run_dir / f"raw_{bank_domain}.npz"
++            artifact = _write_npz(
++                raw_path,
++                calibration_samples=np.asarray([s.relative_path.as_posix() for s in calibration_samples]),
++                test_samples=np.asarray([s.relative_path.as_posix() for s in test_samples]),
++                query_domains=np.asarray(study.QUERY_DOMAINS),
++                bank_sha256=np.asarray(bank_hashes[bank_domain]),
++                query_input_sha256=np.asarray([
++                    input_hashes[sample.relative_path.as_posix()] for sample in test_samples
++                ]),
++                query_bicubic_sha256=np.asarray([
++                    query_hashes[sample.relative_path.as_posix()]["bicubic_x4"] for sample in test_samples
++                ]),
++                query_swinir_sha256=np.asarray([
++                    query_hashes[sample.relative_path.as_posix()]["swinir_x4"] for sample in test_samples
++                ]),
++                **cell_data,
++            )
++            state["artifacts"].append(artifact)
++            runtime_rows.append({
++                "bank_domain": bank_domain,
++                "fit_seconds": fit_seconds,
++                "query_inference_seconds": infer_seconds,
++                "torch_cuda_peak_allocated_bytes": int(torch.cuda.max_memory_allocated(device)),
++                "torch_cuda_peak_reserved_bytes": int(torch.cuda.max_memory_reserved(device)),
++                "bank_bytes": int(bank_values.nbytes),
++                "bank_sha256": bank_hashes[bank_domain],
++            })
++            nn_method = getattr(model.anomaly_scorer, "nn_method", None)
++            if nn_method is not None:
++                nn_method.reset_index()
++            del fit_loader, fit_dataset, bank_values, model
++            gc.collect()
++            torch.cuda.empty_cache()
++            torch.cuda.synchronize(device)
++
++        # Confirm the shared query source and transform bytes did not change across banks.
++        if len(bank_hashes) != len(study.BANK_DOMAINS) or not all(bank_hashes.values()):
++            raise RuntimeError("Both paired banks must complete")
++        study.validate_pair_identity(
++            _identity_from_raw(run_dir / "raw_clean.npz"),
++            _identity_from_raw(run_dir / "raw_swinir_restored.npz"),
++        )
++        test_labels = np.asarray([sample.metadata["label"] for sample in test_samples], dtype=np.uint8)
++        test_masks = []
++        resize_mask = transforms.Resize(256, interpolation=InterpolationMode.NEAREST)
++        for sample in test_samples:
++            if sample.mask_path is None:
++                test_masks.append(np.zeros((IMAGE_SIZE, IMAGE_SIZE), dtype=bool))
++            else:
++                with Image.open(sample.mask_path) as mask_source:
++                    mask = np.asarray(branch_b._canonical(mask_source.convert("L"), resize_mask, crop)) > 0
++                test_masks.append(mask)
++        test_masks_array = np.stack(test_masks)
++        if not np.array_equal(test_masks_array.reshape(len(test_masks_array), -1).any(axis=1), test_labels.astype(bool)):
++            raise ValueError("Native test mask occupancy disagrees with official image labels")
++
++        summary_rows: list[dict] = []
++        per_image_rows: list[dict] = []
++        calibration_records: dict[str, dict] = {}
++        for bank_domain in study.BANK_DOMAINS:
++            values = raw_results[bank_domain]
++            for query_index, query_domain in enumerate(study.QUERY_DOMAINS):
++                calibration = study.fit_cell_calibration(
++                    np.zeros(len(calibration_indices), dtype=np.uint8),
++                    values["calibration_scores"][:, query_index],
++                    values["calibration_maps"][:, query_index],
++                )
++                metrics, per_images = study.evaluate_cell(
++                    test_labels,
++                    values["test_scores"][:, query_index],
++                    test_masks_array,
++                    values["test_maps"][:, query_index],
++                    calibration,
++                    [sample.relative_path.as_posix() for sample in test_samples],
++                )
++                calibration_records[f"{bank_domain}/{query_domain}"] = calibration
++                summary_rows.append({
++                    "category": category,
++                    "seed": args.seed,
++                    "bank_domain": bank_domain,
++                    "query_domain": query_domain,
++                    "fit_count": len(fit_indices),
++                    "calibration_count": len(calibration_indices),
++                    "test_count": len(test_samples),
++                    "image_auroc": metrics["classification"]["image_auroc"],
++                    "image_f1": metrics["classification"]["image_f1"],
++                    "pixel_auroc": metrics["localization"]["pixel_auroc"],
++                    "pooled_aupro_at_0_3": metrics["localization"]["au_pro"],
++                    "pixel_f1": metrics["localization"]["pixel_f1"],
++                    "image_threshold": calibration["image_threshold"],
++                    "pixel_threshold": calibration["pixel_threshold"],
++                })
++                for row in per_images:
++                    per_image_rows.append({
++                        **row,
++                        "category": category,
++                        "seed": args.seed,
++                        "bank_domain": bank_domain,
++                        "query_domain": query_domain,
++                        "defect_type": next(s.metadata.get("defect_type") for s in test_samples
++                                            if s.relative_path.as_posix() == row["sample"]),
++                    })
++                    state["prediction_rows"].append({
++                        "bank_domain": bank_domain,
++                        "query_domain": query_domain,
++                        "sample": row["sample"],
++                    })
++        state["artifacts"].append(_write_npz(
++            run_dir / "test_masks_for_local_analysis.npz",
++            samples=np.asarray([sample.relative_path.as_posix() for sample in test_samples]),
++            masks=test_masks_array,
++        ))
++        _write_csv(run_dir / "summary.csv", summary_rows)
++        _write_csv(run_dir / "per_image.csv", per_image_rows)
++        _write_csv(run_dir / "query_quality.csv", quality_rows)
++        state["artifacts"].extend([
++            {"file": name, "sha256": study.sha256_file(run_dir / name)}
++            for name in ("summary.csv", "per_image.csv", "query_quality.csv")
++        ])
++        state["calibration_by_cell"] = calibration_records
++        state["bank_hashes"] = bank_hashes
++        state["runtime"] = runtime_rows
++        state["resource_snapshot_after"] = {
++            "available_ram_bytes": study.available_ram_bytes(),
++            "disk_free_bytes": shutil.disk_usage(run_dir).free,
++        }
++        state["status"] = "COMPLETE"
++        study.write_status(run_dir, state)
++        study.verify_complete_run(
++            run_dir,
++            study.expected_condition_order([sample.relative_path.as_posix() for sample in test_samples]),
++        )
++        completed = True
++        return run_dir
++    except BaseException as error:
++        state["status"] = "FAILED"
++        state["error"] = f"{type(error).__name__}: {error}"
++        state["traceback"] = traceback.format_exc()
++        study.write_status(run_dir, state)
++        raise
++    finally:
++        if restorer is not None:
++            del restorer
++        gc.collect()
++        if torch.cuda.is_available():
++            torch.cuda.empty_cache()
++        if not completed:
++            print(f"Partial/failed run preserved at {run_dir}", file=sys.stderr)
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--data-root", type=Path, default=ROOT / "data" / "external" / "MVTecAD")
++    parser.add_argument("--dataset-provenance", type=Path,
++                        help="receipt JSON; defaults to <data-root>/dataset_provenance.json")
++    parser.add_argument("--category", choices=("hazelnut", "screw", "capsule"), required=True)
++    parser.add_argument("--seed", type=int, choices=study.SEEDS, required=True)
++    parser.add_argument("--swinir-checkpoint", type=Path,
++                        default=ROOT / "checkpoints" / "swinir" / "002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth")
++    parser.add_argument("--backbone-checkpoint", type=Path,
++                        default=ROOT / "checkpoints" / "wide_resnet50_2-95faca4d.pth")
++    parser.add_argument("--device", choices=("cuda",), default="cuda")
++    parser.add_argument("--output-root", type=Path, default=ROOT / "outputs" / "bank-domain-study")
++    parser.add_argument("--run-id", required=True)
++    parser.add_argument("--capsule-history-receipt", type=Path)
++    args = parser.parse_args()
++    if args.dataset_provenance is None:
++        args.dataset_provenance = args.data_root / "dataset_provenance.json"
++    try:
++        run_dir = run(args)
++    except Exception as exc:
++        print(json.dumps({"status": "BLOCKED_OR_FAILED", "error": f"{type(exc).__name__}: {exc}"},
++                         ensure_ascii=False))
++        return 1
++    print(json.dumps({"status": "COMPLETE", "run_dir": str(run_dir)}, ensure_ascii=False))
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/src/sr_anomaly/bank_domain_study.py b/src/sr_anomaly/bank_domain_study.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..8b15c4cb4beb42a336ed6e938fee0b77a0439864
+--- /dev/null
++++ b/src/sr_anomaly/bank_domain_study.py
+@@ -0,0 +1,290 @@
++"""Normal-bank domain study primitives; no torch/model imports at module import time."""
++from __future__ import annotations
++
++import hashlib
++import json
++import os
++from pathlib import Path, PurePosixPath, PureWindowsPath
++import shutil
++from typing import Any, Iterable
++
++import numpy as np
++
++from .evaluation import area_under_per_region_overlap, evaluate_predictions
++from .fusion import normalize, quantile_threshold, robust_params
++
++BANK_DOMAINS = ("clean", "swinir_restored")
++QUERY_DOMAINS = ("bicubic_x4", "swinir_x4")
++SEEDS = (11, 23, 37)
++CALIBRATION_QUANTILE = 0.99
++MAX_FPR = 0.3
++SCHEMA_VERSION = 1
++
++
++def sha256_file(path: str | Path) -> str:
++    digest = hashlib.sha256()
++    with Path(path).open("rb") as handle:
++        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
++            digest.update(chunk)
++    return digest.hexdigest()
++
++
++def sha256_array(values: np.ndarray) -> str:
++    array = np.ascontiguousarray(values)
++    if array.dtype.hasobject:
++        raise ValueError("Object arrays cannot be hashed as study artifacts")
++    return hashlib.sha256(memoryview(array).cast("B")).hexdigest()
++
++
++def expected_condition_order(samples: Iterable[str]) -> list[tuple[str, str, str]]:
++    sample_ids = tuple(samples)
++    if (not sample_ids or any(not isinstance(sample, str) or not sample for sample in sample_ids)
++            or len(set(sample_ids)) != len(sample_ids)):
++        raise ValueError("A nonempty, unique ordered sample inventory is required")
++    return [
++        (bank_domain, query_domain, sample)
++        for bank_domain in BANK_DOMAINS
++        for query_domain in QUERY_DOMAINS
++        for sample in sample_ids
++    ]
++
++
++def validate_pair_identity(left: dict[str, Any], right: dict[str, Any]) -> None:
++    """Require both bank domains to use the same ordered query identity and inputs."""
++    for key in ("samples", "query_input_sha256", "query_domain_sha256"):
++        if left.get(key) != right.get(key):
++            raise ValueError(f"Bank-domain pair has different query identity: {key}")
++    if left.get("query_domains") != list(QUERY_DOMAINS) or right.get("query_domains") != list(QUERY_DOMAINS):
++        raise ValueError("Unexpected query domain order")
++
++
++def fit_cell_calibration(
++    labels: np.ndarray,
++    scores: np.ndarray,
++    maps: np.ndarray,
++    *,
++    quantile: float = CALIBRATION_QUANTILE,
++) -> dict[str, Any]:
++    """Fit existing robust normalization and quantile threshold on normal cal only."""
++    labels = np.asarray(labels).ravel()
++    scores = np.asarray(scores, dtype=np.float64).ravel()
++    maps = np.asarray(maps, dtype=np.float32)
++    if labels.size == 0 or not np.isin(labels, [0, False]).all():
++        raise ValueError("Bank-domain calibration accepts normal calibration samples only")
++    if scores.shape != labels.shape or maps.ndim != 3 or maps.shape[0] != labels.size:
++        raise ValueError("Calibration score/map inventory mismatch")
++    if maps.shape[1] < 1 or maps.shape[2] < 1:
++        raise ValueError("Calibration maps must have positive spatial dimensions")
++    if not np.isfinite(scores).all() or not np.isfinite(maps).all():
++        raise ValueError("Calibration scores/maps must be finite")
++    image = robust_params(scores)
++    pixel = robust_params(maps)
++    normalized_scores = normalize(scores, image)
++    normalized_maps = normalize(maps, pixel)
++    return {
++        "quantile": float(quantile),
++        "normalization": "existing_median_iqr_std_then_unit",
++        "image": image,
++        "pixel": pixel,
++        "image_threshold": quantile_threshold(normalized_scores, quantile),
++        "pixel_threshold": quantile_threshold(normalized_maps, quantile),
++        "calibration_count": int(labels.size),
++        "calibration_pixel_count": int(maps.size),
++        "map_shape": list(maps.shape[1:]),
++    }
++
++
++def evaluate_cell(
++    labels: np.ndarray,
++    scores: np.ndarray,
++    masks: np.ndarray,
++    maps: np.ndarray,
++    calibration: dict[str, Any],
++    samples: Iterable[str],
++    *,
++    max_fpr: float = MAX_FPR,
++) -> tuple[dict[str, Any], list[dict[str, Any]]]:
++    labels = np.asarray(labels).ravel()
++    scores = np.asarray(scores, dtype=np.float64).ravel()
++    masks = np.asarray(masks, dtype=bool)
++    maps = np.asarray(maps, dtype=np.float32)
++    sample_ids = tuple(samples)
++    if labels.size == 0 or labels.shape != scores.shape or len(sample_ids) != labels.size:
++        raise ValueError("Test sample/label/score inventory mismatch")
++    if len(set(sample_ids)) != len(sample_ids):
++        raise ValueError("Test sample IDs must be unique")
++    if masks.shape != maps.shape or masks.ndim != 3 or masks.shape[0] != labels.size:
++        raise ValueError("Test mask/map inventory mismatch")
++    if tuple(maps.shape[1:]) != tuple(calibration["map_shape"]):
++        raise ValueError("Test map shape differs from calibration")
++    if not np.isin(labels, [0, 1]).all() or not np.isfinite(scores).all() or not np.isfinite(maps).all():
++        raise ValueError("Test labels must be binary and scores/maps finite")
++    if not np.array_equal(masks.reshape(len(masks), -1).any(axis=1), labels.astype(bool)):
++        raise ValueError("Test mask occupancy differs from image labels")
++
++    normalized_scores = normalize(scores, calibration["image"])
++    normalized_maps = normalize(maps, calibration["pixel"])
++    metrics = evaluate_predictions(
++        labels,
++        normalized_scores,
++        masks,
++        normalized_maps,
++        image_threshold=float(calibration["image_threshold"]),
++        pixel_threshold=float(calibration["pixel_threshold"]),
++        max_fpr=max_fpr,
++    )
++    rows: list[dict[str, Any]] = []
++    for index, sample in enumerate(sample_ids):
++        per_image = None
++        if labels[index] == 1:
++            per_image = area_under_per_region_overlap(
++                masks[index:index + 1], normalized_maps[index:index + 1], max_fpr=max_fpr
++            )
++        rows.append({
++            "sample": sample,
++            "label": int(labels[index]),
++            "normalized_score": float(normalized_scores[index]),
++            "per_image_aupro": per_image,
++        })
++    return metrics, rows
++
++
++def available_ram_bytes() -> int:
++    if os.name == "nt":
++        import ctypes
++
++        class Memory(ctypes.Structure):
++            _fields_ = [("length", ctypes.c_ulong), ("load", ctypes.c_ulong)] + [
++                (name, ctypes.c_ulonglong)
++                for name in ("total", "available", "page_total", "page_available",
++                             "virtual", "virtual_available", "extended")
++            ]
++
++        value = Memory()
++        value.length = ctypes.sizeof(value)
++        if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(value)):
++            raise OSError("Cannot read available system RAM")
++        return int(value.available)
++    return int(os.sysconf("SC_AVPHYS_PAGES") * os.sysconf("SC_PAGE_SIZE"))
++
++
++def output_disk_plan(
++    calibration_count: int,
++    test_count: int,
++    *,
++    image_size: int = 224,
++    reserve_bytes: int = 2 * 1024**3,
++) -> dict[str, int | bool]:
++    if min(calibration_count, test_count, image_size, reserve_bytes) < 1:
++        raise ValueError("Positive output and reserve dimensions are required")
++    prediction_count = calibration_count + test_count
++    # Two bank domains × two query domains, each with one float32 native map.
++    raw_maps = len(BANK_DOMAINS) * len(QUERY_DOMAINS) * prediction_count * image_size * image_size * 4
++    scores = len(BANK_DOMAINS) * len(QUERY_DOMAINS) * prediction_count * 8
++    masks = test_count * image_size * image_size
++    payload = raw_maps + scores + masks
++    return {
++        "raw_prediction_payload_scenario_bytes": payload,
++        "reserve_bytes": reserve_bytes,
++        "required_free_bytes": payload + reserve_bytes,
++        "estimated_not_measured": True,
++    }
++
++
++def check_output_disk(plan: dict[str, int | bool], *, free_bytes: int) -> None:
++    if free_bytes < int(plan["required_free_bytes"]):
++        raise OSError(
++            "BANK_STUDY_BLOCKED_DISK: raw predictions plus reserve "
++            f"requires {plan['required_free_bytes']} bytes free; observed {free_bytes}"
++        )
++
++
++def bank_fit_plan(
++    fit_count: int,
++    *,
++    patches_per_image: int = 784,
++    dimension: int = 1024,
++    batch_size: int = 8,
++    reserve_bytes: int = 2 * 1024**3,
++) -> dict[str, int | bool]:
++    if min(fit_count, patches_per_image, dimension, batch_size, reserve_bytes) < 1:
++        raise ValueError("Positive fit and memory-plan dimensions are required")
++    vectors = fit_count * patches_per_image
++    bank_bytes = vectors * dimension * np.dtype(np.float32).itemsize
++    query_chunk_bytes = batch_size * patches_per_image * dimension * np.dtype(np.float32).itemsize
++    # PatchCore fit retains per-image embeddings while concatenating and building
++    # the CPU IndexFlatL2. This is a conservative payload scenario, not a peak.
++    visible_fit_payload = 3 * bank_bytes + query_chunk_bytes
++    return {
++        "fit_vectors": vectors,
++        "bank_bytes": bank_bytes,
++        "query_chunk_bytes": query_chunk_bytes,
++        "visible_fit_payload_scenario_bytes": visible_fit_payload,
++        "reserve_bytes": reserve_bytes,
++        "required_available_ram_bytes": visible_fit_payload + reserve_bytes,
++        "estimated_not_measured": True,
++    }
++
++
++def check_fit_ram(plan: dict[str, int | bool], *, available_bytes: int | None = None) -> None:
++    available = available_ram_bytes() if available_bytes is None else int(available_bytes)
++    if available < int(plan["required_available_ram_bytes"]):
++        raise MemoryError(
++            "BANK_FIT_BLOCKED_MEMORY: PatchCore fit payload scenario plus reserve "
++            f"requires {plan['required_available_ram_bytes']} bytes available; observed {available}"
++        )
++
++
++def safe_artifact_path(root: str | Path, relative: str) -> Path:
++    rel = PurePosixPath(relative)
++    windows_relative = PureWindowsPath(relative)
++    if (not relative or "\0" in relative or rel.is_absolute() or windows_relative.is_absolute()
++            or windows_relative.drive or chr(92) in relative or ":" in relative
++            or any(part in ("", ".", "..") for part in rel.parts)):
++        raise ValueError("Unsafe relative artifact path")
++    root_path = Path(root).resolve()
++    candidate = root_path.joinpath(*rel.parts).resolve()
++    if not candidate.is_relative_to(root_path):
++        raise ValueError("Artifact escapes run directory")
++    return candidate
++
++
++def write_json_atomic(path: str | Path, value: dict[str, Any]) -> None:
++    path = Path(path)
++    temporary = path.with_name(path.name + ".partial")
++    payload = json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + chr(10)
++    with temporary.open("x", encoding="utf-8") as handle:
++        handle.write(payload)
++        handle.flush()
++        os.fsync(handle.fileno())
++    os.replace(temporary, path)
++
++
++def write_status(run_dir: str | Path, state: dict[str, Any]) -> None:
++    write_json_atomic(Path(run_dir) / "status.json", state)
++
++
++def verify_complete_run(run_dir: str | Path, expected_order: Iterable[tuple[str, str, str]]) -> dict[str, Any]:
++    root = Path(run_dir).resolve()
++    state = json.loads((root / "status.json").read_text(encoding="utf-8"))
++    if state.get("status") != "COMPLETE" or state.get("schema_version") != SCHEMA_VERSION:
++        raise ValueError("Study run is not a complete supported artifact")
++    observed = [
++        (row.get("bank_domain"), row.get("query_domain"), row.get("sample"))
++        for row in state.get("prediction_rows", [])
++    ]
++    if observed != list(expected_order):
++        raise ValueError("Prediction sample/bank/query order differs from frozen inventory")
++    artifacts = state.get("artifacts")
++    if not isinstance(artifacts, list) or not artifacts:
++        raise ValueError("Complete run has no payload artifact manifest")
++    seen: set[str] = set()
++    for item in artifacts:
++        relative = item.get("file")
++        if relative in seen:
++            raise ValueError("Duplicate artifact path in manifest")
++        seen.add(relative)
++        path = safe_artifact_path(root, relative)
++        if not path.is_file() or sha256_file(path) != item.get("sha256"):
++            raise ValueError(f"Missing or changed study payload: {relative}")
++    return state
+diff --git a/tests/test_bank_domain_study.py b/tests/test_bank_domain_study.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..1bc7f685656ae6c0a00ed3f24ebae28b14800b55
+--- /dev/null
++++ b/tests/test_bank_domain_study.py
+@@ -0,0 +1,462 @@
++from __future__ import annotations
++
++import csv
++from enum import Enum
++import hashlib
++import json
++from pathlib import Path
++from types import SimpleNamespace
++
++import numpy as np
++import pytest
++
++from sr_anomaly import bank_domain_study as study
++from scripts import analyze_bank_domain_study as analyzer
++from scripts import run_bank_domain_study as runner
++
++
++def _write_csv(path: Path, rows: list[dict]) -> None:
++    with path.open("w", newline="", encoding="utf-8") as handle:
++        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
++        writer.writeheader()
++        writer.writerows(rows)
++
++
++def _artifact_manifest(path: Path) -> dict:
++    result = {"file": path.name, "sha256": study.sha256_file(path)}
++    if path.suffix == ".npz":
++        with np.load(path, allow_pickle=False) as archive:
++            result["arrays"] = {name: list(archive[name].shape) for name in archive.files}
++    return result
++
++
++def _make_complete_run(root: Path) -> Path:
++    run_dir = root / "run-hazelnut-seed11"
++    run_dir.mkdir(parents=True)
++    samples = ["hazelnut/test/crack/000.png", "hazelnut/test/good/000.png"]
++    calibration = ["hazelnut/train/good/000.png"]
++    masks = np.zeros((2, 224, 224), dtype=bool)
++    masks[0, 20:25, 20:25] = True
++    bank_hashes = {"clean": "a" * 64, "swinir_restored": "b" * 64}
++    artifacts = []
++    for bank, bank_hash in bank_hashes.items():
++        raw_path = run_dir / f"raw_{bank}.npz"
++        np.savez_compressed(
++            raw_path,
++            calibration_samples=np.asarray(calibration),
++            test_samples=np.asarray(samples),
++            query_domains=np.asarray(study.QUERY_DOMAINS),
++            bank_sha256=np.asarray(bank_hash),
++            query_input_sha256=np.asarray(["1" * 64, "2" * 64]),
++            query_bicubic_sha256=np.asarray(["3" * 64, "4" * 64]),
++            query_swinir_sha256=np.asarray(["5" * 64, "6" * 64]),
++            calibration_scores=np.ones((1, 2), dtype=np.float64),
++            calibration_maps=np.ones((1, 2, 224, 224), dtype=np.float32),
++            test_scores=np.ones((2, 2), dtype=np.float64),
++            test_maps=np.ones((2, 2, 224, 224), dtype=np.float32),
++        )
++        artifacts.append(_artifact_manifest(raw_path))
++
++    masks_path = run_dir / "test_masks_for_local_analysis.npz"
++    np.savez_compressed(masks_path, samples=np.asarray(samples), masks=masks)
++    artifacts.append(_artifact_manifest(masks_path))
++
++    summary_rows = []
++    per_image_rows = []
++    prediction_rows = []
++    cell_values = {
++        ("clean", "bicubic_x4"): (0.40, 0.20),
++        ("clean", "swinir_x4"): (0.42, 0.25),
++        ("swinir_restored", "bicubic_x4"): (0.45, 0.30),
++        ("swinir_restored", "swinir_x4"): (0.50, 0.35),
++    }
++    for bank in study.BANK_DOMAINS:
++        for query in study.QUERY_DOMAINS:
++            pooled, anomalous_per_image = cell_values[(bank, query)]
++            summary_rows.append({
++                "category": "hazelnut", "seed": 11, "bank_domain": bank, "query_domain": query,
++                "fit_count": 1, "calibration_count": 1, "test_count": 2,
++                "image_auroc": 0.9, "image_f1": 0.8, "pixel_auroc": 0.9,
++                "pooled_aupro_at_0_3": pooled, "pixel_f1": 0.7,
++                "image_threshold": 1.0, "pixel_threshold": 1.0,
++            })
++            per_image_rows.extend([
++                {
++                    "sample": samples[0], "label": 1, "normalized_score": 2.0,
++                    "per_image_aupro": anomalous_per_image, "category": "hazelnut", "seed": 11,
++                    "bank_domain": bank, "query_domain": query, "defect_type": "crack",
++                },
++                {
++                    "sample": samples[1], "label": 0, "normalized_score": 0.0,
++                    "per_image_aupro": "", "category": "hazelnut", "seed": 11,
++                    "bank_domain": bank, "query_domain": query, "defect_type": "good",
++                },
++            ])
++            prediction_rows.extend([
++                {"bank_domain": bank, "query_domain": query, "sample": samples[0]},
++                {"bank_domain": bank, "query_domain": query, "sample": samples[1]},
++            ])
++
++    for name, rows in (
++        ("summary.csv", summary_rows),
++        ("per_image.csv", per_image_rows),
++        ("query_quality.csv", [
++            {"sample": samples[0], "psnr_bicubic": 20.0, "ssim_bicubic": 0.5,
++             "psnr_swinir": 22.0, "ssim_swinir": 0.6, "swinir_seconds": 0.1},
++            {"sample": samples[1], "psnr_bicubic": 21.0, "ssim_bicubic": 0.6,
++             "psnr_swinir": 23.0, "ssim_swinir": 0.7, "swinir_seconds": 0.1},
++        ]),
++    ):
++        path = run_dir / name
++        _write_csv(path, rows)
++        artifacts.append(_artifact_manifest(path))
++
++    state = {
++        "schema_version": study.SCHEMA_VERSION,
++        "status": "COMPLETE",
++        "scope": "full-category-bank-domain-study",
++        "run_id": "fixture",
++        "category": "hazelnut",
++        "seed": 11,
++        "seeds_frozen": list(study.SEEDS),
++        "bank_domains": list(study.BANK_DOMAINS),
++        "query_domains": list(study.QUERY_DOMAINS),
++        "fit_paths": ["hazelnut/train/good/001.png"],
++        "calibration_paths": calibration,
++        "test_samples": samples,
++        "train_input_sha256": {"hazelnut/train/good/001.png": "7" * 64},
++        "test_input_sha256": {samples[0]: "8" * 64, samples[1]: "9" * 64},
++        "test_mask_paths": {samples[0]: "hazelnut/ground_truth/crack/000_mask.png", samples[1]: None},
++        "test_mask_sha256": {samples[0]: "a" * 64, samples[1]: None},
++        "fit_count": 1,
++        "calibration_count": 1,
++        "test_count": 2,
++        "bank_hashes": bank_hashes,
++        "calibration_by_cell": {
++            f"{bank}/{query}": {
++                "calibration_count": 1,
++                "image": {"median": 1.0, "scale": 1.0, "method": "unit_fallback"},
++                "pixel": {"median": 1.0, "scale": 1.0, "method": "unit_fallback"},
++                "image_threshold": 0.0,
++                "pixel_threshold": 0.0,
++            }
++            for bank in study.BANK_DOMAINS for query in study.QUERY_DOMAINS
++        },
++        "runtime": [
++            {"bank_domain": bank, "fit_seconds": 1.0, "query_inference_seconds": 2.0,
++             "torch_cuda_peak_allocated_bytes": 100, "torch_cuda_peak_reserved_bytes": 200,
++             "bank_bytes": 300, "bank_sha256": bank_hashes[bank]}
++            for bank in study.BANK_DOMAINS
++        ],
++        "resource_plan": {"free_disk_before_run_bytes": 1_000},
++        "resource_snapshot_before_fit": {"disk_free_bytes": 900, "gpu_free_bytes_before_fit": 800},
++        "resource_snapshot_after": {"available_ram_bytes": 700, "disk_free_bytes": 600},
++        "available_ram_before_each_bank_bytes": {bank: 500 for bank in study.BANK_DOMAINS},
++        "prediction_rows": prediction_rows,
++        "artifacts": artifacts,
++    }
++    input_hashes = {
++        **state["train_input_sha256"],
++        **state["test_input_sha256"],
++        **{f"mask:{sample}": digest for sample, digest in state["test_mask_sha256"].items() if digest},
++    }
++    state["input_inventory_sha256"] = hashlib.sha256(
++        json.dumps(input_hashes, sort_keys=True, separators=(",", ":")).encode("utf-8")
++    ).hexdigest()
++    study.write_status(run_dir, state)
++    return run_dir
++
++
++def test_calibration_uses_only_normal_finite_data_and_evaluation_marks_no_normal_aupro():
++    labels = np.zeros(3, dtype=np.uint8)
++    scores = np.asarray([0.1, 0.2, 0.4])
++    maps = np.arange(3 * 4 * 4, dtype=np.float32).reshape(3, 4, 4)
++    calibration = study.fit_cell_calibration(labels, scores, maps, quantile=0.9)
++    assert calibration["calibration_count"] == 3
++    assert calibration["normalization"] == "existing_median_iqr_std_then_unit"
++
++    test_masks = np.zeros((2, 4, 4), dtype=bool)
++    test_masks[1, 1:3, 1:3] = True
++    metrics, rows = study.evaluate_cell(
++        np.asarray([0, 1]), np.asarray([0.1, 2.0]), test_masks,
++        np.stack([np.zeros((4, 4)), np.ones((4, 4))]), calibration, ["normal", "defect"],
++    )
++    assert metrics["localization"]["au_pro"] is not None
++    assert rows[0]["per_image_aupro"] is None
++    assert rows[1]["per_image_aupro"] is not None
++
++
++@pytest.mark.parametrize(
++    "labels,scores,maps",
++    [
++        (np.asarray([0, 1]), np.asarray([0.1, 0.2]), np.zeros((2, 2, 2))),
++        (np.asarray([0, 0]), np.asarray([0.1]), np.zeros((2, 2, 2))),
++        (np.asarray([0, 0]), np.asarray([0.1, np.nan]), np.zeros((2, 2, 2))),
++        (np.asarray([0, 0]), np.asarray([0.1, 0.2]), np.full((2, 2, 2), np.inf)),
++    ],
++)
++def test_calibration_rejects_anomaly_mismatch_and_nonfinite(labels, scores, maps):
++    with pytest.raises(ValueError):
++        study.fit_cell_calibration(labels, scores, maps)
++
++
++def test_query_pair_identity_and_artifact_path_guards():
++    identity = {
++        "samples": ["cat/test/a.png"],
++        "query_input_sha256": ["a" * 64],
++        "query_domains": list(study.QUERY_DOMAINS),
++        "query_domain_sha256": {"bicubic_x4": ["b" * 64], "swinir_x4": ["c" * 64]},
++    }
++    study.validate_pair_identity(identity, dict(identity))
++    different = dict(identity, query_input_sha256=["d" * 64])
++    with pytest.raises(ValueError, match="query_input_sha256"):
++        study.validate_pair_identity(identity, different)
++    for unsafe in ("../outside", "C:/outside", "folder\\outside", "/rooted", "bad\0path"):
++        with pytest.raises(ValueError):
++            study.safe_artifact_path(Path.cwd(), unsafe)
++
++
++def test_memory_and_disk_plans_keep_fixed_bank_and_reserve():
++    plan = study.bank_fit_plan(10, patches_per_image=784, dimension=1024, batch_size=8)
++    assert plan["fit_vectors"] == 7_840
++    assert plan["bank_bytes"] == 7_840 * 1024 * 4
++    study.check_fit_ram(plan, available_bytes=plan["required_available_ram_bytes"])
++    with pytest.raises(MemoryError, match="BANK_FIT_BLOCKED_MEMORY"):
++        study.check_fit_ram(plan, available_bytes=plan["required_available_ram_bytes"] - 1)
++
++    disk = study.output_disk_plan(3, 4, image_size=224, reserve_bytes=1_000)
++    study.check_output_disk(disk, free_bytes=disk["required_free_bytes"])
++    with pytest.raises(OSError, match="BANK_STUDY_BLOCKED_DISK"):
++        study.check_output_disk(disk, free_bytes=disk["required_free_bytes"] - 1)
++
++
++def test_complete_run_verifies_order_and_payload_hashes(tmp_path):
++    run_dir = tmp_path / "complete"
++    run_dir.mkdir()
++    expected = study.expected_condition_order(["cat/test/good/1.png"])
++    payload = run_dir / "raw.npz"
++    np.savez_compressed(payload, value=np.asarray([1.0]))
++    state = {
++        "schema_version": study.SCHEMA_VERSION,
++        "status": "COMPLETE",
++        "prediction_rows": [
++            {"bank_domain": bank, "query_domain": query, "sample": sample}
++            for bank, query, sample in expected
++        ],
++        "artifacts": [{"file": payload.name, "sha256": study.sha256_file(payload)}],
++    }
++    study.write_status(run_dir, state)
++    assert study.verify_complete_run(run_dir, expected)["status"] == "COMPLETE"
++    with pytest.raises(ValueError, match="order"):
++        study.verify_complete_run(run_dir, list(reversed(expected)))
++    payload.write_bytes(payload.read_bytes() + b"changed")
++    with pytest.raises(ValueError, match="changed"):
++        study.verify_complete_run(run_dir, expected)
++
++
++def test_tiny_saved_run_analyzes_bank_and_query_effects_separately(tmp_path):
++    run_dir = _make_complete_run(tmp_path)
++    output = analyzer.analyze([run_dir], tmp_path / "analysis")
++    pooled = list(csv.DictReader((output / "pooled_metric_contrasts.csv").open(encoding="utf-8")))
++    assert len(pooled) == 4
++    assert {row["contrast_type"] for row in pooled} == {"bank_domain", "query_domain"}
++    assert len(list(csv.DictReader((output / "per_image_mean_bootstrap.csv").open(encoding="utf-8")))) == 4
++    assert len(list(csv.DictReader((output / "normal_calibration_summary.csv").open(encoding="utf-8")))) == 4
++    assert len(list(csv.DictReader((output / "runtime_resources.csv").open(encoding="utf-8")))) == 2
++    quality = list(csv.DictReader((output / "query_quality_summary.csv").open(encoding="utf-8")))
++    assert len(quality) == 1
++    assert quality[0]["quality_computed_once_per_test_sample"] == "True"
++    metadata = json.loads((output / "analysis.json").read_text(encoding="utf-8"))
++    assert "per-image CI is not a pooled metric CI" in metadata["pooled_aupro_confidence_interval"]
++
++
++def test_analyzer_rejects_normal_per_image_aupro(tmp_path):
++    run_dir = _make_complete_run(tmp_path)
++    per_image_path = run_dir / "per_image.csv"
++    rows = list(csv.DictReader(per_image_path.open(encoding="utf-8")))
++    rows[1]["per_image_aupro"] = "0.2"
++    _write_csv(per_image_path, rows)
++    state_path = run_dir / "status.json"
++    state = json.loads(state_path.read_text(encoding="utf-8"))
++    for artifact in state["artifacts"]:
++        if artifact["file"] == per_image_path.name:
++            artifact["sha256"] = study.sha256_file(per_image_path)
++    study.write_status(run_dir, state)
++    with pytest.raises(ValueError, match="Normal samples"):
++        analyzer._load_run(run_dir)
++
++
++def test_fake_runner_e2e_preserves_failed_run_and_recovers_without_overwrite(monkeypatch, tmp_path):
++    import torch as real_torch
++    from PIL import Image
++    from torchvision import transforms as tv_transforms
++    from torchvision.transforms import InterpolationMode
++
++    data_root = tmp_path / "MVTecAD"
++    category = data_root / "hazelnut"
++    for folder in (category / "train" / "good", category / "test" / "good",
++                   category / "test" / "crack", category / "ground_truth" / "crack"):
++        folder.mkdir(parents=True)
++    license_path = data_root / "LICENSE.txt"
++    license_path.write_text("fixture license text", encoding="utf-8")
++    receipt = {
++        "dataset": "MVTec AD",
++        "source_url": runner.OFFICIAL_MVTEC_AD_URL,
++        "categories": ["hazelnut", "screw"],
++        "archive_sha256": "a" * 64,
++        "license_file": "LICENSE.txt",
++        "license_sha256": study.sha256_file(license_path),
++    }
++    (data_root / "dataset_provenance.json").write_text(json.dumps(receipt), encoding="utf-8")
++    for index in range(5):
++        pixels = np.full((250, 250, 3), 80 + index * 10, dtype=np.uint8)
++        Image.fromarray(pixels, "RGB").save(category / "train" / "good" / f"{index:03}.png")
++    Image.fromarray(np.full((250, 250, 3), 95, dtype=np.uint8), "RGB").save(
++        category / "test" / "good" / "good.png"
++    )
++    defect = np.full((250, 250, 3), 100, dtype=np.uint8)
++    defect[80:130, 80:130] = 240
++    Image.fromarray(defect, "RGB").save(category / "test" / "crack" / "defect.png")
++    mask = np.zeros((250, 250), dtype=np.uint8)
++    mask[80:130, 80:130] = 255
++    Image.fromarray(mask, "L").save(category / "ground_truth" / "crack" / "defect_mask.png")
++
++    class DatasetSplit(Enum):
++        TRAIN = "train"
++
++    class FakeMVTecDataset:
++        def __init__(self, source, classname, resize, imagesize, split):
++            files = sorted((Path(source) / classname / split.value / "good").glob("*.png"))
++            self.data_to_iterate = [(classname, "good", str(path), None) for path in files]
++
++        def __len__(self):
++            return len(self.data_to_iterate)
++
++    fake_mvtec = SimpleNamespace(
++        MVTecDataset=FakeMVTecDataset,
++        DatasetSplit=DatasetSplit,
++        IMAGENET_MEAN=[0.485, 0.456, 0.406],
++        IMAGENET_STD=[0.229, 0.224, 0.225],
++    )
++
++    class FakeCuda:
++        @staticmethod
++        def is_available():
++            return True
++
++        @staticmethod
++        def manual_seed_all(seed):
++            return None
++
++        @staticmethod
++        def reset_peak_memory_stats(device):
++            return None
++
++        @staticmethod
++        def synchronize(device):
++            return None
++
++        @staticmethod
++        def get_device_name(device):
++            return "fake-device-for-CPU-test"
++
++        @staticmethod
++        def mem_get_info(device):
++            return 4 * 1024**3, 6 * 1024**3
++
++        @staticmethod
++        def max_memory_allocated(device):
++            return 0
++
++        @staticmethod
++        def max_memory_reserved(device):
++            return 0
++
++        @staticmethod
++        def empty_cache():
++            return None
++
++    torch_proxy = SimpleNamespace(
++        __version__=real_torch.__version__,
++        version=SimpleNamespace(cuda="fake-cuda-for-test"),
++        cuda=FakeCuda,
++        device=real_torch.device,
++        manual_seed=real_torch.manual_seed,
++        zeros=real_torch.zeros,
++        set_num_threads=real_torch.set_num_threads,
++        get_num_threads=real_torch.get_num_threads,
++        utils=real_torch.utils,
++    )
++    monkeypatch.setattr(
++        runner.branch_b,
++        "_official_imports",
++        lambda: (torch_proxy, tv_transforms, InterpolationMode, None, None, None, None, fake_mvtec),
++    )
++    monkeypatch.setattr(runner.branch_b, "resolve_device", lambda requested, available: "cuda")
++
++    class FakeRestorer:
++        def __init__(self, *args, **kwargs):
++            pass
++
++        def restore(self, image):
++            enlarged = np.asarray(image.resize((224, 224), Image.Resampling.BICUBIC), dtype=np.uint16)
++            return Image.fromarray(np.minimum(enlarged + 3, 255).astype(np.uint8), "RGB")
++
++    class FakePatchCore:
++        def __init__(self):
++            self.anomaly_scorer = SimpleNamespace(
++                detection_features=np.empty((0, 1024), dtype=np.float32),
++                nn_method=SimpleNamespace(reset_index=lambda: None),
++            )
++
++        def fit(self, loader):
++            means = []
++            count = 0
++            for batch in loader:
++                assert np.all(batch["is_anomaly"].numpy() == 0)
++                means.extend(batch["image"].mean(dim=(1, 2, 3)).numpy().tolist())
++                count += int(batch["image"].shape[0])
++            assert count > 0
++            self.bank_mean = float(np.mean(means))
++            self.anomaly_scorer.detection_features = np.full(
++                (count * 784, 1024), self.bank_mean, dtype=np.float32
++            )
++
++    monkeypatch.setattr(runner, "SwinIRLightweight", FakeRestorer)
++    monkeypatch.setattr(runner, "_new_patchcore", lambda *args, **kwargs: FakePatchCore())
++
++    def fake_predict(model, tensor, image):
++        values = np.asarray(image.convert("L"), dtype=np.float32) / 255.0
++        return float(values.mean() + model.bank_mean), values * (1.0 + model.bank_mean)
++
++    monkeypatch.setattr(runner.branch_b, "_predict", fake_predict)
++    checkpoint = runner.ROOT / "checkpoints" / "swinir" / "002_lightweightSR_DIV2K_s64w8_SwinIR-S_x4.pth"
++    base_args = {
++        "category": "hazelnut", "seed": 11, "capsule_history_receipt": None,
++        "data_root": data_root, "output_root": tmp_path / "outputs",
++        "dataset_provenance": data_root / "dataset_provenance.json",
++        "backbone_checkpoint": runner.ROOT / "checkpoints" / "wide_resnet50_2-95faca4d.pth",
++        "swinir_checkpoint": checkpoint, "device": "cuda",
++    }
++    args = SimpleNamespace(**base_args, run_id="fake-failed")
++    original_predict = runner.branch_b._predict
++    monkeypatch.setattr(runner.branch_b, "_predict", lambda *args, **kwargs: (_ for _ in ()).throw(
++        RuntimeError("fixture inference failure")
++    ))
++    with pytest.raises(RuntimeError, match="fixture inference failure"):
++        runner.run(args)
++    failed_dir = tmp_path / "outputs" / "fake-failed" / "hazelnut" / "seed11"
++    failed_state = json.loads((failed_dir / "status.json").read_text(encoding="utf-8"))
++    assert failed_state["status"] == "FAILED"
++    assert "fixture inference failure" in failed_state["error"]
++
++    monkeypatch.setattr(runner.branch_b, "_predict", original_predict)
++    recovered_args = SimpleNamespace(**base_args, run_id="fake-recovered")
++    recovered_dir = runner.run(recovered_args)
++    recovered_state = json.loads((recovered_dir / "status.json").read_text(encoding="utf-8"))
++    assert recovered_state["status"] == "COMPLETE"
++    assert len(recovered_state["prediction_rows"]) == 8
++    assert recovered_state["bank_hashes"]["clean"] != recovered_state["bank_hashes"]["swinir_restored"]
++    analyzed = analyzer.analyze([recovered_dir], tmp_path / "fake-analysis")
++    assert (analyzed / "pooled_metric_contrasts.csv").is_file()
++    assert failed_state["status"] == "FAILED"
+-- 
+2.55.0.windows.5
+

@@ -1,0 +1,6 @@
+source: exp/phone-lighting-juhyung@7b868a34e9ed6c423e2a127bde12eae8687dfb21 dirty=[0]
+command: python scripts/smoke_test.py
+start: 2026-11-16 11:54:41 +0900
+CPU smoke test passed: 2 result rows
+exit_code: 0
+end: 2026-11-16 11:54:43 +0900

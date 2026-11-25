@@ -1,0 +1,60 @@
+{
+  "schema": "team-public-text-return-v1",
+  "owner": "juhyung",
+  "run_id": "fable52-rereview-20261112",
+  "prepared_utc": "2026-11-12T05:32:52.580759+00:00",
+  "review_status": "NOT_REVIEWED",
+  "array_contents_verified": false,
+  "files": [
+    {
+      "path": "RUN_RECORD.md",
+      "bytes": 2772,
+      "sha256": "8764cf409f9944d06d00747214fd455f42bbb40da01c1084b2ed33a61bdb432c"
+    },
+    {
+      "path": "PROGRESS.md",
+      "bytes": 6413,
+      "sha256": "3ae77b844ed87911c6309a085f38ea1c50be9826eaf44aa8768e9f426702d2ac"
+    },
+    {
+      "path": "DESIGN_DRAFT_FABLE52_20261112_v1.md",
+      "bytes": 4993,
+      "sha256": "3e61babfff3c6e27c54c8d372f7a34290ec5ab4f47d90b8cbde019807b260815"
+    },
+    {
+      "path": "DESIGN_REVIEW_FABLE52_20261112.md",
+      "bytes": 5967,
+      "sha256": "291b66a9aae217e1361349da638f757881d459b859cb3afaad99d83ded4bafd6"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 3378,
+      "sha256": "15756a74c9b0068411b7abda67f8224639caf8bc899fce1d51ba86dffbd2d210"
+    },
+    {
+      "path": "captures.csv",
+      "bytes": 8191,
+      "sha256": "f929bc596ea5dd66a311022de5c8341b73b95fe81af9c29038b31e2ed09e5990"
+    },
+    {
+      "path": "slots.csv",
+      "bytes": 655,
+      "sha256": "326450d9643aaa7bec95b99869a7e899c265a85a73d363d4944af24a1eb2e6a8"
+    },
+    {
+      "path": "repeatability.csv",
+      "bytes": 1537,
+      "sha256": "6f7c761386240a43072aa53744c58db6a7fd166bd665dd8076dd08fe4080c951"
+    },
+    {
+      "path": "recipe_summary.csv",
+      "bytes": 531,
+      "sha256": "d643218b27f1fe93165b4a1517f5b459621ffbd78fd4abd7913c4db445bea92e"
+    },
+    {
+      "path": "station_cycles.csv",
+      "bytes": 2118,
+      "sha256": "827c28ece6de2e2458e023c4c837f28857a17d66d654bb21d363721b11b23db2"
+    }
+  ]
+}

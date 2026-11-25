@@ -1,0 +1,15 @@
+part_id,session_id,recipe_id,repeat_id,attempts,history,final_state,final_row,resolved
+P1,S1,dim,1,1,a1:REVIEW,REVIEW,13,False
+P1,S1,flash,1,1,a1:RETAKE,RETAKE,14,False
+P1,S1,front,1,1,a1:PASS,PASS,2,True
+P1,S1,front,2,1,a1:PASS,PASS,3,True
+P1,S1,front,3,1,a1:RETAKE,RETAKE,4,False
+P1,S1,front,4,1,a1:RETAKE,RETAKE,15,False
+P1,S1,front,5,1,a1:REVIEW,REVIEW,16,False
+P1,S1,front,6,1,a1:REVIEW,REVIEW,12,False
+P1,S1,left,1,1,a1:PASS,PASS,5,True
+P1,S1,left,2,1,a1:PASS,PASS,6,True
+P1,S1,left,3,1,a1:REVIEW,REVIEW,7,False
+P1,S1,right,1,1,a1:PASS,PASS,8,True
+P1,S1,right,2,2,a1:RETAKE > a2:PASS,PASS,10,True
+P1,S1,right,3,1,a1:PASS,PASS,11,True

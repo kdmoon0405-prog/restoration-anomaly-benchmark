@@ -1,0 +1,6 @@
+transform,ACCEPT,REVIEW,RETAKE
+rotation_deg,3,5,0
+scale,2,3,2
+shift_fraction,3,0,2
+tilt_deg,1,0,4
+tilt_recentred_deg,1,4,2

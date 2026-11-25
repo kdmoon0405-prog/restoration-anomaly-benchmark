@@ -1,0 +1,13 @@
+category,check,n,max_abs_diff,exact_equal,mean_abs_diff
+hazelnut,query_psnr_bicubic,110,0.0,110,
+hazelnut,query_ssim_bicubic,110,0.0,110,
+hazelnut,query_psnr_swinir,110,0.0011848833233756295,0,
+hazelnut,query_ssim_swinir,110,1.4686106958428091e-05,0,
+hazelnut,clean_bank_bicubic_x4_per_image_aupro,70,0.0034344079070162126,4,0.00010121757750206668
+hazelnut,clean_bank_swinir_x4_per_image_aupro,70,0.0012411777259807577,2,8.733477345089858e-05
+screw,query_psnr_bicubic,160,0.0,160,
+screw,query_ssim_bicubic,160,0.0,160,
+screw,query_psnr_swinir,160,0.001526156014250546,0,
+screw,query_ssim_swinir,160,1.254410189677202e-05,0,
+screw,clean_bank_bicubic_x4_per_image_aupro,119,0.0007192246515026479,2,0.00014407941884644052
+screw,clean_bank_swinir_x4_per_image_aupro,119,0.004094227959255181,7,0.00022921893451456445

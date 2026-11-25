@@ -1,0 +1,17 @@
+cycle_id,kind,label,final_state,photos_used,retake_requested,reason,first_file,alternate_file,first_quality_state,second_quality_state,capture_seconds_measured,policy,inspection
+normal-3,normal,normal,OK,1,False,L0 reference: largest difference blob 0 px vs limit 25,20261115_151645.jpg,20261115_151653.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+foreign-1,foreign,simulated_defect,NG,1,False,L0 reference: largest difference blob 165 px vs limit 25,20261115_152031.jpg,20261115_152047.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+foreign-2,foreign,simulated_defect,NG,1,False,L0 reference: largest difference blob 165 px vs limit 25,20261115_152032.jpg,20261115_152048.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+foreign-3,foreign,simulated_defect,NG,1,False,L0 reference: largest difference blob 165 px vs limit 25,20261115_152032(0).jpg,20261115_152049.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+lowlight-1,lowlight,normal,OK,2,True,"first capture REVIEW (roi_too_dark;low_sharpness_vs_same_light_reference), alternate light used; L1 reference: largest difference blob 0 px vs limit 25",20261115_151607.jpg,20261115_151557.jpg,REVIEW,PASS,,ref_roi_same_light_v0.3,golden_reference_v0.1
+lowlight-2,lowlight,normal,OK,2,True,"first capture REVIEW (roi_too_dark;low_sharpness_vs_same_light_reference), alternate light used; L1 reference: largest difference blob 0 px vs limit 25",20261115_151618.jpg,20261115_151614.jpg,REVIEW,PASS,,ref_roi_same_light_v0.3,golden_reference_v0.1
+lowlight-3,lowlight,normal,OK,2,True,"first capture REVIEW (roi_too_dark;low_sharpness_vs_same_light_reference), alternate light used; L1 reference: largest difference blob 0 px vs limit 25",20261115_151635.jpg,20261115_151653.jpg,REVIEW,PASS,,ref_roi_same_light_v0.3,golden_reference_v0.1
+blur-1,blur,normal,REVIEW,1,True,first capture REVIEW: low_sharpness_vs_same_light_reference; retake_unavailable,20261115_151827.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+blur-2,blur,normal,REVIEW,1,True,first capture REVIEW: low_sharpness_vs_same_light_reference; retake_unavailable,20261115_151828.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+blur-3,blur,normal,REVIEW,1,True,first capture REVIEW: low_sharpness_vs_same_light_reference; retake_unavailable,20261115_151829.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+background-1,background,normal,OK,1,False,L0 reference: largest difference blob 24 px vs limit 25,20261115_152339.jpg,,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+background-2,background,normal,NG,1,False,L0 reference: largest difference blob 28 px vs limit 25,20261115_152340.jpg,,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+background-3,background,normal,OK,1,False,L0 reference: largest difference blob 23 px vs limit 25,20261115_152342.jpg,,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+tilt-1,tilt,normal,REVIEW,1,True,first capture REVIEW: outside_recipe_pose; retake_unavailable,20261115_152513.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+tilt-2,tilt,normal,REVIEW,1,True,first capture REVIEW: outside_recipe_pose; retake_unavailable,20261115_152514.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+tilt-3,tilt,normal,REVIEW,1,True,first capture REVIEW: outside_recipe_pose; retake_unavailable,20261115_152515.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1

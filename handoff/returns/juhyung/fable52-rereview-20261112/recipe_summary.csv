@@ -1,0 +1,7 @@
+scope,part_id,session_id,metric,recipes,between_recipe_range,mean_within_recipe_range
+baseline_no_policy,P1,S1,luma_mean,4,69.50811180240949,0.007061937976672539
+baseline_no_policy,P1,S1,clip_high_fraction,4,0.0,0.0
+baseline_no_policy,P1,S1,sharpness_tenengrad,4,0.07808658094455162,0.015945957283216707
+policy_pass_only,P1,S1,luma_mean,3,0.028976329387091937,0.0018568168620021197
+policy_pass_only,P1,S1,clip_high_fraction,3,0.0,0.0
+policy_pass_only,P1,S1,sharpness_tenengrad,3,0.0005592792273670794,2.4834025397565036e-05
