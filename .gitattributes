@@ -173,3 +173,7 @@ tests/test_bank_domain_study.py -text
 docs/BANK_DOMAIN_STUDY.md -text
 scripts/export_bank_domain_contract.py text eol=lf
 scripts/run_bank_domain_bicubic_extension.py text eol=lf
+scripts/run_image_score_aggregation.py text eol=lf
+src/sr_anomaly/image_score_aggregation.py text eol=lf
+scripts/summarize_image_score_aggregation.py text eol=lf
+scripts/run_image_score_aggregation_clean_control.py text eol=lf
