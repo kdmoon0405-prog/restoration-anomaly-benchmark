@@ -50,7 +50,7 @@ Each run directory contains `status.json`, `raw_clean.npz`, `raw_swinir_restored
 Analyze only a hash-verified complete run, with one `--run-dir` argument per category/seed:
 
 ```powershell
-.venv\Scripts\python.exe scripts\analyze_bank_domain_study.py `
+.venv\Scripts\python.exe scripts\analyze_bank_domain_full_runs.py `
   --run-dir outputs\bank-domain-study\<run-id>\hazelnut\seed11 `
   --output-dir outputs\bank-domain-study-analysis\<analysis-id>
 ```

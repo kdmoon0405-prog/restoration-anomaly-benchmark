@@ -1,0 +1,140 @@
+cycle_id,condition,file,light,variant,verdict,score,limit,tau,base_score,roi_valid_pixels,centroid_x,centroid_y,location_match,note
+normal-1,C0_direct,E-05.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-1,C1_bicubic_x4,E-05.jpg,L0,bicubic_x4,OK,0,25.0,0.895386278629303,0,173128,,,,
+normal-1,C1_swinir_x4,E-05.jpg,L0,swinir_x4,OK,0,25.0,1.30655837059021,0,173128,,,,
+normal-1,C2_policy_v0.2,E-05.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-1,C2_policy_v0.3,E-05.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-1,C3_two_lights,E-05.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-1,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+normal-2,C0_direct,E-07.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-2,C1_bicubic_x4,E-07.jpg,L0,bicubic_x4,OK,0,25.0,0.895386278629303,0,173128,,,,
+normal-2,C1_swinir_x4,E-07.jpg,L0,swinir_x4,OK,0,25.0,1.30655837059021,0,173128,,,,
+normal-2,C2_policy_v0.2,E-07.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-2,C2_policy_v0.3,E-07.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-2,C3_two_lights,E-07.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-2,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+normal-3,C0_direct,E-09.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-3,C1_bicubic_x4,E-09.jpg,L0,bicubic_x4,OK,0,25.0,0.895386278629303,0,173128,,,,
+normal-3,C1_swinir_x4,E-09.jpg,L0,swinir_x4,OK,0,25.0,1.30655837059021,0,173128,,,,
+normal-3,C2_policy_v0.2,E-09.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-3,C2_policy_v0.3,E-09.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-3,C3_two_lights,E-09.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-3,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+normal-4,C0_direct,E-11.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-4,C1_bicubic_x4,E-11.jpg,L0,bicubic_x4,OK,0,25.0,0.895386278629303,0,173128,,,,
+normal-4,C1_swinir_x4,E-11.jpg,L0,swinir_x4,OK,0,25.0,1.30655837059021,0,173128,,,,
+normal-4,C2_policy_v0.2,E-11.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-4,C2_policy_v0.3,E-11.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-4,C3_two_lights,E-11.jpg,L0,original,OK,0,25.0,0.3608730733394623,0,173128,,,,
+normal-4,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+foreign-P1-1,C0_direct,E-13.jpg,L0,original,NG,1932,25.0,0.3608730733394623,0,173128,390.68064182194615,402.57142857142856,,
+foreign-P1-1,C1_bicubic_x4,E-13.jpg,L0,bicubic_x4,NG,879,25.0,0.895386278629303,0,173128,392.2184300341297,400.1194539249147,,
+foreign-P1-1,C1_swinir_x4,E-13.jpg,L0,swinir_x4,NG,502,25.0,1.30655837059021,0,173128,391.92231075697214,402.8565737051793,,
+foreign-P1-1,C2_policy_v0.2,E-13.jpg,L0,original,NG,1932,25.0,0.3608730733394623,0,173128,390.68064182194615,402.57142857142856,,
+foreign-P1-1,C2_policy_v0.3,E-13.jpg,L0,original,NG,1932,25.0,0.3608730733394623,0,173128,390.68064182194615,402.57142857142856,,
+foreign-P1-1,C3_two_lights,E-13.jpg,L0,original,NG,1932,25.0,0.3608730733394623,0,173128,390.68064182194615,402.57142857142856,,
+foreign-P1-1,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+foreign-P1-2,C0_direct,E-15.jpg,L0,original,NG,1949,25.0,0.3608730733394623,0,173128,390.6839404822986,402.7542329399692,,
+foreign-P1-2,C1_bicubic_x4,E-15.jpg,L0,bicubic_x4,NG,871,25.0,0.895386278629303,0,173128,392.0401836969001,400.1653272101033,,
+foreign-P1-2,C1_swinir_x4,E-15.jpg,L0,swinir_x4,NG,500,25.0,1.30655837059021,0,173128,391.836,402.778,,
+foreign-P1-2,C2_policy_v0.2,E-15.jpg,L0,original,NG,1949,25.0,0.3608730733394623,0,173128,390.6839404822986,402.7542329399692,,
+foreign-P1-2,C2_policy_v0.3,E-15.jpg,L0,original,NG,1949,25.0,0.3608730733394623,0,173128,390.6839404822986,402.7542329399692,,
+foreign-P1-2,C3_two_lights,E-15.jpg,L0,original,NG,1949,25.0,0.3608730733394623,0,173128,390.6839404822986,402.7542329399692,,
+foreign-P1-2,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+foreign-P2-1,C0_direct,E-17.jpg,L0,original,NG,2223,25.0,0.3608730733394623,0,173128,200.71255060728745,312.5739991003149,,
+foreign-P2-1,C1_bicubic_x4,E-17.jpg,L0,bicubic_x4,NG,819,25.0,0.895386278629303,0,173128,204.54822954822956,311.14041514041514,,
+foreign-P2-1,C1_swinir_x4,E-17.jpg,L0,swinir_x4,NG,518,25.0,1.30655837059021,0,173128,202.82432432432432,310.5656370656371,,
+foreign-P2-1,C2_policy_v0.2,E-17.jpg,L0,original,NG,2223,25.0,0.3608730733394623,0,173128,200.71255060728745,312.5739991003149,,
+foreign-P2-1,C2_policy_v0.3,E-17.jpg,L0,original,NG,2223,25.0,0.3608730733394623,0,173128,200.71255060728745,312.5739991003149,,
+foreign-P2-1,C3_two_lights,E-17.jpg,L0,original,NG,2223,25.0,0.3608730733394623,0,173128,200.71255060728745,312.5739991003149,,
+foreign-P2-1,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+foreign-P2-2,C0_direct,E-19.jpg,L0,original,NG,2161,25.0,0.3608730733394623,0,173128,200.6108283202221,312.0758907913003,,
+foreign-P2-2,C1_bicubic_x4,E-19.jpg,L0,bicubic_x4,NG,812,25.0,0.895386278629303,0,173128,204.44827586206895,311.07142857142856,,
+foreign-P2-2,C1_swinir_x4,E-19.jpg,L0,swinir_x4,NG,525,25.0,1.30655837059021,0,173128,202.99428571428572,310.6247619047619,,
+foreign-P2-2,C2_policy_v0.2,E-19.jpg,L0,original,NG,2161,25.0,0.3608730733394623,0,173128,200.6108283202221,312.0758907913003,,
+foreign-P2-2,C2_policy_v0.3,E-19.jpg,L0,original,NG,2161,25.0,0.3608730733394623,0,173128,200.6108283202221,312.0758907913003,,
+foreign-P2-2,C3_two_lights,E-19.jpg,L0,original,NG,2161,25.0,0.3608730733394623,0,173128,200.6108283202221,312.0758907913003,,
+foreign-P2-2,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+foreign-P3-1,C0_direct,E-21.jpg,L0,original,NG,2452,25.0,0.3608730733394623,0,173128,575.8421696574225,347.3641924959217,,
+foreign-P3-1,C1_bicubic_x4,E-21.jpg,L0,bicubic_x4,NG,1042,25.0,0.895386278629303,0,173128,579.9299424184261,352.88003838771596,,
+foreign-P3-1,C1_swinir_x4,E-21.jpg,L0,swinir_x4,NG,690,25.0,1.30655837059021,0,173128,581.527536231884,351.3927536231884,,
+foreign-P3-1,C2_policy_v0.2,E-21.jpg,L0,original,NG,2452,25.0,0.3608730733394623,0,173128,575.8421696574225,347.3641924959217,,
+foreign-P3-1,C2_policy_v0.3,E-21.jpg,L0,original,NG,2452,25.0,0.3608730733394623,0,173128,575.8421696574225,347.3641924959217,,
+foreign-P3-1,C3_two_lights,E-21.jpg,L0,original,NG,2452,25.0,0.3608730733394623,0,173128,575.8421696574225,347.3641924959217,,
+foreign-P3-1,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+foreign-P3-2,C0_direct,E-23.jpg,L0,original,NG,2525,25.0,0.3608730733394623,0,173128,575.8372277227722,347.03049504950496,,
+foreign-P3-2,C1_bicubic_x4,E-23.jpg,L0,bicubic_x4,NG,1159,25.0,0.895386278629303,0,173128,577.8843830888698,351.2916307161346,,
+foreign-P3-2,C1_swinir_x4,E-23.jpg,L0,swinir_x4,NG,738,25.0,1.30655837059021,0,173128,580.5948509485095,352.1991869918699,,
+foreign-P3-2,C2_policy_v0.2,E-23.jpg,L0,original,NG,2525,25.0,0.3608730733394623,0,173128,575.8372277227722,347.03049504950496,,
+foreign-P3-2,C2_policy_v0.3,E-23.jpg,L0,original,NG,2525,25.0,0.3608730733394623,0,173128,575.8372277227722,347.03049504950496,,
+foreign-P3-2,C3_two_lights,E-23.jpg,L0,original,NG,2525,25.0,0.3608730733394623,0,173128,575.8372277227722,347.03049504950496,,
+foreign-P3-2,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+lowlight-1,C0_direct,E-25.jpg,L0,original,NG,112013,25.0,0.3608730733394623,0,173128,395.13984983885797,379.24003463883656,,
+lowlight-1,C1_bicubic_x4,E-25.jpg,L0,bicubic_x4,NG,403,25.0,0.895386278629303,0,173128,222.07196029776674,328.1439205955335,,
+lowlight-1,C1_swinir_x4,E-25.jpg,L0,swinir_x4,NG,67,25.0,1.30655837059021,0,173128,187.83582089552237,510.2238805970149,,
+lowlight-1,C3_two_lights,E-25.jpg,L0,original,NG,112013,25.0,0.3608730733394623,0,173128,395.13984983885797,379.24003463883656,,
+lowlight-1,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+lowlight-2,C0_direct,E-27.jpg,L0,original,NG,104012,25.0,0.3608730733394623,0,173128,394.19494865977003,384.2192823904934,,
+lowlight-2,C1_bicubic_x4,E-27.jpg,L0,bicubic_x4,NG,276,25.0,0.895386278629303,0,173128,584.8731884057971,337.17028985507244,,
+lowlight-2,C1_swinir_x4,E-27.jpg,L0,swinir_x4,NG,81,25.0,1.30655837059021,0,173128,186.65432098765433,258.5061728395062,,
+lowlight-2,C3_two_lights,E-27.jpg,L0,original,NG,104012,25.0,0.3608730733394623,0,173128,394.19494865977003,384.2192823904934,,
+lowlight-2,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-1,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-1,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-1,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-1,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-1,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-2,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-2,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-2,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-2,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+blur-2,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m1-clear,C0_direct,E-33.jpg,L0,original,NG,1974,25.0,0.3608730733394623,0,173128,210.76697061803443,521.1732522796352,,
+micro-m1-clear,C1_bicubic_x4,E-33.jpg,L0,bicubic_x4,NG,479,25.0,0.895386278629303,0,173128,197.87265135699374,525.8162839248434,,
+micro-m1-clear,C1_swinir_x4,E-33.jpg,L0,swinir_x4,NG,102,25.0,1.30655837059021,0,173128,374.6470588235294,395.65686274509807,,
+micro-m1-clear,C2_policy_v0.2,E-33.jpg,L0,original,NG,1974,25.0,0.3608730733394623,0,173128,210.76697061803443,521.1732522796352,,
+micro-m1-clear,C2_policy_v0.3,E-33.jpg,L0,original,NG,1974,25.0,0.3608730733394623,0,173128,210.76697061803443,521.1732522796352,,
+micro-m1-clear,C3_two_lights,E-33.jpg,L0,original,NG,1974,25.0,0.3608730733394623,0,173128,210.76697061803443,521.1732522796352,,
+micro-m1-clear,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m1-lowlight,C0_direct,E-35.jpg,L0,original,NG,115546,25.0,0.3608730733394623,0,173128,393.5284042718917,377.31635019818947,,
+micro-m1-lowlight,C1_bicubic_x4,E-35.jpg,L0,bicubic_x4,NG,364,25.0,0.895386278629303,0,173128,352.2774725274725,447.6923076923077,,
+micro-m1-lowlight,C1_swinir_x4,E-35.jpg,L0,swinir_x4,NG,86,25.0,1.30655837059021,0,173128,374.93023255813955,395.7674418604651,,
+micro-m1-lowlight,C3_two_lights,E-35.jpg,L0,original,NG,115546,25.0,0.3608730733394623,0,173128,393.5284042718917,377.31635019818947,,
+micro-m1-lowlight,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m1-blur,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m1-blur,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m1-blur,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m1-blur,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m1-blur,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-clear,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-clear,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-clear,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-clear,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-clear,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-lowlight,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-lowlight,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-lowlight,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-lowlight,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-lowlight,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-blur,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-blur,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-blur,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-blur,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m2-blur,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-clear,C0_direct,E-45.jpg,L0,original,NG,23590,25.0,0.3608730733394623,0,173128,249.81801610852057,356.40805426027975,,
+micro-m3-clear,C1_bicubic_x4,E-45.jpg,L0,bicubic_x4,NG,975,25.0,0.895386278629303,0,173128,207.16820512820513,523.4974358974359,,
+micro-m3-clear,C1_swinir_x4,E-45.jpg,L0,swinir_x4,NG,154,25.0,1.30655837059021,0,173128,186.33766233766235,256.8051948051948,,
+micro-m3-clear,C2_policy_v0.2,E-45.jpg,L0,original,NG,23590,25.0,0.3608730733394623,0,173128,249.81801610852057,356.40805426027975,,
+micro-m3-clear,C2_policy_v0.3,E-45.jpg,L0,original,NG,23590,25.0,0.3608730733394623,0,173128,249.81801610852057,356.40805426027975,,
+micro-m3-clear,C3_two_lights,E-45.jpg,L0,original,NG,23590,25.0,0.3608730733394623,0,173128,249.81801610852057,356.40805426027975,,
+micro-m3-clear,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-lowlight,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-lowlight,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-lowlight,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-lowlight,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-lowlight,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-blur,C0_direct,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-blur,C1_bicubic_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-blur,C1_swinir_x4,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-blur,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor
+micro-m3-blur,C3_two_lights,,,,ERROR,,,,,,,,,not registered to the anchor

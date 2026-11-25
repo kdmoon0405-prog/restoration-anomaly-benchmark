@@ -167,10 +167,10 @@ scripts/diagnose_image_score.py text eol=lf
 scripts/run_realistic_noise_v2.py text eol=lf
 src/sr_anomaly/realistic_noise_v2.py text eol=lf
 scripts/run_bank_domain_study.py -text
-scripts/analyze_bank_domain_full_runs.py -text
+scripts/analyze_bank_domain_full_runs.py -text whitespace=cr-at-eol
 src/sr_anomaly/bank_domain_study.py -text
-tests/test_bank_domain_study.py -text
-docs/BANK_DOMAIN_STUDY.md -text
+tests/test_bank_domain_study.py -text whitespace=cr-at-eol
+docs/BANK_DOMAIN_STUDY.md -text whitespace=cr-at-eol
 scripts/export_bank_domain_contract.py text eol=lf
 scripts/run_bank_domain_bicubic_extension.py text eol=lf
 scripts/run_image_score_aggregation.py text eol=lf
@@ -196,3 +196,7 @@ analysis/noise_repeatability_20261111/**/*.png -diff
 analysis/image_score_return_20261111/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # Preserve intentional patch context and mail-footer whitespace.
 handoff/code/*.patch whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+
+# Published comparisons and their provenance use stable line endings.
+results/**/*.csv text eol=lf
+results/**/*.md text eol=lf

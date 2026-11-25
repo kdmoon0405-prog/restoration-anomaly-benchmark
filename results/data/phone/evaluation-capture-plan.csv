@@ -1,0 +1,51 @@
+file,part_id,session_id,recipe_id,repeat_id,attempt,label_status,station_role,cycle_id,cycle_kind,light,light_position,flash,ae_af_locked,hdr,capture_group,case_id,planned_condition,planned_only,plan_version
+E-01.jpg,gpuBack01,E2,REF_L0,1,1,unknown,reference,,,L0,baseline (taped position),off,,,base32_v2,REF_L0,clear,yes,eval_v2_frozen_20261117
+E-02.jpg,gpuBack01,E2,REF_L1,1,1,unknown,reference,,,L1,left low side (taped position),off,,,base32_v2,REF_L1,clear,yes,eval_v2_frozen_20261117
+E-03.jpg,gpuBack01,E2,CAL_L0,1,1,unknown,calibration,,,L0,baseline (taped position),off,,,base32_v2,CAL_L0,clear,yes,eval_v2_frozen_20261117
+E-04.jpg,gpuBack01,E2,CAL_L1,1,1,unknown,calibration,,,L1,left low side (taped position),off,,,base32_v2,CAL_L1,clear,yes,eval_v2_frozen_20261117
+E-05.jpg,gpuBack01,E2,N_L0,1,1,unknown,first,normal-1,normal,L0,baseline (taped position),off,,,base32_v2,normal-1,clear,yes,eval_v2_frozen_20261117
+E-06.jpg,gpuBack01,E2,N_L1,1,1,unknown,alternate,normal-1,normal,L1,left low side (taped position),off,,,base32_v2,normal-1,clear,yes,eval_v2_frozen_20261117
+E-07.jpg,gpuBack01,E2,N_L0,2,1,unknown,first,normal-2,normal,L0,baseline (taped position),off,,,base32_v2,normal-2,clear,yes,eval_v2_frozen_20261117
+E-08.jpg,gpuBack01,E2,N_L1,2,1,unknown,alternate,normal-2,normal,L1,left low side (taped position),off,,,base32_v2,normal-2,clear,yes,eval_v2_frozen_20261117
+E-09.jpg,gpuBack01,E2,N_L0,3,1,unknown,first,normal-3,normal,L0,baseline (taped position),off,,,base32_v2,normal-3,clear,yes,eval_v2_frozen_20261117
+E-10.jpg,gpuBack01,E2,N_L1,3,1,unknown,alternate,normal-3,normal,L1,left low side (taped position),off,,,base32_v2,normal-3,clear,yes,eval_v2_frozen_20261117
+E-11.jpg,gpuBack01,E2,N_L0,4,1,unknown,first,normal-4,normal,L0,baseline (taped position),off,,,base32_v2,normal-4,clear,yes,eval_v2_frozen_20261117
+E-12.jpg,gpuBack01,E2,N_L1,4,1,unknown,alternate,normal-4,normal,L1,left low side (taped position),off,,,base32_v2,normal-4,clear,yes,eval_v2_frozen_20261117
+E-13.jpg,gpuBack01,E2,F_P1_L0,1,1,simulated_defect,first,foreign-P1-1,foreign,L0,baseline (taped position),off,,,base32_v2,foreign-P1-1,clear,yes,eval_v2_frozen_20261117
+E-14.jpg,gpuBack01,E2,F_P1_L1,1,1,simulated_defect,alternate,foreign-P1-1,foreign,L1,left low side (taped position),off,,,base32_v2,foreign-P1-1,clear,yes,eval_v2_frozen_20261117
+E-15.jpg,gpuBack01,E2,F_P1_L0,2,1,simulated_defect,first,foreign-P1-2,foreign,L0,baseline (taped position),off,,,base32_v2,foreign-P1-2,clear,yes,eval_v2_frozen_20261117
+E-16.jpg,gpuBack01,E2,F_P1_L1,2,1,simulated_defect,alternate,foreign-P1-2,foreign,L1,left low side (taped position),off,,,base32_v2,foreign-P1-2,clear,yes,eval_v2_frozen_20261117
+E-17.jpg,gpuBack01,E2,F_P2_L0,1,1,simulated_defect,first,foreign-P2-1,foreign,L0,baseline (taped position),off,,,base32_v2,foreign-P2-1,clear,yes,eval_v2_frozen_20261117
+E-18.jpg,gpuBack01,E2,F_P2_L1,1,1,simulated_defect,alternate,foreign-P2-1,foreign,L1,left low side (taped position),off,,,base32_v2,foreign-P2-1,clear,yes,eval_v2_frozen_20261117
+E-19.jpg,gpuBack01,E2,F_P2_L0,2,1,simulated_defect,first,foreign-P2-2,foreign,L0,baseline (taped position),off,,,base32_v2,foreign-P2-2,clear,yes,eval_v2_frozen_20261117
+E-20.jpg,gpuBack01,E2,F_P2_L1,2,1,simulated_defect,alternate,foreign-P2-2,foreign,L1,left low side (taped position),off,,,base32_v2,foreign-P2-2,clear,yes,eval_v2_frozen_20261117
+E-21.jpg,gpuBack01,E2,F_P3_L0,1,1,simulated_defect,first,foreign-P3-1,foreign,L0,baseline (taped position),off,,,base32_v2,foreign-P3-1,clear,yes,eval_v2_frozen_20261117
+E-22.jpg,gpuBack01,E2,F_P3_L1,1,1,simulated_defect,alternate,foreign-P3-1,foreign,L1,left low side (taped position),off,,,base32_v2,foreign-P3-1,clear,yes,eval_v2_frozen_20261117
+E-23.jpg,gpuBack01,E2,F_P3_L0,2,1,simulated_defect,first,foreign-P3-2,foreign,L0,baseline (taped position),off,,,base32_v2,foreign-P3-2,clear,yes,eval_v2_frozen_20261117
+E-24.jpg,gpuBack01,E2,F_P3_L1,2,1,simulated_defect,alternate,foreign-P3-2,foreign,L1,left low side (taped position),off,,,base32_v2,foreign-P3-2,clear,yes,eval_v2_frozen_20261117
+E-25.jpg,gpuBack01,E2,LOW,1,1,unknown,first,lowlight-1,lowlight,other,room light off,off,,,base32_v2,lowlight-1,lowlight,yes,eval_v2_frozen_20261117
+E-26.jpg,gpuBack01,E2,LOW_ALT_L1,1,1,unknown,alternate,lowlight-1,lowlight,L1,left low side (taped position),off,,,base32_v2,lowlight-1,clear,yes,eval_v2_frozen_20261117
+E-27.jpg,gpuBack01,E2,LOW,2,1,unknown,first,lowlight-2,lowlight,other,room light off,off,,,base32_v2,lowlight-2,lowlight,yes,eval_v2_frozen_20261117
+E-28.jpg,gpuBack01,E2,LOW_ALT_L1,2,1,unknown,alternate,lowlight-2,lowlight,L1,left low side (taped position),off,,,base32_v2,lowlight-2,clear,yes,eval_v2_frozen_20261117
+E-29.jpg,gpuBack01,E2,BLUR_L0,1,1,unknown,first,blur-1,blur,L0,baseline (taped position),off,,,base32_v2,blur-1,blur,yes,eval_v2_frozen_20261117
+E-30.jpg,gpuBack01,E2,BLUR_ALT_L1,1,1,unknown,alternate,blur-1,blur,L1,left low side (taped position),off,,,base32_v2,blur-1,clear,yes,eval_v2_frozen_20261117
+E-31.jpg,gpuBack01,E2,BLUR_L0,2,1,unknown,first,blur-2,blur,L0,baseline (taped position),off,,,base32_v2,blur-2,blur,yes,eval_v2_frozen_20261117
+E-32.jpg,gpuBack01,E2,BLUR_ALT_L1,2,1,unknown,alternate,blur-2,blur,L1,left low side (taped position),off,,,base32_v2,blur-2,blur,yes,eval_v2_frozen_20261117
+E-33.jpg,gpuBack01,E2,MICRO_M1_clear_L0,1,1,simulated_defect,first,micro-m1-clear,foreign,L0,baseline (taped position),off,,,micro18_challenge,M1,clear,yes,eval_v2_frozen_20261117
+E-34.jpg,gpuBack01,E2,MICRO_M1_clear_L1,1,1,simulated_defect,alternate,micro-m1-clear,foreign,L1,left low side (taped position),off,,,micro18_challenge,M1,clear,yes,eval_v2_frozen_20261117
+E-35.jpg,gpuBack01,E2,MICRO_M1_lowlight_L0,1,1,simulated_defect,first,micro-m1-lowlight,foreign,L0,baseline (taped position),off,,,micro18_challenge,M1,lowlight,yes,eval_v2_frozen_20261117
+E-36.jpg,gpuBack01,E2,MICRO_M1_lowlight_L1,1,1,simulated_defect,alternate,micro-m1-lowlight,foreign,L1,left low side (taped position),off,,,micro18_challenge,M1,clear,yes,eval_v2_frozen_20261117
+E-37.jpg,gpuBack01,E2,MICRO_M1_blur_L0,1,1,simulated_defect,first,micro-m1-blur,foreign,L0,baseline (taped position),off,,,micro18_challenge,M1,blur,yes,eval_v2_frozen_20261117
+E-38.jpg,gpuBack01,E2,MICRO_M1_blur_L1,1,1,simulated_defect,alternate,micro-m1-blur,foreign,L1,left low side (taped position),off,,,micro18_challenge,M1,clear,yes,eval_v2_frozen_20261117
+E-39.jpg,gpuBack01,E2,MICRO_M2_clear_L0,1,1,simulated_defect,first,micro-m2-clear,foreign,L0,baseline (taped position),off,,,micro18_challenge,M2,clear,yes,eval_v2_frozen_20261117
+E-40.jpg,gpuBack01,E2,MICRO_M2_clear_L1,1,1,simulated_defect,alternate,micro-m2-clear,foreign,L1,left low side (taped position),off,,,micro18_challenge,M2,clear,yes,eval_v2_frozen_20261117
+E-41.jpg,gpuBack01,E2,MICRO_M2_lowlight_L0,1,1,simulated_defect,first,micro-m2-lowlight,foreign,L0,baseline (taped position),off,,,micro18_challenge,M2,lowlight,yes,eval_v2_frozen_20261117
+E-42.jpg,gpuBack01,E2,MICRO_M2_lowlight_L1,1,1,simulated_defect,alternate,micro-m2-lowlight,foreign,L1,left low side (taped position),off,,,micro18_challenge,M2,clear,yes,eval_v2_frozen_20261117
+E-43.jpg,gpuBack01,E2,MICRO_M2_blur_L0,1,1,simulated_defect,first,micro-m2-blur,foreign,L0,baseline (taped position),off,,,micro18_challenge,M2,blur,yes,eval_v2_frozen_20261117
+E-44.jpg,gpuBack01,E2,MICRO_M2_blur_L1,1,1,simulated_defect,alternate,micro-m2-blur,foreign,L1,left low side (taped position),off,,,micro18_challenge,M2,clear,yes,eval_v2_frozen_20261117
+E-45.jpg,gpuBack01,E2,MICRO_M3_clear_L0,1,1,simulated_defect,first,micro-m3-clear,foreign,L0,baseline (taped position),off,,,micro18_challenge,M3,clear,yes,eval_v2_frozen_20261117
+E-46.jpg,gpuBack01,E2,MICRO_M3_clear_L1,1,1,simulated_defect,alternate,micro-m3-clear,foreign,L1,left low side (taped position),off,,,micro18_challenge,M3,clear,yes,eval_v2_frozen_20261117
+E-47.jpg,gpuBack01,E2,MICRO_M3_lowlight_L0,1,1,simulated_defect,first,micro-m3-lowlight,foreign,L0,baseline (taped position),off,,,micro18_challenge,M3,lowlight,yes,eval_v2_frozen_20261117
+E-48.jpg,gpuBack01,E2,MICRO_M3_lowlight_L1,1,1,simulated_defect,alternate,micro-m3-lowlight,foreign,L1,left low side (taped position),off,,,micro18_challenge,M3,clear,yes,eval_v2_frozen_20261117
+E-49.jpg,gpuBack01,E2,MICRO_M3_blur_L0,1,1,simulated_defect,first,micro-m3-blur,foreign,L0,baseline (taped position),off,,,micro18_challenge,M3,blur,yes,eval_v2_frozen_20261117
+E-50.jpg,gpuBack01,E2,MICRO_M3_blur_L1,1,1,simulated_defect,alternate,micro-m3-blur,foreign,L1,left low side (taped position),off,,,micro18_challenge,M3,clear,yes,eval_v2_frozen_20261117

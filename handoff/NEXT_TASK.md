@@ -1,16 +1,9 @@
-# 주형의 다음 작업
+# 제출 및 후속 검증 범위
 
-2026-11-17 지혁추가반환을수신했다. 기존24/24와확장4/4는수행완료보고이며,CPU는이번확장4의receipt/CSV/image AUROC를확인했다. 기존24의원래6개반환물과미푸시코드/CPU분석기는수신대기다.
+제출 자료는 [상세 결과보고서와 그림](../results/README.md)에 정리했다. 제출 표지의 확정 제목과 팀 정보를 확인한다.
 
-먼저 [추가 수신 후 지시](../docs/JIHYUK_EXTENSION_RECEIVED_FOLLOWUP_20261117.md)와 [CPU 검토](../analysis/jihyuk_bicubic_bank_return_20261117/REVIEW.md)를읽는다. 이전‘24+4전체신규실행’지시는완료결과회수·통합·사진반환으로바꿨다.
+보고서에 기록한 결과를 위해 동일 실험을 반복할 필요는 없다. 다음 결과를 추가할 때는 해당 검증을 먼저 설계한다.
 
-1. 지혁에게기존6run metadata/집계와source-only8af5aa코드묶음을받는다. HTTPS쓰기인증복구를기다릴필요는없다.
-2. 현재받은확장4와기존24를family별로통합하고소스/query/split을대조한다. 실제빈부분을확인하기전에기존조건전체를다시실행하지않는다.
-3. [선정6사례](../analysis/jihyuk_bicubic_bank_return_20261117/selected_visual_cases.csv)의RGB/GT/각bank-query지도를지혁의저장raw결과에서내보낸다. Screw의화질상승·검사하락사례를포함한다.
-4. [통합 프롬프트](../docs/PROMPT_JUHYUNG_END_TO_END_20261117.md)의필요구현·실물사진·촬영전50장제안·사람판독·보고서/A0·검토수정을이어간다.
-
-확장metadata는handoff/returns/jihyuk의두bicubic-bank run,실행측4파일patch는handoff/patches/jihyuk-bicubic-bank-extension.patch에있다. 원래기본24와CPU분석기코드가이patch에포함됐다고가정하지않는다.
-
-기존phone24장/16cycle은개발결과이고정상13은OK6/NG1/REVIEW6이다. 실제최종private와D-20261115-17은수신됐다. 새촬영/사람판독/실제취득시간/팀정보는별도입력이다. 공개자료와비공개사진/private반환을구분하고기존source·worker·자원guard를유지한다.
-
-A0 PDF마감은2026-12-01 23:59KST이고실제발표일은미확인이다.
+- 같은 원본의 복원 전후에서 사람과 자동 검사 모두 개선됐는지 확인하려면 블라인드 사람 판독과 고정한 자동 검사 절차에서 미검·오검 및 위치 일치도를 비교한다.
+- 동일 조명 기준 정렬을 독립 평가하려면 촬영 및 실행 규칙을 먼저 고정하고 별도 촬영 세션을 사용한다.
+- 양산 적용을 판단하려면 복수 기판, 실제 제조 결함, 실시간 촬영·조명 전환 및 검사 시간을 기록한다.

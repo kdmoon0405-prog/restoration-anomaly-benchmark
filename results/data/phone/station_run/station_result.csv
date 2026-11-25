@@ -1,0 +1,17 @@
+cycle_id,kind,label,final_state,photos_used,retake_requested,reason,first_file,alternate_file,first_quality_state,second_quality_state,capture_seconds_measured,policy,inspection
+normal-3,normal,normal,OK,1,False,L0 reference: largest difference blob 0 px vs limit 25,D-08.jpg,D-09.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+foreign-1,foreign,simulated_defect,NG,1,False,L0 reference: largest difference blob 165 px vs limit 25,D-13.jpg,D-16.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+foreign-2,foreign,simulated_defect,NG,1,False,L0 reference: largest difference blob 165 px vs limit 25,D-14.jpg,D-17.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+foreign-3,foreign,simulated_defect,NG,1,False,L0 reference: largest difference blob 165 px vs limit 25,D-15.jpg,D-18.jpg,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+lowlight-1,lowlight,normal,OK,2,True,"first capture REVIEW (roi_too_dark;low_sharpness_vs_same_light_reference), alternate light used; L1 reference: largest difference blob 0 px vs limit 25",D-03.jpg,D-02.jpg,REVIEW,PASS,,ref_roi_same_light_v0.3,golden_reference_v0.1
+lowlight-2,lowlight,normal,OK,2,True,"first capture REVIEW (roi_too_dark;low_sharpness_vs_same_light_reference), alternate light used; L1 reference: largest difference blob 0 px vs limit 25",D-05.jpg,D-04.jpg,REVIEW,PASS,,ref_roi_same_light_v0.3,golden_reference_v0.1
+lowlight-3,lowlight,normal,OK,2,True,"first capture REVIEW (roi_too_dark;low_sharpness_vs_same_light_reference), alternate light used; L1 reference: largest difference blob 0 px vs limit 25",D-07.jpg,D-09.jpg,REVIEW,PASS,,ref_roi_same_light_v0.3,golden_reference_v0.1
+blur-1,blur,normal,REVIEW,1,True,first capture REVIEW: low_sharpness_vs_same_light_reference; retake_unavailable,D-10.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+blur-2,blur,normal,REVIEW,1,True,first capture REVIEW: low_sharpness_vs_same_light_reference; retake_unavailable,D-11.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+blur-3,blur,normal,REVIEW,1,True,first capture REVIEW: low_sharpness_vs_same_light_reference; retake_unavailable,D-12.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+background-1,background,normal,OK,1,False,L0 reference: largest difference blob 24 px vs limit 25,D-19.jpg,,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+background-2,background,normal,NG,1,False,L0 reference: largest difference blob 28 px vs limit 25,D-20.jpg,,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+background-3,background,normal,OK,1,False,L0 reference: largest difference blob 23 px vs limit 25,D-21.jpg,,PASS,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+tilt-1,tilt,normal,REVIEW,1,True,first capture REVIEW: outside_recipe_pose; retake_unavailable,D-22.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+tilt-2,tilt,normal,REVIEW,1,True,first capture REVIEW: outside_recipe_pose; retake_unavailable,D-23.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1
+tilt-3,tilt,normal,REVIEW,1,True,first capture REVIEW: outside_recipe_pose; retake_unavailable,D-24.jpg,,REVIEW,,,ref_roi_same_light_v0.3,golden_reference_v0.1

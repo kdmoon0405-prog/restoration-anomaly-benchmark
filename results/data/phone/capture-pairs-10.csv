@@ -1,0 +1,11 @@
+cycle_id,condition_first,condition_alternate,label,photo_first,photo_alternate,rater_1_first,rater_1_alternate,rater_2_first,rater_2_alternate,fixed_cycle,dev_cycle,dev_photos_used,dev_quality_first,dev_quality_alternate
+lowlight-1,lowlight,clear,normal,25,26,hard_to_read,well_visible,uncertain,well_visible,REVIEW,OK,2,RETAKE,PASS
+lowlight-2,lowlight,clear,normal,27,28,hard_to_read,well_visible,uncertain,well_visible,REVIEW,OK,2,RETAKE,PASS
+blur-1,blur,clear,normal,29,30,hard_to_read,well_visible,hard_to_read,well_visible,REVIEW,OK,2,RETAKE,PASS
+blur-2,blur,blur,normal,31,32,hard_to_read,hard_to_read,hard_to_read,hard_to_read,REVIEW,REVIEW,2,RETAKE,REVIEW
+micro-m1-lowlight,lowlight,clear,simulated_defect,35,36,hard_to_read,uncertain,uncertain,well_visible,REVIEW,NG,2,RETAKE,PASS
+micro-m1-blur,blur,clear,simulated_defect,37,38,hard_to_read,uncertain,hard_to_read,well_visible,REVIEW,NG,2,RETAKE,PASS
+micro-m2-lowlight,lowlight,clear,simulated_defect,41,42,hard_to_read,well_visible,uncertain,well_visible,REVIEW,NG,2,RETAKE,PASS
+micro-m2-blur,blur,clear,simulated_defect,43,44,hard_to_read,well_visible,hard_to_read,well_visible,REVIEW,NG,2,RETAKE,PASS
+micro-m3-lowlight,lowlight,clear,simulated_defect,47,48,hard_to_read,uncertain,uncertain,well_visible,REVIEW,NG,2,RETAKE,PASS
+micro-m3-blur,blur,clear,simulated_defect,49,50,hard_to_read,uncertain,hard_to_read,well_visible,REVIEW,NG,2,RETAKE,PASS

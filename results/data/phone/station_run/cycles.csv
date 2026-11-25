@@ -1,0 +1,113 @@
+cycle_id,kind,label,condition,first_file,alternate_file,final_state,captures_used,retake_requested,first_quality_state,first_quality_reasons,second_quality_state,second_quality_reasons,note,scores,limits
+normal-3,normal,normal,C0_direct,D-08.jpg,D-09.jpg,OK,1,False,,,,,held-out normal repeat; electrical state unknown,0,25
+normal-3,normal,normal,C1_bicubic_x4,D-08.jpg,D-09.jpg,OK,1,False,,,,,held-out normal repeat; electrical state unknown,0,25
+normal-3,normal,normal,C1_swinir_x4,D-08.jpg,D-09.jpg,OK,1,False,,,,,held-out normal repeat; electrical state unknown,0,25
+normal-3,normal,normal,C2_policy_v0.1_roi,D-08.jpg,D-09.jpg,OK,2,True,RETAKE,clip_high,PASS,,held-out normal repeat; electrical state unknown,0,25
+normal-3,normal,normal,C2_policy_v0.2,D-08.jpg,D-09.jpg,OK,1,False,PASS,,,,held-out normal repeat; electrical state unknown,0,25
+normal-3,normal,normal,C2_policy_v0.3,D-08.jpg,D-09.jpg,OK,1,False,PASS,,,,held-out normal repeat; electrical state unknown,0,25
+normal-3,normal,normal,C3_two_lights,D-08.jpg,D-09.jpg,OK,2,False,,,,,held-out normal repeat; electrical state unknown,0/0,25/25
+foreign-1,foreign,simulated_defect,C0_direct,D-13.jpg,D-16.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-1,foreign,simulated_defect,C1_bicubic_x4,D-13.jpg,D-16.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",124,25
+foreign-1,foreign,simulated_defect,C1_swinir_x4,D-13.jpg,D-16.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",129,25
+foreign-1,foreign,simulated_defect,C2_policy_v0.1_roi,D-13.jpg,D-16.jpg,REVIEW,2,True,RETAKE,clip_high;setup_moved,REVIEW,setup_moved,"surface_foreign_object_simulation, same object and position",,
+foreign-1,foreign,simulated_defect,C2_policy_v0.2,D-13.jpg,D-16.jpg,NG,1,False,PASS,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-1,foreign,simulated_defect,C2_policy_v0.3,D-13.jpg,D-16.jpg,NG,1,False,PASS,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-1,foreign,simulated_defect,C3_two_lights,D-13.jpg,D-16.jpg,NG,2,False,,,,,"surface_foreign_object_simulation, same object and position",165/1515,25/25
+foreign-2,foreign,simulated_defect,C0_direct,D-14.jpg,D-17.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-2,foreign,simulated_defect,C1_bicubic_x4,D-14.jpg,D-17.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",117,25
+foreign-2,foreign,simulated_defect,C1_swinir_x4,D-14.jpg,D-17.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",127,25
+foreign-2,foreign,simulated_defect,C2_policy_v0.1_roi,D-14.jpg,D-17.jpg,REVIEW,2,True,RETAKE,clip_high;setup_moved,REVIEW,setup_moved,"surface_foreign_object_simulation, same object and position",,
+foreign-2,foreign,simulated_defect,C2_policy_v0.2,D-14.jpg,D-17.jpg,NG,1,False,PASS,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-2,foreign,simulated_defect,C2_policy_v0.3,D-14.jpg,D-17.jpg,NG,1,False,PASS,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-2,foreign,simulated_defect,C3_two_lights,D-14.jpg,D-17.jpg,NG,2,False,,,,,"surface_foreign_object_simulation, same object and position",165/1500,25/25
+foreign-3,foreign,simulated_defect,C0_direct,D-15.jpg,D-18.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-3,foreign,simulated_defect,C1_bicubic_x4,D-15.jpg,D-18.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",121,25
+foreign-3,foreign,simulated_defect,C1_swinir_x4,D-15.jpg,D-18.jpg,NG,1,False,,,,,"surface_foreign_object_simulation, same object and position",130,25
+foreign-3,foreign,simulated_defect,C2_policy_v0.1_roi,D-15.jpg,D-18.jpg,REVIEW,2,True,RETAKE,clip_high;setup_moved,REVIEW,setup_moved,"surface_foreign_object_simulation, same object and position",,
+foreign-3,foreign,simulated_defect,C2_policy_v0.2,D-15.jpg,D-18.jpg,NG,1,False,PASS,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-3,foreign,simulated_defect,C2_policy_v0.3,D-15.jpg,D-18.jpg,NG,1,False,PASS,,,,"surface_foreign_object_simulation, same object and position",165,25
+foreign-3,foreign,simulated_defect,C3_two_lights,D-15.jpg,D-18.jpg,NG,2,False,,,,,"surface_foreign_object_simulation, same object and position",165/1507,25/25
+lowlight-1,lowlight,normal,C0_direct,D-03.jpg,D-02.jpg,OK,1,False,,,,,input stress; alternate is the L1 reference image (trivial inspection),18,25
+lowlight-1,lowlight,normal,C1_bicubic_x4,D-03.jpg,D-02.jpg,OK,1,False,,,,,input stress; alternate is the L1 reference image (trivial inspection),0,25
+lowlight-1,lowlight,normal,C1_swinir_x4,D-03.jpg,D-02.jpg,OK,1,False,,,,,input stress; alternate is the L1 reference image (trivial inspection),6,25
+lowlight-1,lowlight,normal,C2_policy_v0.1_roi,D-03.jpg,D-02.jpg,OK,2,True,REVIEW,luma_out_of_range;low_sharpness,PASS,,input stress; alternate is the L1 reference image (trivial inspection),0,25
+lowlight-1,lowlight,normal,C2_policy_v0.2,D-03.jpg,D-02.jpg,OK,2,True,REVIEW,roi_too_dark,PASS,,input stress; alternate is the L1 reference image (trivial inspection),0,25
+lowlight-1,lowlight,normal,C2_policy_v0.3,D-03.jpg,D-02.jpg,OK,2,True,REVIEW,roi_too_dark;low_sharpness_vs_same_light_reference,PASS,,input stress; alternate is the L1 reference image (trivial inspection),0,25
+lowlight-1,lowlight,normal,C3_two_lights,D-03.jpg,D-02.jpg,OK,2,False,,,,,input stress; alternate is the L1 reference image (trivial inspection),18/0,25/25
+lowlight-2,lowlight,normal,C0_direct,D-05.jpg,D-04.jpg,OK,1,False,,,,,input stress; alternate is the L1 calibration image (trivial inspection),24,25
+lowlight-2,lowlight,normal,C1_bicubic_x4,D-05.jpg,D-04.jpg,OK,1,False,,,,,input stress; alternate is the L1 calibration image (trivial inspection),2,25
+lowlight-2,lowlight,normal,C1_swinir_x4,D-05.jpg,D-04.jpg,OK,1,False,,,,,input stress; alternate is the L1 calibration image (trivial inspection),11,25
+lowlight-2,lowlight,normal,C2_policy_v0.1_roi,D-05.jpg,D-04.jpg,OK,2,True,REVIEW,luma_out_of_range;low_sharpness,PASS,,input stress; alternate is the L1 calibration image (trivial inspection),0,25
+lowlight-2,lowlight,normal,C2_policy_v0.2,D-05.jpg,D-04.jpg,OK,2,True,REVIEW,roi_too_dark,PASS,,input stress; alternate is the L1 calibration image (trivial inspection),0,25
+lowlight-2,lowlight,normal,C2_policy_v0.3,D-05.jpg,D-04.jpg,OK,2,True,REVIEW,roi_too_dark;low_sharpness_vs_same_light_reference,PASS,,input stress; alternate is the L1 calibration image (trivial inspection),0,25
+lowlight-2,lowlight,normal,C3_two_lights,D-05.jpg,D-04.jpg,OK,2,False,,,,,input stress; alternate is the L1 calibration image (trivial inspection),24/0,25/25
+lowlight-3,lowlight,normal,C0_direct,D-07.jpg,D-09.jpg,NG,1,False,,,,,input stress,30,25
+lowlight-3,lowlight,normal,C1_bicubic_x4,D-07.jpg,D-09.jpg,OK,1,False,,,,,input stress,10,25
+lowlight-3,lowlight,normal,C1_swinir_x4,D-07.jpg,D-09.jpg,OK,1,False,,,,,input stress,16,25
+lowlight-3,lowlight,normal,C2_policy_v0.1_roi,D-07.jpg,D-09.jpg,OK,2,True,REVIEW,luma_out_of_range;low_sharpness,PASS,,input stress,0,25
+lowlight-3,lowlight,normal,C2_policy_v0.2,D-07.jpg,D-09.jpg,OK,2,True,REVIEW,roi_too_dark,PASS,,input stress,0,25
+lowlight-3,lowlight,normal,C2_policy_v0.3,D-07.jpg,D-09.jpg,OK,2,True,REVIEW,roi_too_dark;low_sharpness_vs_same_light_reference,PASS,,input stress,0,25
+lowlight-3,lowlight,normal,C3_two_lights,D-07.jpg,D-09.jpg,NG,2,False,,,,,input stress,30/0,25/25
+blur-1,blur,normal,C0_direct,D-10.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-1,blur,normal,C1_bicubic_x4,D-10.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-1,blur,normal,C1_swinir_x4,D-10.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-1,blur,normal,C2_policy_v0.1_roi,D-10.jpg,,REVIEW,1,True,RETAKE,clip_high;low_sharpness;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+blur-1,blur,normal,C2_policy_v0.2,D-10.jpg,,REVIEW,1,True,REVIEW,low_sharpness_vs_reference,,,input stress; alternate light not captured; retake_unavailable,,
+blur-1,blur,normal,C2_policy_v0.3,D-10.jpg,,REVIEW,1,True,REVIEW,low_sharpness_vs_same_light_reference,,,input stress; alternate light not captured; retake_unavailable,,
+blur-1,blur,normal,C3_two_lights,D-10.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+blur-2,blur,normal,C0_direct,D-11.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-2,blur,normal,C1_bicubic_x4,D-11.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-2,blur,normal,C1_swinir_x4,D-11.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-2,blur,normal,C2_policy_v0.1_roi,D-11.jpg,,REVIEW,1,True,RETAKE,clip_high;low_sharpness;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+blur-2,blur,normal,C2_policy_v0.2,D-11.jpg,,REVIEW,1,True,REVIEW,low_sharpness_vs_reference,,,input stress; alternate light not captured; retake_unavailable,,
+blur-2,blur,normal,C2_policy_v0.3,D-11.jpg,,REVIEW,1,True,REVIEW,low_sharpness_vs_same_light_reference,,,input stress; alternate light not captured; retake_unavailable,,
+blur-2,blur,normal,C3_two_lights,D-11.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+blur-3,blur,normal,C0_direct,D-12.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-3,blur,normal,C1_bicubic_x4,D-12.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-3,blur,normal,C1_swinir_x4,D-12.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+blur-3,blur,normal,C2_policy_v0.1_roi,D-12.jpg,,REVIEW,1,True,RETAKE,clip_high;low_sharpness;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+blur-3,blur,normal,C2_policy_v0.2,D-12.jpg,,REVIEW,1,True,REVIEW,low_sharpness_vs_reference,,,input stress; alternate light not captured; retake_unavailable,,
+blur-3,blur,normal,C2_policy_v0.3,D-12.jpg,,REVIEW,1,True,REVIEW,low_sharpness_vs_same_light_reference,,,input stress; alternate light not captured; retake_unavailable,,
+blur-3,blur,normal,C3_two_lights,D-12.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+background-1,background,normal,C0_direct,D-19.jpg,,OK,1,False,,,,,input stress; alternate light not captured,24,25
+background-1,background,normal,C1_bicubic_x4,D-19.jpg,,OK,1,False,,,,,input stress; alternate light not captured,13,25
+background-1,background,normal,C1_swinir_x4,D-19.jpg,,OK,1,False,,,,,input stress; alternate light not captured,12,25
+background-1,background,normal,C2_policy_v0.1_roi,D-19.jpg,,REVIEW,1,True,RETAKE,clip_high;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+background-1,background,normal,C2_policy_v0.2,D-19.jpg,,OK,1,False,PASS,,,,input stress; alternate light not captured,24,25
+background-1,background,normal,C2_policy_v0.3,D-19.jpg,,OK,1,False,PASS,,,,input stress; alternate light not captured,24,25
+background-1,background,normal,C3_two_lights,D-19.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+background-2,background,normal,C0_direct,D-20.jpg,,NG,1,False,,,,,input stress; alternate light not captured,28,25
+background-2,background,normal,C1_bicubic_x4,D-20.jpg,,OK,1,False,,,,,input stress; alternate light not captured,13,25
+background-2,background,normal,C1_swinir_x4,D-20.jpg,,OK,1,False,,,,,input stress; alternate light not captured,12,25
+background-2,background,normal,C2_policy_v0.1_roi,D-20.jpg,,REVIEW,1,True,RETAKE,clip_high;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+background-2,background,normal,C2_policy_v0.2,D-20.jpg,,NG,1,False,PASS,,,,input stress; alternate light not captured,28,25
+background-2,background,normal,C2_policy_v0.3,D-20.jpg,,NG,1,False,PASS,,,,input stress; alternate light not captured,28,25
+background-2,background,normal,C3_two_lights,D-20.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+background-3,background,normal,C0_direct,D-21.jpg,,OK,1,False,,,,,input stress; alternate light not captured,23,25
+background-3,background,normal,C1_bicubic_x4,D-21.jpg,,OK,1,False,,,,,input stress; alternate light not captured,14,25
+background-3,background,normal,C1_swinir_x4,D-21.jpg,,OK,1,False,,,,,input stress; alternate light not captured,14,25
+background-3,background,normal,C2_policy_v0.1_roi,D-21.jpg,,REVIEW,1,True,RETAKE,clip_high;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+background-3,background,normal,C2_policy_v0.2,D-21.jpg,,OK,1,False,PASS,,,,input stress; alternate light not captured,23,25
+background-3,background,normal,C2_policy_v0.3,D-21.jpg,,OK,1,False,PASS,,,,input stress; alternate light not captured,23,25
+background-3,background,normal,C3_two_lights,D-21.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+tilt-1,tilt,normal,C0_direct,D-22.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-1,tilt,normal,C1_bicubic_x4,D-22.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-1,tilt,normal,C1_swinir_x4,D-22.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-1,tilt,normal,C2_policy_v0.1_roi,D-22.jpg,,REVIEW,1,True,RETAKE,clip_high;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-1,tilt,normal,C2_policy_v0.2,D-22.jpg,,REVIEW,1,True,REVIEW,outside_recipe_pose,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-1,tilt,normal,C2_policy_v0.3,D-22.jpg,,REVIEW,1,True,REVIEW,outside_recipe_pose,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-1,tilt,normal,C3_two_lights,D-22.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+tilt-2,tilt,normal,C0_direct,D-23.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-2,tilt,normal,C1_bicubic_x4,D-23.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-2,tilt,normal,C1_swinir_x4,D-23.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-2,tilt,normal,C2_policy_v0.1_roi,D-23.jpg,,REVIEW,1,True,RETAKE,clip_high;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-2,tilt,normal,C2_policy_v0.2,D-23.jpg,,REVIEW,1,True,REVIEW,outside_recipe_pose,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-2,tilt,normal,C2_policy_v0.3,D-23.jpg,,REVIEW,1,True,REVIEW,outside_recipe_pose,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-2,tilt,normal,C3_two_lights,D-23.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,
+tilt-3,tilt,normal,C0_direct,D-24.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-3,tilt,normal,C1_bicubic_x4,D-24.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-3,tilt,normal,C1_swinir_x4,D-24.jpg,,OK,1,False,,,,,input stress; alternate light not captured,0,25
+tilt-3,tilt,normal,C2_policy_v0.1_roi,D-24.jpg,,REVIEW,1,True,RETAKE,clip_high;setup_moved,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-3,tilt,normal,C2_policy_v0.2,D-24.jpg,,REVIEW,1,True,REVIEW,outside_recipe_pose,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-3,tilt,normal,C2_policy_v0.3,D-24.jpg,,REVIEW,1,True,REVIEW,outside_recipe_pose,,,input stress; alternate light not captured; retake_unavailable,,
+tilt-3,tilt,normal,C3_two_lights,D-24.jpg,,NA,0,False,,,,,input stress; alternate light not captured; alternate light not captured,,

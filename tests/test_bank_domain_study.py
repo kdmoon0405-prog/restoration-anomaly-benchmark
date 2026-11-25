@@ -11,7 +11,7 @@ import numpy as np
 import pytest
 
 from sr_anomaly import bank_domain_study as study
-from scripts import analyze_bank_domain_study as analyzer
+from scripts import analyze_bank_domain_full_runs as analyzer
 from scripts import run_bank_domain_study as runner
 
 

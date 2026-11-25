@@ -1,0 +1,9 @@
+label,bicubic_positive,swinir_positive,images
+anomaly,True,True,46
+anomaly,True,False,25
+anomaly,False,True,8
+anomaly,False,False,21
+normal,True,True,0
+normal,True,False,3
+normal,False,True,1
+normal,False,False,96

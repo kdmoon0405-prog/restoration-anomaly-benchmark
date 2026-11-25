@@ -1,0 +1,5 @@
+case,sample,png,label,crop,score_clean,score_bicubic_x4,score_swinir_x4,threshold_clean,threshold_bicubic_x4,threshold_swinir_x4,map_clean,map_bicubic_x4,map_swinir_x4
+TP→FN (기존 9사례),pcb2/Data/Images/Anomaly/036.JPG,pcb_anomaly_036.png,1,"732,377,892,537",1.4156,2.9984,0.9512,2.1144,2.7208,2.2642,predictions/0648.npy,predictions/0649.npy,predictions/0650.npy
+TP→FN (원본 입력은 검출),pcb2/Data/Images/Anomaly/019.JPG,pcb_anomaly_019.png,1,"501,466,795,760",2.4776,5.4218,1.9282,2.1144,2.7208,2.2642,predictions/0597.npy,predictions/0598.npy,predictions/0599.npy
+FN→TP,pcb2/Data/Images/Anomaly/093.JPG,pcb_anomaly_093.png,1,"736,615,898,777",4.0934,2.2883,3.734,2.1144,2.7208,2.2642,predictions/0819.npy,predictions/0820.npy,predictions/0821.npy
+FP→TN (정상),pcb2/Data/Images/Normal/0779.JPG,pcb_normal_0779.png,0,"668,253,908,493",2.3419,3.1932,2.0678,2.1144,2.7208,2.2642,predictions/1068.npy,predictions/1069.npy,predictions/1070.npy

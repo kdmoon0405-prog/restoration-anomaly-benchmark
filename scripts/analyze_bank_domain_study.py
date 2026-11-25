@@ -10,6 +10,14 @@ from sr_anomaly.bank_domain_analysis import analyze_runs
 
 
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if any(arg.split("=", 1)[0] in ("--run-dir", "--output-dir") for arg in argv):
+        if __package__:
+            from .analyze_bank_domain_full_runs import main as full_run_main
+        else:
+            from analyze_bank_domain_full_runs import main as full_run_main
+        return full_run_main(argv)
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, action="append", required=True)
     parser.add_argument("--output", type=Path, required=True)

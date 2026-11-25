@@ -1,0 +1,8 @@
+condition,cycles,OK,NG,REVIEW,ERROR,NA,PENDING,captures_total,retakes_requested,simulated_cycles,simulated_final_OK,simulated_final_NG,simulated_NG_at_annotation,simulated_REVIEW_or_other,heldout_normal_cycles,heldout_normal_final_NG,all_normal_cycles,all_normal_final_NG,all_normal_final_NG_or_REVIEW,human_legibility_records
+C0_direct,23,4,11,0,8,0,0,23,0,15,0,9,0,6,4,0,8,2,2,0
+C1_bicubic_x4,23,4,11,0,8,0,0,23,0,15,0,9,0,6,4,0,8,2,2,0
+C1_swinir_x4,23,4,11,0,8,0,0,23,0,15,0,9,0,6,4,0,8,2,2,0
+C2_policy_v0.1_roi,23,7,6,10,0,0,0,46,23,15,0,6,0,9,4,0,8,0,1,0
+C2_policy_v0.2,23,7,16,0,0,0,0,34,11,15,0,15,0,0,4,0,8,1,1,0
+C2_policy_v0.3,23,7,15,1,0,0,0,34,11,15,0,15,0,0,4,0,8,0,1,0
+C3_two_lights,23,4,11,0,8,0,0,46,0,15,0,9,0,6,4,0,8,2,2,0

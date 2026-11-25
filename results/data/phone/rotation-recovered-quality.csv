@@ -1,0 +1,3 @@
+photo,rotation_trial_deg,estimated_pose_deg,luma_mean,sharpness_ratio,state_v03,reasons
+41,2.7,-2.59893574249508,11.634726018264011,0.0319788986398064,RETAKE,"new_clip_low,roi_too_dark,low_sharpness_vs_same_light_reference"
+47,2.7,-2.78913719885961,10.766924494275775,0.024220235809054292,RETAKE,"new_clip_low,roi_too_dark,low_sharpness_vs_same_light_reference"

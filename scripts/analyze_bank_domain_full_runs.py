@@ -481,12 +481,12 @@ def analyze(run_dirs: list[Path], output_dir: Path) -> Path:
     return output_dir
 
 
-def main() -> int:
+def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-dir", type=Path, action="append", required=True,
                         help="complete category/seed run directory; repeat per run")
     parser.add_argument("--output-dir", type=Path, required=True)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     try:
         output = analyze(args.run_dir, args.output_dir)
     except Exception as exc:

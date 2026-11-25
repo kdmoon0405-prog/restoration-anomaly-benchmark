@@ -1,4 +1,15 @@
-# SR/restoration anomaly research framework
+# 산업 비전 영상 복원과 이상 검사
+
+팀 2 졸업프로젝트. 영상이 어두워지거나 흐려질 때 복원이 결함 부위 및 검사 판정에 주는 영향을 비교했다. MVTec AD와 VisA PCB를 실험했고, 스마트폰으로 실제 그래픽카드 기판을 촬영해 품질 판정과 대체 조명도 확인했다.
+
+- [상세 결과보고서와 전체 자료](results/README.md)
+- [공개 사진·복원 비교·검사 지도](results/FIGURES.md)
+- [연구 과정과 다음 실험을 고른 이유](results/RESEARCH_HISTORY.md) · [실행·검토 기록](PROGRESS.md)
+- [Bank 28조건 통합표](results/data/bank/bank-domain-28.csv) · [50장 품질 및 판정 자료](results/data/phone/)
+
+![Screw 결함 원본과 열화·복원·검사 지도](results/figures/overview/bank-fixed-query-screw.png)
+
+## 재현과 코드 사용
 
 This directory contains a CPU-safe experiment path for the question: can restoration improve image-quality metrics while weakening evidence used by an anomaly detector?
 
@@ -14,10 +25,12 @@ The historical v0.1 decisions remain in [docs/EXPERIMENT_PROTOCOL.md](docs/EXPER
 
 ## Setup and checks
 
+Run from the repository root. Initialize the pinned submodules before the full test suite.
+
 Windows PowerShell with Python 3.11:
 
 ```powershell
-cd research_code
+git submodule update --init
 py -3.11 -m venv .venv
 .venv\Scripts\python -m pip install -e ".[dev]"
 .venv\Scripts\python scripts\smoke_test.py
@@ -27,7 +40,7 @@ py -3.11 -m venv .venv
 Linux:
 
 ```bash
-cd research_code
+git submodule update --init
 python3.11 -m venv .venv
 .venv/bin/python -m pip install -e '.[dev]'
 .venv/bin/python scripts/smoke_test.py

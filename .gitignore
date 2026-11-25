@@ -27,3 +27,10 @@ analysis/profiling_results_demo/review-*/screenshots/
 analysis/pcb_geometry/**/figures/
 # Qualitative panels contain licensed dataset RGB; keep them local.
 analysis/map_gating_feasibility/**/figures/
+
+# Local records are used to prepare the public results.
+notes/RESEARCH_EVOLUTION_LOCAL*.md
+*.private.md
+.env
+.env.*
+!.env.example
