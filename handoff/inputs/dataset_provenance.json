@@ -1,0 +1,30 @@
+{
+  "dataset": "MVTec AD",
+  "source_url": "https://www.mvtec.com/research-teaching/datasets/mvtec-ad",
+  "categories": [
+    "hazelnut",
+    "screw"
+  ],
+  "archive_sha256": "635ced502743817e8ef8fe704b2bbd1634fe87f15edaef5e7d85e6d3b86a28b9",
+  "archive_sha256_role": "private_team_category_repack",
+  "original_publisher_archive_sha256": null,
+  "license_file": "license.txt",
+  "license_sha256": "a355a57937552790ebd751f8a8026b23882160ab73f1c38f8030456dfcf1a330",
+  "input_inventory_file": "FILE_MANIFEST.csv",
+  "input_inventory_sha256": "d66baebee2534f1844ef2a7efbf36fd543baa50038f79a90f9eed5efc868f340",
+  "provenance_scope": "Existing local categories;publisher license and attribution preserved;original publisher archive bytes not retained",
+  "counts": {
+    "hazelnut": {
+      "train_good": 391,
+      "test_good": 40,
+      "test_anomaly": 70,
+      "anomaly_masks": 70
+    },
+    "screw": {
+      "train_good": 320,
+      "test_good": 41,
+      "test_anomaly": 119,
+      "anomaly_masks": 119
+    }
+  }
+}

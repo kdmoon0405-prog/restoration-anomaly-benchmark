@@ -194,3 +194,5 @@ analysis/noise_repeatability_20261111/** -text whitespace=blank-at-eol,blank-at-
 analysis/noise_repeatability_20261111/**/*.png -diff
 # Preserve saved scalar analysis bytes.
 analysis/image_score_return_20261111/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Preserve intentional patch context and mail-footer whitespace.
+handoff/code/*.patch whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
