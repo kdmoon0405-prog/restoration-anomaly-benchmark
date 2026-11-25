@@ -1,0 +1,4 @@
+batch_tiles,baseline_batch_tiles,repeat_deterministic,distance_max_abs_diff,distance_mean_abs_diff,distance_allclose,distance_bitwise_equal,nn_index_differences,nn_index_differences_distance_tied,score_max_abs_diff,map_max_abs_diff,map_mean_abs_diff,rtol,atol
+1,1,True,0.0,0.0,True,True,0,True,0.0,0.0,0.0,1e-05,1e-06
+2,1,True,1.1444091796875e-05,4.236187253679548e-07,False,False,1,True,0.0,4.649162292480469e-06,3.2081271103602284e-07,1e-05,1e-06
+4,1,True,1.1444091796875e-05,3.3390765287438217e-07,False,False,1,True,0.0,4.291534423828125e-06,2.6149752068326994e-07,1e-05,1e-06

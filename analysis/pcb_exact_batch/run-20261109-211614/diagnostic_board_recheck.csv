@@ -1,0 +1,3 @@
+sample,variant,stored_score,recomputed_board_score,recomputed_equals_max_tile,argmax_tile,score_abs_diff,map_max_abs_diff,map_mean_abs_diff,stored_map_max,tile_score_max_over_tile_map_max,spool,predict_seconds,note
+pcb2/Data/Images/Anomaly/000.JPG,clean,5.327547073364258,5.327547073364258,True,10,0.0,0.0,0.0,4.616237640380859,1.0991890183769506,rgb/tiles-0000.npy,171.22828910005046,separate diagnosis; not a re-run of the cohort
+pcb2/Data/Images/Anomaly/000.JPG,swinir_x4,5.870405197143555,5.870405197143555,True,10,0.0,0.0,0.0,5.01145601272583,1.0936340008417809,rgb/tiles-0002.npy,169.77009479998378,separate diagnosis; not a re-run of the cohort

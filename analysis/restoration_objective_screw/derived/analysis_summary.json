@@ -1,0 +1,310 @@
+{
+  "study": "restoration_objective_screw",
+  "source_run": "C:\\Users\\shimj\\Desktop\\디자인프로젝트\\코드\\restoration-anomaly-benchmark\\outputs\\restoration-objective\\screw-full160",
+  "manifest_sha256": "b680d6714fd9e1ca222ef4a5192478fd970c0b2dc70c5672d9c7aeb7e2bd51ec",
+  "anomalous_images": 119,
+  "primary_metric": "pooled AU-PRO@0.3",
+  "pooled_delta_aupro_esrgan_minus_psnr": -0.013072145881154129,
+  "mean_delta_psnr_esrgan_minus_psnr": -3.328251912618832,
+  "mean_delta_lpips_esrgan_minus_psnr": -0.04744955440983176,
+  "quality_tradeoff_reproduced": true,
+  "direct_per_image_aupro": {
+    "count": 119,
+    "mean": -0.023625098650622088,
+    "median": -0.014250265642207105,
+    "min": -0.23417794672774428,
+    "max": 0.28123963391647,
+    "esrgan_wins": 39,
+    "psnr_wins": 80,
+    "ties": 0
+  },
+  "localization_case": "C",
+  "localization_b_description": null,
+  "aggregate_methods": [
+    {
+      "variant": "bicubic_x4",
+      "test_count": "160",
+      "normal_count": "41",
+      "anomaly_count": "119",
+      "mean_psnr": "35.5322115426485",
+      "mean_ssim": "0.9525016735917371",
+      "mean_lpips": "0.21609740406274797",
+      "image_auroc": "0.47919655667144906",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9511124423069631",
+      "au_pro": "0.8016255031386083",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.0",
+      "mean_detector_seconds": "3.920543528756389"
+    },
+    {
+      "variant": "swinir_x4",
+      "test_count": "160",
+      "normal_count": "41",
+      "anomaly_count": "119",
+      "mean_psnr": "37.95262817177836",
+      "mean_ssim": "0.9685413792389473",
+      "mean_lpips": "0.09746433277614415",
+      "image_auroc": "0.686411149825784",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9714407322178561",
+      "au_pro": "0.8593611518218063",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.31697169812832726",
+      "mean_detector_seconds": "4.123857463127933"
+    },
+    {
+      "variant": "rrdb_psnr_x4",
+      "test_count": "160",
+      "normal_count": "41",
+      "anomaly_count": "119",
+      "mean_psnr": "38.28227702143528",
+      "mean_ssim": "0.9697601892960671",
+      "mean_lpips": "0.09746852731332183",
+      "image_auroc": "0.719614675138348",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9762806669294294",
+      "au_pro": "0.8784921714720333",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.11776151624872",
+      "mean_detector_seconds": "4.158432945622917"
+    },
+    {
+      "variant": "rrdb_esrgan_x4",
+      "test_count": "160",
+      "normal_count": "41",
+      "anomaly_count": "119",
+      "mean_psnr": "34.954025108816445",
+      "mean_ssim": "0.9498926533830468",
+      "mean_lpips": "0.05001897290349007",
+      "image_auroc": "0.7089567534330805",
+      "image_f1": "",
+      "image_threshold": "",
+      "pixel_auroc": "0.9708545880834075",
+      "au_pro": "0.8654200255908792",
+      "pixel_f1": "",
+      "pixel_threshold": "",
+      "mean_restoration_seconds": "0.10964646936699865",
+      "mean_detector_seconds": "4.172926778130204"
+    }
+  ],
+  "localization_delta_distribution": [
+    {
+      "variant": "swinir_x4",
+      "minimum": -0.18867693818092024,
+      "q25": 0.008333665433459259,
+      "median": 0.06676097218299448,
+      "q75": 0.1402845718421543,
+      "maximum": 0.3268050829459602,
+      "anomaly_count": 119,
+      "absolute_delta_le_0_01_count": 14,
+      "absolute_delta_le_0_01_rate": 0.11764705882352941
+    },
+    {
+      "variant": "rrdb_psnr_x4",
+      "minimum": -0.17689582513828161,
+      "q25": 0.023469904224968308,
+      "median": 0.07670368407965977,
+      "q75": 0.13657076011862446,
+      "maximum": 0.3784726978039538,
+      "anomaly_count": 119,
+      "absolute_delta_le_0_01_count": 13,
+      "absolute_delta_le_0_01_rate": 0.1092436974789916
+    },
+    {
+      "variant": "rrdb_esrgan_x4",
+      "minimum": -0.15427383891354418,
+      "q25": -0.0047001201777834845,
+      "median": 0.03791099670377429,
+      "q75": 0.10659078492445273,
+      "maximum": 0.4301685006610588,
+      "anomaly_count": 119,
+      "absolute_delta_le_0_01_count": 19,
+      "absolute_delta_le_0_01_rate": 0.15966386554621848
+    }
+  ],
+  "baseline_aupro_vs_delta_spearman_descriptive": {
+    "swinir_x4": -0.6686298248112805,
+    "rrdb_psnr_x4": -0.774875373878365,
+    "rrdb_esrgan_x4": -0.6153468166927789
+  },
+  "reporting_order": [
+    "aggregate quality/detection",
+    "per-image delta distribution",
+    "magnitude sensitivity",
+    "baseline diagnostic",
+    "quality/localization association",
+    "supporting taxonomy"
+  ],
+  "pooled_uncertainty_note": "Pooled AU-PRO is a point estimate; paired bootstrap covers the mean anomalous-image AU-PRO difference, not pooled AU-PRO.",
+  "spearman_descriptive": {
+    "swinir_x4": {
+      "psnr_gain_vs_bicubic": 0.2495727104401083,
+      "lpips_improvement_vs_bicubic": 0.13290129611166504
+    },
+    "rrdb_psnr_x4": {
+      "psnr_gain_vs_bicubic": 0.3439752172055263,
+      "lpips_improvement_vs_bicubic": 0.06973365617433416
+    },
+    "rrdb_esrgan_x4": {
+      "psnr_gain_vs_bicubic": 0.24519299245121778,
+      "lpips_improvement_vs_bicubic": -0.028258082894174627
+    }
+  },
+  "sensitivity_status": "pre-registered in docs/RESTORATION_ENDPOINT_SCREW.md before Screw inference",
+  "case_rule": "A: P>0,D>0,CI.lower>0; C: P<0,D<0,CI.upper<0; else B (no D50 analogue)",
+  "defect_type_endpoint": [
+    {
+      "defect_type": "manipulated_front",
+      "count": 24,
+      "mean": 0.010759830969038939,
+      "median": 0.003287652227949689,
+      "min": -0.1677132192970201,
+      "max": 0.28123963391647,
+      "esrgan_wins": 13,
+      "psnr_wins": 11,
+      "ties": 0,
+      "mean_delta_psnr_esrgan_minus_psnr": -3.4349543904840725,
+      "mean_delta_ssim_esrgan_minus_psnr": -0.019986238840902542,
+      "mean_delta_lpips_esrgan_minus_psnr": -0.04198158152091006,
+      "mean_delta_per_image_pixel_auroc_esrgan_minus_psnr": 0.0023069673814924883,
+      "mean_delta_roi_bg_gap_esrgan_minus_psnr": 0.23018112004175237
+    },
+    {
+      "defect_type": "scratch_head",
+      "count": 24,
+      "mean": -0.07886532290346303,
+      "median": -0.0596517684588877,
+      "min": -0.23417794672774428,
+      "max": 0.05142618179936054,
+      "esrgan_wins": 4,
+      "psnr_wins": 20,
+      "ties": 0,
+      "mean_delta_psnr_esrgan_minus_psnr": -3.3283163837004253,
+      "mean_delta_ssim_esrgan_minus_psnr": -0.02044257115712354,
+      "mean_delta_lpips_esrgan_minus_psnr": -0.04636032537867626,
+      "mean_delta_per_image_pixel_auroc_esrgan_minus_psnr": -0.023789143233023797,
+      "mean_delta_roi_bg_gap_esrgan_minus_psnr": -0.21528480480303294
+    },
+    {
+      "defect_type": "scratch_neck",
+      "count": 25,
+      "mean": -0.041944506724721206,
+      "median": -0.015049818776974866,
+      "min": -0.1495278555755547,
+      "max": 0.03474824579883207,
+      "esrgan_wins": 3,
+      "psnr_wins": 22,
+      "ties": 0,
+      "mean_delta_psnr_esrgan_minus_psnr": -3.2974556595616162,
+      "mean_delta_ssim_esrgan_minus_psnr": -0.01901035134551607,
+      "mean_delta_lpips_esrgan_minus_psnr": -0.043951128870248796,
+      "mean_delta_per_image_pixel_auroc_esrgan_minus_psnr": -0.01274200249127154,
+      "mean_delta_roi_bg_gap_esrgan_minus_psnr": -0.1647673664140028
+    },
+    {
+      "defect_type": "thread_side",
+      "count": 23,
+      "mean": 0.00020906825773162174,
+      "median": 0.00693078511414702,
+      "min": -0.0686483773928458,
+      "max": 0.11234422072019667,
+      "esrgan_wins": 12,
+      "psnr_wins": 11,
+      "ties": 0,
+      "mean_delta_psnr_esrgan_minus_psnr": -3.287547857552181,
+      "mean_delta_ssim_esrgan_minus_psnr": -0.018576448363935377,
+      "mean_delta_lpips_esrgan_minus_psnr": -0.04461579194859318,
+      "mean_delta_per_image_pixel_auroc_esrgan_minus_psnr": 0.0004573288227630107,
+      "mean_delta_roi_bg_gap_esrgan_minus_psnr": 0.29796686252275134
+    },
+    {
+      "defect_type": "thread_top",
+      "count": 23,
+      "mean": -0.005784818904680329,
+      "median": -0.008705969468639108,
+      "min": -0.04546378213445956,
+      "max": 0.06998078637665028,
+      "esrgan_wins": 7,
+      "psnr_wins": 16,
+      "ties": 0,
+      "mean_delta_psnr_esrgan_minus_psnr": -3.3495447780410443,
+      "mean_delta_ssim_esrgan_minus_psnr": -0.020763454660387048,
+      "mean_delta_lpips_esrgan_minus_psnr": -0.04707146176825399,
+      "mean_delta_per_image_pixel_auroc_esrgan_minus_psnr": -0.0017488086445874417,
+      "mean_delta_roi_bg_gap_esrgan_minus_psnr": 0.5412827473591683
+    }
+  ],
+  "hazelnut_direction": [
+    {
+      "quantity": "delta_mean_psnr_esrgan_minus_psnr",
+      "hazelnut": -2.6963011698084074,
+      "screw": -3.328251912618832,
+      "hazelnut_sign": "-",
+      "screw_sign": "-",
+      "direction": "agree"
+    },
+    {
+      "quantity": "delta_mean_ssim_esrgan_minus_psnr",
+      "hazelnut": -0.03456131779044691,
+      "screw": -0.019867535913020262,
+      "hazelnut_sign": "-",
+      "screw_sign": "-",
+      "direction": "agree"
+    },
+    {
+      "quantity": "delta_mean_lpips_esrgan_minus_psnr",
+      "hazelnut": -0.04413308440284295,
+      "screw": -0.04744955440983176,
+      "hazelnut_sign": "-",
+      "screw_sign": "-",
+      "direction": "agree"
+    },
+    {
+      "quantity": "delta_au_pro_esrgan_minus_psnr",
+      "hazelnut": 0.00679042038152855,
+      "screw": -0.013072145881154129,
+      "hazelnut_sign": "+",
+      "screw_sign": "-",
+      "direction": "disagree"
+    },
+    {
+      "quantity": "delta_pixel_auroc_esrgan_minus_psnr",
+      "hazelnut": 0.0005167015450872059,
+      "screw": -0.0054260788460218645,
+      "hazelnut_sign": "+",
+      "screw_sign": "-",
+      "direction": "disagree"
+    },
+    {
+      "quantity": "delta_image_auroc_esrgan_minus_psnr",
+      "hazelnut": 0.001071428571428612,
+      "screw": -0.01065792170526747,
+      "hazelnut_sign": "+",
+      "screw_sign": "-",
+      "direction": "disagree"
+    },
+    {
+      "quantity": "mean_paired_per_image_aupro_delta_D",
+      "hazelnut": 0.005109973203956189,
+      "screw": -0.023625098650622088,
+      "hazelnut_sign": "+",
+      "screw_sign": "-",
+      "direction": "disagree"
+    },
+    {
+      "quantity": "localization_case",
+      "hazelnut": "B",
+      "screw": "C",
+      "hazelnut_sign": null,
+      "screw_sign": null,
+      "direction": "disagree"
+    }
+  ]
+}

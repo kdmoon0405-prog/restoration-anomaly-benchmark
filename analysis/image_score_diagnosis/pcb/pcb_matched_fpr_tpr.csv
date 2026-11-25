@@ -1,0 +1,16 @@
+variant,test_fpr_target,test_normals_flagged,tpr,post_hoc_ranking_view
+clean,0.01,1,0.65,True
+clean,0.02,2,0.68,True
+clean,0.03,3,0.71,True
+clean,0.05,5,0.84,True
+clean,0.1,10,0.97,True
+bicubic_x4,0.01,1,0.57,True
+bicubic_x4,0.02,2,0.62,True
+bicubic_x4,0.03,3,0.82,True
+bicubic_x4,0.05,5,0.86,True
+bicubic_x4,0.1,10,0.95,True
+swinir_x4,0.01,1,0.57,True
+swinir_x4,0.02,2,0.59,True
+swinir_x4,0.03,3,0.7,True
+swinir_x4,0.05,5,0.72,True
+swinir_x4,0.1,10,0.88,True

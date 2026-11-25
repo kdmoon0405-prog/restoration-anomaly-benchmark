@@ -158,3 +158,18 @@ scripts/replay_phone_station_uno.py text eol=lf
 scripts/characterize_phone_registration.py text eol=lf
 scripts/make_defect_zoom_gallery.py text eol=lf
 scripts/make_phone_zoom_figures.py text eol=lf
+analysis/restoration_objective_screw/full_manifest.csv text eol=lf
+scripts/run_pcb_full_cohort.py text eol=lf
+scripts/run_realistic_degradation.py text eol=lf
+scripts/run_restoration_objective_pilot.py text eol=lf
+scripts/profile_pcb_exact_batch.py text eol=lf
+scripts/diagnose_image_score.py text eol=lf
+scripts/run_realistic_noise_v2.py text eol=lf
+src/sr_anomaly/realistic_noise_v2.py text eol=lf
+scripts/run_bank_domain_study.py -text
+scripts/analyze_bank_domain_full_runs.py -text
+src/sr_anomaly/bank_domain_study.py -text
+tests/test_bank_domain_study.py -text
+docs/BANK_DOMAIN_STUDY.md -text
+scripts/export_bank_domain_contract.py text eol=lf
+scripts/run_bank_domain_bicubic_extension.py text eol=lf

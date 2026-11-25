@@ -106,13 +106,13 @@ def load_pilot_manifest(path: Path, data_root: Path) -> list[dict[str, str]]:
     return rows
 
 
-def load_full_manifest(path: Path, data_root: Path) -> list[dict[str, str]]:
+def load_full_manifest(path: Path, data_root: Path, category: str = "hazelnut") -> list[dict[str, str]]:
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         if tuple(reader.fieldnames or ()) != MANIFEST_FIELDS:
             raise ValueError("Full manifest fields changed")
         rows = list(reader)
-    expected = [{key: str(value) for key, value in row.items()} for row in build_full_manifest(data_root)]
+    expected = [{key: str(value) for key, value in row.items()} for row in build_full_manifest(data_root, category)]
     if rows != expected:
         raise ValueError("Full manifest paths, metadata, or source file contents are missing or changed")
     return rows

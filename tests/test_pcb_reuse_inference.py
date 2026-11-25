@@ -291,3 +291,34 @@ def test_resource_monitor_failure_never_reports_complete(prepared,monkeypatch):
     with pytest.raises(RuntimeError,match='monitor'):
         m.execute(x.out,x.root,x.bank,x.data,factory=x.factory)
     assert read(x.out/'status.json')['status']=='FAILED' and x.stats['closed']==1
+
+
+def test_board_ledger_spans_and_leaf_timing_are_not_summed(prepared):
+    x=prepared;m.execute(x.out,x.root,x.bank,x.data,factory=x.factory)
+    r,_=m.load_integration(x.out,bank_run=x.bank,_fixture=True)
+    assert len(r['board_ledger'])==9 and {'load_complete_bank_mmap_verify','bank_and_source_rehash_after_inference',
+        'source_rgb_decode_verify','reference_rgb_save_hash'}<=set(r['phase_summary'])
+    for row in r['board_ledger']:
+        assert row['leaf_calls_within_unit']==2 and row['inclusive_assemble_seconds']>=row['leaf_seconds_within_unit']
+        assert abs(row['assemble_spool_exclusive_seconds']+row['leaf_seconds_within_unit']-row['inclusive_assemble_seconds'])<1e-9
+        assert 'os_process_lifetime_peak_rss_at_unit_end_bytes' in row and 'peak_rss_bytes' not in row
+
+
+def _forge_payload(x,key,index,values):
+    r=read(x.out/'resources.json');row=r[key][index]
+    path=x.out/row['file'];path.unlink()
+    with path.open('xb') as stream:np.save(stream,values,allow_pickle=False)
+    row['sha256']=bank.file_sha256(path);m.fit.memory.write_json(x.out/'resources.json',r)
+    s=read(x.out/'status.json');s['resources_sha256']=bank.file_sha256(x.out/'resources.json')
+    m.fit.memory.write_json(x.out/'status.json',s)
+
+
+def test_reader_rejects_self_consistent_reference_that_clean_tiles_do_not_reassemble(prepared):
+    x=prepared;m.execute(x.out,x.root,x.bank,x.data,factory=x.factory)
+    _forge_payload(x,'reference_rows',0,np.full((224,224,3),31,np.uint8))
+    with pytest.raises(ValueError,match='reassemble'):m.load_integration(x.out,bank_run=x.bank,_fixture=True)
+
+
+def test_reader_rejects_restored_spool_equal_to_clean(prepared):
+    x=prepared;m.execute(x.out,x.root,x.bank,x.data,factory=lambda *a:(x.Adapter(),lambda rgb,v:rgb))
+    with pytest.raises(ValueError,match='equals clean'):m.load_integration(x.out,bank_run=x.bank,_fixture=True)

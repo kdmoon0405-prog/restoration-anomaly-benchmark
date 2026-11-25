@@ -1,0 +1,123 @@
+{
+ "kind": "pcb_exact_search_batch_comparison",
+ "axis": "query tiles per search call",
+ "conditions": [
+  1,
+  2,
+  4
+ ],
+ "rounds": 3,
+ "warmup_passes_per_condition": 1,
+ "order_rotation": [
+  [
+   1,
+   2,
+   4
+  ],
+  [
+   2,
+   4,
+   1
+  ],
+  [
+   4,
+   1,
+   2
+  ]
+ ],
+ "query_plan": [
+  {
+   "sample": "pcb2/Data/Images/Normal/0000.JPG",
+   "split": "calibration",
+   "tile_id": 0
+  },
+  {
+   "sample": "pcb2/Data/Images/Normal/0000.JPG",
+   "split": "calibration",
+   "tile_id": 1
+  },
+  {
+   "sample": "pcb2/Data/Images/Normal/0000.JPG",
+   "split": "calibration",
+   "tile_id": 2
+  },
+  {
+   "sample": "pcb2/Data/Images/Anomaly/000.JPG",
+   "split": "test",
+   "tile_id": 0
+  },
+  {
+   "sample": "pcb2/Data/Images/Anomaly/000.JPG",
+   "split": "test",
+   "tile_id": 1
+  },
+  {
+   "sample": "pcb2/Data/Images/Anomaly/000.JPG",
+   "split": "test",
+   "tile_id": 2
+  }
+ ],
+ "variant": "clean",
+ "raw_run": "C:\\Users\\shimj\\Desktop\\\ub514\uc790\uc778\ud504\ub85c\uc81d\ud2b8\\\ucf54\ub4dc\\restoration-anomaly-benchmark\\outputs\\pcb-full-cohort\\pcb-full-cohort-20261101-a",
+ "raw_status_sha256": "6117326d036fec862cb2003471b6d333852bc5bdfdfb6d92c9e32bdcd94e0fd6",
+ "raw_execution_family": "faiss_cpu_IndexFlatL2_4threads_k1_one_tile_per_search_v1",
+ "bank_run": "C:\\Users\\shimj\\Desktop\\\ub514\uc790\uc778\ud504\ub85c\uc81d\ud2b8\\\ucf54\ub4dc\\restoration-anomaly-benchmark\\outputs\\pcb-fit-bank\\pcb-real-fit-bank-20261029-163524",
+ "start": "2026-11-09T21:16:28+0900",
+ "python": "3.11.2 (tags/v3.11.2:878ead1, Feb  7 2023, 16:38:35) [MSC v.1934 64 bit (AMD64)]",
+ "platform": "Windows-10-10.0.26200-SP0",
+ "argv": [
+  "scripts/profile_pcb_exact_batch.py",
+  "--output",
+  "analysis/pcb_exact_batch/run-20261109-211614",
+  "--array-dir",
+  "outputs/pcb-exact-batch/run-20261109-211614",
+  "--board-recheck"
+ ],
+ "rtol": 1e-05,
+ "atol": 1e-06,
+ "bank_sha256": {
+  "bank.npy": "19c3bb03a6b84475bfdc36602d05b975c57c387da81f0713c5da86b8d2f1278e",
+  "selected_indices.npy": "691add22b7e57066214ab12f5e098b640c236d51e612ca077c9181b5c31b1335"
+ },
+ "bank_matches_raw_admission": true,
+ "preflight_base": {
+  "bank_mmap_resident_bytes": 1073741824,
+  "scorer_merged_copy_bytes": 1073741824,
+  "faiss_index_storage_bytes": 1073741824,
+  "model_runtime_scenario_bytes": 2147483648,
+  "fixed_queries_bytes": 19267584,
+  "os_reserve_bytes": 2147483648
+ },
+ "preflight_available_at_start": 20228923392,
+ "query_shape": [
+  6,
+  784,
+  1024
+ ],
+ "patches_per_tile": 784,
+ "query_sha256": "586e158e6eb1bae6f87c9320dd6673851263643de156670d42747eb3c0a87373",
+ "extraction_seconds_total": 0.2489595000515692,
+ "extraction_note": "CUDA backbone _embed; timed separately, excluded from search timing",
+ "bind_seconds": 1.3709171999944374,
+ "rss_before_bind": 1167724544,
+ "rss_after_bind": 4388990976,
+ "index_type": "IndexFlatL2",
+ "index_ntotal": 262144,
+ "faiss_version": "1.15.1",
+ "faiss_omp_threads": 4,
+ "metric": "squared L2 (IndexFlatL2), k=1, mean over k",
+ "status": "COMPLETE",
+ "runnable": [
+  1,
+  2,
+  4
+ ],
+ "blocked": [],
+ "end": "2026-11-09T21:26:19+0900",
+ "process_memory_end": {
+  "rss_bytes": 4475228160,
+  "os_lifetime_peak_rss_bytes": 4530528256,
+  "method": "Windows GetProcessMemoryInfo WorkingSetSize/PeakWorkingSetSize"
+ },
+ "thermal_note": "CPU temperature not measured; per-call wall_time and per-round timings show drift only"
+}

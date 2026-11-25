@@ -1,0 +1,9 @@
+quantity,hazelnut,screw,hazelnut_sign,screw_sign,direction
+delta_mean_psnr_esrgan_minus_psnr,-2.6963011698084074,-3.328251912618832,-,-,agree
+delta_mean_ssim_esrgan_minus_psnr,-0.03456131779044691,-0.019867535913020262,-,-,agree
+delta_mean_lpips_esrgan_minus_psnr,-0.04413308440284295,-0.04744955440983176,-,-,agree
+delta_au_pro_esrgan_minus_psnr,0.00679042038152855,-0.013072145881154129,+,-,disagree
+delta_pixel_auroc_esrgan_minus_psnr,0.0005167015450872059,-0.0054260788460218645,+,-,disagree
+delta_image_auroc_esrgan_minus_psnr,0.001071428571428612,-0.01065792170526747,+,-,disagree
+mean_paired_per_image_aupro_delta_D,0.005109973203956189,-0.023625098650622088,+,-,disagree
+localization_case,B,C,,,disagree

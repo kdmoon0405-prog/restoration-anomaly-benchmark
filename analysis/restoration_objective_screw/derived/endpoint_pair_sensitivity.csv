@@ -1,0 +1,6 @@
+subset,tau,esrgan_delta_gt_tau,psnr_delta_lt_minus_tau,within_band,anomaly_count
+all_anomalies,0.0,39,80,0,119
+all_anomalies,0.005,33,68,18,119
+all_anomalies,0.01,28,64,27,119
+all_anomalies,0.02,21,49,49,119
+all_anomalies,0.05,12,35,72,119

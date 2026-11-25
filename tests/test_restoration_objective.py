@@ -224,3 +224,30 @@ def test_pilot_reuses_only_the_frozen_391_image_bank(tmp_path: Path, monkeypatch
     }), encoding="utf-8")
     with pytest.raises(ValueError, match="frozen Hazelnut"):
         pilot._load_frozen_detector(model_dir, "cpu", FakeCommon, FakePatchcore)
+
+
+def test_screw_cohort_accepts_only_its_frozen_320_image_bank(tmp_path: Path) -> None:
+    model_dir = tmp_path / "bank"
+    model_dir.mkdir()
+    artifacts = (model_dir / "patchcore_params.pkl", model_dir / "nnscorer_search_index.faiss")
+    for index, path in enumerate(artifacts):
+        path.write_bytes(f"screw-{index}".encode())
+    bank = dict(pilot.COHORTS["screw160"]["bank"], sha256={path.name: pilot._checksum(path) for path in artifacts})
+    spec = {"implementation": "amazon-science/patchcore-inspection", "source_commit": pilot.EXPECTED_PATCHCORE_COMMIT,
+            "category": "screw", "seed": 11, "train_paths": [f"screw/train/good/{i:03d}.png" for i in range(320)],
+            **pilot.FROZEN_PATCHCORE_SETTINGS}
+    def write(value):
+        (model_dir / "metadata.json").write_text(json.dumps({"spec": value, "artifact_sha256": bank["sha256"]}), encoding="utf-8")
+    class FakeModel:
+        def load_from_path(self, *_args, **_kwargs): pass
+    class FakePatchcore:
+        PatchCore = staticmethod(lambda _device: FakeModel())
+    class FakeCommon:
+        FaissNN = staticmethod(lambda *_args: "cpu-faiss")
+    write(spec)
+    assert len(pilot._load_frozen_detector(model_dir, "cpu", FakeCommon, FakePatchcore, bank)[1]["train_paths"]) == 320
+    for broken in (dict(spec, category="hazelnut"), dict(spec, train_paths=spec["train_paths"][:-1])):
+        write(broken)
+        with pytest.raises(ValueError, match="frozen Screw"):
+            pilot._load_frozen_detector(model_dir, "cpu", FakeCommon, FakePatchcore, bank)
+    assert pilot.COHORTS["full110"]["bank"]["model_dir"].name == "hazelnut-seed11-train391"
