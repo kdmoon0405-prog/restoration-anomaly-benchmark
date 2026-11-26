@@ -2,7 +2,8 @@
 
 팀 2 졸업프로젝트. 영상이 어두워지거나 흐려질 때 복원이 결함 부위 및 검사 판정에 주는 영향을 비교했다. MVTec AD와 VisA PCB를 실험했고, 스마트폰으로 실제 그래픽카드 기판을 촬영해 품질 판정과 대체 조명도 확인했다.
 
-- [상세 결과보고서와 전체 자료](results/README.md)
+- [보고서 작성 인계](docs/REPORT_AUTHOR_HANDOFF.md) · [상세 결과보고서와 전체 자료](results/README.md)
+- [연구 결정 기록](docs/RESEARCH_EVOLUTION.md) · [고해상도 사진과 원판독 기록](results/local-evidence/README.md)
 - [공개 사진·복원 비교·검사 지도](results/FIGURES.md)
 - [연구 과정과 다음 실험을 고른 이유](results/RESEARCH_HISTORY.md) · [실행·검토 기록](PROGRESS.md)
 - [Bank 28조건 통합표](results/data/bank/bank-domain-28.csv) · [50장 품질 및 판정 자료](results/data/phone/)

@@ -2,6 +2,8 @@
 
 ## 보고서 작업에 쓸 파일
 
+- [보고서 작성 인계](../docs/REPORT_AUTHOR_HANDOFF.md) · [연구 결정 기록 전체](../docs/RESEARCH_EVOLUTION.md) · [고해상도 사진과 원판독 기록](local-evidence/README.md)
+
 - [상세 결과보고서 PDF](report/team-2-report.pdf) · [편집용 Word](report/team-2-report.docx)
 - [A0 포스터 작업본 PDF](report/team-2-a0-draft.pdf) · [편집용 PPTX](report/team-2-a0-draft.pptx)
 - [결과 그림 모음](FIGURES.md) · [연구 과정과 실험별 근거](RESEARCH_HISTORY.md) · [진행 기록](../PROGRESS.md)

@@ -1,0 +1,33 @@
+{
+  "recipe_id": "gpuBack01-back-v0.2",
+  "part_id": "gpuBack01",
+  "view": "back side, bracket on the left",
+  "anchor": "D-01.jpg",
+  "roi": [
+    0.12,
+    0.31,
+    0.61,
+    0.7
+  ],
+  "work_long_side": 1024,
+  "interpolation": "lanczos",
+  "lighting": {
+    "L0": "baseline: room light on + desk lamp (position re-made each round); lux not measured",
+    "L1": "left low side; lux not measured"
+  },
+  "camera": {
+    "model": "Galaxy Z Flip7",
+    "exposure_time_s": "1/15 (EXIF)",
+    "iso": "320 (EXIF)",
+    "flash": "off",
+    "ae_af_locked": "unknown",
+    "hdr": "unknown",
+    "mm_per_pixel": "not measured"
+  },
+  "pose_tolerance": {
+    "rotation_deg": 5.0,
+    "scale_deviation": 0.1
+  },
+  "retake_light": "L1",
+  "policy_version": "ref_roi_v0.2"
+}

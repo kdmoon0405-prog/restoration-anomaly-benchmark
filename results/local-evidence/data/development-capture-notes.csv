@@ -1,0 +1,25 @@
+file,part_id,session_id,recipe_id,repeat_id,attempt,label_status,light_position,flash,ae_af_locked,hdr,reference,roi_x0,roi_y0,roi_x1,roi_y1,notes
+D-01.jpg,gpuBack01,S1,L0,1,1,unknown,baseline,off,unknown,unknown,1,,,,,round R1 shot 1; anchor candidate (first L0)
+D-02.jpg,gpuBack01,S1,L1,1,1,unknown,left low side,off,unknown,unknown,,,,,,round R1 shot 2
+D-03.jpg,gpuBack01,S1,L2,1,1,unknown,low light,off,unknown,unknown,,,,,,round R1 shot 3
+D-04.jpg,gpuBack01,S1,L1,2,1,unknown,left low side,off,unknown,unknown,,,,,,round R2 shot 1
+D-05.jpg,gpuBack01,S1,L2,2,1,unknown,low light,off,unknown,unknown,,,,,,round R2 shot 2
+D-06.jpg,gpuBack01,S1,L0,2,1,unknown,baseline,off,unknown,unknown,,,,,,round R2 shot 3
+D-07.jpg,gpuBack01,S1,L2,3,1,unknown,low light,off,unknown,unknown,,,,,,round R3 shot 1
+D-08.jpg,gpuBack01,S1,L0,3,1,unknown,baseline,off,unknown,unknown,,,,,,round R3 shot 2
+D-09.jpg,gpuBack01,S1,L1,3,1,unknown,left low side,off,unknown,unknown,,,,,,round R3 shot 3
+D-10.jpg,gpuBack01,S1,B1_blur,1,1,unknown,baseline,off,unknown,unknown,,,,,,focus deliberately off by manual focus
+D-11.jpg,gpuBack01,S1,B1_blur,2,1,unknown,baseline,off,unknown,unknown,,,,,,focus deliberately off by manual focus
+D-12.jpg,gpuBack01,S1,B1_blur,3,1,unknown,baseline,off,unknown,unknown,,,,,,focus deliberately off by manual focus
+D-13.jpg,gpuBack01,S1,F0,1,1,simulated_defect,baseline,off,unknown,unknown,,,,,,surface_foreign_object_simulation: pink piece about 7 mm (user-reported)
+D-14.jpg,gpuBack01,S1,F0,2,1,simulated_defect,baseline,off,unknown,unknown,,,,,,surface_foreign_object_simulation: pink piece about 7 mm (user-reported);order vs (0) file assumed from file name
+D-15.jpg,gpuBack01,S1,F0,3,1,simulated_defect,baseline,off,unknown,unknown,,,,,,surface_foreign_object_simulation: pink piece about 7 mm (user-reported);order vs 152032 assumed from file name
+D-16.jpg,gpuBack01,S1,F1,1,1,simulated_defect,left low side,off,unknown,unknown,,,,,,surface_foreign_object_simulation: same pink piece as F0
+D-17.jpg,gpuBack01,S1,F1,2,1,simulated_defect,left low side,off,unknown,unknown,,,,,,surface_foreign_object_simulation: same pink piece as F0
+D-18.jpg,gpuBack01,S1,F1,3,1,simulated_defect,left low side,off,unknown,unknown,,,,,,surface_foreign_object_simulation: same pink piece as F0
+D-19.jpg,gpuBack01,S1,BG_white,1,1,unknown,baseline,off,unknown,unknown,,,,,,extra set: white paper background; foreign object removed
+D-20.jpg,gpuBack01,S1,BG_white,2,1,unknown,baseline,off,unknown,unknown,,,,,,extra set: white paper background; foreign object removed
+D-21.jpg,gpuBack01,S1,BG_white,3,1,unknown,baseline,off,unknown,unknown,,,,,,extra set: white paper background; foreign object removed
+D-22.jpg,gpuBack01,S1,TILT,1,1,unknown,baseline,off,unknown,unknown,,,,,,extra set: camera tilted; foreign object removed
+D-23.jpg,gpuBack01,S1,TILT,2,1,unknown,baseline,off,unknown,unknown,,,,,,extra set: camera tilted; foreign object removed
+D-24.jpg,gpuBack01,S1,TILT,3,1,unknown,baseline,off,unknown,unknown,,,,,,extra set: camera tilted; foreign object removed

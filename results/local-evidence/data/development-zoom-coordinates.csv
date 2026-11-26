@@ -1,0 +1,10 @@
+row,panel,file,crop_frame,x0,y0,size,processing,score_px,verdict,tau
+A_real_capture,"정상, L0 (normal-3)",D-08.jpg,full_resolution,1048,1360,480,none,,,
+A_real_capture,"모사 이물, L0 (foreign-1)",D-13.jpg,full_resolution,982,1364,480,none,,,
+A_real_capture,"모사 이물, L1 (foreign-1 대체)",D-16.jpg,full_resolution,980,1363,480,none,,,
+A_real_capture,저조도 첫 입력 (lowlight-3),D-07.jpg,full_resolution,1053,1371,480,none,,,
+A_real_capture,저조도의 대체 L1 (lowlight-3),D-09.jpg,full_resolution,1052,1371,480,none,,,
+A_real_capture,초점 흐림 첫 입력 (blur-1),D-10.jpg,full_resolution,960,1371,480,none,,,
+B_working_and_x4,original,D-13.jpg,anchor_working_1024,270,352,120,original,165,NG,1.6154402494430542
+B_working_and_x4,bicubic_x4,D-13.jpg,anchor_working_1024,270,352,120,bicubic_x4,124,NG,1.7960515022277832
+B_working_and_x4,swinir_x4,D-13.jpg,anchor_working_1024,270,352,120,swinir_x4,129,NG,1.7955337762832642

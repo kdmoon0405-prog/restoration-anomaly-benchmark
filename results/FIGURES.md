@@ -20,6 +20,8 @@
 
 같은 기판의 대체 촬영으로, 첫 저조도 사진을 소프트웨어로 복원한 조건과는 실험 경로가 다르다. [개발 24장, 평가 50장, 모사 이물 확대](figures/phone/README.md)
 
+[고해상도 실물 74장과 추가 비교 그림](local-evidence/README.md)
+
 ## 수치 결과
 
 - [Hazelnut 위치 결과와 반복 노이즈 비교](figures/overview/benchmark.png)
